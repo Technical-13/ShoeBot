@@ -17,7 +17,7 @@ module.exports = {
       const welcomeChannel = member.guild.channels.cache.get( channel );
 
       welcomeChannel.send( '<@' + member.user.id + '>, ' + Msg );
-      member.roles.add( Role );
+      if ( Role ) member.roles.add( Role );
     } );
   }
 }

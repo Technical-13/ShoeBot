@@ -1,7 +1,5 @@
 // Source and more info:
 // https://discordjs.guide/slash-commands
-//const { PermissionFlagsBits } = require( 'discord.js' );
-
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 const { REST } = require( '@discordjs/rest' );
 const { Routes } = require( 'discord-api-types/v9' );
@@ -21,6 +19,17 @@ const commands = [
 	new SlashCommandBuilder()
     .setName( 'ping' )
     .setDescription( 'Replies with the bot\'s ping!' ),
+  new SlashCommandBuilder()
+    .setName( 'reply' )
+    .setDescription( 'Make bot respond to message.' )
+    .addStringOption( option =>
+      option.setName( 'message-id' )
+        .setDescription( 'Paste message ID here' )
+        .setRequired( true ) )
+    .addStringOption( option =>
+      option.setName( 'response' )
+        .setDescription( 'What do you want me to say in response?' )
+        .setRequired( true ) ),
 	new SlashCommandBuilder()
     .setName( 'roll' )
     .setDescription( 'Dice Roller' )
@@ -37,15 +46,29 @@ const commands = [
       option.setName( 'modifier' )
       .setDescription( '± to final roll for each die? (default: 0)' ) ),
   new SlashCommandBuilder()
+    .setName( 'say' )
+    .setDescription( 'Make bot speak.' )
+    .addStringOption( option =>
+      option.setName( 'saying' )
+        .setDescription( 'What do you want me to say?' )
+        .setRequired( true ) )
+    .addChannelOption( option =>
+      option.setName( 'channel' )
+        .setDescription( 'Where do you want me to say it? (default: current channel)' ) ),
+  new SlashCommandBuilder()
     .setName( 'setup-welcome' )
     .setDescription( 'Set up your welcome message for this server.' )
-//    .setDefaultMemberPermissions( PermissionFlagsBits.Administrator )
     .addChannelOption( option =>
-      option.setName( 'channel' ).setDescription( 'Channel for welcomes?' ).setRequired( true ) )
+      option.setName( 'channel' )
+        .setDescription( 'Channel for welcomes?' )
+        .setRequired( true ) )
     .addStringOption( option =>
-      option.setName( 'welcome-message' ).setDescription( 'Welcoming message?' ).setRequired( true ) )
+      option.setName( 'welcome-message' )
+        .setDescription( 'Welcoming message?' )
+        .setRequired( true ) )
     .addRoleOption( option =>
-      option.setName( 'welcome-role' ).setDescription( 'Welcome role?' ).setRequired( true ) )
+      option.setName( 'welcome-role' )
+        .setDescription( 'Welcome role?' ) )
 ].map( command => command.toJSON() );
 
 const rest = new REST( { version: '9' } ).setToken( process.env.token );
