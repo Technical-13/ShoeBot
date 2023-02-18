@@ -1,5 +1,7 @@
 // Source and more info:
 // https://discordjs.guide/slash-commands
+//const { PermissionFlagsBits } = require( 'discord.js' );
+
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 const { REST } = require( '@discordjs/rest' );
 const { Routes } = require( 'discord-api-types/v9' );
@@ -33,7 +35,17 @@ const commands = [
       .setDescription( 'How many sets of dice? (default: 1)' ) )
     .addIntegerOption( option =>
       option.setName( 'modifier' )
-      .setDescription( '± to final roll for each die? (default: 0)' ) )
+      .setDescription( '± to final roll for each die? (default: 0)' ) ),
+  new SlashCommandBuilder()
+    .setName( 'setup-welcome' )
+    .setDescription( 'Set up your welcome message for this server.' )
+//    .setDefaultMemberPermissions( PermissionFlagsBits.Administrator )
+    .addChannelOption( option =>
+      option.setName( 'channel' ).setDescription( 'Channel for welcomes?' ).setRequired( true ) )
+    .addStringOption( option =>
+      option.setName( 'welcome-message' ).setDescription( 'Welcoming message?' ).setRequired( true ) )
+    .addRoleOption( option =>
+      option.setName( 'welcome-role' ).setDescription( 'Welcome role?' ).setRequired( true ) )
 ].map( command => command.toJSON() );
 
 const rest = new REST( { version: '9' } ).setToken( process.env.token );

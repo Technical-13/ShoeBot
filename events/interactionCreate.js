@@ -1,12 +1,12 @@
 // This is the event that runs when a user enters a slash command
 // All modules must be re-imported since they are in a seperate file.
 
-const Discord = require( "discord.js" );
+const Discord = require( 'discord.js' );
 
 module.exports = {
-	name: 'interactionCreate', // Event name
-	once: false, // multiple commands can be run
-	run( interaction, client ) { // Function to run on event fire
+	name: 'interactionCreate',
+	once: false,
+	run( interaction, client ) {
     
     // Do not proceed if this isn't a command
 		if ( !interaction.isCommand() ) return;
