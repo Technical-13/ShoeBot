@@ -13,7 +13,7 @@ module.exports = {
     if ( mySaying ) {      
       return speakChannel.send( mySaying ).then( spoke => {
         interaction.editReply( { content: 'Said the thing!' } );
-        objGuildOwner.send( '<@' + interaction.user.id + '> requested me to speak in ' + spoke.guild.name + '<#' + spoke.channel.id + '>:\n```\n' + mySaying + '\n```' );
+        objGuildOwner.send( '<@' + interaction.user.id + '> requested me to speak in `' + spoke.guild.name + '`<#' + spoke.channel.id + '>:\n```\n' + mySaying + '\n```' );
         console.log( '%o requested me to speak in %o#%o:\n\t%o',
           strAuthorTag, spoke.guild.name, spoke.channel.name, mySaying
         );
