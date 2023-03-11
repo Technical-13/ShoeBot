@@ -6,6 +6,7 @@ module.exports = {
 	description: 'Set up your welcome message for this server.',
 	cooldown: 1000,
 	async run( interaction, client ) {
+    const myOwner = client.users.cache.get( process.env.OWNERID );
     const { channel, options } = interaction;
 
     const welcomeChannel = options.getChannel( 'channel' );

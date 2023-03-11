@@ -67,6 +67,36 @@ const commands = [
       option.setName( 'channel' )
         .setDescription( 'Where do you want me to say it? (default: current channel)' ) ),
   new SlashCommandBuilder()
+    .setName( 'setup-log' )
+    .setDescription( 'Set up log channels for this server.' )
+    .addSubcommand( subcommand => subcommand
+      .setName( 'default' )
+      .setDescription( 'Channel to log all requests.' )
+      .addChannelOption( option => option
+        .setName( 'default-channel' )
+        .setDescription( 'Default channel for all logs.' ) ) )
+    .addSubcommand( subcommand => subcommand
+      .setName( 'react' )
+      .setDescription( 'Channel to log `/react` requests.' )
+      .addChannelOption( option => option
+        .setName( 'react-channel' )
+        .setDescription( 'Select channel:' )
+        .setRequired( true ) ) )
+    .addSubcommand( subcommand => subcommand
+      .setName( 'reply' )
+      .setDescription( 'Channel to log `/reply` requests.' )
+      .addChannelOption( option => option
+        .setName( 'reply-channel' )
+        .setDescription( 'Select channel:' )
+        .setRequired( true ) ) )
+    .addSubcommand( subcommand => subcommand
+      .setName( 'say' )
+      .setDescription( 'Channel to log `/say` requests.' )
+      .addChannelOption( option => option
+        .setName( 'say-channel' )
+        .setDescription( 'Select channel:' )
+        .setRequired( true ) ) ),	
+  new SlashCommandBuilder()
     .setName( 'setup-welcome' )
     .setDescription( 'Set up your welcome message for this server.' )
     .addChannelOption( option =>

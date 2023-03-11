@@ -7,6 +7,7 @@ module.exports = {
 	name: 'interactionCreate',
 	once: false,
 	run( interaction, client ) {
+    const myOwner = client.users.cache.get( process.env.OWNERID );
     
     // Do not proceed if this isn't a command
 		if ( !interaction.isCommand() ) return;
@@ -14,7 +15,7 @@ module.exports = {
     // Get the slash command name that they entered
 		const commandName = interaction.commandName;
     // Find it in the commands folder
-		const command = client.commands.find( cmd => cmd.name == commandName );
+    const command = client.commands.find( cmd => cmd.name == commandName );
 
     // Check if this command has a cooldown saved
 		if ( !client.cooldowns.has( command.name ) ) {
