@@ -7,6 +7,9 @@ const clientId = '501574812687400960';
 
 const commands = [
 	new SlashCommandBuilder()
+    .setName( 'foo' )
+    .setDescription( 'Foo Bar Baz - Testing command' ),
+	new SlashCommandBuilder()
     .setName( 'lmgt' )
     .setDescription( 'Let Me Google That for you...' )
     .addStringOption( option =>
@@ -15,7 +18,7 @@ const commands = [
       .setRequired( true ) )
     .addUserOption( option =>
       option.setName( 'target' )
-      .setDescription( 'Tag someone in response' ) ),
+      .setDescription( 'Tag someone in response.' ) ),
 	new SlashCommandBuilder()
     .setName( 'ping' )
     .setDescription( 'Replies with the bot\'s ping!' ),
@@ -24,7 +27,7 @@ const commands = [
     .setDescription( 'Make bot react to a message.' )
     .addStringOption( option =>
       option.setName( 'message-id' )
-        .setDescription( 'Paste message ID here' )
+        .setDescription( 'Paste message ID here.' )
         .setRequired( true ) )
     .addStringOption( option =>
       option.setName( 'reaction' )
@@ -35,7 +38,7 @@ const commands = [
     .setDescription( 'Make bot respond to message.' )
     .addStringOption( option =>
       option.setName( 'message-id' )
-        .setDescription( 'Paste message ID here' )
+        .setDescription( 'Paste message ID here.' )
         .setRequired( true ) )
     .addStringOption( option =>
       option.setName( 'response' )
@@ -43,7 +46,7 @@ const commands = [
         .setRequired( true ) ),
 	new SlashCommandBuilder()
     .setName( 'roll' )
-    .setDescription( 'Dice Roller' )
+    .setDescription( 'Dice Roller!' )
     .addIntegerOption( option =>
       option.setName( 'dice' )
       .setDescription( 'How many dice? (default: 1)' ) )
@@ -109,7 +112,57 @@ const commands = [
         .setRequired( true ) )
     .addRoleOption( option =>
       option.setName( 'welcome-role' )
-        .setDescription( 'Welcome role?' ) )
+        .setDescription( 'Welcome role?' ) ),
+  new SlashCommandBuilder()
+    .setName( 'setup' )
+    .setNameLocalizations( {
+      de: 'aufstellen' } )
+    .setDescription( 'Setup the bot for your server.' )
+    .setDescriptionLocalizations( {
+      de: 'Richten Sie den Bot für Ihren Server ein.' } )
+    .addSubcommand( subcommand => subcommand
+      .setName( 'welcome' )
+      .setNameLocalizations( {
+        de: 'willkommen' } )
+      .setDescription( 'Set up your welcome message for this server.' )
+      .setDescriptionLocalizations( {
+        de: 'Richten Sie Ihre Willkommensnachricht für diesen Server ein.' } ) )
+    .addSubcommand( subcommand => subcommand
+      .setName( 'logs' )
+      .setNameLocalizations( {
+        de: 'protokolle' } )
+      .setDescription( 'Set up log channels for this server.' )
+      .setDescriptionLocalizations( {
+        de: 'Protokollkanäle für diesen Server einrichten.' } )
+      .addStringOption( option => option
+        .setName( 'log-type' )
+        .setNameLocalizations( {
+          de: 'protokolltyp' } )
+        .setDescription( 'What type of log do you want to set the channel for?' )
+        .setDescriptionLocalizations( {
+          de: 'Für welche Art von Protokoll möchten Sie den Kanal festlegen?' } )
+        .addChoices(
+          { name: 'All logs', nameLocalizations: {
+            de: 'Alle Protokolle'
+          }, value: 'default' },
+          { name: 'Requests to /react', nameLocalizations: {
+            de: 'Anfragen zu /Reagieren'
+          }, value: 'react' },
+          { name: 'Requests to /reply', nameLocalizations: {
+            de: 'Bitten um /Antwort'
+          }, value: 'reply' },
+          { name: 'Requests to /say', name_localizations: {
+            de: 'Anfragen zu /sagen'
+          }, value: 'say' } )
+        .setRequired( true ) )
+      .addChannelOption( option => option
+        .setName( 'channel' )
+        .setNameLocalizations( {
+          de: 'sender' } )
+        .setDescription( 'Channel to send logs.' )
+        .setDescriptionLocalizations( {
+          de: 'Kanal zum Senden von Protokollen.' } )
+        .setRequired( true ) ) )
 ].map( command => command.toJSON() );
 
 const rest = new REST( { version: '9' } ).setToken( process.env.token );

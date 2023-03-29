@@ -24,15 +24,15 @@ module.exports = {
       channel.messages.fetch( msgID ).then( async message => {
         if ( cmdAllowed ) {
           await message.reply( myResponse ).then( async responded => {
-            await interaction.editReply( { content: 'Responded!' } );
-            await logChan.send( 'I replied to <@' + message.author.id + '>\'s message in <#' +
+            interaction.editReply( { content: 'Responded!' } );
+            logChan.send( 'I replied to <@' + message.author.id + '>\'s message in <#' +
               message.channel.id + '> at <@' + interaction.user.id + '>\'s request:\n```\n' + myResponse + '\n```' );
           } );
         } else {
-          await logChan.send( '<@' + interaction.user.id + '> has no permission to use my `/reply` command from <#' +
+          logChan.send( '<@' + interaction.user.id + '> has no permission to use my `/reply` command from <#' +
             interaction.channel.id + '>. They tried to get me to reply to <@' + message.author.id +
-            '>\'s message:\n```\n' + message.content + '\n```With:\n```\n' + myResponse + '\n```' );   
-          await interaction.editReply( { content: 'You don\'t have permission to get me to speak in `' +
+            '>\'s message:' + ( message.content === '' ? ' **__Attachment Only!__**\n' : '\n```\n' + message.content + '\n```' ) + 'With:\n```\n' + myResponse + '\n```' );   
+          interaction.editReply( { content: 'You don\'t have permission to get me to speak in `' +
             interaction.guild.name + '`<#' + interaction.channel.id + '>.' } );      
         }
       } ).catch( noMessage => {
