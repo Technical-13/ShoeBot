@@ -10,6 +10,7 @@ const table = new AsciiTable().setHeading( 'Slash Commands', 'Stats' ).setBorder
 
 const TOKEN = process.env.token;
 const CLIENT_ID = process.env.CLIENT_ID;
+const DEV_GUILD_ID = process.env.DEV_GUILD_ID;
 
 const rest = new REST( { version: '10' } ).setToken( TOKEN );
 
