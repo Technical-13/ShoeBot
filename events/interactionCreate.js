@@ -1,49 +1,61 @@
-// This is the event that runs when a user enters a slash command
-// All modules must be re-imported since they are in a seperate file.
+const client = require( '..' )
+const { EmbedBuilder, Collection, PermissionsBitField } = require( 'discord.js' )
+const cooldown = new Collection()
+const ms = require( 'ms' )
 
-const Discord = require( 'discord.js' );
-
-module.exports = {
-	name: 'interactionCreate',
-	once: false,
-	run( interaction, client ) {
-    const myOwner = client.users.cache.get( process.env.OWNERID );
-    
-    // Do not proceed if this isn't a command
-		if ( !interaction.isCommand() ) return;
-
-    // Get the slash command name that they entered
-		const commandName = interaction.commandName;
-    // Find it in the commands folder
-    const command = client.commands.find( cmd => cmd.name == commandName );
-
-    // Check if this command has a cooldown saved
-		if ( !client.cooldowns.has( command.name ) ) {
-      // If not, create the cooldown collection
-			client.cooldowns.set( command.name, new Discord.Collection() );
-		}
-
-    // Get all user cooldowns for this command
-		const timestamps = client.cooldowns.get( command.name );
-    // Get the cooldown time for this command in MS
-		const cooldownAmount = ( command.cooldown || 0 );
-
-    // Is this user in the cooldowns time list?
-		if ( timestamps.has( interaction.user.id ) ) {
-      // When did/does the user's cooldown expire?
-			const expirationTime = timestamps.get( interaction.user.id ) + cooldownAmount;
-			if ( Date.now() < expirationTime ) { // Has it expired yet?
-        // If not, how long is left?
-				const timeLeft = ( expirationTime - Date.now() ) / 1000;
-        // Return an error message
-				return interaction.reply( "Whoops, you are on cooldown for this command for another " + timeLeft + " seconds." );
+client.on( 'interactionCreate', async interaction => {
+	const slashCommand = client.slashCommands.get( interaction.commandName );
+		if ( interaction.type == 4 ) {
+			if ( slashCommand.autocomplete ) {
+				const choices = [];
+				await slashCommand.autocomplete( interaction, choices )
 			}
-		} // continue running if no errors
+		}
+		if ( !interaction.type == 2 ) return;
+	
+		if( !slashCommand ) return client.slashCommands.delete( interaction.commandName );
+		try {
+			if ( slashCommand.cooldown ) {
+				if ( cooldown.has( `slash-${slashCommand.name}${interaction.user.id}` ) ) return interaction.reply( { content: `You are on \`${ms( cooldown.get( `slash-${slashCommand.name}${interaction.user.id}` ) - Date.now(), {long : true} )}\` cooldown!`} )
+				if ( slashCommand.userPerms || slashCommand.botPerms ) {
+					//console.log(slashCommand.botPerms,  interaction.guild.members.cache.get(client.user.id).permissions.has(PermissionsBitField.resolve(slashCommand.botPerms || [])) )
+					if ( !interaction.memberPermissions.has( PermissionsBitField.resolve( slashCommand.userPerms || [] ) ) ) {
+						const userPerms = new EmbedBuilder()
+						.setDescription( `🚫 ${interaction.user}, You don't have \`${slashCommand.userPerms}\` permissions to use this command!` )
+						.setColor( 'Red' )
+						return interaction.reply( { embeds: [userPerms] } )
+					}
+					if ( !interaction.guild.members.cache.get( client.user.id ).permissions.has( PermissionsBitField.resolve(slashCommand.botPerms || [] ) ) ) {
+						const botPerms = new EmbedBuilder()
+						.setDescription( `🚫 ${interaction.user}, I don't have \`${slashCommand.botPerms}\` permissions to use this command!` )
+						.setColor( 'Red' )
+						return interaction.reply( { embeds: [botPerms] } )
+					}
 
-		timestamps.set( interaction.user.id, Date.now() ); // Put the user on cooldown
+				}
 
-		if ( command ) return command.run( interaction, client ); // Run the command's function
+					await slashCommand.run( client, interaction );
+					cooldown.set( `slash-${slashCommand.name}${interaction.user.id}`, Date.now() + slashCommand.cooldown )
+					setTimeout( () => {
+							cooldown.delete( `slash-${slashCommand.name}${interaction.user.id}` )
+					}, slashCommand.cooldown )
+			} else {
+				if ( slashCommand.userPerms || slashCommand.botPerms ) {
+					if ( !interaction.memberPermissions.has( PermissionsBitField.resolve( slashCommand.userPerms || [] ) ) ) {
+						const userPerms = new EmbedBuilder()
+						.setDescription( `🚫 ${interaction.user}, You don't have \`${slashCommand.userPerms}\` permissions to use this command!` )
+						.setColor( 'Red' )
+						return interaction.reply( { embeds: [userPerms] } )
+					}
+					if ( !interaction.guild.members.cache.get( client.user.id ).permissions.has( PermissionsBitField.resolve( slashCommand.botPerms || [] ) ) ) {
+						const botPerms = new EmbedBuilder()
+						.setDescription( `🚫 ${interaction.user}, I don't have \`${slashCommand.botPerms}\` permissions to use this command!` )
+						.setColor( 'Red' )
+						return interaction.reply( { embeds: [botPerms] } )
+					}
 
-		// Also check out the ready event, or head to the ping.js file in the commands folder.
-	}
-}
+				}
+					await slashCommand.run( client, interaction );
+			}
+		} catch ( error ) { console.log( error ); }
+} );
