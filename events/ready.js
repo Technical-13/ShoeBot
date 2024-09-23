@@ -12,13 +12,13 @@ module.exports = {
     client.user.setActivity( 'with bot code', { type: 'PLAYING' } );
     mongoose.disconnect( () => console.log( chalk.yellow( 'MongoDB closed.' ) ) );
     await mongoose.connect( process.env.mongodb || '', { keepAlive: true } )
-      .then( connected => { console.log( chalk.green( 'Connected to MongoDB.' ) ); } )
+      .then( connected => { console.log( chalk.greenBright( 'Connected to MongoDB.' ) ); } )
       .catch( errDB => {
         myOwner.send( 'Failed to connect to MongoDB:\n```\n' + errDB + '\n```' )
           .catch( errSend => { console.error( chalk.red( `Unable to send DM:\n${errSend}` ) ); } );
         console.error( chalk.red( `Failed to connect to MongoDB:\n${errDB}` ) );
       } );
     
-    console.log( chalk.green( `Successfully logged in as: ${client.user.tag}` ) ) );
+    console.log( chalk.greenBright( `Successfully logged in as: ${client.user.tag}` ) );
 	}
 }
