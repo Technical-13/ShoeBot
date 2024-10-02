@@ -45,7 +45,7 @@ module.exports = {
 
     const botPresence = bot.presence.toJSON();
 console.log( 'botPresence:\n%o', botPresence );
-    const botActivities = botPresence.activites;
+    const botActivities = botPresence.activities[ 0 ];
 console.log( 'botActivities:\n%o', botActivities );
     const botActivityType = Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );
     
