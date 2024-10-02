@@ -44,13 +44,12 @@ module.exports = {
     const ActivityTypes = { Playing: 0, Streaming: 1, Listening: 2, Watching: 3, Custom: 4, Competing: 5 };
 
     const botPresence = bot.presence.toJSON();
-console.log( 'botPresence:\n%o', botPresence );
     const botActivities = botPresence.activities[ 0 ];
-console.log( 'botActivities:\n%o', botActivities );
     const botActivityType = Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );
     
     const selectActivityType = ( options.getString( 'activity-type' ) || botActivityType || 'Playing' );
-    const selectActivityName = ( options.getString( 'activity' ) || botActivities.name || '' );
+    const currActivityName = ( botActivityType === 1 ? botActivities.url : ( botActivityType === 4 ? botActivities.state : botActivities.name ) );
+    const selectActivityName = ( options.getString( 'activity' ) || currActivityName || '' );
     const setPresenceActivity = [ { type: ActivityTypes[ selectActivityType ], name: selectActivityName } ];
     const selectStatus = ( options.getString( 'status' ) || botPresence.status );
     
