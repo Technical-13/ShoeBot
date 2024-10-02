@@ -7,11 +7,20 @@ module.exports = {
   cooldown: 3000,
   options: [],
   run: async ( client, interaction ) => {
+    await interaction.deferReply( { ephemeral: true } );
+    
     const { channel, guild, options } = interaction;
     const author = interaction.user;
+    const botOwner = client.users.cache.get( process.env.OWNER_ID );
+    const isBotOwner = ( author.id === botOwner.id ? true : false );
+    const botMods = [];
+    const isBotMod = ( ( botOwner || botMods.indexOf( author.id ) != -1 ) ? true : false );
+
+    if ( !isBotMod ) {
+      interaction.editReply( { content: 'You are not the boss of me...' } );
+      return;
+    }
     const bot = client.user;
-    
-    message.delete();
     
     const ActivityTypes = { Playing: 0, Streaming: 1, Listening: 2, Watching: 3, Custom: 4, Competing: 5 };
 
