@@ -60,12 +60,13 @@ module.exports = ( client ) => {
         }
     } );
 
-    let statusPut = chalk.yellow( 'Slash Commands' ) + ' • ';
+    let statusPut = chalk.yellow( 'Slash Commands' ) + ':\n\t';
     const whoFor = ( DEV_MODE ? chalk.yellow( 'DEV_GUILD_ID: ' + DEV_GUILD_ID ) : chalk.green( 'EVERYONE!' ) );
     
     ( async () => {
         if ( UPDATE_SLASH_COMMANDS ) {
           if ( devOnlyCmds && !DEV_MODE ) {
+            statusPut += 'Developer Only commands: ';'
             await rest.put( Routes.applicationGuildCommands( CLIENT_ID, DEV_GUILD_ID ), { body: devOnlyCmds } ).then( ( submitted ) => {
                 Object.keys( buildTable ).forEach( cmdKey => {
                   let cmdRegistered = submitted.find( cmd => cmd.name === cmdKey );
@@ -74,7 +75,7 @@ module.exports = ( client ) => {
                   else { buildTable[ cmdKey ].push( '⛔' ); }
                   table.addRow( buildTable[ cmdKey ] );
                 } );
-                statusPut += chalk.green( 'Registered' ) + ' for ' + whoFor;
+                statusPut += chalk.green( 'Registered' );
             } ).catch( error => {
                 Object.keys( buildTable ).forEach( cmdKey => {
                   buildTable[ cmdKey ].push( '❌' );
@@ -84,6 +85,7 @@ module.exports = ( client ) => {
                 console.error( 'ERROR:\n%o', error );
             } );
           }
+          statusPut += '\n\tLive Commands: ';
           const doRoute = ( DEV_MODE ? Routes.applicationGuildCommands( CLIENT_ID, DEV_GUILD_ID ) : Routes.applicationCommands( CLIENT_ID ) );
           await rest.put( doRoute, { body: slashCommands } ).then( ( submitted ) => {
               Object.keys( buildTable ).forEach( cmdKey => {
