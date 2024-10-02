@@ -40,7 +40,6 @@ module.exports = {
       interaction.editReply( { content: 'You are not the boss of me...' } );
       return;
     }
-    const bot = client.user;
     
     const ActivityTypes = { Playing: 0, Streaming: 1, Listening: 2, Watching: 3, Custom: 4, Competing: 5 };
 
