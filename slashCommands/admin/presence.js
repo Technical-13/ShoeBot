@@ -7,7 +7,7 @@ module.exports = {
   cooldown: 3000,
   options: [],
   run: async ( client, interaction ) => {
-    await interaction.deferReply( { ephemeral: true } );
+//    await interaction.deferReply( { ephemeral: true } );
     
     const { channel, guild, options } = interaction;
     const author = interaction.user;
@@ -17,7 +17,7 @@ module.exports = {
     const isBotMod = ( ( botOwner || botMods.indexOf( author.id ) != -1 ) ? true : false );
 
     if ( !isBotMod ) {
-      interaction.editReply( { content: 'You are not the boss of me...' } );
+      interaction.editReply( { content: 'You are not the boss of me...', ephemeral: true } );
       return;
     }
     const bot = client.user;
