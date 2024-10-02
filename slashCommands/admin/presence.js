@@ -42,50 +42,17 @@ module.exports = {
     }
     
     const ActivityTypes = { Playing: 0, Streaming: 1, Listening: 2, Watching: 3, Custom: 4, Competing: 5 };
-
-    const embedPresence = new EmbedBuilder()
-    .setTitle( 'setPresence' )
-    .setDescription( 'Set my activity, description, and status.' )
-    .setColor( '#FF00FF' )
-    .setTimestamp()
-    .setThumbnail( bot.displayAvatarURL() )
-    .setFooter( { text: bot.tag } );
-
-    const statusButtons = new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setLabel( 'Offline' ).setCustomId( 'offline' ).setStyle( ButtonStyle.Secondary ),
-      new ButtonBuilder().setLabel( 'Do Not Disturb' ).setCustomId( 'dnd' ).setStyle( ButtonStyle.Danger ),
-      new ButtonBuilder().setLabel( 'Idle' ).setCustomId( 'idle' ).setStyle( ButtonStyle.Primary ),
-      new ButtonBuilder().setLabel( 'Online' ).setCustomId( 'online' ).setStyle( ButtonStyle.Success ) );
-    const embedInterface = await interaction.editReply( { embeds: [ embedPresence ], components: [ statusButtons ] } );
-    const clickFilter = ( clicker ) => { clicker.user.id === author.id };
-    const buttonClicks = embedInterface.createMessageComponentCollector( { componentType: ComponentType.Button, clickFilter, max: 1 } );
     
-    buttonClicks.on( 'collect', clicked => {
-      switch ( clicked.customId ) {
-        case 'offline':
-          bot.setPresence( { status: 'offline' } ).then( newPresence => {
-            clicked.reply( 'I am now **`Offline`**!' );
-          } ).catch( errSetPresence => { console.error( 'Encountered an error setting status to %s:\n%o', clicked.customId, errSetPresence ); } );
-          break;
-        case 'dnd':
-          bot.setPresence( { status: 'dnd' } ).then( newPresence => {
-            clicked.reply( 'I am now **`Do Not Disturb`**!' );   
-          } ).catch( errSetPresence => { console.error( 'Encountered an error setting status to %s:\n%o', clicked.customId, errSetPresence ); } );       
-          break;
-        case 'idle':
-          bot.setPresence( { status: 'idle' } ).then( newPresence => {
-            clicked.reply( 'I am now **`Idle`**!' );
-          } ).catch( errSetPresence => { console.error( 'Encountered an error setting status to %s:\n%o', clicked.customId, errSetPresence ); } );
-          break;
-        case 'online': default:
-          bot.setPresence( { status: 'online' } ).then( newPresence => {
-            clicked.reply( 'I am now **`Online`**!' );
-          } ).catch( errSetPresence => { console.error( 'Encountered an error setting status to %s:\n%o', clicked.customId, errSetPresence ); } );
-      }
-    } );
-
-    buttonClicks.on( 'end', () => {
-      setTimeout( () => { embedInterface.delete(); }, 3000 );
-    } );
+console.log( 'bot.presence.activity.type: %o', bot.presence.activity.type );
+    const selectActivityType = ( options.getString( 'activity-type' ) || bot.presence.activity.type || 'Playing' );
+console.log( 'bot.presence.activity.name: %o', bot.presence.activity.name );
+    const selectActivityName = ( options.getString( 'activity' ) || bot.presence.activity.name || '' );
+console.log( 'selectActivityName: %o', selectActivityName );
+    const setPresenceActivity = [ { type: ActivityTypes[ selectActivityType ], name: selectActivityName } ];
+console.log( 'bot.presence.status: %o', bot.presence.status );
+    const selectStatus = ( options.getString( 'status' ) || bot.presence.status );
+console.log( 'selectStatus: %o', selectStatus );
+    
+    bot.setPresence( { activities: setPresenceActivity, status: selectStatus } );
   }
 };
