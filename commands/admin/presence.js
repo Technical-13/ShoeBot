@@ -32,22 +32,24 @@ module.exports = {
     buttonClicks.on( 'collect', interaction => {
       switch ( interaction.customId ) {
         case 'offline':
-          bot.setPresence( { status: 'offline' } );
-          interaction.reply( 'I am now **`Offline`**!' );
+          bot.setPresence( { status: 'offline' } ).then( newPresence => {
+            interaction.reply( 'I am now **`Offline`**!' );
+          } ).catch( errSetPresence => { console.error( 'Encountered an error setting status to %s:\n%o', interaction.customId, errSetPresence ); } );
           break;
         case 'dnd':
-          bot.setPresence( { status: 'dnd' } );
-          interaction.reply( 'I am now **`Do Not Disturb`**!' );
-          
+          bot.setPresence( { status: 'dnd' } ).then( newPresence => {
+            interaction.reply( 'I am now **`Do Not Disturb`**!' );   
+          } ).catch( errSetPresence => { console.error( 'Encountered an error setting status to %s:\n%o', interaction.customId, errSetPresence ); } );       
           break;
         case 'idle':
-          bot.setPresence( { status: 'idle' } );
-          interaction.reply( 'I am now **`Idle`**!' );
-          
+          bot.setPresence( { status: 'idle' } ).then( newPresence => {
+            interaction.reply( 'I am now **`Idle`**!' );
+          } ).catch( errSetPresence => { console.error( 'Encountered an error setting status to %s:\n%o', interaction.customId, errSetPresence ); } );
           break;
         case 'online': default:
-          bot.setPresence( { status: 'online' } );
-          interaction.reply( 'I am now **`Online`**!' );
+          bot.setPresence( { status: 'online' } ).then( newPresence => {
+            interaction.reply( 'I am now **`Online`**!' );
+          } ).catch( errSetPresence => { console.error( 'Encountered an error setting status to %s:\n%o', interaction.customId, errSetPresence ); } );
       }
     } );
 
