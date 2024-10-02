@@ -15,30 +15,46 @@ module.exports = ( client ) => {
     const table = new AsciiTable().setHeading( 'Group', '/Command', 'Loaded', 'Status' ).setBorder( '|', '=', "0", "0" )
     .setAlignRight( 0 ).setAlignLeft( 1 ).setAlignCenter( 2 ).setAlignCenter( 3 );
     const slashCommands = [];
+    const devOnlyCmds = [];
     const buildTable = {};
 
     fs.readdirSync( './slashCommands/' ).forEach( async dir => {
         const files = fs.readdirSync( `./slashCommands/${dir}/` ).filter( file => file.endsWith( '.js' ) );
 
         for ( const file of files ) {
-            const slashCommand = require( `../slashCommands/${dir}/${file}` );
-            slashCommands.push( {
-                name: slashCommand.name,
-                name_localizations: slashCommand.name_localizations ? slashCommand.name_localizations : null,
-                description: slashCommand.description,
-                description_localizations: slashCommand.description_localizations ? slashCommand.description_localizations : null,
-                type: slashCommand.type,
-                options: slashCommand.options ? slashCommand.options : null,
-                default_permission: slashCommand.default_permission ? slashCommand.default_permission : null,
-                default_member_permissions: slashCommand.default_member_permissions ? PermissionsBitField.resolve( slashCommand.default_member_permissions ).toString() : null
-            } );
+            let arrCmdRow = [ dir, file ];
             const cmdName = file.split( '.js' )[ 0 ];
-            let arrCmdRow = [];
-            if ( slashCommand.disable ) { arrCmdRow = [ dir, file, '⭕' ]; }
+            const slashCommand = require( `../slashCommands/${dir}/${file}` );
+            if ( slashCommand.disable ) { arrCmdRow.push( '⭕' ); }
+            } else if ( slashCommand.modCmd && slashCommand.name ) {
+              devOnlyCmds.push( {
+                  name: slashCommand.name,
+                  name_localizations: slashCommand.name_localizations ? slashCommand.name_localizations : null,
+                  description: slashCommand.description,
+                  description_localizations: slashCommand.description_localizations ? slashCommand.description_localizations : null,
+                  type: slashCommand.type,
+                  options: slashCommand.options ? slashCommand.options : null,
+                  default_permission: slashCommand.default_permission ? slashCommand.default_permission : null,
+                  default_member_permissions: slashCommand.default_member_permissions ? PermissionsBitField.resolve( slashCommand.default_member_permissions ).toString() : null
+              } );
+              client.slashCommands.set( slashCommand.name, slashCommand );
+              arrCmdRow[ 1 ] = cmdName;
+              arrCmdRow.push( '☢️' );
             else if ( slashCommand.name ) {
-                client.slashCommands.set( slashCommand.name, slashCommand );
-                arrCmdRow = [ dir, cmdName, '✅' ];
-            } else { arrCmdRow = [ dir, file, '⛔' ]; }
+              slashCommands.push( {
+                  name: slashCommand.name,
+                  name_localizations: slashCommand.name_localizations ? slashCommand.name_localizations : null,
+                  description: slashCommand.description,
+                  description_localizations: slashCommand.description_localizations ? slashCommand.description_localizations : null,
+                  type: slashCommand.type,
+                  options: slashCommand.options ? slashCommand.options : null,
+                  default_permission: slashCommand.default_permission ? slashCommand.default_permission : null,
+                  default_member_permissions: slashCommand.default_member_permissions ? PermissionsBitField.resolve( slashCommand.default_member_permissions ).toString() : null
+              } );
+              client.slashCommands.set( slashCommand.name, slashCommand );
+              arrCmdRow[ 1 ] = cmdName;
+              arrCmdRow.push( '✅' );
+            } else { arrCmdRow.push( '⛔' ); }
             buildTable[ cmdName ] = arrCmdRow;
         }
     } );
@@ -65,6 +81,24 @@ module.exports = ( client ) => {
                 statusPut += chalk.red( 'ERROR!' );
                 console.error( 'ERROR:\n%o', error );
             } );
+          if ( devOnlyCmds && !DEV_MODE ) {
+            await rest.put( Routes.applicationGuildCommands( CLIENT_ID, DEV_GUILD_ID ), { body: devOnlyCmds } ).then( ( submitted ) => {
+                Object.keys( buildTable ).forEach( cmdKey => {
+                    let cmdRegistered = submitted.find( cmd => cmd.name === cmdKey );
+                    if ( cmdRegistered ) { buildTable[ cmdKey ].push( '✅' ); }
+                    else { buildTable[ cmdKey ].push( '⛔' ); }
+                    table.addRow( buildTable[ cmdKey ] );
+                } );
+                statusPut += chalk.green( 'Registered' ) + ' for ' + whoFor;
+            } ).catch( error => {
+                Object.keys( buildTable ).forEach( cmdKey => {
+                    buildTable[ cmdKey ].push( '❌' );
+                    table.addRow( buildTable[ cmdKey ] );
+                } );
+                statusPut += chalk.red( 'ERROR!' );
+                console.error( 'ERROR:\n%o', error );
+            } );
+          }
         } else {
             statusPut += chalk.yellow( 'Unchanged!' ) + ' for ' + whoFor;
             Object.keys( buildTable ).forEach( cmdKey => {
