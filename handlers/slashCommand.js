@@ -66,7 +66,7 @@ module.exports = ( client ) => {
     ( async () => {
         if ( UPDATE_SLASH_COMMANDS ) {
           if ( devOnlyCmds && !DEV_MODE ) {
-            statusPut += 'Developer Only commands: ';'
+            statusPut += 'Developer Only commands: ';
             await rest.put( Routes.applicationGuildCommands( CLIENT_ID, DEV_GUILD_ID ), { body: devOnlyCmds } ).then( ( submitted ) => {
                 Object.keys( buildTable ).forEach( cmdKey => {
                   let cmdRegistered = submitted.find( cmd => cmd.name === cmdKey );
