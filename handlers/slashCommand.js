@@ -40,7 +40,7 @@ module.exports = ( client ) => {
               } );
               client.slashCommands.set( slashCommand.name, slashCommand );
               arrCmdRow[ 1 ] = cmdName;
-              arrCmdRow.push( '☢️' );
+              arrCmdRow.push( '☣️' );
             } else if ( slashCommand.name ) {
               slashCommands.push( {
                   name: slashCommand.name,
@@ -65,41 +65,43 @@ module.exports = ( client ) => {
     
     ( async () => {
         if ( UPDATE_SLASH_COMMANDS ) {
-            const doRoute = ( DEV_MODE ? Routes.applicationGuildCommands( CLIENT_ID, DEV_GUILD_ID ) : Routes.applicationCommands( CLIENT_ID ) );
-            await rest.put( doRoute, { body: slashCommands } ).then( ( submitted ) => {
-                Object.keys( buildTable ).forEach( cmdKey => {
-                    let cmdRegistered = submitted.find( cmd => cmd.name === cmdKey );
-                    if ( cmdRegistered ) { buildTable[ cmdKey ].push( '✅' ); }
-                    else { buildTable[ cmdKey ].push( '⛔' ); }
-                    table.addRow( buildTable[ cmdKey ] );
-                } );
-                statusPut += chalk.green( 'Registered' ) + ' for ' + whoFor;
-            } ).catch( error => {
-                Object.keys( buildTable ).forEach( cmdKey => {
-                    buildTable[ cmdKey ].push( '❌' );
-                    table.addRow( buildTable[ cmdKey ] );
-                } );
-                statusPut += chalk.red( 'ERROR!' );
-                console.error( 'ERROR:\n%o', error );
-            } );
           if ( devOnlyCmds && !DEV_MODE ) {
             await rest.put( Routes.applicationGuildCommands( CLIENT_ID, DEV_GUILD_ID ), { body: devOnlyCmds } ).then( ( submitted ) => {
                 Object.keys( buildTable ).forEach( cmdKey => {
-                    let cmdRegistered = submitted.find( cmd => cmd.name === cmdKey );
-                    if ( cmdRegistered ) { buildTable[ cmdKey ].push( '✅' ); }
-                    else { buildTable[ cmdKey ].push( '⛔' ); }
-                    table.addRow( buildTable[ cmdKey ] );
+                  let cmdRegistered = submitted.find( cmd => cmd.name === cmdKey );
+                  let cmdDevOnly = devOnlyCmds.find( cmd => cmd.name === cmdKey );
+                  if ( cmdRegistered && cmdDevOnly ) { buildTable[ cmdKey ].push( '✅' ); }
+                  else { buildTable[ cmdKey ].push( '⛔' ); }
+                  table.addRow( buildTable[ cmdKey ] );
                 } );
                 statusPut += chalk.green( 'Registered' ) + ' for ' + whoFor;
             } ).catch( error => {
                 Object.keys( buildTable ).forEach( cmdKey => {
-                    buildTable[ cmdKey ].push( '❌' );
-                    table.addRow( buildTable[ cmdKey ] );
+                  buildTable[ cmdKey ].push( '❌' );
+                  table.addRow( buildTable[ cmdKey ] );
                 } );
                 statusPut += chalk.red( 'ERROR!' );
                 console.error( 'ERROR:\n%o', error );
             } );
           }
+          const doRoute = ( DEV_MODE ? Routes.applicationGuildCommands( CLIENT_ID, DEV_GUILD_ID ) : Routes.applicationCommands( CLIENT_ID ) );
+          await rest.put( doRoute, { body: slashCommands } ).then( ( submitted ) => {
+              Object.keys( buildTable ).forEach( cmdKey => {
+                  let cmdRegistered = submitted.find( cmd => cmd.name === cmdKey );
+                  let cmdDevOnly = devOnlyCmds.find( cmd => cmd.name === cmdKey );
+                  if ( cmdRegistered && !cmdDevOnly ) { buildTable[ cmdKey ].push( '✅' ); }
+                  else { buildTable[ cmdKey ].push( '⛔' ); }
+                  table.addRow( buildTable[ cmdKey ] );
+              } );
+              statusPut += chalk.green( 'Registered' ) + ' for ' + whoFor;
+          } ).catch( error => {
+              Object.keys( buildTable ).forEach( cmdKey => {
+                  buildTable[ cmdKey ].push( '❌' );
+                  table.addRow( buildTable[ cmdKey ] );
+              } );
+              statusPut += chalk.red( 'ERROR!' );
+              console.error( 'ERROR:\n%o', error );
+          } );
         } else {
             statusPut += chalk.yellow( 'Unchanged!' ) + ' for ' + whoFor;
             Object.keys( buildTable ).forEach( cmdKey => {
