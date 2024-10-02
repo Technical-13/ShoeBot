@@ -23,7 +23,7 @@ module.exports = {
         const statusButtons = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setLabel( 'Offline' ).setCustomId( 'offline' ).setStyle( ButtonStyle.Secondary ),
             new ButtonBuilder().setLabel( 'Do Not Disturb' ).setCustomId( 'dnd' ).setStyle( ButtonStyle.Danger ),
-            new ButtonBuilder().setLabel( 'Idle' ).setCustomId( 'idle' ).setStyle( ButtonStyle.Link ),
+            new ButtonBuilder().setLabel( 'Idle' ).setCustomId( 'idle' ).setStyle( ButtonStyle.Primary ),
             new ButtonBuilder().setLabel( 'Online' ).setCustomId( 'online' ).setStyle( ButtonStyle.Premium ).setSKUId( '1290347242149904405' ) );
         const embedInterface = await message.reply( { embeds: [ embedPresence ], components: [ statusButtons ] } );
         const clickFilter = ( clicker ) => { clicker.user.id === author.id };
