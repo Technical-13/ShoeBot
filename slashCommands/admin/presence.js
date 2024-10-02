@@ -44,7 +44,7 @@ module.exports = {
     const ActivityTypes = { Playing: 0, Streaming: 1, Listening: 2, Watching: 3, Custom: 4, Competing: 5 };
 
     const botPresence = bot.presence;
-    const botActivities = botPresence.activites[ 0 ];
+    const botActivities = botPresence.activites;
     const botActivityType = Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );
     
     const selectActivityType = ( options.getString( 'activity-type' ) || botActivityType || 'Playing' );
