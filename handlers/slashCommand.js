@@ -40,7 +40,7 @@ module.exports = ( client ) => {
               } );
               client.slashCommands.set( slashCommand.name, slashCommand );
               arrCmdRow[ 1 ] = cmdName;
-              arrCmdRow.push( '☣️' );
+              arrCmdRow.push( '🟨' );
             } else if ( slashCommand.name ) {
               slashCommands.push( {
                   name: slashCommand.name,
@@ -72,7 +72,7 @@ module.exports = ( client ) => {
                   let cmdRegistered = submitted.find( cmd => cmd.name === cmdKey );
                   let cmdDevOnly = devOnlyCmds.find( cmd => cmd.name === cmdKey );
                   if ( cmdRegistered && cmdDevOnly ) { buildTable[ cmdKey ].push( '✅' ); }
-                  else { buildTable[ cmdKey ].push( '⛔' ); }
+                  else if ( cmdDevOnly ) { buildTable[ cmdKey ].push( '⛔' ); }
                   table.addRow( buildTable[ cmdKey ] );
                 } );
                 statusPut += chalk.green( 'Registered' );
@@ -92,7 +92,7 @@ module.exports = ( client ) => {
                   let cmdRegistered = submitted.find( cmd => cmd.name === cmdKey );
                   let cmdDevOnly = devOnlyCmds.find( cmd => cmd.name === cmdKey );
                   if ( cmdRegistered && !cmdDevOnly ) { buildTable[ cmdKey ].push( '✅' ); }
-                  else { buildTable[ cmdKey ].push( '⛔' ); }
+                  else if ( !cmdDevOnly ) { buildTable[ cmdKey ].push( '⛔' ); }
                   table.addRow( buildTable[ cmdKey ] );
               } );
               statusPut += chalk.green( 'Registered' ) + ' for ' + whoFor;
