@@ -27,7 +27,7 @@ module.exports = {
       new ButtonBuilder().setLabel( 'Online' ).setCustomId( 'online' ).setStyle( ButtonStyle.Success ) );
     const embedInterface = await message.reply( { embeds: [ embedPresence ], components: [ statusButtons ] } );
     const clickFilter = ( clicker ) => { clicker.user.id === author.id };
-    const buttonClicks = embedInterface.createMessageComponentCollector( { componentType: ComponentType.Button, clickFilter, maxProcessed: 1 } );
+    const buttonClicks = embedInterface.createMessageComponentCollector( { componentType: ComponentType.Button, clickFilter, max: 1 } );
 
     buttonClicks.on( 'collect', interaction => {
       switch ( interaction.customId ) {
