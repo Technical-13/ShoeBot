@@ -43,10 +43,10 @@ module.exports = {
     
     const ActivityTypes = { Playing: 0, Streaming: 1, Listening: 2, Watching: 3, Custom: 4, Competing: 5 };
     
-console.log( 'bot.presence.activity.type: %o', bot.presence.activity.type );
-    const selectActivityType = ( options.getString( 'activity-type' ) || bot.presence.activity.type || 'Playing' );
-console.log( 'bot.presence.activity.name: %o', bot.presence.activity.name );
-    const selectActivityName = ( options.getString( 'activity' ) || bot.presence.activity.name || '' );
+console.log( 'bot.presence.activities.type: %o', bot.presence.activities.type );
+    const selectActivityType = ( options.getString( 'activity-type' ) || bot.presence.activities.type || 'Playing' );
+console.log( 'bot.presence.activities.name: %o', bot.presence.activities.name );
+    const selectActivityName = ( options.getString( 'activity' ) || bot.presence.activities.name || '' );
 console.log( 'selectActivityName: %o', selectActivityName );
     const setPresenceActivity = [ { type: ActivityTypes[ selectActivityType ], name: selectActivityName } ];
 console.log( 'bot.presence.status: %o', bot.presence.status );
