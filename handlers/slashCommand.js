@@ -25,7 +25,8 @@ module.exports = ( client ) => {
             let arrCmdRow = [ dir, file ];
             const cmdName = file.split( '.js' )[ 0 ];
             const slashCommand = require( `../slashCommands/${dir}/${file}` );
-            if ( slashCommand.disable ) { arrCmdRow.push( '⭕' ); }
+            if ( slashCommand.disable ) {
+              arrCmdRow.push( '⭕' );
             } else if ( slashCommand.modCmd && slashCommand.name ) {
               devOnlyCmds.push( {
                   name: slashCommand.name,
@@ -40,7 +41,7 @@ module.exports = ( client ) => {
               client.slashCommands.set( slashCommand.name, slashCommand );
               arrCmdRow[ 1 ] = cmdName;
               arrCmdRow.push( '☢️' );
-            else if ( slashCommand.name ) {
+            } else if ( slashCommand.name ) {
               slashCommands.push( {
                   name: slashCommand.name,
                   name_localizations: slashCommand.name_localizations ? slashCommand.name_localizations : null,
