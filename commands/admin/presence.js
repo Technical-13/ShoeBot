@@ -2,16 +2,19 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, EmbedBuilde
 
 module.exports = {
   name: 'presence',
-  description: 'Change the bot\s presence',
+  description: 'Change activity and status for bot.',
   ownerOnly: true,
   cooldown: 1000,
   run: async ( client, message, args ) => {
     const { author, channel, guild } = message;
     const bot = client.user;
+    
+console.log( '&presence recieved arguments:\n%o', args );
 
     message.delete();
 
-    const activityTypes = { 'playing': 0, 'streaming': 1, 'listening': 2, 'watching': 3, 'custom': 4, 'competing': 5 };
+    const ActivityTypes = { Playing: 0, Streaming: 1, Listening: 2, Watching: 3, Custom: 4, Competing: 5 };
+    
     const embedPresence = new EmbedBuilder()
     .setTitle( 'setPresence' )
     .setDescription( 'Set my activity, description, and status.' )
