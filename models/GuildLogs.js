@@ -5,10 +5,8 @@ let logSchema = new Schema( {
   Logs: {
     Default: String,
     Error: String,
-    React: String,
-    Reply: String,
-    Say: String
+    Chat: String
   }
 } );
 
-module.exports = model( 'Log', logSchema );
+module.exports = model( 'GuildLogs', logSchema );

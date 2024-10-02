@@ -18,19 +18,19 @@ const client = new Client( {
 
 const fs = require( 'fs' );
 const config = require( './config.json' );
-require( 'dotenv' ).config()
+require( 'dotenv' ).config();
 
 /* ------------------ COLLECTIONS ------------------ */
-client.commands = new Collection()
-client.aliases = new Collection()
+client.commands = new Collection();
+client.aliases = new Collection();
 client.events = new Collection();
 client.slashCommands = new Collection();
-client.prefix = config.prefix
+client.prefix = config.prefix;
 
 module.exports = client;
 
 fs.readdirSync( './handlers' ).forEach( ( handler ) => {
-	require( `./handlers/${handler}` )( client )
+	require( `./handlers/${handler}` )( client );
 } );
 
 client.login( process.env.token );
