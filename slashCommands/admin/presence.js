@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ModalBuilder, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle } = require( 'discord.js' );
+const { ApplicationCommandType, ActionRowBuilder, ModalBuilder, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle } = require( 'discord.js' );
 
 module.exports = {
   name: 'presence',
