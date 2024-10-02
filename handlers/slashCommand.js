@@ -40,7 +40,7 @@ module.exports = ( client ) => {
               } );
               client.slashCommands.set( slashCommand.name, slashCommand );
               arrCmdRow[ 1 ] = cmdName;
-              arrCmdRow.push( '🚼' );
+              arrCmdRow.push( '🚫' );
             } else if ( slashCommand.name ) {
               slashCommands.push( {
                   name: slashCommand.name,
