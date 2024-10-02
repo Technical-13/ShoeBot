@@ -43,14 +43,16 @@ module.exports = {
     
     const ActivityTypes = { Playing: 0, Streaming: 1, Listening: 2, Watching: 3, Custom: 4, Competing: 5 };
 
-    const botPresence = bot.presence.toJSON();
-console.log( 'botPresence: %o', botPresence );
+    const botPresence = bot.presence;
+    const botActivities = botPresence.activites[ 0 ];
+    const botActivityType = Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );
     
-    const selectActivityType = ( options.getString( 'activity-type' ) || bot.presence.activities.type || 'Playing' );
-    const selectActivityName = ( options.getString( 'activity' ) || bot.presence.activities.name || '' );
+    const selectActivityType = ( options.getString( 'activity-type' ) || botActivityType || 'Playing' );
+    const selectActivityName = ( options.getString( 'activity' ) || botActivities.name || '' );
     const setPresenceActivity = [ { type: ActivityTypes[ selectActivityType ], name: selectActivityName } ];
-    const selectStatus = ( options.getString( 'status' ) || bot.presence.status );
+    const selectStatus = ( options.getString( 'status' ) || botPresence.status );
     
     bot.setPresence( { activities: setPresenceActivity, status: selectStatus } );
+    interaction.editReply( { content: 'My presence has been changed to `' + selectActivityType + ' ' + selectActivityName + '` and my status is `' + selectStatus + '`' } );
   }
 };
