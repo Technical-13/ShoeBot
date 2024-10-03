@@ -16,7 +16,7 @@ module.exports = ( client ) => {
       if ( command ) {
         client.commands.set( command.name, command )
         if ( command.aliases && Array.isArray( command.aliases ) ) { command.aliases.forEach( alias => { client.aliases.set( alias, command.name ) } ); }
-        if ( command.ownerOnly ) { table.addRow( dir, cmdName, '➰' ); }
+        if ( command.ownerOnly || command.modOnly ) { table.addRow( dir, cmdName, '➰' ); }
         else { table.addRow( dir, cmdName, '✅' ); } }
       else { table.addRow( dir, file, '⛔' ); }
     } );
