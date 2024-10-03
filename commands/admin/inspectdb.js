@@ -25,8 +25,12 @@ module.exports = {
             const objGuild = guild.toJSON();
             const guildName = objGuild.name;
             const memberCount = objGuild.memberCount;
-            const maximumMembers = objGuild.maximumMembers;
+            var maximumMembers = objGuild.maximumMembers;
+            if ( maximumMembers > 10**9 ) { maximumMembers = ( maximumMembers / ( 10**9 ) ).toFixed( 2 ) + 'b'; }
+            else if ( maximumMembers > 10**6 ) { maximumMembers = ( maximumMembers / ( 10**6 ) ).toFixed( 2 ) + 'm'; }
+            else if ( maximumMembers > 10**3 ) { maximumMembers = ( maximumMembers / ( 10**3 ) ).toFixed( 1 ) + 'k'; }
             const intBotMembers = guild.members.cache.filter( mbr => { if ( mbr.bot ) { return mbr; } } ).size;
+            console.log( 'intBotMembers:\n%o', guild.members.cache.filter( mbr => { if ( mbr.bot ) { return mbr; } } ) );
             const vanityURLCode = objGuild.vanityURLCode;
             if ( vanityURLCode ) { console.log( '%s has a vanityURLCode: %s', guildName, vanityURLCode ); }
             const iconURL = objGuild.iconURL;
@@ -66,7 +70,7 @@ module.exports = {
                 '\n\tSingle Use Invite: ' + ( guildInvite ? guildInvite : ':scream: ' + chanLinkUrl ) +
                 '\n\tVerification Level: ' + verificationLevel + ( mfaLevel === 0 ? '' : ' (👮)' ) +
                 '\n\tGuild Owner: <@' + guild.ownerId + '>' +
-                '\n\tMembers: ' + memberCount + '/' + maximumMembers + '(' + intBotMembers + ' bots)' +
+                '\n\tMembers: ' + memberCount + '/' + maximumMembers + ' (' + intBotMembers + ' bots)' +
                 '\n\tDefault Log Channel: <#' + logDefaultId + '>' +
                 '\n\tError Log Channel: <#' + logErrorId + '>' +
                 '\n\tChat Log Channel: <#' + logChatId + '>',
