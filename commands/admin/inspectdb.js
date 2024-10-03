@@ -26,7 +26,7 @@ module.exports = {
             const guildName = objGuild.name;
             const memberCount = objGuild.memberCount;
             const maximumMembers = objGuild.maximumMembers;
-            const intBotMembers = guild.members.cache.filter( mbr => { if ( mbr.bot ) { return mbr; } ).size;
+            const intBotMembers = guild.members.cache.filter( mbr => { if ( mbr.bot ) { return mbr; } } ).size;
             const vanityURLCode = objGuild.vanityURLCode;
             if ( vanityURLCode ) { console.log( '%s has a vanityURLCode: %s', guildName, vanityURLCode ); }
             const iconURL = objGuild.iconURL;
