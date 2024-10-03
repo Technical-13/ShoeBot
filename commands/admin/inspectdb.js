@@ -39,7 +39,7 @@ module.exports = {
             const chanPublicUpdates = objGuild.publicUpdatesChannelId;
             const chanSafetyAlerts = objGuild.safetyAlertsChannelId;
             const chanSystem = objGuild.systemChannelId;
-            const chanFirst = guild.channels.cache.filter( chan => if ( !chan.nsfw && chan.viewable ) { return chan; } } ).first().id;
+            const chanFirst = guild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.viewable ) { return chan; } } ).first().id;
             const chanInvite = ( chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
             const chanLinkUrl = 'https://discordapp.com/channels/' + guildId + '/' + chanInvite;
             const guildInvite = await guild.invites
