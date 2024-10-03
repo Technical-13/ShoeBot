@@ -2,12 +2,11 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, OAuth2Scopes, PermissionF
 
 module.exports = {
 	name: 'invite',
-	description: 'Get the bot\'s invite link',
+	description: 'Get the bot\'s invite link.',
 	cooldown: 3000,
 	userPerms: [ 'Administrator' ],
 	botPerms: [ 'Administrator' ],
 	run: async ( client, message, args ) => {
-//		const inviteUrl = `https://discord.com/api/oauth2/authorize?client_id=${process.env.CLIENT_ID}&permissions=8&scope=bot%20applications.commands`;
 		const inviteUrl = client.generateInvite( {
       permissions: [
         PermissionFlagsBits.CreateInstantInvite,
@@ -29,7 +28,7 @@ module.exports = {
     } );
 		const embed = new EmbedBuilder()
 		.setTitle( 'Invite me' )
-		.setDescription( `Invite the bot to your server. [Click here](${inviteUrl})` )
+		.setDescription( 'Invite ' + ( process.env.BOT_USERNAME || 'the bot' ) + ' to your server. [Click here](' + inviteUrl + ')\nThis message self-destructs in three minutes!' )
 		.setColor( '#FF00FF' )
 		.setTimestamp()
 		.setThumbnail( client.user.displayAvatarURL() )
@@ -42,6 +41,8 @@ module.exports = {
 			.setURL( inviteUrl )
 			.setStyle( 5 )
 		] )
-		message.reply( { embeds: [ embed ], components: [ actionRow ] } )
+		const msgInvite = await message.reply( { embeds: [ embed ], components: [ actionRow ] } );
+    setTimeout( () => { msgInvite.delete(); }, 180000 );
+    message.delete();
 	}
 };
