@@ -9,7 +9,7 @@ const DEV_GUILD_ID = process.env.DEV_GUILD_ID;
 client.on( 'messageCreate', async message => {
   const { author, channel, content, guild, mentions } = message;
   if ( author.bot ) return;
-  if ( channel.type !== 0 ) return;);
+  if ( channel.type !== 0 ) return;
   const isDevGuild = ( guild.id == DEV_GUILD_ID );
   const botOwner = client.users.cache.get( process.env.OWNER_ID );
   const isBotOwner = ( author.id === botOwner.id ? true : false );
