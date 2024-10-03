@@ -21,14 +21,19 @@ module.exports = {
           setTimeout( async () => {
             const guildId = entry.Guild;
             const guild = client.guilds.cache.get( guildId );
-console.log( 'guild:\n%o', guild.toJSON() );
             const objGuildOwner = guild.members.cache.get( guild.ownerId );
-            const guildName = guild.name;
-            const chanWidget = guild.widgetChannelId;
-            const chanRules = guild.rulesChannelId;
-            const chanPublicUpdates = guild.publicUpdatesChannelId;
-            const chanSafetyAlerts = guild.safetyAlertsChannelId;
-            const chanSystem = guild.systemChannelId;
+            const objGuild = guild.toJSON();console.log( 'objGuild:\n%o', objGuild );
+            const guildName = objGuild.name;
+            const chanWidget = objGuild.widgetChannelId;
+            const chanRules = objGuild.rulesChannelId;
+            const chanPublicUpdates = objGuild.publicUpdatesChannelId;
+            const chanSafetyAlerts = objGuild.safetyAlertsChannelId;
+            const chanSystem = objGuild.systemChannelId;
+
+            console.log( 'objGuild.channels[ 0 ]: %o', objGuild.channels[ 0 ] );
+            console.log( 'objGuild.channels.toSorted()[ 0 ]: %o', objGuild.channels.toSorted()[ 0 ] );
+            console.log( 'guild.channels.cache.first().id: %o', guild.channels.cache.first().id );
+            console.log( 'guild.channels.cache.filter(chan=>!chan.nsfw).first().id: %o', guild.channels.cache.filter(chan=>!chan.nsfw).first().id );
             const chanFirst = guild.channels.cache.first().id;
             const chanInvite = ( chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
             const chanLinkUrl = 'https://discordapp.com/channels/' + guildId + '/' + chanInvite;
