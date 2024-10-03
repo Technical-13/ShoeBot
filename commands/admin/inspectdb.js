@@ -14,7 +14,7 @@ module.exports = {
     if ( isBotOwner ) {
       message.delete();
       botConfig.find().then( entries => {
-/*        botOwner.send( '<@' + botOwner.id + '>, I\'m sending you the details of the ' + entries.length + ' guilds in my database:' ).catch( errSend => {
+        botOwner.send( '<@' + botOwner.id + '>, I\'m sending you the details of the ' + entries.length + ' guilds in my database:' ).catch( errSend => {
           console.error( 'Error trying to show contents of the DB as you requested.\n%o', errSend );
         } );//*/
         entries.forEach( ( entry, i ) => {
@@ -60,7 +60,7 @@ module.exports = {
             const logDefaultId = entry.Logs.Default;
             const logErrorId = entry.Logs.Error;
             const logChatId = entry.Logs.Chat;
-/*            botOwner.send( {
+            botOwner.send( {
               content:
                 guildName + ' (:id: ' + guildId + ' lang:' + preferredLocale + ')' +
                 '\n\tSingle Use Invite: ' + ( guildInvite ? guildInvite : ':scream: ' + chanLinkUrl ) +
