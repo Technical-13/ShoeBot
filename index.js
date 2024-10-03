@@ -1,6 +1,9 @@
 const keepAlive = require( './functions/server' );
-
+const fs = require( 'fs' );
 const { Client, GatewayIntentBits, Partials, Collection } = require( 'discord.js' );
+const config = require( './config.json' );
+require( 'dotenv' ).config();
+
 const client = new Client( {
 	intents: [
 		GatewayIntentBits.Guilds, 
@@ -13,10 +16,6 @@ const client = new Client( {
 	], 
 	partials: [ Partials.Channel, Partials.Message, Partials.User, Partials.GuildMember, Partials.Reaction ]
 } );
-
-const fs = require( 'fs' );
-const config = require( './config.json' );
-require( 'dotenv' ).config();
 
 /* ------------------ COLLECTIONS ------------------ */
 client.commands = new Collection();
@@ -32,7 +31,7 @@ fs.readdirSync( './handlers' ).forEach( ( handler ) => {
 } );
 
 client.login( process.env.token )
-  .then( loggedIn => { console.log( 'login: %o', loggedIn ); } )
+  .then( loggedIn => { console.log( 'Successfully logged in!' ); } )
   .catch( errLogin => { console.error( 'There was an error logging in:\n%o', errLogin ); } );
 
 keepAlive();
