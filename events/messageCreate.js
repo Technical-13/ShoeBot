@@ -40,10 +40,10 @@ client.on( 'messageCreate', async message => {
   if ( command ) {
     const isOwnerOnly = command.ownerOnly;
     const isModOnly = command.modOnly;
-    if ( isOwnerOnly && !isBotOwner ) {
-      if ( isBotMod ) {
-        return message.reply( { content: `This is an **owner only command**, speak to <@${botOwner.id}>/` } );
-      } else { /* DO NOTHING */ }
+    if ( isOwnerOnly && ( !isBotOwner ) ) {// || isBotMod 
+//      if ( isBotMod ) {
+//        return message.reply( { content: `This is an **owner only command**, speak to <@${botOwner.id}>/` } );
+//      } else { /* DO NOTHING */ }
 //    } else if ( isModOnly && !isBotMod ) {
         /* DO NOTHING */
     } else {
