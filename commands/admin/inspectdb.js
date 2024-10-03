@@ -24,7 +24,17 @@ module.exports = {
             const objGuildOwner = guild.members.cache.get( guild.ownerId );
             const objGuild = guild.toJSON();console.log( 'objGuild:\n%o', objGuild );
             const guildName = objGuild.name;
-            const chanWidget = objGuild.widgetChannelId;
+            const memberCount = objGuild.memberCount;
+            const maximumMembers = objGuild.maximumMembers;
+            const intBotMembers = guild.members.cache.filter( mbr => { if ( mbr.bot ) { return mbr; } ).size;
+            const vanityURLCode = objGuild.vanityURLCode;
+            if ( vanityURLCode ) { console.log( '%s has a vanityURLCode: %s', guildName, vanityURLCode ); }
+            const iconURL = objGuild.iconURL;
+            const preferredLocale = ( objGuild.preferredLocale || 'en-US' );
+            const arrVerificationLevels = [ 'None', 'Low (email)', 'Medium (5m on Discord)', 'High (10m in guild)', 'Very High (phone number)' ];
+            const verificationLevel = arrVerificationLevels[ ( objGuild.verificationLevel || 0 ) ];
+            const mfaLevel = objGuild.mfaLevel;
+            const chanWidget = ( objGuild.widgetEnabled ? objGuild.widgetChannelId : null );
             const chanRules = objGuild.rulesChannelId;
             const chanPublicUpdates = objGuild.publicUpdatesChannelId;
             const chanSafetyAlerts = objGuild.safetyAlertsChannelId;
@@ -56,12 +66,16 @@ module.exports = {
             const logErrorId = entry.Logs.Error;
             const logChatId = entry.Logs.Chat;
 /*            botOwner.send( {
-              content: guildName + ' (:id: ' + guildId + ')' +
-              '\n\tSingle Use Invite: ' + ( guildInvite ? guildInvite : ':scream: ' + chanLinkUrl ) +
-              '\n\tGuild Owner: <@' + guild.ownerId + '>' +
-              '\n\tDefault Log Channel: <#' + logDefaultId + '>' +
-              '\n\tError Log Channel: <#' + logErrorId + '>' +
-              '\n\tChat Log Channel: <#' + logChatId + '>'
+              content:
+                guildName + ' (:id: ' + guildId + ' lang:' + preferredLocale + ')' +
+                '\n\tSingle Use Invite: ' + ( guildInvite ? guildInvite : ':scream: ' + chanLinkUrl ) +
+                '\n\tVerification Level: ' + verificationLevel + ( mfaLevel === 0 ? '' : ' (👮)' ) +
+                '\n\tGuild Owner: <@' + guild.ownerId + '>' +
+                '\n\tMembers: ' + memberCount + '/' + maximumMembers + '(' + intBotMembers + ' bots)' +
+                '\n\tDefault Log Channel: <#' + logDefaultId + '>' +
+                '\n\tError Log Channel: <#' + logErrorId + '>' +
+                '\n\tChat Log Channel: <#' + logChatId + '>',
+              files: ( iconURL ? [ iconURL ] : null )
             } ).catch( errSend => { console.error( 'Error trying to show contents of the DB as you requested.\n%o', errSend ); } );//*/
           }, i*2000 );
         } );
