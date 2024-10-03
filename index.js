@@ -31,7 +31,7 @@ fs.readdirSync( './handlers' ).forEach( ( handler ) => {
 } );
 
 client.login( process.env.token )
-  .then( loggedIn => { console.log( 'Successfully logged in!' ); } )
+  .then( loggedIn => { console.log( 'Successfully connected!' ); } )
   .catch( errLogin => { console.error( 'There was an error logging in:\n%o', errLogin ); } );
 
 keepAlive();
