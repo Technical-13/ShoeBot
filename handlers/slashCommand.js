@@ -12,7 +12,7 @@ const DEV_GUILD_ID = process.env.DEV_GUILD_ID;
 const UPDATE_SLASH_COMMANDS = process.env.UPDATE_SLASH_COMMANDS.toLowerCase() === 'true';
 
 module.exports = ( client ) => {
-    const table = new AsciiTable().setHeading( 'Group', '/Command', 'Loaded', 'Status' ).setBorder( '|', '=', "0", "0" )
+    const table = new AsciiTable().setHeading( 'Group', 'Command', 'Load', 'Live' ).setBorder( '|', '=', "0", "0" )
     .setAlignRight( 0 ).setAlignLeft( 1 ).setAlignCenter( 2 ).setAlignCenter( 3 );
     const slashCommands = [];
     const devOnlyCmds = [];
