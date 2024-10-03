@@ -8,11 +8,10 @@ module.exports = {
     run: async ( client, message, args ) => {
         const arrToDo = [
             'Add logging for geocaching commands directed to another server member.',
-            'Finish messageDelete.js event logging.',
-            'Add `guild` and `guildMember` events.',
+            'Create something for event logging.',
+            'Add `messageUpdate`, `guild*`, and `guildMember*` event listeners.',
             'Create global `botmod` commands and DB.',
-            '`Botmod` command `&inspectdb` needs to DM the botmod the information instead of logging to console.',
-            'Turn `&inspectDB` into something more people can use and maybe make it a slash command.',
+            'Create `/guilds` command as a paginated embed.',
             'Add some more stuff to this array of stuff todo...'
         ];
 		const embedToDo = new EmbedBuilder()
