@@ -21,7 +21,7 @@ module.exports = {
           setTimeout( async () => {
             const guildId = entry.Guild;
             const guild = client.guilds.cache.get( guildId );
-console.log( 'guild:\n%o', guild.toJSON();
+console.log( 'guild:\n%o', guild.toJSON() );
             const objGuildOwner = guild.members.cache.get( guild.ownerId );
             const guildName = guild.name;
             const chanWidget = guild.widgetChannelId;
