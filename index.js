@@ -1,6 +1,4 @@
 const keepAlive = require( './functions/server' );
-const objTimeString = require( './time.json' );
-var strNow = () => { return ( new Date() ).toLocaleDateString( 'en-us', objTimeString ) };
 
 const { Client, GatewayIntentBits, Partials, Collection } = require( 'discord.js' );
 const client = new Client( {
@@ -33,6 +31,8 @@ fs.readdirSync( './handlers' ).forEach( ( handler ) => {
 	require( `./handlers/${handler}` )( client );
 } );
 
-client.login( process.env.token );
+client.login( process.env.token )
+  .then( loggedIn => { console.log( 'login: %o', loggedIn ); } )
+  .catch( errLogin => { console.error( 'There was an error logging in:\n%o', errLogin ); } );
 
 keepAlive();
