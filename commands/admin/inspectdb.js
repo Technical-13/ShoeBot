@@ -22,7 +22,7 @@ module.exports = {
             const guildId = entry.Guild;
             const guild = client.guilds.cache.get( guildId );
             const objGuildOwner = guild.members.cache.get( guild.ownerId );
-            const objGuild = guild.toJSON();console.log( 'objGuild:\n%o', objGuild );
+            const objGuild = guild.toJSON();
             const guildName = objGuild.name;
             const memberCount = objGuild.memberCount;
             const maximumMembers = objGuild.maximumMembers;
@@ -44,6 +44,7 @@ module.exports = {
             console.log( 'objGuild.channels.toSorted()[ 0 ]: %o', objGuild.channels.toSorted()[ 0 ] );
             console.log( 'guild.channels.cache.first().id: %o', guild.channels.cache.first().id );
             console.log( 'guild.channels.cache.filter(chan=>!chan.nsfw).first().id: %o', guild.channels.cache.filter(chan=>!chan.nsfw).first().id );
+            console.log( 'guild.channels.cache.filter(chan=>!chan.nsfw && chan.position <= 3).id: %o', guild.channels.cache.filter(chan=>!chan.nsfw && chan.position <= 3).id );
             const chanFirst = guild.channels.cache.first().id;
             const chanInvite = ( chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
             const chanLinkUrl = 'https://discordapp.com/channels/' + guildId + '/' + chanInvite;
