@@ -41,7 +41,7 @@ module.exports = async ( interaction, pages, time = 30 ) => {
 
     const buttons = new ActionRowBuilder().addComponents( [ first, prev, curr, next, last ] );
 
-    const msg = await interaction.editReply( { embeds: [ pages[ intPageNumber ] ], components: [ buttons ], fetchReply: true } );
+    const msg = await interaction.reply( { embeds: [ pages[ intPageNumber ] ], components: [ buttons ], fetchReply: true } );
 
     const collector = await msg.createMessageComponentCollector( { componentType: ComponentType.Button, time } );
 
@@ -69,5 +69,5 @@ module.exports = async ( interaction, pages, time = 30 ) => {
 
     collector.on( 'end', async () => { await msg.delete(); } );
 
-  } catch ( errPagination ) { console.error( 'Error in pagination.js:\n%o', errPagination ); }
+  } catch ( errPagination ) { console.error( 'Error in pagination.js: %s\n%o', errPagination.message, errPagination.stack ); }
 };
