@@ -32,8 +32,8 @@ module.exports = async ( interaction, pages, intPageNumber = 0, time = 30 ) => {
       await buttonInteraction.deferUpdate();
 
       if ( buttonInteraction.customId === 'firstPage' ) { intPageNumber = 0; }
-      else if ( buttonInteraction.customId === 'prevPage' ) { if ( intPageNumber > 0 ) { intPageNumber++; } }
-      else if ( buttonInteraction.customId === 'nextPage' ) { if ( intPageNumber < ( pages.length - 1 ) ) { intPageNumber--; } }
+      else if ( buttonInteraction.customId === 'prevPage' ) { if ( intPageNumber > 0 ) { intPageNumber-- } }
+      else if ( buttonInteraction.customId === 'nextPage' ) { if ( intPageNumber < ( pages.length - 1 ) ) { intPageNumber++; } }
       else if ( buttonInteraction.customId === 'lastPage' ) { intPageNumber = ( pages.length - 1 ); }
       curr.setLabel( ( intPageNumber + 1 ) + '/' + pages.length );
 
