@@ -48,7 +48,7 @@ module.exports = async ( interaction, pages, intPageNumber = 0, time = 30 ) => {
       collector.resetTimer();
     } );
 
-    collector.on( 'end', async () => { await msg.delete(); return 'Success'; } );
+    collector.on( 'end', async () => { await msg.delete(); } );
 
-  } catch ( errPagination ) { console.error( 'Error in pagination.js: %s\n%o', errPagination.message, errPagination.stack ); return 'Error'; }
+  } catch ( errPagination ) { console.error( 'Error in pagination.js: %s\n%o', errPagination.message, errPagination.stack ); }
 };
