@@ -1,13 +1,15 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require( 'discord.js' );
 
-module.exports = async ( interaction, pages, intPageNumber = 0, time = 30 ) => {
-  time = ( time * 1000 );
+module.exports = async ( interaction, pages, options = { intPageNumber: 0, time: 30 } ) => {
+  time = ( options.time * 1000 );
+  intPageNumber = options.intPageNumber;
 
   try {
     if ( !interaction ) { throw new Error( '[PAGINATION] no interaction.' ); }
     if( !pages || !pages > 0 ) { throw new Error( '[PAGINATION] no pages.' ); }
 
-    await interaction.deferReply();
+    const reply = await interaction.deferReply( { fetchReply: true } );
+    const replyId = reply.id;
 
     if ( pages.length === 1 ) { return await interaction.editReply( { embeds: pages, components: [], fetchReply: true } ); }
 
@@ -48,6 +50,6 @@ module.exports = async ( interaction, pages, intPageNumber = 0, time = 30 ) => {
       collector.resetTimer();
     } );
 
-    collector.on( 'end', async () => { return Promise.resolve( await msg.delete() ); } );
+    collector.on( 'end', async () => { await msg.delete(); return replyId; } );
   } catch ( errPagination ) { console.error( 'Error in pagination.js: %s\n%o', errPagination.message, errPagination.stack ); }
 };
