@@ -42,8 +42,10 @@ module.exports = async ( interaction, pages, intPageNumber = 0, time = 30 ) => {
 
       if ( intPageNumber === ( pages.length - 1 ) ) { next.setDisabled( true ); last.setDisabled( true ); }
       else { next.setDisabled( false ); last.setDisabled( false ); }
+      
+console.log( 'Going to page %s which is the %s', ( intPageNumber + 1 ) + '/' + pages.length, buttonInteraction.customId );
 
-      await msg.edit( { embeds: [ pages[ intPageNumber ] ], components: [ buttons ] } ).catch( errEditPage => { console.error( 'Error in pagination.js editing page:\n%o', errEditPage ); } );
+      await msg.edit( { embeds: [ pages[ intPageNumber ] ], components: [ buttons ] } ).catch( errEditPage => { /* console.error( 'Error in pagination.js editing page:\n%o', errEditPage ); */ } );
 
       collector.resetTimer();
     } );
