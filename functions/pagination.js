@@ -50,6 +50,6 @@ module.exports = async ( interaction, pages, intPageNumber = 0, time = 30 ) => {
 
     collector.on( 'end', async () => { await msg.delete(); } );
 
-    return msg;
+    return msg.id;
   } catch ( errPagination ) { console.error( 'Error in pagination.js: %s\n%o', errPagination.message, errPagination.stack ); }
 };
