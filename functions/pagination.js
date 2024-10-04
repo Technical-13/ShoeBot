@@ -54,7 +54,7 @@ module.exports = async ( interaction, pages, time = 30 ) => {
       else if ( buttonInteraction.customId === 'prevPage' ) { if ( intPageNumber > 0 ) { intPageNumber++; } }
       else if ( buttonInteraction.customId === 'nextPage' ) { if ( intPageNumber < ( pages.length - 1 ) ) { intPageNumber--; } }
       else if ( buttonInteraction.customId === 'lastPage' ) { intPageNumber = ( pages.length - 1 ); }
-      curr.setLabel( ( intPageNumber + 1 ) + '/' pages.length );
+      curr.setLabel( ( intPageNumber + 1 ) + '/' + pages.length );
 
       if ( intPageNumber === 0 ) { first.setDisabled( true ); prev.setDisabled( true ); }
       else { first.setDisabled( false ); prev.setDisabled( false ); }
