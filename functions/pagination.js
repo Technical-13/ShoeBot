@@ -4,8 +4,8 @@ module.exports = async ( interaction, pages, time = 30 ) => {
   time = ( time * 1000 );
 
   try {
-    if ( !interaction ) { throw new Error( '[PAGINATION] no interaction' ); }
-    if( !pages || !( pages > 0 ) ) { throw new Error( '[PAGINATION] no pages' ); }
+    if ( !interaction ) { throw new Error( '[PAGINATION] no interaction.' ); }
+    if( !pages || !pages > 0 ) { throw new Error( '[PAGINATION] no pages.' ); }
 
     intPageNumber = 0;
 
