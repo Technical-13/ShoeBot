@@ -1,25 +1,24 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require( 'discord.js' );
 
-module.exports = async ( interaction, pages, time = 30 ) => {
+module.exports = async ( interaction, pages, intPageNumber = 0, time = 30 ) => {
   time = ( time * 1000 );
+  await interaction.deferReply();
 
   try {
     if ( !interaction ) { throw new Error( '[PAGINATION] no interaction.' ); }
     if( !pages || !pages > 0 ) { throw new Error( '[PAGINATION] no pages.' ); }
 
-    intPageNumber = 0;
-
     const first = new ButtonBuilder()
       .setCustomId( 'firstPage' )
       .setEmoji( '⏪' )
       .setStyle( ButtonStyle.Secondary )
-      .setDisabled( true );
+      .setDisabled( false );
 
     const prev = new ButtonBuilder()
       .setCustomId( 'prevPage' )
       .setEmoji( '⏮️' )
       .setStyle( ButtonStyle.Secondary )
-      .setDisabled( true );
+      .setDisabled( false );
 
     const curr = new ButtonBuilder()
       .setCustomId( 'currPage' )
@@ -39,9 +38,12 @@ module.exports = async ( interaction, pages, time = 30 ) => {
       .setStyle( ButtonStyle.Secondary )
       .setDisabled( false );
 
+    if ( intPageNumber === 0 ) { first.setDisabled( true ); prev.setDisabled( true ); }
+    else if ( intPageNumber === ( pages.length - 1 ) ) { next.setDisabled( true ); last.setDisabled( true ); }
+
     const buttons = new ActionRowBuilder().addComponents( [ first, prev, curr, next, last ] );
 
-    const msg = await interaction.reply( { embeds: [ pages[ intPageNumber ] ], components: [ buttons ], fetchReply: true } );
+    const msg = await interaction.editReply( { embeds: [ pages[ intPageNumber ] ], components: [ buttons ], fetchReply: true } );
 
     const collector = await msg.createMessageComponentCollector( { componentType: ComponentType.Button, time } );
 
