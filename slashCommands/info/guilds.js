@@ -86,7 +86,7 @@ module.exports = {
         .setColor( '#FF00FF' )
         .setTimestamp()
         .setThumbnail( iconURL )
-        .setFooter( { text: author.displayName, icon_url: author.displayAvatarURL() } );
+        .setFooter( { text: author.displayName + ' requested `/guilds` information (' + guildIds.length + ')' } );
 
       if ( description ) { thisGuild.addFields( { name: 'Description', value: description } ); }
 
