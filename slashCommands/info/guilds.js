@@ -40,7 +40,7 @@ module.exports = {
       const memberCount = objGuild.memberCount;
       var maximumMembers = objGuild.maximumMembers;
       if ( maximumMembers > 10**8 ) { maximumMembers = ( maximumMembers / ( 10**9 ) ).toFixed( 2 ) + 'b'; }
-      else if ( maximumMembers > 10**5 ) { maximumMembers = ( maximumMembers / ( 10**7 ) ).toFixed( 2 ) + 'm'; }
+      else if ( maximumMembers > 10**5 ) { maximumMembers = ( maximumMembers / ( 10**6 ) ).toFixed( 2 ) + 'm'; }
       else if ( maximumMembers > 10**3 ) { maximumMembers = ( maximumMembers / ( 10**3 ) ).toFixed( 1 ) + 'k'; }
       const intBotMembers = guild.members.cache.filter( mbr => { if ( mbr.user.bot ) { return mbr; } } ).size;
       const preferredLocale = ( objGuild.preferredLocale || 'en-US' );
