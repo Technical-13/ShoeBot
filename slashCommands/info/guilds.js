@@ -39,8 +39,8 @@ module.exports = {
       const iconURL = objGuild.iconURL;
       const memberCount = objGuild.memberCount;
       var maximumMembers = objGuild.maximumMembers;
-      if ( maximumMembers > 10**8 ) { maximumMembers = ( maximumMembers / ( 10**9 ) ).toFixed( 2 ) + 'b'; }
-      else if ( maximumMembers > 10**5 ) { maximumMembers = ( maximumMembers / ( 10**6 ) ).toFixed( 2 ) + 'm'; }
+      if ( maximumMembers > 10**8 ) { maximumMembers = ( Math.trunc( maximumMembers / ( 10**8 ) ) / 100 ) + 'b'; }
+      else if ( maximumMembers > 10**5 ) { maximumMembers = ( Math.trunc( maximumMembers / ( 10**5 ) ) / 10 ) + 'm'; }
       else if ( maximumMembers > 10**3 ) { maximumMembers = ( maximumMembers / ( 10**3 ) ).toFixed( 1 ) + 'k'; }
       const intBotMembers = guild.members.cache.filter( mbr => { if ( mbr.user.bot ) { return mbr; } } ).size;
       const preferredLocale = ( objGuild.preferredLocale || 'en-US' );
