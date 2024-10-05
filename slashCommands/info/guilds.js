@@ -8,8 +8,7 @@ module.exports = {
   options: [
     { type: 3, name: 'guild', description: 'Start with a specific guild by ID (invalid input will be ignored). (default current or first guild)' }
   ],
-  modCmd: true,
-  cooldown: 1000,
+  cooldown: 300000,
   run: async ( client, interaction ) => {
 
     const bot = client.user;
