@@ -1,5 +1,5 @@
 const client = require( '..' );
-const logChans = require( '../getLogChans.js' );
+const logChans = require( './getLogChans.js' );
 
 module.exports = async ( objError, options = { command: 'undefined', type: 'undefined' } ) => {
   const { command, type } = options;
