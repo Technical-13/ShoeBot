@@ -55,10 +55,10 @@ module.exports = {
       await message.react( myReaction ).then( reacted => {
         if ( doLogs ) {
           chanChat.send( 'I reacted to https://discord.com/channels/' + msgGuild.id + '/' + msgChan.id + '/' + message.id + ' by <@' + msgAuthor.id + '> with ' + theReaction + ' at <@' + author.id + '>\'s request' + strClosing )
-          .catch( noLogChan => { await errorHandler( noLogChan, { chanType: 'chat', command: 'react', guild: guild, type: 'logLogs' } ); } );
+          .catch( async noLogChan => { await errorHandler( noLogChan, { chanType: 'chat', command: 'react', guild: guild, type: 'logLogs' } ); } );
         }
         return interaction.editReply( { content: 'Reacted!' } );
-      } ).catch( noReaction => { await errorHandler( noReaction, { channel: msgChan, command: 'react', guild: msgGuild, msgID: msgID, rawReaction: theReaction, reaction: myReaction, type: 'noReaction' } ); } );
-    } ).catch( noMessage => { await errorHandler( noMessage, { command: 'react', msgID: msgID, type: 'noMsg' } ); } );
+      } ).catch( async noReaction => { await errorHandler( noReaction, { channel: msgChan, command: 'react', guild: msgGuild, msgID: msgID, rawReaction: theReaction, reaction: myReaction, type: 'noReaction' } ); } );
+    } ).catch( async noMessage => { await errorHandler( noMessage, { command: 'react', msgID: msgID, type: 'noMsg' } ); } );
   }
 };
