@@ -132,7 +132,7 @@ module.exports = {
     }
     else if ( cmdInputUser ) {
       interaction.editReply( { content: '<@' + cmdInputUser.id + '>, ' + i18FTFinfo[ locale ] } ).then( replied => {
-        if ( doLogs && author.id != cmdInputUser.id ) {
+        if ( doLogs && cmdInputUser.id != author.id ) {
           chanDefault.send( { content: 'I told <@' + cmdInputUser.id + '> about FTFs at <@' + author.id +'>\'s `/ftf` request.' + strClosing } )
           .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
         }

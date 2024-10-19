@@ -77,7 +77,7 @@ module.exports = {
       ':\nhttps://cdn2.project-gc.com/BadgeBar/' + encName + '.png#' + intYear + '-' + intMonth + '-' + intDay
     } )
     .then( sentMsg => {
-      if ( doLogs && strInputUserDisplayName !== strAuthorDisplayName ) {
+      if ( doLogs && strInputUserDisplayName && strInputUserDisplayName !== strAuthorDisplayName ) {
         chanDefault.send( { content:
           'I shared the `/badgebar` for ' + ( objInputUser ? '<@' +  objInputUser.id + '>' : strUseName ) + ' in <#' + channel.id + '>' +
           ( strInputUserDisplayName !== strAuthorDisplayName ? ' as requested by <@' + author.id + '>' : '' ) + strClosing } )

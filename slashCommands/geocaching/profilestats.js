@@ -75,7 +75,7 @@ module.exports = {
       'ProfileStats link for: ' + ( objInputUser == null ? strUseName : '<@' +  objInputUser + '>' ) + '\n<https://project-gc.com/Profile/ProfileStats?profile_name=' + encName + '>'
     } )
     .then( sentMsg => {
-      if ( doLogs && strInputUserDisplayName !== strAuthorDisplayName ) {
+      if ( doLogs && strInputUserDisplayName && strInputUserDisplayName !== strAuthorDisplayName ) {
         chanDefault.send( { content:
           'I shared the `/profilestats` for ' + ( objInputUser ? '<@' +  objInputUser.id + '>' : strUseName ) + ' in <#' + channel.id + '>' +
         ( strInputUserDisplayName !== strAuthorDisplayName ? ' as requested by <@' + author.id + '>' : '' ) + strClosing } )
