@@ -4,6 +4,7 @@ const guildConfigDB = require( '../models/GuildConfig.js' );
 
 module.exports = async ( guild ) => {
   const botOwner = client.users.cache.get( client.ownerId );
+  console.log(botOwner);
   const strConsole = '  Please check the console for details.';
   
   try {
@@ -15,9 +16,8 @@ module.exports = async ( guild ) => {
     } );
     
     if ( !guildConfig ) {
-      let objError = { stack: 'guildConfigDB.findOne( { Guild: guild.id } ) in getLogChans.js returned:\n' + guildConfig };
-      console.error( 'Encountered an error attempting to find %s(ID:%s) in my database in getLogChans.js:\n%s', guild.name, guild.id, objError.stack );
-      botOwner.send( 'Encountered an error attempting to find `' + guild.name + '`(:id:' + guild.id + ') in my database in getLogChans.' + strConsole )
+      console.error( 'Encountered an error attempting to find %s (ID:%s) in my database in getLogChans.js:\n%s', guild.name, guild.id, guildConfig );
+      botOwner.send( { content: 'Encountered an error attempting to find `' + guild.name + '`(:id:' + guild.id + ') in my database in getLogChans.' + strConsole } )
       .catch( errNotSent => { console.error( 'Error attempting to DM you about the above error: %o', errNotSent ); } );
       return { doLogs: false, chanDefault: null, chanError: null, chanChat: null, strClosing: null };
     }
