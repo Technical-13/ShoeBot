@@ -3,7 +3,7 @@ const { model, Schema } = require( 'mongoose' );
 const guildConfigDB = require( '../models/GuildConfig.js' );
 
 module.exports = async ( guild ) => {
-  console.log( 'client.ownerId: %s', client.ownerId );
+  console.log( client );
   const botOwner = client.users.cache.get( client.ownerId );
   console.log( botOwner );
   const strConsole = '  Please check the console for details.';
