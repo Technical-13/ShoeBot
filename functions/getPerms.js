@@ -3,7 +3,7 @@ const thisBotName = process.env.BOT_USERNAME;
 const { model, Schema } = require( 'mongoose' );
 const botConfigDB = require( '../models/BotConfig.js' );
 const guildConfigDB = require( '../models/GuildConfig.js' );
-const errHandler = require( '../errorHandler.js' );
+const errHandler = require( './errorHandler.js' );
 
 module.exports = async ( user, guild ) => {  
   try {
