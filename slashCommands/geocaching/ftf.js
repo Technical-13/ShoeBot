@@ -54,7 +54,7 @@ module.exports = {
     else if ( isBotMod && isGuildBlacklisted ) { author.send( { content:
       'You have been blacklisted from using commands in https://discord.com/channels/' + guild.id + '! Use `/config remove` to remove yourself from the blacklist.'
     } ); }
-    
+
     const msgID = options.getString( 'message-id' );
     const cmdInputUser = options.getUser( 'target' );
     const localeInput = options.getString( 'language' );
@@ -111,41 +111,40 @@ module.exports = {
     };
 
     const { doLogs, chanDefault, chanError, strClosing } = await logChans( guild );
-    
-      if ( msgID && !( /[\d]{18,19}/.test( msgID ) ) ) { return interaction.editReply( { content: '`' + msgID + '` ' + i18InvalidMsgId[ locale ] } ); }
-      else if ( msgID ) {
-        channel.messages.fetch( msgID )
-        .then( message => {
-          const { author: msgAuthor, content } = message;
-          message.reply( { content: '<@' + msgAuthor.id + '>, ' + i18FTFinfo[ locale ] } )
-          .then( replied => {
-            if ( doLogs && author.id != msgAuthor.id ) {
-              chanDefault.send( { content:
-                'I told <@' + msgAuthor.id + '> about FTFs ' + strLocale + ' in <#' + channel.id + '> at <@' + author.id +
-                '>\'s `/ftf` request in response to:\n```\n' + content + '\n```' + strClosing } )
-              .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
-            }
-          } )
-          .catch( async errSend => { await errHandler( errSend, { command: 'ftf', doLog: doLogs, guild: guild, msgID: msgID, type: 'msgSend' } ); } );
+
+    if ( msgID && !( /[\d]{18,19}/.test( msgID ) ) ) { return interaction.editReply( { content: '`' + msgID + '` ' + i18InvalidMsgId[ locale ] } ); }
+    else if ( msgID ) {
+      channel.messages.fetch( msgID )
+      .then( message => {
+        const { author: msgAuthor, content } = message;
+        message.reply( { content: '<@' + msgAuthor.id + '>, ' + i18FTFinfo[ locale ] } )
+        .then( replied => {
+          if ( doLogs && author.id != msgAuthor.id ) {
+            chanDefault.send( { content:
+              'I told <@' + msgAuthor.id + '> about FTFs ' + strLocale + ' in <#' + channel.id + '> at <@' + author.id +
+              '>\'s `/ftf` request in response to:\n```\n' + content + '\n```' + strClosing } )
+            .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
+          }
         } )
-        .catch( async noMsg => { await errHandler( noMsg, { command: 'ftf', content: i18NoMessage[ locale ] + ' ' + i18FTFinfo[ locale ], msgID: msgID, type: 'noMsg' } ); } );
-      }
-      else if ( cmdInputUser ) { 
-        interaction.editReply( { content: '<@' + cmdInputUser.id + '>, ' + i18FTFinfo[ locale ] } ).then( replied => {
-          if ( doLogs && author.id != cmdInputUser.id ) {
-            chanDefault.send( { content: 'I told <@' + cmdInputUser.id + '> about FTFs at <@' + author.id +'>\'s `/ftf` request.' + strClosing } )
-            .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
-          }
-        } );
-      }
-      else {
-        interaction.editReply( { content: i18FTFinfo[ locale ] } ).then( replied => {
-          if ( doLogs ) {
-            chanDefault.send( { content: 'I told <@' + author.id + '> about FTFs via `/ftf` request.' + strClosing } )
-            .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
-          }
-        } );
-      }
-    } );
+        .catch( async errSend => { await errHandler( errSend, { command: 'ftf', doLog: doLogs, guild: guild, msgID: msgID, type: 'msgSend' } ); } );
+      } )
+      .catch( async noMsg => { await errHandler( noMsg, { command: 'ftf', msgID: msgID, type: 'noMsg' } ); } );
+    }
+    else if ( cmdInputUser ) {
+      interaction.editReply( { content: '<@' + cmdInputUser.id + '>, ' + i18FTFinfo[ locale ] } ).then( replied => {
+        if ( doLogs && author.id != cmdInputUser.id ) {
+          chanDefault.send( { content: 'I told <@' + cmdInputUser.id + '> about FTFs at <@' + author.id +'>\'s `/ftf` request.' + strClosing } )
+          .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
+        }
+      } );
+    }
+    else {
+      interaction.editReply( { content: i18FTFinfo[ locale ] } ).then( replied => {
+        if ( doLogs ) {
+          chanDefault.send( { content: 'I told <@' + author.id + '> about FTFs via `/ftf` request.' + strClosing } )
+          .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
+        }
+      } );
+    }
   }
 };

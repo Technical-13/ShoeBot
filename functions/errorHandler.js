@@ -68,7 +68,7 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
       case 'noMsg':
         switch( objError.code ) {
           case 10008://Unknown Message
-            return interaction.editReply( { content: 'Unable to find message to react to.' } );
+            return interaction.editReply( { content: 'Unable to find message.' } );
             break;
           case 50035://Invalid Form Body\nmessage_id: Value "..." is not snowflake.
             return interaction.editReply( { content: '`' + msgID + '` is not a valid `message-id`. Please try again.' } );
