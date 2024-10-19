@@ -1,10 +1,10 @@
 const { model, Schema } = require( 'mongoose' );
 const guildConfigDB = require( '../models/GuildConfig.js' );
-const errHandler = require( '../errorHandler.js' );
+const errHandler = require( './errorHandler.js' );
 
 module.exports = async ( guild ) => {
   try {
-    const guildConfig = await guildConfigDB.findOne( { Guild: guild.id } ).catch( err => {
+    const guildConfig = await guildConfigDB.findOne( { Guild: guild.id } ).catch( async err => {
       await errorHandler( errFindGuild, { author: user, command: 'getLogChans', guild: guild, type: 'getGuildDB' } );
       return { doLogs: false };
     } );
