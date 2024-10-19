@@ -123,18 +123,18 @@ module.exports = {
               chanDefault.send( { content:
                 'I told <@' + msgAuthor.id + '> about FTFs ' + strLocale + ' in <#' + channel.id + '> at <@' + author.id +
                 '>\'s `/ftf` request in response to:\n```\n' + content + '\n```' + strClosing } )
-              .catch( errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
+              .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
             }
           } )
-          .catch( errSend => { await errHandler( errSend, { command: 'ftf', doLog: doLogs, guild: guild, msgID: msgID, type: 'msgSend' } ); } );
+          .catch( async errSend => { await errHandler( errSend, { command: 'ftf', doLog: doLogs, guild: guild, msgID: msgID, type: 'msgSend' } ); } );
         } )
-        .catch( noMsg => { await errHandler( noMsg, { command: 'ftf', content: i18NoMessage[ locale ] + ' ' + i18FTFinfo[ locale ], msgID: msgID, type: 'noMsg' } ); } );
+        .catch( async noMsg => { await errHandler( noMsg, { command: 'ftf', content: i18NoMessage[ locale ] + ' ' + i18FTFinfo[ locale ], msgID: msgID, type: 'noMsg' } ); } );
       }
       else if ( cmdInputUser ) { 
         interaction.editReply( { content: '<@' + cmdInputUser.id + '>, ' + i18FTFinfo[ locale ] } ).then( replied => {
           if ( doLogs && author.id != cmdInputUser.id ) {
             chanDefault.send( { content: 'I told <@' + cmdInputUser.id + '> about FTFs at <@' + author.id +'>\'s `/ftf` request.' + strClosing } )
-            .catch( errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
+            .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
           }
         } );
       }
@@ -142,7 +142,7 @@ module.exports = {
         interaction.editReply( { content: i18FTFinfo[ locale ] } ).then( replied => {
           if ( doLogs ) {
             chanDefault.send( { content: 'I told <@' + author.id + '> about FTFs via `/ftf` request.' + strClosing } )
-            .catch( errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
+            .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
           }
         } );
       }
