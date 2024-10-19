@@ -1,7 +1,7 @@
 const client = require( '..' );
+require( 'dotenv' ).config();
 const config = require( '../config.json' );
 const chalk = require( 'chalk' );
-require( 'dotenv' ).config();
 
 const thisBotName = ( config.botName || process.env.BOT_USERNAME || null );
 const botOwnerID = ( config.botOwnerId || process.env.OWNER_ID || null );

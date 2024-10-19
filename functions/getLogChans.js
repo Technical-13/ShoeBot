@@ -1,11 +1,12 @@
 const client = require( '..' );
+require( 'dotenv' ).config();
+const config = require( '../config.json' );
 const { model, Schema } = require( 'mongoose' );
 const guildConfigDB = require( '../models/GuildConfig.js' );
 
 module.exports = async ( guild ) => {
-  console.log( client );
-  const botOwner = client.users.cache.get( client.ownerId );
-  console.log( botOwner );
+  const ownerId = ( config.botOwnerId || process.env.OWNER_ID );
+  const botOwner = client.users.cache.get( ownerId );
   const strConsole = '  Please check the console for details.';
   
   try {

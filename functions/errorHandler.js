@@ -1,4 +1,6 @@
 const client = require( '..' );
+require( 'dotenv' ).config();
+const config = require( '../config.json' );
 const logChans = require( './getLogChans.js' );
 
 module.exports = async ( objError, options = { command: 'undefined', type: 'undefined' } ) => {
@@ -18,7 +20,8 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
     const { chanChat, chanDefault, chanError, doLogs, strClosing } = ( doLog ? await logChans( guild ) : { chanChat: null, chanDefault: null, chanError: null, doLogs: doLog, strClosing: null } );
   }
 
-  const botOwner = client.users.cache.get( client.ownerId );
+  const ownerId = ( config.botOwnerId || process.env.OWNER_ID );
+  const botOwner = client.users.cache.get( ownerId );
   const strConsole = '  Please check the console for details.';
   const strNotified = '  Error has been logged and my owner, <@' + botOwner.id + '>, has been notified.';
   const strLogged = '  Error has been logged and my owner, <@' + botOwner.id + '>, couldn\'t be notified.';
