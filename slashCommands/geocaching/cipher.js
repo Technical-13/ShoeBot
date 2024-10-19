@@ -7,7 +7,7 @@ module.exports = {
   type: ApplicationCommandType.ChatInput,
   options: [
     { type: 3, name: 'string', description: 'string to (de|en)code.', required: true },
-    { type: 3, name: 'use-type', description: '' },
+    { type: 3, name: 'use-type', description: 'Pick a type.' },
     { type: 10, name: 'numeric', description: 'Characters in the Latin alphabet. (default 5)', minValue: 1, maxValue: 10 },
     { type: 10, name: 'alphabetic', description: 'Characters in the Latin alphabet. (default 13)', minValue: 1, maxValue: 26 },
     { type: 10, name: 'alphanumberic', description: 'Characters in the Latin alphabet. (default 18)', minValue: 1, maxValue: 36 }
