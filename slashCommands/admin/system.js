@@ -329,7 +329,7 @@ module.exports = {
               return interaction.editReply( { content: 'Bot configuration reset in my database.' } );
             } )
             .catch( resetError => {
-              console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to reset configuration with `/system reset`:\n${resetError}` ) );
+              console.error( chalk.bold.red.bgYellowBright( 'Encountered an error attempting to reset configuration with `/system reset`:\n%o' ), resetError );
               return interaction.editReply( { content: 'Encountered an error attempting to reset configuration with `/system reset`. Please check the console.' } );
             } );
           }
