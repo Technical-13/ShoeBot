@@ -5,7 +5,7 @@ const errHandler = require( './errorHandler.js' );
 module.exports = async ( guild ) => {
   try {
     const guildConfig = await guildConfigDB.findOne( { Guild: guild.id } ).catch( async err => {
-      await errorHandler( errFindGuild, { author: user, command: 'getLogChans', guild: guild, type: 'getGuildDB' } );
+      await errHandler( errFindGuild, { author: user, command: 'getLogChans', guild: guild, type: 'getGuildDB' } );
       return { doLogs: false };
     } );
     
@@ -24,5 +24,5 @@ module.exports = async ( guild ) => {
       chanChat: chanChat,
       strClosing: strClosing
     };
-  } catch ( errLogChans ) { await errorHandler( errLogChans, { command: 'getLogChans', type: 'tryFunction' } ); }
+  } catch ( errLogChans ) { await errHandler( errLogChans, { command: 'getLogChans', type: 'tryFunction' } ); }
 };
