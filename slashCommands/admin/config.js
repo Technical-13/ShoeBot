@@ -29,7 +29,7 @@ module.exports = {
     { type: 1, name: 'set', description: 'Set settings for the server.',/*Set options//*/
       options: [/* invite, logs, log-chat, log-default, log-error, welcome, welcome-message, welcome-dm, welcome-channel, welcome-role-give, welcome-role //*/
         { type: 7, name: 'invite', description: 'Channel to make invites to. Will try to guess if not set.' }/*invite channel//*/,
-        { type: 5, name: 'logs', description: 'Send logs for uses of commands that may be devious in nature' }/*disable all logs//*/
+        { type: 5, name: 'logs', description: 'Send logs for uses of commands that may be devious in nature' }/*disable all logs//*/,
         { type: 7, name: 'log-chat', description: 'Channel to log chat command (`/edit`, `/react`, `/reply`, and `/say`) requests.' }/*chat channel//*/,
         { type: 7, name: 'log-default', description: 'Channel to log all requests not otherwise specified.' }/*default channel//*/,
         { type: 7, name: 'log-error', description: 'Channel to log errors.' }/*error channel//*/,
