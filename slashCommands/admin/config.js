@@ -60,18 +60,16 @@ module.exports = {
       console.error( 'Encountered an error attempting to find %s(ID:%s) in my database in preforming %s for %s in config.js:\n%s', guild.name, guild.id, myTask, strAuthorTag, err.stack );
       botOwner.send( 'Encountered an error attempting to find `' + guild.name + '`(:id:' + guild.id + ') in my database in preforming ' + myTask + ' for <@' + author.id + '>.  Please check console for details.' );
     } );
-    const arrBlackGuild = ( oldConfig.Blacklist || [] );
-    const arrWhiteGuild = ( oldConfig.Whitelist || [] );
-    const chanDefaultLog = ( oldConfig.Logs ? guild.channels.cache.get( oldConfig.Logs.Default ) : guildOwner );
-    const chanErrorLog = ( oldConfig.Logs ? guild.channels.cache.get( oldConfig.Logs.Error ) : guildOwner );
+    const arrBlackGuild = ( !oldConfig ? [] : ( oldConfig.Blacklist || [] ) );
+    const arrWhiteGuild = ( !oldConfig ? [] : ( oldConfig.Whitelist || [] ) );
+    const chanDefaultLog = ( !oldConfig ? guildOwner : ( oldConfig.Logs ? guild.channels.cache.get( oldConfig.Logs.Default ) : guildOwner ) );
+    const chanErrorLog = ( !oldConfig ? guildOwner : ( oldConfig.Logs ? guild.channels.cache.get( oldConfig.Logs.Error ) : guildOwner ) );
 
     const myTask = options.getSubcommand();
 
-    if (
-      ( !hasAdministrator && ( myTask === 'add' || myTask === 'clear' || myTask === 'remove' ) ) ||
+    if ( ( !hasAdministrator && ( myTask === 'add' || myTask === 'clear' || myTask === 'remove' ) ) ||
       ( !hasManageGuild && ( myTask === 'reset' || myTask === 'set' ) ) ||
-      ( !hasManageRoles && myTask === 'get' )
-    ) {
+      ( !hasManageRoles && myTask === 'get' ) ) {
       guildOwner.send( '<@' + author.id + '> attempted to ' + ( myTask === 'get' ? 'view' : 'modify' ) + ' the configuration settings for `' + guild.name + '`.  Only yourself, those with the `ADMINISTRATOR`, `MANAGE_GUILD`, or `MANAGE_ROLES` permission, and my bot mods can do that.' );
       return interaction.editReply( { content: 'Sorry, you do not have permission to do that.  Please talk to <@' + guildOwner.id + '> or one of my masters if you think you shouldn\'t have gotten this error.' } );
     }
