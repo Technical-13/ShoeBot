@@ -27,10 +27,13 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
     switch ( type ) {
       case 'getBotDB':
         console.error( 'Unable to find botConfig:\n%o', objError );
+        botOwner.send( 'Encountered an error attempting to find botConfig.' + strConsole )
+        .catch( errNotSent => { console.error( 'Error attempting to DM you about the above error: %o', errNotSent ); } );
         break;
       case 'getGuildDB':
-        console.error( 'Encountered an error attempting to find %s(ID:%s) in my database in preforming %s for %s in config.js:\n%s', guild.name, guild.id, command, author.tag, objError.stack );
-        botOwner.send( 'Encountered an error attempting to find `' + guild.name + '`(:id:' + guild.id + ') in my database in preforming ' + command + ' for <@' + author.id + '>.' + strConsole );
+        console.error( 'Encountered an error attempting to find %s(ID:%s) in my database in %s.js:\n%s', guild.name, guild.id, command, objError.stack );
+        botOwner.send( 'Encountered an error attempting to find `' + guild.name + '`(:id:' + guild.id + ') in my database in ' + command + '.' + strConsole )
+        .catch( errNotSent => { console.error( 'Error attempting to DM you about the above error: %o', errNotSent ); } );
         break;
       case 'logLogs':
         let logChan = ( chanType === 'chat' ? chanChat : ( chanType === 'error' ? chanError : chanDefault ) );
