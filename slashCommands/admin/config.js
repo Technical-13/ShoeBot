@@ -1,5 +1,5 @@
-const logSchema = require( '../../models/GuildLogs.js' );
 const { model, Schema } = require( 'mongoose' );
+const logSchema = require( '../../models/GuildConfig.js' );
 const { ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
 
 module.exports = {

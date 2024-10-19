@@ -1,4 +1,4 @@
-const logSchema = require( '../../models/GuildLogs.js' );
+const logSchema = require( '../../models/GuildConfig.js' );
 const { model, Schema } = require( 'mongoose' );
 const { ApplicationCommandType } = require( 'discord.js' );
 
