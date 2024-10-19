@@ -6,12 +6,12 @@ module.exports = async ( guild ) => {
   try {
     const guildConfig = await guildConfigDB.findOne( { Guild: guild.id } ).catch( async err => {
       await errHandler( errFindGuild, { author: user, command: 'getLogChans', guild: guild, type: 'getGuildDB' } );
-      return { doLogs: false };
+      return { doLogs: false, chanDefault: null, chanError: null, chanChat: null, strClosing: null };
     } );
     
     if ( !guildConfig ) {
-      await errHandler( errFindGuild, { author: user, command: 'getLogChans', guild: guild, type: 'getGuildDB' } );
-      return { doLogs: false };
+      await errHandler( { stack: 'guildConfigDB.findOne( { Guild: guild.id } ) in getLogChans.js returned:\n' + guildConfig }, { author: user, command: 'getLogChans', guild: guild, type: 'getGuildDB' } );
+      return { doLogs: false, chanDefault: null, chanError: null, chanChat: null, strClosing: null };
     }
     else {
       const doLogs = ( guildConfig.Logs.Active || true );
