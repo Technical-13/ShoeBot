@@ -100,7 +100,7 @@ module.exports = {
             Welcome: {
               Active: oldConfig.Welcome.Active,
               Channel: oldConfig.Welcome.Channel,
-              Msg: oldConfig.Welcome.Msg
+              Msg: oldConfig.Welcome.Msg,
               Role: oldConfig.Welcome.Role
             }
           }, { upsert: true } )
@@ -144,7 +144,7 @@ module.exports = {
             Welcome: {
               Active: oldConfig.Welcome.Active,
               Channel: oldConfig.Welcome.Channel,
-              Msg: oldConfig.Welcome.Msg
+              Msg: oldConfig.Welcome.Msg,
               Role: oldConfig.Welcome.Role
             }
           }, { upsert: true } )
@@ -186,7 +186,7 @@ module.exports = {
           Welcome: {
             Active: oldConfig.Welcome.Active,
             Channel: oldConfig.Welcome.Channel,
-            Msg: oldConfig.Welcome.Msg
+            Msg: oldConfig.Welcome.Msg,
             Role: oldConfig.Welcome.Role
           }
         }, { upsert: true } )
@@ -233,7 +233,7 @@ module.exports = {
             Welcome: {
               Active: oldConfig.Welcome.Active,
               Channel: oldConfig.Welcome.Channel,
-              Msg: oldConfig.Welcome.Msg
+              Msg: oldConfig.Welcome.Msg,
               Role: oldConfig.Welcome.Role
             }
           }, { upsert: true } )
@@ -274,7 +274,7 @@ module.exports = {
             Welcome: {
               Active: oldConfig.Welcome.Active,
               Channel: oldConfig.Welcome.Channel,
-              Msg: oldConfig.Welcome.Msg
+              Msg: oldConfig.Welcome.Msg,
               Role: oldConfig.Welcome.Role
             }
           }, { upsert: true } )
