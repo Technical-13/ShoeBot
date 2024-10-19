@@ -25,8 +25,8 @@ module.exports = async () => {
           ClientID: clientId,
           Owner: botOwnerID,
           Prefix: ( config.prefix || '!' ),
-          Whitelist: ( config.moderatorIds || [] ),
-          Blacklist: ( config.moderatorIds || [] ),
+          Blacklist: [],
+          Whitelist: [],
           Mods: ( config.moderatorIds || [] ),
           DevGuild: devGuildId
         } )

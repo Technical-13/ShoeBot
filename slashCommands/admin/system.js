@@ -1,10 +1,10 @@
-const thisBotName = process.env.BOT_USERNAME;
-const botOwnerID = process.env.OWNER_ID;
-const botConfigDB = require( '../../models/BotConfig.js' );
-const config = require( '../../config.json' );
-const { model, Schema } = require( 'mongoose' );
 const { ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
+const config = require( '../../config.json' );
 const chalk = require( 'chalk' );
+const { model, Schema } = require( 'mongoose' );
+const botConfigDB = require( '../../models/BotConfig.js' );const thisBotName = process.env.BOT_USERNAME;
+const botOwnerID = process.env.OWNER_ID;
+
 
 module.exports = {
   name: 'system',
@@ -309,24 +309,36 @@ module.exports = {
           }
           break;
         case 'reset':
-          await botConfigDB.updateOne( { BotName: thisBotName }, {
-            BotName: thisBotName,
-            ClientID: ( config.clientID || process.env.CLIENT_ID || client.id ),
-            Owner: botOwnerID,
-            Prefix: ( config.prefix || '!' ),
-            Blacklist: [],
-            Whitelist: [],
-            Mods: ( config.moderatorIds || [] ),
-            DevGuild: ( config.devGuildId || '' )
-          }, { upsert: true } )
-          .then( resetSuccess => {
-            console.log( chalk.bold.greenBright( 'Bot configuration reset in my database.' ) );
-            return interaction.editReply( { content: 'Bot configuration reset in my database.' } );
-          } )
-          .catch( resetError => {
-            console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to reset bot configuration in my database:\n${resetError}` ) );
-            return interaction.editReply( { content: 'Encountered an error attempting to reset bot configuration in my database. Please check the console.' } );
-          } );
+          const thisBotName = ( config.botName || process.env.BOT_USERNAME || null );
+          const botOwnerID = ( config.botOwnerId || process.env.OWNER_ID || null );
+          const clientId = ( config.clientID || process.env.CLIENT_ID || client.id || null );
+          const devGuildId = ( config.devGuildId || process.env.DEV_GUILD_ID || null );
+          if ( thisBotName && botOwnerID && clientId && devGuildId ) {
+            await botConfigDB.updateOne( { BotName: thisBotName }, {
+              BotName: thisBotName,
+              ClientID: clientId,
+              Owner: botOwnerID,
+              Prefix: ( config.prefix || '!' ),
+              Blacklist: [],
+              Whitelist: [],
+              Mods: ( config.moderatorIds || [] ),
+              DevGuild: devGuildId
+            }, { upsert: true } )
+            .then( resetSuccess => {
+              console.log( chalk.bold.greenBright( 'Bot configuration reset in my database.' ) );
+              return interaction.editReply( { content: 'Bot configuration reset in my database.' } );
+            } )
+            .catch( resetError => {
+              console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to reset configuration with `/system reset`:\n${resetError}` ) );
+              return interaction.editReply( { content: 'Encountered an error attempting to reset configuration with `/system reset`. Please check the console.' } );
+            } );
+          }
+          else {
+            if ( !thisBotName ) { console.error( chalk.bold.redBright( 'BotName missing attempting to reset configuration with `/system reset`.' ) ); }
+            if ( !botOwnerID ) { console.error( chalk.bold.redBright( 'ClientID missing attempting to reset configuration with `/system reset`.' ) ); }
+            if ( !clientId ) { console.error( chalk.bold.redBright( 'Owner missing attempting to reset configuration with `/system reset`.' ) ); }
+            if ( !devGuildId ) { console.error( chalk.bold.redBright( 'DevGuild missing attempting to reset configuration with `/system reset`.' ) ); }
+          }
           break;
         case 'set':
           let newName = ( options.getString( 'name' ) || botConfig.BotName || config.botName );
