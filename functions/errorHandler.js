@@ -5,24 +5,34 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
   const { command, type } = options;
   if ( typeof command !== 'String' ) { command = 'undefined'; }
   if ( typeof type !== 'String' ) { type = 'undefined'; }
+  const author = ( options.author ? options.author : null );
+  const channel = ( options.channel ? options.channel : null );
+  const chanType = ( options.chanType ? options.chanType : null );
+  const doLog = ( options.doLog ? options.doLog : null );
+  const guild = ( options.guild ? options.guild : null );
+  const msgID = ( options.msgID ? options.msgID : null );
+  const rawReaction = ( options.rawReaction ? options.rawReaction : null );
+  const reaction = ( options.reaction ? options.reaction : null );
+
+  if ( guild ? ( typeof doLog != 'boolean' ? true : options.doLog ) : false ) {
+    const { chanChat, chanDefault, chanError, doLogs, strClosing } = ( doLog ? await logChans( guild ) : { chanChat: null, chanDefault: null, chanError: null, doLogs: doLog, strClosing: null } );
+  }
+
   const botOwner = client.users.cache.get( client.ownerId );
   const strConsole = '  Please check the console for details.';
   const strNotified = '  Error has been logged and my owner, <@' + botOwner.id + '>, has been notified.';
   const strLogged = '  Error has been logged and my owner, <@' + botOwner.id + '>, couldn\'t be notified.';
-  
+
   try {
     switch ( type ) {
       case 'getBotDB':
         console.error( 'Unable to find botConfig:\n%o', objError );
         break;
       case 'getGuildDB':
-        let { author, guild } = options;
         console.error( 'Encountered an error attempting to find %s(ID:%s) in my database in preforming %s for %s in config.js:\n%s', guild.name, guild.id, command, author.tag, objError.stack );
         botOwner.send( 'Encountered an error attempting to find `' + guild.name + '`(:id:' + guild.id + ') in my database in preforming ' + command + ' for <@' + author.id + '>.' + strConsole );
         break;
       case 'logLogs':
-        let { chanType, guild } = options;
-        let { chanChat, chanDefault, chanError, doLogs } = await logChans( guild );
         let logChan = ( chanType === 'chat' ? chanChat : ( chanType === 'error' ? chanError : chanDefault ) );
         console.error( 'Unable to log to %s channel: %s#%s\n%o', chanType, guild.name, logChan.name, errLog );
         botOwner.send( { content: 'Unable to log to ' + chanType + ' channel <#' + logChan.id + '>.' + strConsole } )
@@ -36,8 +46,6 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
       case 'modifyDB':
         break;
       case 'msgSend':
-        let { channel, guild } = options;
-        let { chanError, doLogs } = await logChans( guild );
         switch ( objError.code ) {
           case 50001 :
             if ( doLogs ) { chanError.send( 'Please give me permission to send to <#' + channel.id + '>.' + strClosing ); }
@@ -58,7 +66,6 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
         }
         break;
       case 'noMsg':
-        let { msgID } = options;
         switch( objError.code ) {
           case 10008://Unknown Message
             return interaction.editReply( { content: 'Unable to find message to react to.' } );
@@ -81,8 +88,6 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
         }
         break;
       case 'noReaction':
-        let { channel, guild, msgID, rawReaction, reaction } = options;
-        let { chanError, doLogs } = await logChans( guild );
         switch ( objError.code ) {
           case 10014://Reaction invalid
             if ( doLogs ) { chanError.send( 'Failed to react to message https://discord.com/channels/' + guild.id + '/' + channel.id + '/' + msgID + ' with `' + rawReaction + '`.' + strClosing ); }
@@ -105,8 +110,6 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
         console.error( 'Error in %s.js: %s', command, objError.stack );
         break;
       default:
-        let doLog = ( options.guild ? ( typeof options.doLog != 'boolean' ? true : options.doLog ) : false );
-        let { chanError, doLogs } = ( doLog ? await logChans( guild ) : { chanError: null, doLogs: doLog } );
         console.error( 'Unknown type (%s) to resolve error for: %o', type, objError );
         botOwner.send( { content: 'Unknown type (' + type + ') to resolve error for.' + strConsole } )
         .then( errSent => {
