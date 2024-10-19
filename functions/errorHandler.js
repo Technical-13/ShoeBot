@@ -36,12 +36,13 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
         let logChan = ( chanType === 'chat' ? chanChat : ( chanType === 'error' ? chanError : chanDefault ) );
         console.error( 'Unable to log to %s channel: %s#%s\n%o', chanType, guild.name, logChan.name, errLog );
         botOwner.send( { content: 'Unable to log to ' + chanType + ' channel <#' + logChan.id + '>.' + strConsole } )
-        .then( errSent => { return interaction.editReply( { content: 'Encounted an error with your `/' + command + '` request.' + strNotified } )
+        .then( errSent => { return interaction.editReply( { content: 'Encounted an error with your `/' + command + '` request.' + strNotified } ) } )
         .catch( errNotSent => {
           console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
           if ( doLogs && chanType != 'error' ) { chanError.send( 'Encounted an error with a `/' + command + '` request.' + strLogged + strClosing ); }
           return interaction.editReply( { content: 'Encounted an error with your `/' + command + '` request.' + strLogged } );
         } );
+        break;
       case 'modifyDB':
         break;
       case 'msgSend':
@@ -49,6 +50,7 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
           case 50001 :
             if ( doLogs ) { chanError.send( 'Please give me permission to send to <#' + channel.id + '>.' + strClosing ); }
             return interaction.editReply( { content: 'I do not have permission to send messages in <#' + channel.id + '>.' } );
+            break;
           default:
             console.error( 'Unable to send message for /' + command + ' request: %o', objError );
             botOwner.send( { content: 'Unable to send message for `/' + command + '` request.' + strConsole } )
@@ -62,12 +64,15 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
               return interaction.editReply( { content: 'Encounted an error with your `/' + command + '` request.' + strLogged } );
             } );
         }
+        break;
       case 'noMsg':
         switch( objError.code ) {
           case 10008://Unknown Message
             return interaction.editReply( { content: 'Unable to find message to react to.' } );
+            break;
           case 50035://Invalid Form Body\nmessage_id: Value "..." is not snowflake.
             return interaction.editReply( { content: '`' + msgID + '` is not a valid `message-id`. Please try again.' } );
+            break;
           default:
             console.error( 'Unable to find message 🆔`' + msgID + '` for /' + command + ' request: %o', objError );
             botOwner.send( { content: 'Unable to find message 🆔`' + msgID + '` for `/' + command + '` request.' + strConsole } )
@@ -81,6 +86,7 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
               return interaction.editReply( { content: 'Encounted an error with your `/' + command + '` request.' + strLogged } );
             } );
         }
+        break;
       case 'noReaction':
         switch ( objError.code ) {
           case 10014://Reaction invalid
@@ -99,6 +105,7 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
               return interaction.editReply( { content: 'Unknown Error reacting to message.' + strLogged } );
             } );
         }
+        break;
       case 'tryFunction':
         console.error( 'Error in %s.js: %s', command, objError.stack );
         break;
