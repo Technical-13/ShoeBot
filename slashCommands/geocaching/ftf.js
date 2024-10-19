@@ -139,10 +139,10 @@ module.exports = {
       } );
     }
     else {
-      interaction.editReply( { content: i18FTFinfo[ locale ] } ).then( replied => {
+      interaction.editReply( { content: i18FTFinfo[ locale ] } ).catch( noReply => {
         if ( doLogs ) {
-          chanDefault.send( { content: 'I told <@' + author.id + '> about FTFs via `/ftf` request.' + strClosing } )
-          .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
+          chanError.send( { content: 'Encountered an error telling <@' + author.id + '> about FTFs via `/ftf` request.' + strClosing } )
+          .catch( async errLog => { await errHandler( errLog, { chanType: 'error', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
         }
       } );
     }
