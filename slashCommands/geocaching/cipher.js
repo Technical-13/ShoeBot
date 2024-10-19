@@ -11,7 +11,8 @@ module.exports = {
     { type: 10, name: 'numeric', description: 'Characters in the Latin alphabet. (default 5)', minValue: 1, maxValue: 10 },
     { type: 10, name: 'alphabetic', description: 'Characters in the Latin alphabet. (default 13)', minValue: 1, maxValue: 26 },
     { type: 10, name: 'alphanumberic', description: 'Characters in the Latin alphabet. (default 18)', minValue: 1, maxValue: 36 }
-  modOnly: true,
+  ],
+  modCmd: true,
   cooldown: 1000,
   run: async ( client, interaction ) => {
     await interaction.deferReply( { ephemeral: true } );
