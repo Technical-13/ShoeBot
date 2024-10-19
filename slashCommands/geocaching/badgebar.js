@@ -45,7 +45,7 @@ module.exports = {
   run: async ( client, interaction ) => {
     await interaction.deferReply( { ephemeral: true } );
     const { channel, guild, options, user: author } = interaction;
-    const { members.cache: members } = guild;
+    const { cache: members } = guild.members;
     const { botOwner, isBotMod, isBlacklisted, isGlobalWhitelisted, guildOwner, isGuildBlacklisted } = await userPerms( author, guild );
     if ( isBlacklisted && !isGlobalWhitelisted ) {
       let contact = ( isGuildBlacklisted ? guildOwner.id : botOwner.id );
