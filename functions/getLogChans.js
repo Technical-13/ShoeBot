@@ -1,16 +1,24 @@
+const client = require( '..' );
 const { model, Schema } = require( 'mongoose' );
 const guildConfigDB = require( '../models/GuildConfig.js' );
-const errHandler = require( './errorHandler.js' );
 
 module.exports = async ( guild ) => {
+  const botOwner = client.users.cache.get( client.ownerId );
+  const strConsole = '  Please check the console for details.';
+  
   try {
-    const guildConfig = await guildConfigDB.findOne( { Guild: guild.id } ).catch( async err => {
-      await errHandler( errFindGuild, { command: 'getLogChans', guild: guild, type: 'getGuildDB' } );
+    const guildConfig = await guildConfigDB.findOne( { Guild: guild.id } ).catch( async objError => {
+      console.error( 'Encountered an error attempting to find %s(ID:%s) in my database in getLogChans.js:\n%s', guild.name, guild.id, objError.stack );
+      botOwner.send( 'Encountered an error attempting to find `' + guild.name + '`(:id:' + guild.id + ') in my database in getLogChans.' + strConsole )
+      .catch( errNotSent => { console.error( 'Error attempting to DM you about the above error: %o', errNotSent ); } );
       return { doLogs: false, chanDefault: null, chanError: null, chanChat: null, strClosing: null };
     } );
     
     if ( !guildConfig ) {
-      await errHandler( { stack: 'guildConfigDB.findOne( { Guild: guild.id } ) in getLogChans.js returned:\n' + guildConfig }, { command: 'getLogChans', guild: guild, type: 'getGuildDB' } );
+      let objError = { stack: 'guildConfigDB.findOne( { Guild: guild.id } ) in getLogChans.js returned:\n' + guildConfig };
+      console.error( 'Encountered an error attempting to find %s(ID:%s) in my database in getLogChans.js:\n%s', guild.name, guild.id, objError.stack );
+      botOwner.send( 'Encountered an error attempting to find `' + guild.name + '`(:id:' + guild.id + ') in my database in getLogChans.' + strConsole )
+      .catch( errNotSent => { console.error( 'Error attempting to DM you about the above error: %o', errNotSent ); } );
       return { doLogs: false, chanDefault: null, chanError: null, chanChat: null, strClosing: null };
     }
     else {
