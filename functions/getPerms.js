@@ -5,11 +5,10 @@ const botConfigDB = require( '../models/BotConfig.js' );
 const guildConfigDB = require( '../models/GuildConfig.js' );
 const errHandler = require( '../errorHandler.js' );
 
-module.exports = async ( user, guild ) => {
-  
+module.exports = async ( user, guild ) => {  
   try {
     const botConfig = await botConfigDB.findOne( { BotName: thisBotName } )
-    .catch( errFindBot => { await errorHandler( errFindBot, { command: 'getPerms', type: 'getBotDB' } ); } );
+    .catch( async errFindBot => { await errorHandler( errFindBot, { command: 'getPerms', type: 'getBotDB' } ); } );
     const clientID = ( botConfig.ClientID || client.id );
     const isDevGuild = ( guild.id === botConfig.DevGuild ? true : false );
     const botUsers = client.users.cache;
@@ -23,7 +22,7 @@ module.exports = async ( user, guild ) => {
     const isBotMod = ( ( isBotOwner || botMods.indexOf( user.id ) != -1 ) ? true : false );
 
     const guildConfig = await guildConfigDB.findOne( { Guild: guild.id } )
-    .catch( errFindGuild => { await errorHandler( errFindGuild, { author: user, command: 'getPerms', guild: guild, type: 'getGuildDB' } ); } );
+    .catch( async errFindGuild => { await errorHandler( errFindGuild, { author: user, command: 'getPerms', guild: guild, type: 'getGuildDB' } ); } );
     const guildBlacklist = ( guildConfig ? ( guildConfig.Blacklist || [] ) : [] );
     const isGuildBlacklisted = ( guildBlacklist.indexOf( user.id ) != -1 ? true : false );
     const guildWhitelist = ( guildConfig ? ( guildConfig.Whitelist || [] ) : [] );
