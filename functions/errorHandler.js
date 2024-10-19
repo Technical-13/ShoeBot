@@ -36,7 +36,7 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
         let logChan = ( chanType === 'chat' ? chanChat : ( chanType === 'error' ? chanError : chanDefault ) );
         console.error( 'Unable to log to %s channel: %s#%s\n%o', chanType, guild.name, logChan.name, errLog );
         botOwner.send( { content: 'Unable to log to ' + chanType + ' channel <#' + logChan.id + '>.' + strConsole } )
-        .then( errSent => { return interaction.editReply( { content: 'Encounted an error with your `/' + command + '` request.' + strNotified } );
+        .then( errSent => { return interaction.editReply( { content: 'Encounted an error with your `/' + command + '` request.' + strNotified } )
         .catch( errNotSent => {
           console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
           if ( doLogs && chanType != 'error' ) { chanError.send( 'Encounted an error with a `/' + command + '` request.' + strLogged + strClosing ); }
