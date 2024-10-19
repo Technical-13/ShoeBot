@@ -7,8 +7,8 @@ module.exports = async ( interaction, pages, options = { intPageNumber: 0, time:
   try {
     if ( !interaction ) { throw new Error( '[PAGINATION] no interaction.' ); }
     if( !pages || !pages > 0 ) { throw new Error( '[PAGINATION] no pages.' ); }
-
-    await interaction.deferReply();
+    
+    if ( !interaction.deferred ) { await interaction.deferReply(); }
 
     if ( pages.length === 1 ) { return await interaction.editReply( { embeds: pages, components: [], fetchReply: true } ); }
 
@@ -51,5 +51,5 @@ module.exports = async ( interaction, pages, options = { intPageNumber: 0, time:
 
     collector.on( 'end', async () => { await msg.delete(); } );
     
-  } catch ( errPagination ) { console.error( 'Error in pagination.js: %s\n%o', errPagination.message, errPagination.stack ); }
+  } catch ( errPagination ) { console.error( 'Error in pagination.js: %s', errPagination.stack ); }
 };

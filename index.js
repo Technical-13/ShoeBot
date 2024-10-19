@@ -1,4 +1,5 @@
-const keepAlive = require( './functions/server' );
+const keepAlive = require( './functions/server.js' );
+const initDatabase = require( './functions/database.js' );
 const fs = require( 'fs' );
 const { Client, GatewayIntentBits, Partials, Collection } = require( 'discord.js' );
 const config = require( './config.json' );
@@ -26,12 +27,14 @@ client.prefix = config.prefix;
 
 module.exports = client;
 
+initDatabase();
+
 fs.readdirSync( './handlers' ).forEach( ( handler ) => {
 	require( `./handlers/${handler}` )( client );
 } );
 
 client.login( process.env.token )
-  .then( loggedIn => { console.log( 'Successfully connected!' ); } )
-  .catch( errLogin => { console.error( 'There was an error logging in:\n%o', errLogin ); } );
+  .then( async loggedIn => { console.log( 'Successfully connected!' ); } )
+  .catch( errLogin => { console.error( 'There was an error logging in:\n%s', errLogin.stack ); } );
 
 keepAlive();
