@@ -24,5 +24,5 @@ module.exports = async ( guild ) => {
       chanChat: chanChat,
       strClosing: strClosing
     };
-  } catch ( errLogChans ) { await errHandler( errLogChans, { command: 'getLogChans', type: 'tryFunction' } ); }
+  } catch ( errLogChans ) { console.error( 'Error in %getLogChans.js: %s', , errLogChans.stack ); }
 };
