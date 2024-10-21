@@ -100,9 +100,10 @@ module.exports = {
         case 'set':        
           if ( setStatus || setActivityType || setActivity ) {
             const botPresence = bot.presence.toJSON();
-            const { name, state, type, url } = botPresence.activities[ 0 ];            
-            const selectActivityType = ( options.getString( 'activity-type' ) || ActivityTypes[ type ] || 'Playing' );
-            const currActivityName = ( ActivityTypes[ type ] === 'Streaming' ? url : ( ActivityTypes[ type ] === 'Custom' ? state : name ) );
+            const botActivities = botPresence.activities[ 0 ];
+            const botActivityType = Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );    
+            const selectActivityType = ( options.getString( 'activity-type' ) || botActivityType || 'Playing' );
+            const currActivityName = ( botActivityType === 1 ? botActivities.url : ( botActivityType === 4 ? botActivities.state : botActivities.name ) );
             const selectActivityName = ( options.getString( 'activity' ) || currActivityName || '' );
             const setPresenceActivity = [ { type: ActivityTypes[ selectActivityType ], name: selectActivityName } ];
             const newActivity = ( selectActivityType === 'Custom' ? '' : ( selectActivityType === 'Competing' ? selectActivityType + ' in ' : '' ) ) + selectActivityName;
