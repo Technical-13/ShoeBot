@@ -23,7 +23,7 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
   const channel = ( options.channel ? options.channel : null );
   const chanType = ( options.chanType ? options.chanType : null );
   const guild = ( options.guild ? options.guild : null );
-  const inviteChanURL = { options.inviteChanURL ? options.inviteChanURL : null );
+  const inviteChanURL = ( options.inviteChanURL ? options.inviteChanURL : null );
   const msgID = ( options.msgID ? options.msgID : null );
   const rawReaction = ( options.rawReaction ? options.rawReaction : null );
   const emoji = ( options.reaction ? options.reaction : null );
