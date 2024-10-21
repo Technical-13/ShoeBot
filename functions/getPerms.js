@@ -42,6 +42,9 @@ module.exports = async ( user, guild, doBlacklist ) => {
     const guildPrefix = ( guildConfig ? guildConfig.Prefix : globalPrefix ) ;
     const prefix = ( guildPrefix || globalPrefix || client.prefix );
     
+    const isBlacklisted = ( isGlobalBlacklisted || ( isGuildBlacklisted && !( isBotMod || isGlobalWhitelisted ) ) );
+    const isWhitelisted = ( isGlobalWhitelisted || ( isGuildWhitelisted && !isGlobalBlacklisted ) );
+    
     const results = {
       clientId: clientID,
       globalPrefix: globalPrefix,
@@ -60,10 +63,10 @@ module.exports = async ( user, guild, doBlacklist ) => {
       hasMentionEveryone: hasMentionEveryone,
       isGuildBlacklisted: isGuildBlacklisted,
       isGlobalBlacklisted: isGlobalBlacklisted,
-      isBlacklisted: ( isGlobalBlacklisted || ( isGuildBlacklisted && !( isBotMod || isGlobalWhitelisted ) ) ),
+      isBlacklisted: isBlacklisted,
       isGuildWhitelisted: isGuildWhitelisted,
       isGlobalWhitelisted: isGlobalWhitelisted,
-      isWhitelisted: ( isGlobalWhitelisted || ( isGuildWhitelisted && !isGlobalBlacklisted ) ),
+      isWhitelisted: isWhitelisted,
       content: false
     }
     if ( doBlacklist && isBlacklisted && !isGlobalWhitelisted ) {
