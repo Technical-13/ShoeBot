@@ -31,7 +31,7 @@ module.exports = {
 
     const cmdInputUser = options.getUser( 'target' );
     const mentionUserID = ( cmdInputUser ? cmdInputUser.id : author.id );
-    const mentionUser = '<@' + mentionUserID + '>: ';
+    const mentionUser = '<@' + mentionUserID + '>';
     const beNice = ( options.getBoolean( 'nice' ) || ( cmdInputUser === author ? true : false ) );
     const service = ( beNice ? 'www.google.com/search' : 'letmegooglethat.com/' );
     const strInputQuery = options.getString( 'query' );
@@ -42,6 +42,6 @@ module.exports = {
       .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'lmgtfy', guild: guild, type: 'logLogs' } ) ); } );
     }
 
-    return interaction.reply( { content: mentionUser + '<https://' + service + '?q=' + q + '>' } );
+    return interaction.reply( { content: mentionUser + ': <https://' + service + '?q=' + q + '>' } );
   }
 };
