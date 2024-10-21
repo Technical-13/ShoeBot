@@ -28,14 +28,8 @@ module.exports = {
   run: async ( client, interaction ) => {
     await interaction.deferReply( { ephemeral: true } );
     const { channel, guild, options, user: author } = interaction;
-    const { botOwner, isBotMod, isBlacklisted, isGlobalWhitelisted, guildOwner, isGuildBlacklisted, isServerBooster, hasMentionEveryone, isWhitelisted } = await userPerms( author, guild );
-    if ( isBlacklisted && !isGlobalWhitelisted ) {
-      let contact = ( isGuildBlacklisted ? guildOwner.id : botOwner.id );
-      return interaction.editReply( { content: 'Oh no!  It looks like you have been blacklisted from using my commands' + ( isGuildBlacklisted ? ' in this server!' : '!' ) + '  Please contact <@' + contact + '> to resolve the situation.' } );
-    }
-    else if ( isBotMod && isGuildBlacklisted ) { author.send( { content:
-      'You have been blacklisted from using commands in https://discord.com/channels/' + guild.id + '! Use `/config remove` to remove yourself from the blacklist.'
-    } ); }
+    const { botOwner, isBotMod, guildOwner, isServerBooster, hasMentionEveryone, isWhitelisted, content } = await userPerms( author, guild, true );
+    if ( content ) { return interaction.editReply( { content: content } ); }
 
     const canSpeak = ( isBotMod || isWhitelisted || isServerBooster ? true : false );    
     const speakChannel = options.getChannel( 'channel' ) || channel;
