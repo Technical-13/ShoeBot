@@ -74,5 +74,5 @@ module.exports = async ( user, guild, doBlacklist ) => {
       user.send( { content: 'You have been blacklisted from using commands in https://discord.com/channels/' + guild.id + '! Use `/config remove` to remove yourself from the blacklist.' } );
     }
     return results;
-  } catch ( errPerms ) { await errorHandler( errPerms, { command: 'getPerms', type: 'tryFunction' } ); }
+  } catch ( errPerms ) { await errHandler( errPerms, { command: 'getPerms', type: 'tryFunction' } ); }
 };
