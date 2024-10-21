@@ -4,7 +4,13 @@ const config = require( '../config.json' );
 const logChans = require( './getLogChans.js' );
 
 module.exports = async ( objError, options = { command: 'undefined', type: 'undefined' } ) => {
-console.warn( 'errorHandler recieved options:%o', options );
+  const preAuthor = ( !options ? 'NO `options`!' : ( options.author ? options.author.id : options.author ) );
+  const preChan = ( !options ? 'NO `options`!' : ( options.channel ? options.channel.id : options.channel ) );
+  const preGuild = ( !options ? 'NO `options`!' : ( options.guild ? options.guild.id : options.guild ) );
+  const preEmoji = ( !options ? 'NO `options`!' : ( options.emoji ? options.emoji.id : options.emoji ) );
+  const preProcessed = { cmd: cmd, myTask: myTask, author: preAuthor, channel: preChan, chanType: chanType, guild: preGuild, msgID: msgID, rawReaction: rawReaction, reaction: preEmoji };
+  console.warn( 'errorHandler recieved options:%o', preProcessed );//*/
+  
   const { command, type } = options;
   const cmd = ( typeof command === 'string' ? command : 'undefined' );
   const myTask = ( typeof type === 'string' ? type : 'undefined' );
@@ -20,8 +26,8 @@ console.warn( 'errorHandler recieved options:%o', options );
   const prcChan = ( channel ? channel.id : channel );
   const prcGuild = ( guild ? guild.id : guild );
   const prcEmoji = ( emoji ? emoji.id : emoji );
-  const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, guild: prcGuild, msgID: msgID, rawReaction: rawReaction, reaction: prcEmoji }
-  console.warn( 'errorHandler processed options:%o', processed );
+  const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, guild: prcGuild, msgID: msgID, rawReaction: rawReaction, reaction: prcEmoji };
+  console.warn( 'errorHandler processed options:%o', processed );//*/
 
   const { chanChat, chanDefault, chanError, doLogs, strClosing } = ( guild ? await logChans( guild ) : { chanChat: null, chanDefault: null, chanError: null, doLogs: false, strClosing: null } );
 
