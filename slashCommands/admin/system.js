@@ -1,4 +1,4 @@
-const { ActivityTypes, ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
+const { ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
 const config = require( '../../config.json' );
 const chalk = require( 'chalk' );
 const { model, Schema } = require( 'mongoose' );
@@ -6,7 +6,7 @@ const botConfigDB = require( '../../models/BotConfig.js' );
 const errHandler = require( '../../functions/errorHandler.js' );
 const thisBotName = process.env.BOT_USERNAME;
 const botOwnerID = process.env.OWNER_ID;
-
+const ActivityTypes = { Playing: 0, Streaming: 1, Listening: 2, Watching: 3, Custom: 4, Competing: 5 };
 
 module.exports = {
   name: 'system',
@@ -38,9 +38,10 @@ module.exports = {
       { type: 3, name: 'status', description: 'Set the status.', choices: [
         { name: 'Online', value: 'online' }, { name: 'Idle', value: 'idle' },
         { name: 'Do Not Disturb', value: 'dnd' }, { name: 'Offline', value: 'offline' } ] },
-      { type: 4, name: 'activity-type', description: 'Set the activity type.', choices: [
-        { name: 'Playing', value: 0 }, { name: 'Streaming', value: 1 }, { name: 'Listening', value: 2 },
-        { name: 'Watching', value: 3 }, { name: 'Custom', value: 4 }, { name: 'Competing', value: 5 } ] },
+      { type: 3, name: 'activity-type', description: 'Set the activity type.', choices: [
+        { name: 'Playing', value: 'Playing' }, { name: 'Streaming', value: 'Streaming' },
+        { name: 'Listening', value: 'Listening' }, { name: 'Watching', value: 'Watching' },
+        { name: 'Custom', value: 'Custom' }, { name: 'Competing', value: 'Competing' } ] },
       { type: 3, name: 'activity', description: 'Set the activity.' },
       { type: 3, name: 'name', description: 'What\'s my name!?' },
       { type: 3, name: 'prefix', description: 'What character do I look for!?' },
@@ -99,17 +100,16 @@ module.exports = {
         case 'set':        
           if ( setStatus || setActivityType || setActivity ) {
             const botPresence = bot.presence.toJSON();
-            const { name, state, type, url } = botPresence.activities[ 0 ];
-            
-            const selectActivityType = ( options.getString( 'activity-type' ) || type || 0 );
-            const currActivityName = ( type === 1 ? url : ( type === 4 ? state : name ) );
+            const { name, state, type, url } = botPresence.activities[ 0 ];            
+            const selectActivityType = ( options.getString( 'activity-type' ) || ActivityTypes[ type ] || 'Playing' );
+            const currActivityName = ( ActivityTypes[ type ] === 'Streaming' ? url : ( ActivityTypes[ type ] === 'Custom' ? state : name ) );
             const selectActivityName = ( options.getString( 'activity' ) || currActivityName || '' );
             const setPresenceActivity = [ { type: ActivityTypes[ selectActivityType ], name: selectActivityName } ];
             const newActivity = ( selectActivityType === 'Custom' ? '' : ( selectActivityType === 'Competing' ? selectActivityType + ' in ' : '' ) ) + selectActivityName;
             const selectStatus = ( options.getString( 'status' ) || botPresence.status );
             
             bot.setPresence( { activities: setPresenceActivity, status: selectStatus } );
-            interaction.editReply( { content: 'My presence has been changed to `' + newActivity + '` and my status is `' + selectStatus + '`' } );
+            return interaction.editReply( { content: 'My presence has been changed to `' + newActivity + '` and my status is `' + selectStatus + '`' } );
           }
       }
     }
@@ -415,21 +415,6 @@ module.exports = {
               console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to modify bot configuration in my database:\n${setError}` ) );
               return interaction.editReply( { content: 'Encountered an error attempting to modify bot configuration in my database. Please check the console.' } );
             } );
-          }
-          if ( setStatus || setActivityType || setActivity ) {
-            const botPresence = bot.presence.toJSON();
-            const botActivities = botPresence.activities[ 0 ];
-            const botActivityType = Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );
-            
-            const selectActivityType = ( options.getString( 'activity-type' ) || botActivityType || 'Playing' );
-            const currActivityName = ( botActivityType === 1 ? botActivities.url : ( botActivityType === 4 ? botActivities.state : botActivities.name ) );
-            const selectActivityName = ( options.getString( 'activity' ) || currActivityName || '' );
-            const setPresenceActivity = [ { type: ActivityTypes[ selectActivityType ], name: selectActivityName } ];
-            const newActivity = ( selectActivityType === 'Custom' ? '' : ( selectActivityType === 'Competing' ? selectActivityType + ' in ' : '' ) ) + selectActivityName;
-            const selectStatus = ( options.getString( 'status' ) || botPresence.status );
-            
-            bot.setPresence( { activities: setPresenceActivity, status: selectStatus } );
-            interaction.editReply( { content: 'My presence has been changed to `' + newActivity + '` and my status is `' + selectStatus + '`' } );
           }
           break;
       }
