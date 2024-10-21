@@ -4,14 +4,15 @@ const config = require( '../config.json' );
 const logChans = require( './getLogChans.js' );
 
 module.exports = async ( objError, options = { command: 'undefined', type: 'undefined' } ) => {
+  const { command, type } = options;
+  
   const preAuthor = ( !options ? 'NO `options`!' : ( options.author ? options.author.id : options.author ) );
   const preChan = ( !options ? 'NO `options`!' : ( options.channel ? options.channel.id : options.channel ) );
   const preGuild = ( !options ? 'NO `options`!' : ( options.guild ? options.guild.id : options.guild ) );
   const preEmoji = ( !options ? 'NO `options`!' : ( options.emoji ? options.emoji.id : options.emoji ) );
-  const preProcessed = { cmd: cmd, myTask: myTask, author: preAuthor, channel: preChan, chanType: chanType, guild: preGuild, msgID: msgID, rawReaction: rawReaction, reaction: preEmoji };
+  const preProcessed = { command: command, type: type, author: preAuthor, channel: preChan, chanType: chanType, guild: preGuild, msgID: msgID, rawReaction: rawReaction, reaction: preEmoji };
   console.warn( 'errorHandler recieved options:%o', preProcessed );//*/
   
-  const { command, type } = options;
   const cmd = ( typeof command === 'string' ? command : 'undefined' );
   const myTask = ( typeof type === 'string' ? type : 'undefined' );
   const author = ( options.author ? options.author : null );
