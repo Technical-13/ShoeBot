@@ -10,7 +10,7 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
   const preChan = ( !options ? 'NO `options`!' : ( options.channel ? options.channel.id : options.channel ) );
   const prechanType = ( !options ? 'NO `options`!' : options.chanType );
   const preGuild = ( !options ? 'NO `options`!' : ( options.guild ? options.guild.id : options.guild ) );
-  const preinviteChanURL = { !options ? 'NO `options`!' : options.inviteChanURL );
+  const preinviteChanURL = ( !options ? 'NO `options`!' : options.inviteChanURL );
   const premsgID = ( !options ? 'NO `options`!' : options.msgID );
   const prerawReaction = ( !options ? 'NO `options`!' : options.rawReaction );
   const preEmoji = ( !options ? 'NO `options`!' : ( options.emoji ? options.emoji.id : options.emoji ) );
