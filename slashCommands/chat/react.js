@@ -29,7 +29,7 @@ module.exports = {
   run: async ( client, interaction ) => {
     await interaction.deferReply( { ephemeral: true } );
     const { channel, guild, options, user: author } = interaction;
-    const { botOwner, guildOwner, content } = await userPerms( author, guild, true );
+    const { content } = await userPerms( author, guild, true );
     if ( content ) { return interaction.editReply( { content: content } ); }
 
     const msgID = options.getString( 'message-id' );
@@ -52,8 +52,8 @@ module.exports = {
           .catch( async noLogChan => { interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'react', guild: guild, type: 'logLogs' } ) ); } );
         }
         return interaction.editReply( { content: 'Reacted!' } );
-      } ).catch( async noReaction => { interaction.editReply( await errHandler( noReaction, { channel: msgChan, command: 'react', guild: msgGuild, msgID: msgID, rawReaction: theReaction, reaction: myReaction, type: 'noReaction' } ) ); } );
+      } ).catch( async errReact => { interaction.editReply( await errHandler( errReact, { channel: msgChan, command: 'react', guild: msgGuild, msgID: msgID, rawReaction: theReaction, reaction: myReaction, type: 'errReact' } ) ); } );
     } )
-    .catch( async noMessage => { interaction.editReply( await errHandler( noMessage, { command: 'react', msgID: msgID, type: 'noMsg' } ) ); } );
+    .catch( async errFetch => { interaction.editReply( await errHandler( errFetch, { command: 'react', msgID: msgID, type: 'errFetch' } ) ); } );
   }
 };

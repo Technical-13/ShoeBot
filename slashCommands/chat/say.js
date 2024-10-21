@@ -48,7 +48,7 @@ module.exports = {
           }
           return interaction.editReply( { content: 'I said the thing!' } );
         } )
-        .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'say', guild: guild, type: 'msgSend' } ) ); } );
+        .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'say', guild: guild, type: 'errSend' } ) ); } );
       }
       else if ( mentionsEveryone && !hasMentionEveryone ) {
         if ( doLogs ) {

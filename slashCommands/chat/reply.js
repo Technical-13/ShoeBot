@@ -29,7 +29,7 @@ module.exports = {
   run: async ( client, interaction ) => {
     await interaction.deferReply( { ephemeral: true } );
     const { channel, guild, options, user: author } = interaction;
-    const { botOwner, isBotMod, guildOwner, isServerBooster, hasMentionEveryone, isWhitelisted, content } = await userPerms( author, guild, true );
+    const { isBotMod, isServerBooster, hasMentionEveryone, isWhitelisted, content } = await userPerms( author, guild, true );
     if ( content ) { return interaction.editReply( { content: content } ); }
 
     const canSpeak = ( isBotMod || isWhitelisted || isServerBooster ? true : false );    
@@ -55,9 +55,9 @@ module.exports = {
             }
             return interaction.editReply( { content: 'Responded!' } );
           } )
-          .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'reply', guild: guild, type: 'msgSend' } ) ); } );
+          .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'reply', guild: guild, type: 'errSend' } ) ); } );
         } )
-        .catch( async noMessage => { return interaction.editReply( await errHandler( noMessage, { command: 'reply', msgID: msgID, type: 'noMsg' } ) ); } );
+        .catch( async errFetch => { return interaction.editReply( await errHandler( errFetch, { command: 'reply', msgID: msgID, type: 'errFetch' } ) ); } );
       }
       else if ( mentionsEveryone && !hasMentionEveryone ) {
         if ( doLogs ) {

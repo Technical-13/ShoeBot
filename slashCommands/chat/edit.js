@@ -29,7 +29,7 @@ module.exports = {
   run: async ( client, interaction ) => {
     await interaction.deferReply( { ephemeral: true } );
     const { channel, guild, options, user: author } = interaction;
-    const { botOwner, isBotMod, guildOwner, isServerBooster, hasMentionEveryone, isWhitelisted, content } = await userPerms( author, guild, true );
+    const { isBotMod, isServerBooster, hasMentionEveryone, isWhitelisted, content } = await userPerms( author, guild, true );
     if ( content ) { return interaction.editReply( { content: content } ); }
 
     const canSpeak = ( isBotMod || isWhitelisted || isServerBooster ? true : false );
@@ -55,13 +55,13 @@ module.exports = {
             }
             return interaction.editReply( { content: 'I edited my message for you!' } );
           } )
-          .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'edit', guild: guild, type: 'msgSend' } ) ); } );
+          .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'edit', guild: guild, type: 'errSend' } ) ); } );
         } )
-        .catch( async noMessage => { return interaction.editReply( await errHandler( noMessage, { command: 'edit', msgID: msgID, type: 'noMsg' } ) ); } );
+        .catch( async errFetch => { return interaction.editReply( await errHandler( errFetch, { command: 'edit', msgID: msgID, type: 'errFetch' } ) ); } );
       }
       else if ( mentionsEveryone && !hasMentionEveryone ) {
         if ( doLogs ) {
-          chanChat.send( { content:  '<@' + author.id + '> has no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>. They tried to get me to change my message from:\n```\n' + oldContent + '\n```\nTo:\n```\n' + edited.content + '\n```' + strClosing } )
+          chanChat.send( { content: '<@' + author.id + '> has no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>. They tried to get me to change my message from:\n```\n' + oldContent + '\n```\nTo:\n```\n' + edited.content + '\n```' + strClosing } )
           .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'edit', guild: guild, type: 'logLogs' } ) ); } );
         }
         return interaction.editReply( { content: 'You have no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>!' } );
