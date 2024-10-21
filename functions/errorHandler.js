@@ -17,9 +17,9 @@ console.warn( 'errorHandler recieved options:%o', options );
   const rawReaction = ( options.rawReaction ? options.rawReaction : null );
   const reaction = ( options.reaction ? options.reaction : null );
   
-  const prcAuthor = ( author ? author.toJSON() : author );
-  const prcChan = ( channel ? channel.toJSON() : channel );
-  const prcGuild = ( guild ? guild.toJSON() : guild );
+  const prcAuthor = ( author ? author.id : author );
+  const prcChan = ( channel ? channel.id : channel );
+  const prcGuild = ( guild ? guild.id : guild );
   const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, doLog: doLog, guild: prcGuild, msgID: msgID, rawReaction: rawReaction, reaction: reaction }
   console.warn( 'errorHandler processed options:%o', processed );
 
