@@ -6,8 +6,8 @@ const logChans = require( './getLogChans.js' );
 module.exports = async ( objError, options = { command: 'undefined', type: 'undefined' } ) => {
 console.warn( 'errorHandler recieved options:%o', options );
   const { command, type } = options;
-  const cmd = ( typeof command === 'String' ? command : 'undefined' );
-  const myTask = ( typeof type === 'String' ? myTask : 'undefined' );
+  const cmd = ( typeof command === 'string' ? command : 'undefined' );
+  const myTask = ( typeof type === 'string' ? myTask : 'undefined' );
   const author = ( options.author ? options.author : null );
   const channel = ( options.channel ? options.channel : null );
   const chanType = ( options.chanType ? options.chanType : null );
