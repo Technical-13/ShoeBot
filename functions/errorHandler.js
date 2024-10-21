@@ -11,7 +11,6 @@ console.warn( 'errorHandler recieved options:%o', options );
   const author = ( options.author ? options.author : null );
   const channel = ( options.channel ? options.channel : null );
   const chanType = ( options.chanType ? options.chanType : null );
-  const doLog = ( options.doLog ? options.doLog : null );
   const guild = ( options.guild ? options.guild : null );
   const msgID = ( options.msgID ? options.msgID : null );
   const rawReaction = ( options.rawReaction ? options.rawReaction : null );
@@ -20,12 +19,10 @@ console.warn( 'errorHandler recieved options:%o', options );
   const prcAuthor = ( author ? author.id : author );
   const prcChan = ( channel ? channel.id : channel );
   const prcGuild = ( guild ? guild.id : guild );
-  const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, doLog: doLog, guild: prcGuild, msgID: msgID, rawReaction: rawReaction, reaction: reaction }
+  const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, guild: prcGuild, msgID: msgID, rawReaction: rawReaction, reaction: reaction }
   console.warn( 'errorHandler processed options:%o', processed );
 
-  if ( guild ? ( typeof doLog != 'boolean' ? true : options.doLog ) : false ) {
-    const { chanChat, chanDefault, chanError, doLogs, strClosing } = ( doLog ? await logChans( guild ) : { chanChat: null, chanDefault: null, chanError: null, doLogs: false, strClosing: null } );
-  }
+  const { chanChat, chanDefault, chanError, doLogs, strClosing } = ( guild ? await logChans( guild ) : { chanChat: null, chanDefault: null, chanError: null, doLogs: false, strClosing: null } );
 
   const ownerId = ( config.botOwnerId || process.env.OWNER_ID );
   const botOwner = client.users.cache.get( ownerId );
