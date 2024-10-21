@@ -43,7 +43,7 @@ module.exports = {
       if ( canSpeak && ( !mentionsEveryone || hasMentionEveryone ) ) {
         speakChannel.send( { content: mySaying } ).then( async spoke => {
           if ( doLogs ) {
-            chanChat.send( { content: 'I spoke in https://discord.com/channels/' + spoke.guild.id + '/' + spoke.channel.id + '/' + spoke.id + ' at <@' + author.id + '>\'s request:\n```' + mySaying + '\n```\n' + strClosing } )
+            chanChat.send( { content: 'I spoke in https://discord.com/channels/' + spoke.guild.id + '/' + spoke.channel.id + '/' + spoke.id + ' at <@' + author.id + '>\'s request:\n```' + mySaying + '\n```' + strClosing } )
             .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'say', guild: guild, type: 'logLogs' } ) ); } );
           }
           return interaction.editReply( { content: 'I said the thing!' } );

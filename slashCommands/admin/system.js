@@ -1,4 +1,4 @@
-const { ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
+const { ActivityTypes, ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
 const config = require( '../../config.json' );
 const chalk = require( 'chalk' );
 const { model, Schema } = require( 'mongoose' );
@@ -33,6 +33,14 @@ module.exports = {
     ] }/* remove //*/,
     { type: 1, name: 'reset', description: 'Watch me rise from the ashes like a phoenix.' },
     { type: 1, name: 'set', description: 'Set settings for the bot.', options: [
+      { type: 3, name: 'status', description: 'Set the status.', choices: [
+        { name: 'Online', value: 'online' }, { name: 'Idle', value: 'idle' },
+        { name: 'Do Not Disturb', value: 'dnd' }, { name: 'Offline', value: 'offline' } ] },
+      { type: 3, name: 'activity-type', description: 'Set the activity type.', choices: [
+        { name: 'Playing', value: 'Playing' }, { name: 'Streaming', value: 'Streaming' },
+        { name: 'Listening', value: 'Listening' }, { name: 'Watching', value: 'Watching' },
+        { name: 'Custom', value: 'Custom' }, { name: 'Competing', value: 'Competing' } ] },
+      { type: 3, name: 'activity', description: 'Set the activity.' },
       { type: 3, name: 'name', description: 'What\'s my name!?' },
       { type: 3, name: 'prefix', description: 'What character do I look for!?' },
       { type: 6, name: 'owner', description: 'Who is my master!?' },
@@ -45,6 +53,7 @@ module.exports = {
     const strAuthorTag = author.tag;
     const botConfig = await botConfigDB.findOne( { BotName: thisBotName } )
       .catch( errFindBot => { console.error( 'Unable to find botConfig:\n%o', errFindBot ); } );
+    const { user: bot } = client;
     const botUsers = client.users.cache;
     const botGuilds = client.guilds.cache;
     const botOwner = botUsers.get( botConfig.Owner );
@@ -54,29 +63,58 @@ module.exports = {
     const arrWhiteList = ( botConfig.Whitelist || [] );
     const isBotMod = ( ( isBotOwner || botMods.indexOf( author.id ) != -1 ) ? true : false );
     const myTask = options.getSubcommand();
+    
+    var newName = ( options.getString( 'name' ) || null );
+    var newOwner = ( options.getUser( 'owner' ) || null );
+    var newPrefix = ( options.getString( 'prefix' ) || null );
+    var newDevGuild = ( options.getString( 'dev-guild' ) || null );
+    var setStatus = ( options.getString( 'status' ) || null );
+    var setActivityType = ( options.getString( 'activity-type' ) || null );
+    var setActivity = ( options.getString( 'activity' ) || null );
 
     if ( !isBotMod ) { return interaction.editReply( { content: 'You are not the boss of me...' } ); }
-    else if ( isBotMod && myTask === 'get' ) {
-      let strBlackList = '**' + ( arrBlackList.length === 0 ? 'No one is blacklisted!' : '[ **<@' + arrBlackList.join( '>**, **<@' ) + '>** ]' ) + '**';
-      let strModList = '**' + ( botMods.length === 0 ? 'No bot moderators!' : '[ **<@' + botMods.join( '>**, **<@' ) + '>** ]' ) + '**';
-      let strWhiteList =  '**' + ( arrWhiteList.length === 0 ? 'No one is whitelisted!' : '[ **<@' + arrWhiteList.join( '>**, **<@' ) + '>** ]' ) + '**';
-      const showConfigs = 'My configuration:\n\t' +
-        'Name: `' + botConfig.BotName + '` (:id:`' + botConfig.ClientID + '`)\n\t' +
-        'Owner: <@' + botConfig.Owner + '>\n\t' +
-        'Command Prefix: `' + botConfig.Prefix + '`\n\t' +
-        'Development Guild: `' + botGuilds.get( botConfig.DevGuild ).name + '`\n\t' +
-        'Blacklist: ' + strBlackList + '\n\t' +
-        'Whitelist: ' + strWhiteList + '\n\t' +
-        'Moderators: ' + strModList;
-      if ( !options.getBoolean( 'share' ) ) {
-        return interaction.editReply( { content: showConfigs } );
-      } else {
-        channel.send( { content: showConfigs } )
-        .then( sent => { return interaction.editReply( { content: 'I shared the settings in the channel.' } ); } )
-        .catch( errSend => { return interaction.editReply( { content: 'Error sharing the settings in the channel.' } ); } );        
+    else if ( isBotMod && ( myTask === 'get' || ( myTask === 'set' && ( setStatus || setActivityType || setActivity ) ) ) ) {
+      switch ( myTask ) {
+        case 'get':
+          let strBlackList = '**' + ( arrBlackList.length === 0 ? 'No one is blacklisted!' : '[ **<@' + arrBlackList.join( '>**, **<@' ) + '>** ]' ) + '**';
+          let strModList = '**' + ( botMods.length === 0 ? 'No bot moderators!' : '[ **<@' + botMods.join( '>**, **<@' ) + '>** ]' ) + '**';
+          let strWhiteList =  '**' + ( arrWhiteList.length === 0 ? 'No one is whitelisted!' : '[ **<@' + arrWhiteList.join( '>**, **<@' ) + '>** ]' ) + '**';
+          const showConfigs = 'My configuration:\n\t' +
+            'Name: `' + botConfig.BotName + '` (:id:`' + botConfig.ClientID + '`)\n\t' +
+            'Owner: <@' + botConfig.Owner + '>\n\t' +
+            'Command Prefix: `' + botConfig.Prefix + '`\n\t' +
+            'Development Guild: `' + botGuilds.get( botConfig.DevGuild ).name + '`\n\t' +
+            'Blacklist: ' + strBlackList + '\n\t' +
+            'Whitelist: ' + strWhiteList + '\n\t' +
+            'Moderators: ' + strModList;
+          if ( !options.getBoolean( 'share' ) ) {
+            return interaction.editReply( { content: showConfigs } );
+          }
+          else {
+            channel.send( { content: showConfigs } )
+            .then( sent => { return interaction.editReply( { content: 'I shared the settings in the channel.' } ); } )
+            .catch( errSend => { return interaction.editReply( { content: 'Error sharing the settings in the channel.' } ); } );        
+          }
+        break;
+        case 'set':        
+          if ( setStatus || setActivityType || setActivity ) {
+            const botPresence = bot.presence.toJSON();
+            const botActivities = botPresence.activities[ 0 ];
+            const botActivityType = Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );
+            
+            const selectActivityType = ( options.getString( 'activity-type' ) || botActivityType || 'Playing' );
+            const currActivityName = ( botActivityType === 1 ? botActivities.url : ( botActivityType === 4 ? botActivities.state : botActivities.name ) );
+            const selectActivityName = ( options.getString( 'activity' ) || currActivityName || '' );
+            const setPresenceActivity = [ { type: ActivityTypes[ selectActivityType ], name: selectActivityName } ];
+            const newActivity = ( selectActivityType === 'Custom' ? '' : ( selectActivityType === 'Competing' ? selectActivityType + ' in ' : '' ) ) + selectActivityName;
+            const selectStatus = ( options.getString( 'status' ) || botPresence.status );
+            
+            bot.setPresence( { activities: setPresenceActivity, status: selectStatus } );
+            interaction.editReply( { content: 'My presence has been changed to `' + newActivity + '` and my status is `' + selectStatus + '`' } );
+          }
       }
     }
-    else if ( isBotMod && !isBotOwner ) { return interaction.editReply( { content: 'You may only get my configuration.  Please try again.' } ); }
+    else if ( isBotMod && !isBotOwner ) { return interaction.editReply( { content: 'You may only get my configuration or set my presence.  Please try again.' } ); }
     else if ( isBotOwner ) {
       switch ( myTask ) {
         case 'add':
@@ -189,47 +227,49 @@ module.exports = {
           let clearMods = options.getBoolean( 'moderators' );
           if ( clearMods ) { arrClearLists.push( 'moderator' ); }
           let intListsClear = arrClearLists.length;
-          if ( intListsClear > 0 ) { arrClearLists[ 0 ] = arrClearLists[ 0 ].charAt( 0 ).toUpperCase() + arrClearLists[ 0 ].slice( 1 ); }
-          let haveHas = ( intListsClear === 1 ? 'has' : 'have' );
-          let clearLists = '';
-          switch ( intListsClear ) {
-            case 0: break;
-            case 1:
-              clearLists = arrClearLists[ 0 ] + ' list';
-              break;
-            case 2:
-              clearLists = arrClearLists.join( ' and ' ) + ' lists';
-              break;
-            case 3: default:
-              let lastList = arrClearLists.pop();
-              clearLists = arrClearLists.join( ', ' ) + ', and ' + lastList + ' lists';
-          }
-          
-          await botConfigDB.updateOne( { BotName: thisBotName }, {
-            BotName: botConfig.BotName,
-            ClientID: botConfig.ClientID,
-            Owner: botConfig.Owner,
-            Prefix: botConfig.Prefix,
-            Blacklist: ( clearBlack ? [] : arrBlackList ),
-            Whitelist: ( clearWhite ? [] : arrWhiteList ),
-            Mods: ( clearMods ? [] : botMods ),
-            DevGuild: botConfig.DevGuild
-          }, { upsert: true } )
-          .then( clearSuccess => {
-            interaction.deleteReply();
-            return channel.send( { content: 'My ' + clearLists + haveHas + ' been cleared.' } );
-          } )
-          .catch( clearError => {
-            console.error( 'Error attempting to clear my %s for %s: %o', clearLists, author.displayName, guild.name, clearError );
-            botOwner.send( 'Error attempting to clear my ' + clearLists + ' with `/system clear`.  Please check the console.' )
-            .then( sentOwner => {
-              return interaction.editReply( { content: 'Error attempting to clear my ' + clearLists + ' for this server! My owner has been notified.' } );
+          if ( intListsClear > 0 ) {
+            arrClearLists[ 0 ] = arrClearLists[ 0 ].charAt( 0 ).toUpperCase() + arrClearLists[ 0 ].slice( 1 );
+            let haveHas = ( intListsClear === 1 ? 'has' : 'have' );
+            let clearLists = '';
+            switch ( intListsClear ) {
+              case 0: break;
+              case 1:
+                clearLists = arrClearLists[ 0 ] + ' list';
+                break;
+              case 2:
+                clearLists = arrClearLists.join( ' and ' ) + ' lists';
+                break;
+              case 3: default:
+                let lastList = arrClearLists.pop();
+                clearLists = arrClearLists.join( ', ' ) + ', and ' + lastList + ' lists';
+            }
+            
+            await botConfigDB.updateOne( { BotName: thisBotName }, {
+              BotName: botConfig.BotName,
+              ClientID: botConfig.ClientID,
+              Owner: botConfig.Owner,
+              Prefix: botConfig.Prefix,
+              Blacklist: ( clearBlack ? [] : arrBlackList ),
+              Whitelist: ( clearWhite ? [] : arrWhiteList ),
+              Mods: ( clearMods ? [] : botMods ),
+              DevGuild: botConfig.DevGuild
+            }, { upsert: true } )
+            .then( clearSuccess => {
+              interaction.deleteReply();
+              return channel.send( { content: 'My ' + clearLists + haveHas + ' been cleared.' } );
             } )
-            .catch( errSend => {
-              console.error( 'Error attempting to DM you about above error: %o', errSend );
-              return interaction.editReply( { content: 'Error attempting to clear my ' + clearLists + ' for this server!' } );
+            .catch( clearError => {
+              console.error( 'Error attempting to clear my %s for %s: %o', clearLists, author.displayName, guild.name, clearError );
+              botOwner.send( 'Error attempting to clear my ' + clearLists + ' with `/system clear`.  Please check the console.' )
+              .then( sentOwner => {
+                return interaction.editReply( { content: 'Error attempting to clear my ' + clearLists + ' for this server! My owner has been notified.' } );
+              } )
+              .catch( errSend => {
+                console.error( 'Error attempting to DM you about above error: %o', errSend );
+                return interaction.editReply( { content: 'Error attempting to clear my ' + clearLists + ' for this server!' } );
+              } );
             } );
-          } );
+          }
           break;
         case 'remove':
           let remBlack = ( options.getUser( 'blacklist' ) ? options.getUser( 'blacklist' ).id : null );
@@ -340,42 +380,58 @@ module.exports = {
             if ( !devGuildId ) { console.error( chalk.bold.redBright( 'DevGuild missing attempting to reset configuration with `/system reset`.' ) ); }
           }
           break;
-        case 'set':
-          let newName = ( options.getString( 'name' ) || botConfig.BotName || config.botName );
-          let newOwner = options.getUser( 'owner' );
-          let newOwnerId = ( newOwner ? newOwner.id : ( botConfig.Owner || config.botOwnerId || botOwnerID ) );
-          let newPrefix = ( options.getString( 'prefix' ) || botConfig.Prefix || config.prefix );
-          let newDevGuild = ( options.getString( 'dev-guild' ) || botConfig.DevGuild || config.devGuildId );
-          await botConfigDB.updateOne( { BotName: thisBotName }, {
-              BotName: newName,
-              ClientID: botConfig.ClientID,
-              Owner: newOwnerId,
-              Prefix: newPrefix,
-              Blacklist: arrBlackList,
-              Whitelist: arrWhiteList,
-              Mods: botMods,
-              DevGuild: newDevGuild
-          }, { upsert: true } )
-          .then( setSuccess => {
-            console.log( chalk.bold.greenBright( 'Bot configuration modified in my database.' ) );
-            let strBlackList = '**' + ( arrBlackList.length === 0 ? 'No one is blacklisted!' : '[ **<@' + arrBlackList.join( '>**, **<@' ) + '>** ]' ) + '**';
-            let strModList = '**' + ( botMods.length === 0 ? 'No bot moderators!' : '[ **<@' + botMods.join( '>**, **<@' ) + '>** ]' ) + '**';
-            let strWhiteList =  '**' + ( arrWhiteList.length === 0 ? 'No one is whitelisted!' : '[ **<@' + arrWhiteList.join( '>**, **<@' ) + '>** ]' ) + '**';
-            return interaction.editReply( {
-              content: 'New configuration:\n\t' +
-              'Name: `' + newName + '` (:id:`' + botConfig.ClientID + '`)\n\t' +
-              'Owner: <@' + newOwnerId + '>\n\t' +
-              'Command Prefix: `' + newPrefix + '`\n\t' +
-              'Development Guild: `' + botGuilds.get( newDevGuild ).name + '`\n\t' +
-              'Blacklist: ' + strBlackList + '\n\t' +
-              'Whitelist: ' + strWhiteList + '\n\t' +
-              'Moderators: ' + strModList
+        case 'set':          
+          if ( newName || newOwner || newPrefix || newDevGuild ) {
+            newName = ( options.getString( 'name' ) || botConfig.BotName || config.botName );
+            let newOwnerId = ( newOwner ? newOwner.id : ( botConfig.Owner || config.botOwnerId || botOwnerID ) );
+            newPrefix = ( options.getString( 'prefix' ) || botConfig.Prefix || config.prefix );
+            newDevGuild = ( options.getString( 'dev-guild' ) || botConfig.DevGuild || config.devGuildId );
+            await botConfigDB.updateOne( { BotName: thisBotName }, {
+                BotName: newName,
+                ClientID: botConfig.ClientID,
+                Owner: newOwnerId,
+                Prefix: newPrefix,
+                Blacklist: arrBlackList,
+                Whitelist: arrWhiteList,
+                Mods: botMods,
+                DevGuild: newDevGuild
+            }, { upsert: true } )
+            .then( setSuccess => {
+              console.log( chalk.bold.greenBright( 'Bot configuration modified in my database.' ) );
+              let strBlackList = '**' + ( arrBlackList.length === 0 ? 'No one is blacklisted!' : '[ **<@' + arrBlackList.join( '>**, **<@' ) + '>** ]' ) + '**';
+              let strModList = '**' + ( botMods.length === 0 ? 'No bot moderators!' : '[ **<@' + botMods.join( '>**, **<@' ) + '>** ]' ) + '**';
+              let strWhiteList =  '**' + ( arrWhiteList.length === 0 ? 'No one is whitelisted!' : '[ **<@' + arrWhiteList.join( '>**, **<@' ) + '>** ]' ) + '**';
+              return interaction.editReply( {
+                content: 'New configuration:\n\t' +
+                'Name: `' + newName + '` (:id:`' + botConfig.ClientID + '`)\n\t' +
+                'Owner: <@' + newOwnerId + '>\n\t' +
+                'Command Prefix: `' + newPrefix + '`\n\t' +
+                'Development Guild: `' + botGuilds.get( newDevGuild ).name + '`\n\t' +
+                'Blacklist: ' + strBlackList + '\n\t' +
+                'Whitelist: ' + strWhiteList + '\n\t' +
+                'Moderators: ' + strModList
+              } );
+            } )
+            .catch( setError => {
+              console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to modify bot configuration in my database:\n${setError}` ) );
+              return interaction.editReply( { content: 'Encountered an error attempting to modify bot configuration in my database. Please check the console.' } );
             } );
-          } )
-          .catch( setError => {
-            console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to modify bot configuration in my database:\n${setError}` ) );
-            return interaction.editReply( { content: 'Encountered an error attempting to modify bot configuration in my database. Please check the console.' } );
-          } );
+          }
+          if ( setStatus || setActivityType || setActivity ) {
+            const botPresence = bot.presence.toJSON();
+            const botActivities = botPresence.activities[ 0 ];
+            const botActivityType = Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );
+            
+            const selectActivityType = ( options.getString( 'activity-type' ) || botActivityType || 'Playing' );
+            const currActivityName = ( botActivityType === 1 ? botActivities.url : ( botActivityType === 4 ? botActivities.state : botActivities.name ) );
+            const selectActivityName = ( options.getString( 'activity' ) || currActivityName || '' );
+            const setPresenceActivity = [ { type: ActivityTypes[ selectActivityType ], name: selectActivityName } ];
+            const newActivity = ( selectActivityType === 'Custom' ? '' : ( selectActivityType === 'Competing' ? selectActivityType + ' in ' : '' ) ) + selectActivityName;
+            const selectStatus = ( options.getString( 'status' ) || botPresence.status );
+            
+            bot.setPresence( { activities: setPresenceActivity, status: selectStatus } );
+            interaction.editReply( { content: 'My presence has been changed to `' + newActivity + '` and my status is `' + selectStatus + '`' } );
+          }
           break;
       }
     }
