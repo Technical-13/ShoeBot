@@ -4,6 +4,7 @@ const config = require( '../config.json' );
 const logChans = require( './getLogChans.js' );
 
 module.exports = async ( objError, options = { command: 'undefined', type: 'undefined' } ) => {
+console.warn( 'errorHandler recieved options:%o', options );
   const { command, type } = options;
   const cmd = ( typeof command === 'String' ? command : 'undefined' );
   const myTask = ( typeof type === 'String' ? myTask : 'undefined' );
@@ -15,6 +16,9 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
   const msgID = ( options.msgID ? options.msgID : null );
   const rawReaction = ( options.rawReaction ? options.rawReaction : null );
   const reaction = ( options.reaction ? options.reaction : null );
+  
+const processed = { cmd: cmd, myTask: myTask, author: author.toJSON(), channel: channel.toJSON(), chanType: chanType, doLog: doLog, guild: guild.toJSON(), msgID: msgID, rawReaction: rawReaction, reaction: reaction }
+console.warn( 'errorHandler processed options:%o', processed );
 
   if ( guild ? ( typeof doLog != 'boolean' ? true : options.doLog ) : false ) {
     const { chanChat, chanDefault, chanError, doLogs, strClosing } = ( doLog ? await logChans( guild ) : { chanChat: null, chanDefault: null, chanError: null, doLogs: doLog, strClosing: null } );
