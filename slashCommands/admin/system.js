@@ -38,10 +38,9 @@ module.exports = {
       { type: 3, name: 'status', description: 'Set the status.', choices: [
         { name: 'Online', value: 'online' }, { name: 'Idle', value: 'idle' },
         { name: 'Do Not Disturb', value: 'dnd' }, { name: 'Offline', value: 'offline' } ] },
-      { type: 3, name: 'activity-type', description: 'Set the activity type.', choices: [
-        { name: 'Playing', value: 'Playing' }, { name: 'Streaming', value: 'Streaming' },
-        { name: 'Listening', value: 'Listening' }, { name: 'Watching', value: 'Watching' },
-        { name: 'Custom', value: 'Custom' }, { name: 'Competing', value: 'Competing' } ] },
+      { type: 4, name: 'activity-type', description: 'Set the activity type.', choices: [
+        { name: 'Playing', value: 0 }, { name: 'Streaming', value: 1 }, { name: 'Listening', value: 2 },
+        { name: 'Watching', value: 3 }, { name: 'Custom', value: 4 }, { name: 'Competing', value: 5 } ] },
       { type: 3, name: 'activity', description: 'Set the activity.' },
       { type: 3, name: 'name', description: 'What\'s my name!?' },
       { type: 3, name: 'prefix', description: 'What character do I look for!?' },
@@ -100,11 +99,10 @@ module.exports = {
         case 'set':        
           if ( setStatus || setActivityType || setActivity ) {
             const botPresence = bot.presence.toJSON();
-            const botActivities = botPresence.activities[ 0 ];
-            const botActivityType = botActivities.type;//Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );
+            const { name, state, type, url } = botPresence.activities[ 0 ];
             
-            const selectActivityType = ( options.getString( 'activity-type' ) || botActivityType || 'Playing' );
-            const currActivityName = ( botActivityType === 1 ? botActivities.url : ( botActivityType === 4 ? botActivities.state : botActivities.name ) );
+            const selectActivityType = ( options.getString( 'activity-type' ) || type || 0 );
+            const currActivityName = ( type === 1 ? url : ( type === 4 ? state : name ) );
             const selectActivityName = ( options.getString( 'activity' ) || currActivityName || '' );
             const setPresenceActivity = [ { type: ActivityTypes[ selectActivityType ], name: selectActivityName } ];
             const newActivity = ( selectActivityType === 'Custom' ? '' : ( selectActivityType === 'Competing' ? selectActivityType + ' in ' : '' ) ) + selectActivityName;
