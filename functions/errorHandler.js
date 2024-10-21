@@ -8,9 +8,12 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
   
   const preAuthor = ( !options ? 'NO `options`!' : ( options.author ? options.author.id : options.author ) );
   const preChan = ( !options ? 'NO `options`!' : ( options.channel ? options.channel.id : options.channel ) );
+  const prechanType = ( !options ? 'NO `options`!' : options.chanType );
   const preGuild = ( !options ? 'NO `options`!' : ( options.guild ? options.guild.id : options.guild ) );
+  const premsgID = ( !options ? 'NO `options`!' : options.msgID );
+  const prerawReaction = ( !options ? 'NO `options`!' : options.rawReaction );
   const preEmoji = ( !options ? 'NO `options`!' : ( options.emoji ? options.emoji.id : options.emoji ) );
-  const preProcessed = { command: command, type: type, author: preAuthor, channel: preChan, chanType: chanType, guild: preGuild, msgID: msgID, rawReaction: rawReaction, reaction: preEmoji };
+  const preProcessed = { command: command, type: type, author: preAuthor, channel: preChan, chanType: prechanType, guild: preGuild, msgID: premsgID, rawReaction: prerawReaction, reaction: preEmoji };
   console.warn( 'errorHandler recieved options:%o', preProcessed );//*/
   
   const cmd = ( typeof command === 'string' ? command : 'undefined' );
