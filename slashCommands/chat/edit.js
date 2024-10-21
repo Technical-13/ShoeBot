@@ -46,70 +46,40 @@ module.exports = {
     const strEveryoneHere = ( mentionsEveryone ? '`@' + ( /@everyone/g.test( mySaying ) ? 'everyone' : 'here' ) + '`' : null );
     const strAuthorTag = author.tag;
     
-    const { chanChat, chanError, doLogs, strClosing } = await logChans( guild );
+    const { chanChat, doLogs, strClosing } = await logChans( guild );
 
     if ( mySaying ) {
       if ( canSpeak && ( !mentionsEveryone || hasMentionEveryone ) ) {
         channel.messages.fetch( msgID ).then( async message => {
           let oldContent = message.content;
           await message.edit( { content: mySaying } ).then( edited => {
-            interaction.editReply( { content: 'I edited my message!' } );
-            logChan.send( { content:
-              'I edited what I said in https://discord.com/channels/' + edited.guild.id + '/' + edited.channel.id + '/' + edited.id + ' at <@' + author.id + '>\'s request from:\n```\n' + oldContent + '\n```\nTo:\n```\n' + edited.content + '\n```\n' + strClosing
-            } ).catch( noLogChan => { console.error( 'logChan.send error:\n%o', noLogChan ) } );
-          } ).catch( async muted => {
-            switch ( muted.code ) {
-              case 50001 :
-                const noChan = '<#' + message.channel + '>';
-                await logErrorChan.send( 'Please give me permission to send to ' + noChan + '.\n' + strClosing );
-                await interaction.editReply( { content: 'I do not have permission to send messages in ' + noChan + '.' } );
-                break;
-              default:
-                botOwner.send( { content:
-                        'Error attempting to speak as requested by: <@' + author.id + '>' +
-                        ' from <#' + channel.id + '>:\n```\n' + muted + '\n```'
-                         } ).then( notified => {
-                  interaction.editReply( { content: 'Unknown error speaking. My owner, <@' + botOwner.id + '>, has been notified.' } );
-                } ).catch( notNotified => {
-                  interaction.editReply( { content: 'Unknown error speaking. Unable to notify my owner, <@' + botOwner.id + '>.' } );
-                } );
-                console.error( 'Unable to speak:\n\tCode: %o\n\tMsg: %o\n\tErr: %o', muted.code, muted.message, muted );
-            }//*/
-          } );
-        } ).catch( noMessage => {
-          switch( noMessage.code ) {
-            case 10008://Unknown Message
-              interaction.editReply( { content: 'Unable to find message to reply to.' } ); break;
-            case 50035://Invalid Form Body\nmessage_id: Value "..." is not snowflake.
-              interaction.editReply( { content: '`' + msgID + '` is not a valid `message-id`. Please try again.' } ); break;
-            default:
-              botOwner.send( {
-                content: 'Error attempting to reply with ' + mySaying + ' to message :ID:`' + msgID +
-                '` as requested by: <@' + author.id + '>' + ' from `' + guild.name +
-                '`<#' + channel.id + '>:\n```\n' + noMessage + '\n```'
-              } ).then( notified => {
-                interaction.editReply( {
-                  content: 'Unknown Error replying to message. My owner, <@' + botOwner.id + '>, has been notified.'
-                } ); } ).catch( notNotified => {
-                interaction.editReply( {
-                  content: 'Unknown Error replying to message. Unable to notify owner, <@' + botOwner.id + '>.'
-                } ); } );
-              console.error( '%o requested me to reply with %o (%s) to a message I couldn\'t find (#%s):\n\tCode: %o\n\tMsg: %o\n\tErr: %o', strAuthorTag, mySaying, msgID, noMessage.code, noMessage.message, noMessage );
-          }
-        } );
-      } else if ( mentionsEveryone && !hasMentionEveryone ) {
-        logChan.send( '<@' + author.id + '> has no permission to get me to ' + strEveryoneHere + ' in <#' + interaction.channel.id + '>. They tried to get me to say:\n```\n' + mySaying + '\n```' + strClosing )
-          .catch( noLogChan => { console.error( 'mentionsEveryone logChan.send error:\n%o', noLogChan ) } );
-        interaction.editReply( {
-          content: 'You don\'t have permission to get me to ' + strEveryoneHere + ' in `' +
-          guild.name + '`<#' + interaction.channel.id + '>.' } );
-      } else {
-        logChan.send( '<@' + author.id + '> has no permission to use my `/edit` command from <#' + channel.id + '>. They tried to get me to say:\n```\n' + mySaying + '\n```\n' + strClosing )
-          .catch( noLogChan => { console.error( 'no permission logChan.send error:\n%o', noLogChan ) } );
-        interaction.editReply( {
-          content: 'You don\'t have permission to get me to speak in `' +
-          guild.name + '`<#' + channel.id + '>.' } );
+            if ( doLogs ) {
+              chanChat.send( { content:
+                'I edited what I said in https://discord.com/channels/' + edited.guild.id + '/' + edited.channel.id + '/' + edited.id + ' at <@' + author.id + '>\'s request from:\n```\n' + oldContent + '\n```\nTo:\n```\n' + edited.content + '\n```' + strClosing
+              } )
+              .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'edit', guild: guild, type: 'logLogs' } ) ); } );
+            }
+            return interaction.editReply( { content: 'I edited my message for you!' } );
+          } )
+          .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'edit', guild: guild, type: 'msgSend' } ) ); } );
+        } )
+        .catch( async noMessage => { return interaction.editReply( await errHandler( noMessage, { command: 'edit', msgID: msgID, type: 'noMsg' } ) ); } );
       }
-    } else { interaction.editReply( { content: 'I don\'t know what to say.' } ); }
+      else if ( mentionsEveryone && !hasMentionEveryone ) {
+        if ( doLogs ) {
+          chanChat.send( { content:  '<@' + author.id + '> has no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>. They tried to get me to change my message from:\n```\n' + oldContent + '\n```\nTo:\n```\n' + edited.content + '\n```' + strClosing } )
+          .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'edit', guild: guild, type: 'logLogs' } ) ); } );
+        }
+        return interaction.editReply( { content: 'You have no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>!' } );
+      }
+      else {
+        if ( doLogs ) {
+          chanChat.send( { content:  '<@' + author.id + '> has no permission to use my `/edit` command from <#' + channel.id + '>. They tried to get me to change my message from:\n```\n' + oldContent + '\n```\nTo:\n```\n' + edited.content + '\n```' + strClosing } )
+          .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'edit', guild: guild, type: 'logLogs' } ) ); } );
+        }
+        return interaction.editReply( { content: 'You have no permission to use my `/edit` command in <#' + channel.id + '>!' } );
+      }
+    }
+    else { interaction.editReply( { content: 'I don\'t know what to say.' } ); }
   }
 };

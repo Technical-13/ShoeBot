@@ -43,48 +43,34 @@ module.exports = {
     const mentionsEveryone = /@(everyone|here)/g.test( mySaying );
     const strEveryoneHere = ( mentionsEveryone ? '`@' + ( /@everyone/g.test( mySaying ) ? 'everyone' : 'here' ) + '`' : null );
     
-    const { chanChat, chanError, doLogs, strClosing } = await logChans( guild );
+    const { chanChat, doLogs, strClosing } = await logChans( guild );
 
     if ( mySaying ) {
       if ( canSpeak && ( !mentionsEveryone || hasMentionEveryone ) ) {
         speakChannel.send( mySaying ).then( async spoke => {
-          interaction.editReply( { content: 'I said the thing!' } );
-
-          logChan.send( 'I spoke in https://discord.com/channels/' + spoke.guild.id + '/' + spoke.channel.id + '/' + spoke.id + ' at <@' + author.id + '>\'s request:\n```\n' + mySaying + '\n```\n' + strClosing )
-            .catch( noLogChan => { console.error( 'logChan.send error in say.js:\n%o', noLogChan ) } );
-        } ).catch( async muted => {
-          switch ( muted.code ) {
-            case 50001 :
-              const noChan = '<#' + speakChannel + '>';
-              await logErrorChan.send( 'Please give me permission to send to ' + noChan + '.\n' + strClosing );
-              await interaction.editReply( { content: 'I do not have permission to send messages in ' + noChan + '.' } );
-              break;
-            default:
-              botOwner.send( 'Error attempting to speak as requested by: <@' + author.id + '>' +
-                      ' from <#' + channel.id + '>:\n```\n' + muted + '\n```')
-                .then( notified => {
-                interaction.editReply( { content: 'Unknown error speaking. My owner, <@' + botOwner.id + '>, has been notified.' } );
-              } ).catch( notNotified => {
-                interaction.editReply( { content: 'Unknown error speaking. Unable to notify my owner, <@' + botOwner.id + '>.' } );
-              } );
-              console.error( 'Unable to speak in say.js:\n\tCode: %o\n\tMsg: %o\n\tErr: %o', muted.code, muted.message, muted );
+          if ( doLogs ) {
+            chanChat.send( {.send( 'I spoke in https://discord.com/channels/' + spoke.guild.id + '/' + spoke.channel.id + '/' + spoke.id + ' at <@' + author.id + '>\'s request:\n```' + mySaying + '\n```\n' + strClosing ) } )
+            .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'say', guild: guild, type: 'logLogs' } ) ); } );
           }
-        } );
+          return interaction.editReply( { content: 'I said the thing!' } );
+        } )
+        .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'say', guild: guild, type: 'msgSend' } ) ); } );
       }
       else if ( mentionsEveryone && !hasMentionEveryone ) {
-        logChan.send( '<@' + interaction.user.id + '> has no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>. They tried to get me to say:\n```\n' + mySaying + '\n```' + strClosing )
-          .catch( noLogChan => { console.error( 'mentionsEveryone logChan.send error in say.js:\n%o', noLogChan ) } );
-        interaction.editReply( {
-          content: 'You don\'t have permission to get me to ' + strEveryoneHere + ' in `' +
-          guild.name + '`<#' + channel.id + '>.' } );
+        if ( doLogs ) {
+          chanChat.send( '<@' + author.id + '> has no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>. They tried to get me to say:\n```\n' + mySaying + '\n```' + strClosing )
+          .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'say', guild: guild, type: 'logLogs' } ) ); } );
+        }
+        return interaction.editReply( { content: 'You have no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>!' } );
       }
       else {
-        logChan.send( '<@' + author.id + '> has no permission to use my `/say` command from <#' + channel.id + '>. They tried to get me to say:\n```\n' + mySaying + '\n```\n' + strClosing )
-          .catch( noLogChan => { console.error( 'no permission logChan.send error in say.js:\n%o', noLogChan ) } );
-        interaction.editReply( { content: 'You don\'t have permission to get me to speak in `' +
-                    guild.name + '`<#' + channel.id + '>.' } );
+        if ( doLogs ) {
+          chanChat.send( '<@' + author.id + '> has no permission to use my `/say` command from <#' + channel.id + '>. They tried to get me to say:\n```\n' + mySaying + '\n```' + strClosing )
+          .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'say', guild: guild, type: 'logLogs' } ) ); } );
+        }
+        return interaction.editReply( { content: 'You have no permission to use my `/say` command in <#' + channel.id + '>!' } );
       }
     }
-    else { interaction.editReply( { content: 'I don\'t know what to say.' } ); }
+    else { return interaction.editReply( { content: 'I don\'t know what to say.' } ); }
   }
 };

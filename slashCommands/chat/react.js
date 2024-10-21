@@ -43,7 +43,7 @@ module.exports = {
     const theReaction = options.getString( 'reaction' );
     const strAuthorTag = author.tag;
     
-    const { chanChat, chanError, doLogs, strClosing } = await logChans( guild );
+    const { chanChat, doLogs, strClosing } = await logChans( guild );
 
     var myReaction = theReaction;
     var rxp = /<:(.*)?:([\d]*)>/;
@@ -59,6 +59,7 @@ module.exports = {
         }
         return interaction.editReply( { content: 'Reacted!' } );
       } ).catch( async noReaction => { interaction.editReply( await errHandler( noReaction, { channel: msgChan, command: 'react', guild: msgGuild, msgID: msgID, rawReaction: theReaction, reaction: myReaction, type: 'noReaction' } ) ); } );
-    } ).catch( async noMessage => { interaction.editReply( await errHandler( noMessage, { command: 'react', msgID: msgID, type: 'noMsg' } ) ); } );
+    } )
+    .catch( async noMessage => { interaction.editReply( await errHandler( noMessage, { command: 'react', msgID: msgID, type: 'noMsg' } ) ); } );
   }
 };

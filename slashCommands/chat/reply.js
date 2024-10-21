@@ -46,65 +46,40 @@ module.exports = {
     const strEveryoneHere = ( mentionsEveryone ? '`@' + ( /@everyone/g.test( myResponse ) ? 'everyone' : 'here' ) + '`' : null );
     const strAuthorTag = author.tag;
     
-    const { chanChat, chanError, doLogs, strClosing } = await logChans( guild );
+    const { chanChat, doLogs, strClosing } = await logChans( guild );
 
     if ( myResponse ) {
       if ( canSpeak && ( !mentionsEveryone || hasMentionEveryone ) ) {
         channel.messages.fetch( msgID ).then( async message => {
-          let strClosing = ( logChan == guildOwner ? 'Please run `/config` to have these logs go to a channel in the server instead of your DMs.' : ( message.attachments.size === 0 ? '----' : '⬇️⬇️⬇️ Attachment Below ⬇️⬇️⬇️' ) );            
           await message.reply( myResponse ).then( async responded => {
-            interaction.editReply( { content: 'Responded!' } );
-            logChan.send( {
-              content: 'At <@' + author.id + '>\'s request, I replied to <@' + message.author.id + '>\'s message https://discord.com/channels/' + message.guild.id + '/' + message.channel.id + '/' + message.id + '\n' + ( message.content ? '```\n' + message.content + '\n```' : '*`Attachment Only`*\n```\n' +  + '\n```' ) + '\nWith https://discord.com/channels/' + responded.guild.id + '/' + responded.channel.id + '/' + responded.id + ':\n```\n' + myResponse + '\n```\n' + strClosing,
-              files: ( message.attachments.size === 0 ? null : [ message.attachments.first().attachment ] )
-            } ).catch( noLogChan => { console.error( 'logChan.send error in reply.js:\n%o', noLogChan ) } );
-          } ).catch( async muted => {
-            switch ( muted.code ) {
-              case 50001 :
-                const noChan = '<#' + message.channel + '>';
-                await logErrorChan.send( 'Please give me permission to send to ' + noChan + '.\n' + strClosing );
-                await interaction.editReply( { content: 'I do not have permission to send messages in ' + noChan + '.' } );
-                break;
-              default:
-                botOwner.send( 'Error attempting to speak as requested by: <@' + author.id + '>' +
-                        ' from <#' + channel.id + '>:\n```\n' + muted + '\n```')
-                  .then( notified => {
-                  interaction.editReply( { content: 'Unknown error speaking. My owner, <@' + botOwner.id + '>, has been notified.' } );
-                } ).catch( notNotified => {
-                  interaction.editReply( { content: 'Unknown error speaking. Unable to notify my owner, <@' + botOwner.id + '>.' } );
-                } );
-                console.error( 'Unable to speak:\n\tCode: %o\n\tMsg: %o\n\tErr: %o', muted.code, muted.message, muted );
+            if ( doLogs ) {
+              chanChat.send( {
+                content: 'At <@' + author.id + '>\'s request, I replied to <@' + message.author.id + '>\'s message https://discord.com/channels/' + message.guild.id + '/' + message.channel.id + '/' + message.id + '\n' + ( message.content ? '```\n' + message.content + '\n```' : '*`Attachment Only`*' ) + '\nWith https://discord.com/channels/' + responded.guild.id + '/' + responded.channel.id + '/' + responded.id + ':\n```\n' + myResponse + '\n```' + strClosing,
+                files: ( message.attachments.size === 0 ? null : [ message.attachments.first().attachment ] )
+              } )
+              .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'reply', guild: guild, type: 'logLogs' } ) ); } );
             }
-          } );//*/
-        } ).catch( noMessage => {
-          switch( noMessage.code ) {
-            case 10008://Unknown Message
-              interaction.editReply( { content: 'Unable to find message to reply to.' } ); break;
-            case 50035://Invalid Form Body\nmessage_id: Value "..." is not snowflake.
-              interaction.editReply( { content: '`' + msgID + '` is not a valid `message-id`. Please try again.' } ); break;
-            default:
-              botOwner.send( 'Error attempting to reply with ' + myResponse + ' to message :ID:`' + msgID +
-                      '` as requested by: <@' + author.id + '>' + ' from `' + guild.name +
-                      '`<#' + channel.id + '>:\n```\n' + noMessage + '\n```')
-                .then( notified => { interaction.editReply( { content: 'Unknown Error replying to message. My owner, <@' + botOwner.id + '>, has been notified.' } ); } )
-                .catch( notNotified => { interaction.editReply( { content: 'Unknown Error replying to message. Unable to notify owner, <@' + botOwner.id + '>.' } ); } );
-              console.error( '%o requested me to reply with %o (%s) to a message I couldn\'t find (#%s):\n\tCode: %o\n\tMsg: %o\n\tErr: %o',
-                      strAuthorTag, myResponse, msgID, noMessage.code, noMessage.message, noMessage
-                     );
-          }
-        } );
-      } else if ( mentionsEveryone && !hasMentionEveryone ) {
-        logChan.send( '<@' + author.id + '> has no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>. They tried to get me to say:\n```\n' + myResponse + '\n```' + strClosing )
-          .catch( noLogChan => { console.error( 'mentionsEveryone logChan.send error in reply.js:\n%o', noLogChan ) } );
-        interaction.editReply( {
-          content: 'You don\'t have permission to get me to ' + strEveryoneHere + ' in `' +
-          guild.name + '`<#' + channel.id + '>.' } );
-      } else {
-        logChan.send( '<@' + author.id + '> has no permission to use my `/reply` command from <#' + channel.id + '>. They tried to get me to say:\n```\n' + myResponse + '\n```\n' + strClosing )
-          .catch( noLogChan => { console.error( 'no permission logChan.send error in reply.js:\n%o', noLogChan ) } );
-        interaction.editReply( { content: 'You don\'t have permission to get me to reply in `' +
-                    guild.name + '`<#' + channel.id + '>.' } );
+            return interaction.editReply( { content: 'Responded!' } );
+          } )
+          .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'reply', guild: guild, type: 'msgSend' } ) ); } );
+        } )
+        .catch( async noMessage => { return interaction.editReply( await errHandler( noMessage, { command: 'reply', msgID: msgID, type: 'noMsg' } ) ); } );
       }
-    } else { interaction.editReply( { content: 'I don\'t know what to respond.' } ); }
+      else if ( mentionsEveryone && !hasMentionEveryone ) {
+        if ( doLogs ) {
+          chanChat.send( { content: '<@' + author.id + '> has no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>. They tried to get me to reply to a message I didn\'t bother to retrieve with:\n```\n' + myResponse + '\n```' + strClosing } )
+          .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'reply', guild: guild, type: 'logLogs' } ) ); } );
+        }
+        return interaction.editReply( { content: 'You have no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>!' } );
+      }
+      else {
+        if ( doLogs ) {
+          chanChat.send( { content: '<@' + author.id + '> has no permission to use my `/reply` command from <#' + channel.id + '>. They tried to get me to reply to a message I didn\'t bother to retrieve with:\n```\n' + myResponse + '\n```' + strClosing } )
+          .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'reply', guild: guild, type: 'logLogs' } ) ); } );
+        }
+        return interaction.editReply( { content: 'You have no permission to use my `/reply` command in <#' + channel.id + '>!' } );
+      }
+    }
+    else { return interaction.editReply( { content: 'I don\'t know what to respond.' } ); }
   }
 };
