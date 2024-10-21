@@ -106,7 +106,7 @@ module.exports = {
             const currActivityName = ( botActivityType === 1 ? botActivities.url : ( botActivityType === 4 ? botActivities.state : botActivities.name ) );
             const selectActivityName = ( options.getString( 'activity' ) || currActivityName || '' );
             const setPresenceActivity = [ { type: ActivityTypes[ selectActivityType ], name: selectActivityName } ];
-            const newActivity = ( selectActivityType === 'Custom' ? '' : ( selectActivityType === 'Competing' ? selectActivityType + ' in ' : '' ) ) + selectActivityName;
+            const newActivity = ( selectActivityType === 'Custom' ? '' : ( selectActivityType === 'Competing' ? selectActivityType + ' in ' : selectActivityType ) ) + selectActivityName;
             const selectStatus = ( options.getString( 'status' ) || botPresence.status );
             
             bot.setPresence( { activities: setPresenceActivity, status: selectStatus } );
