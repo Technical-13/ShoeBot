@@ -88,13 +88,11 @@ module.exports = {
             'Blacklist: ' + strBlackList + '\n\t' +
             'Whitelist: ' + strWhiteList + '\n\t' +
             'Moderators: ' + strModList;
-          if ( !options.getBoolean( 'share' ) ) {
-            return interaction.editReply( { content: showConfigs } );
-          }
+          if ( !options.getBoolean( 'share' ) ) { return interaction.editReply( { content: showConfigs } ); }
           else {
             channel.send( { content: showConfigs } )
             .then( sent => { return interaction.editReply( { content: 'I shared the settings in the channel.' } ); } )
-            .catch( errSend => { return interaction.editReply( { content: 'Error sharing the settings in the channel.' } ); } );        
+            .catch( async errSend => { return interaction.editReply( { content: await errHandler( errSend, { channel: channel, command: 'system', type: 'errSend' } ) } ); } );        
           }
         break;
         case 'set':        
@@ -109,8 +107,9 @@ module.exports = {
             const newActivity = ( selectActivityType === 'Custom' ? '' : ( selectActivityType === 'Competing' ? selectActivityType + ' in ' : selectActivityType ) ) + selectActivityName;
             const selectStatus = ( options.getString( 'status' ) || botPresence.status );
             
-            bot.setPresence( { activities: setPresenceActivity, status: selectStatus } );
-            return interaction.editReply( { content: 'My presence has been changed to `' + newActivity + '` and my status is `' + selectStatus + '`' } );
+            bot.setPresence( { activities: setPresenceActivity, status: selectStatus } )
+            .then( newPresence => { return interaction.editReply( { content: 'My presence has been changed to `' + newActivity + '` and my status is `' + selectStatus + '`' } ); } )
+            .catch( async errSetPresence => { return interaction.editReply( { content: await errHandler( errSetPresence, { command: 'system', type: 'setPresence' } ) } ); } );
           }
       }
     }
@@ -147,10 +146,7 @@ module.exports = {
                 console.log( chalk.bold.greenBright( `Blacklisted ${addBlack} (${botUsers.get( addBlack ).displayName}) in the database.` ) );
                 return interaction.editReply( { content: 'Blacklisted <@' + addBlack + '> in the database.' } );
               } )
-              .catch( addError => {
-                console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to blacklist ${addBlack} (${botUsers.get( addBlack ).displayName}) in database:\n${addError}` ) );
-                return interaction.editReply( { content: 'Encountered an error attempting to blacklist <@' + addBlack + '> in the database. Please check the console.' } );
-              } );
+              .catch( async addError => { return interaction.editReply( { content: await errHandler( addError, { command: 'system', modBlack: addBlack, modType: 'add', type: 'modifyDB' } ) } ); } );
             }
           }
           if ( addMod ) {
@@ -179,10 +175,7 @@ module.exports = {
                 console.log( chalk.bold.greenBright( `Added moderator, ${addMod} (${botUsers.get( addMod ).displayName}), to database.` ) );
                 return interaction.editReply( { content: 'Added moderator, <@' + addMod + '>, to database.' } );
               } )
-              .catch( addError => {
-                console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to add moderator, ${addMod} (${botUsers.get( addMod ).displayName}), to database:\n${addError}` ) );
-                return interaction.editReply( { content: 'Encountered an error attempting to add moderator, <@' + addMod + '>, to database. Please check the console.' } );
-              } );
+              .catch( async addError => { return interaction.editReply( { content: await errHandler( addError, { command: 'system', modMod: addMod, modType: 'add', type: 'modifyDB' } ) } ); } );
             }
           }
           if ( addWhite ) {
@@ -211,10 +204,7 @@ module.exports = {
                 console.log( chalk.bold.greenBright( `Whitelisted ${addWhite} (${botUsers.get( addWhite ).displayName}) in the database.` ) );
                 return interaction.editReply( { content: 'Whitelisted <@' + addWhite + '> in the database.' } );
               } )
-              .catch( addError => {
-                console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to whitelist ${addWhite} (${botUsers.get( addWhite ).displayName}) in database:\n${addError}` ) );
-                return interaction.editReply( { content: 'Encountered an error attempting to whitelist <@' + addWhite + '> in the database. Please check the console.' } );
-              } );
+              .catch( async addError => { return interaction.editReply( { content: await errHandler( addError, { command: 'system', modWhite: addWhite, modType: 'add', type: 'modifyDB' } ) } ); } );
             }
           }
           break;
@@ -258,17 +248,7 @@ module.exports = {
               interaction.deleteReply();
               return channel.send( { content: 'My ' + clearLists + haveHas + ' been cleared.' } );
             } )
-            .catch( clearError => {
-              console.error( 'Error attempting to clear my %s for %s: %o', clearLists, author.displayName, guild.name, clearError );
-              botOwner.send( 'Error attempting to clear my ' + clearLists + ' with `/system clear`.  Please check the console.' )
-              .then( sentOwner => {
-                return interaction.editReply( { content: 'Error attempting to clear my ' + clearLists + ' for this server! My owner has been notified.' } );
-              } )
-              .catch( errSend => {
-                console.error( 'Error attempting to DM you about above error: %o', errSend );
-                return interaction.editReply( { content: 'Error attempting to clear my ' + clearLists + ' for this server!' } );
-              } );
-            } );
+            .catch( async clearError => { return interaction.editReply( await errHandler( clearError, { author: author, clearLists: clearLists, command: 'system', guild: guild, type: 'modifyDB' } ) ); } );
           }
           break;
         case 'remove':
@@ -293,10 +273,7 @@ module.exports = {
                 console.log( chalk.bold.greenBright( `Removed ${remBlack} (${botUsers.get( remBlack ).displayName}) from Blacklist in the database.` ) );
                 return interaction.editReply( { content: 'Removed <@' + remBlack + '> from Blacklist in the database.' } );
               } )
-              .catch( remError => {
-                console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to remove ${remBlack} (${botUsers.get( remBlack ).displayName}) from Blacklist in the database:\n${remError}` ) );
-                return interaction.editReply( { content: 'Encountered an error attempting to remove <@' + remBlack + '> from Blacklist in the database. Please check the console.' } );
-              } );
+              .catch( async remError => { return interaction.editReply( { content: await errHandler( remError, { command: 'system', modBlack: remBlack, modType: 'remove', type: 'modifyDB' } ) } ); } );
             }
           }
           if ( remMod ) {
@@ -317,10 +294,7 @@ module.exports = {
                 console.log( chalk.bold.greenBright( `Removed moderator, ${remMod} (${botUsers.get( remMod ).displayName}), from database.` ) );
                 return interaction.editReply( { content: 'Removed moderator, <@' + remMod + '>, from database.' } );
               } )
-              .catch( remError => {
-                console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to remove moderator from database:\n${remError}` ) );
-                return interaction.editReply( { content: 'Encountered an error attempting to remove moderator, <@' + remMod + '>, from database. Please check the console.' } );
-              } );
+              .catch( async remError => { return interaction.editReply( { content: await errHandler( remError, { command: 'system', modMod: remMod, modType: 'remove', type: 'modifyDB' } ) } ); } );
             }
           }
           if ( remWhite ) {
@@ -341,10 +315,7 @@ module.exports = {
                 console.log( chalk.bold.greenBright( `Removed ${remWhite} (${botUsers.get( remWhite ).displayName}) from Whitelist in the database.` ) );
                 return interaction.editReply( { content: 'Removed <@' + remWhite + '> from Whitelist in the database.' } );
               } )
-              .catch( remError => {
-                console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to remove ${remWhite} (${botUsers.get( remWhite ).displayName}) from Whitelist in the database:\n${remError}` ) );
-                return interaction.editReply( { content: 'Encountered an error attempting to remove <@' + remWhite + '> from Whitelist in the database. Please check the console.' } );
-              } );
+              .catch( async remError => { return interaction.editReply( { content: await errHandler( remError, { command: 'system', modWhite: remWhite, modType: 'remove', type: 'modifyDB' } ) } ); } );
             }
           }
           break;
@@ -368,10 +339,7 @@ module.exports = {
               console.log( chalk.bold.greenBright( 'Bot configuration reset in my database.' ) );
               return interaction.editReply( { content: 'Bot configuration reset in my database.' } );
             } )
-            .catch( resetError => {
-              console.error( chalk.bold.red.bgYellowBright( 'Encountered an error attempting to reset configuration with `/system reset`:\n%o' ), resetError );
-              return interaction.editReply( { content: 'Encountered an error attempting to reset configuration with `/system reset`. Please check the console.' } );
-            } );
+            .catch( async resetError => { return interaction.editReply( { content: await errHandler( resetError, { command: 'system', type: 'modifyDB' } ) } ); } );
           }
           else {
             if ( !thisBotName ) { console.error( chalk.bold.redBright( 'BotName missing attempting to reset configuration with `/system reset`.' ) ); }
@@ -412,10 +380,7 @@ module.exports = {
                 'Moderators: ' + strModList
               } );
             } )
-            .catch( setError => {
-              console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to modify bot configuration in my database:\n${setError}` ) );
-              return interaction.editReply( { content: 'Encountered an error attempting to modify bot configuration in my database. Please check the console.' } );
-            } );
+            .catch( async setError => { return interaction.editReply( { content: await errHandler( setError, { command: 'system', type: 'modifyDB' } ) } ); } );
           }
           break;
       }

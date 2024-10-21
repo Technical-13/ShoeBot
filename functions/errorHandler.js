@@ -1,5 +1,6 @@
 const client = require( '..' );
 require( 'dotenv' ).config();
+const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const logChans = require( './getLogChans.js' );
 
@@ -9,13 +10,18 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
   const preAuthor = ( !options ? 'NO `options`!' : ( options.author ? options.author.id : options.author ) );
   const preChan = ( !options ? 'NO `options`!' : ( options.channel ? options.channel.id : options.channel ) );
   const prechanType = ( !options ? 'NO `options`!' : options.chanType );
+  const preclearLists = ( !options ? 'NO `options`!' : options.clearLists );
   const preGuild = ( !options ? 'NO `options`!' : ( options.guild ? options.guild.id : options.guild ) );
   const preinviteChanURL = ( !options ? 'NO `options`!' : options.inviteChanURL );
   const preinviteGuild = ( !options ? 'NO `options`!' : ( options.inviteGuild ? options.inviteGuild.id : options.inviteGuild ) );
+  const premodBlack = ( !options ? 'NO `options`!' : options.modBlack );
+  const premodMod = ( !options ? 'NO `options`!' : options.modMod );
+  const premodType = ( !options ? 'NO `options`!' : options.modType );
+  const premodWhite = ( !options ? 'NO `options`!' : options.modWhite );
   const premsgID = ( !options ? 'NO `options`!' : options.msgID );
   const prerawReaction = ( !options ? 'NO `options`!' : options.rawReaction );
   const preEmoji = ( !options ? 'NO `options`!' : ( options.emoji ? options.emoji.id : options.emoji ) );
-  const preProcessed = { command: command, type: type, author: preAuthor, channel: preChan, chanType: prechanType, guild: preGuild, inviteChanURL: preinviteChanURL, inviteGuild: preinviteGuild, msgID: premsgID, rawReaction: prerawReaction, reaction: preEmoji };
+  const preProcessed = { command: command, type: type, author: preAuthor, channel: preChan, chanType: prechanType, clearLists: preclearLists, guild: preGuild, inviteChanURL: preinviteChanURL, inviteGuild: preinviteGuild, modBlack: premodBlack, modMod: premodMod, modWhite: premodWhite, msgID: premsgID, rawReaction: prerawReaction, reaction: preEmoji };
   console.warn( 'errorHandler recieved options:%o', preProcessed );//*/
   
   const cmd = ( typeof command === 'string' ? command : 'undefined' );
@@ -23,9 +29,14 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
   const author = ( options.author ? options.author : null );
   const channel = ( options.channel ? options.channel : null );
   const chanType = ( options.chanType ? options.chanType : null );
+  const clearLists = ( options.clearLists ? options.clearLists : null );
   const guild = ( options.guild ? options.guild : null );
   const inviteChanURL = ( options.inviteChanURL ? options.inviteChanURL : null );
   const inviteGuild = ( options.inviteGuild ? options.inviteGuild : null );
+  const modBlack = ( options.modBlack ? options.modBlack : null );
+  const modMod = ( options.modMod ? options.modMod : null );
+  const modType = ( options.modType ? options.modType : null );
+  const modWhite = ( options.modWhite ? options.modWhite : null );
   const msgID = ( options.msgID ? options.msgID : null );
   const rawReaction = ( options.rawReaction ? options.rawReaction : null );
   const emoji = ( options.reaction ? options.reaction : null );
@@ -35,14 +46,15 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
   const prcGuild = ( guild ? guild.id : guild );
   const prcInviteGuild = ( inviteGuild ? inviteGuild.id : inviteGuild );
   const prcEmoji = ( emoji ? emoji.id : emoji );
-  const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, guild: prcGuild, inviteChanURL: inviteChanURL, inviteGuild: prcInviteGuild, msgID: msgID, rawReaction: rawReaction, reaction: prcEmoji };
+  const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, clearLists: clearLists, guild: prcGuild, inviteChanURL: inviteChanURL, inviteGuild: prcInviteGuild, modBlack: modBlack, modMod: modMod, modType: modType, modWhite: modWhite, msgID: msgID, rawReaction: rawReaction, reaction: prcEmoji };
   console.warn( 'errorHandler processed options:%o', processed );//*/
 
   const { chanChat, chanDefault, chanError, doLogs, strClosing } = ( guild ? await logChans( guild ) : { chanChat: null, chanDefault: null, chanError: null, doLogs: false, strClosing: null } );
   const { chanError: chanInviteError, doLogs: doInviteLogs, strClosing: strInviteClosing } = ( inviteGuild ? await logChans( inviteGuild ) : { chanError: chanError, doLogs: doLogs, strClosing: strClosing } );
 
+  const botUsers = client.users.cache;
   const ownerId = ( config.botOwnerId || process.env.OWNER_ID );
-  const botOwner = client.users.cache.get( ownerId );
+  const botOwner = botUsers.get( ownerId );
   const strConsole = '  Please check the console for details.';
   const strNotified = '  Error has been logged and my owner, <@' + botOwner.id + '>, has been notified.';
   const strLogged = '  Error has been logged and my owner, <@' + botOwner.id + '>, couldn\'t be notified.';
@@ -169,6 +181,37 @@ module.exports = async ( objError, options = { command: 'undefined', type: 'unde
         } );
         break;
       case 'modifyDB':
+        switch ( modType ) {
+          case 'clear':
+            console.error( 'Error attempting to clear my %s for %s: %o', clearLists, author.displayName, guild.name, objError );
+            botOwner.send( 'Error attempting to clear my ' + clearLists + ' with `/system clear`.' + strConsole )
+            .then( sentOwner => {
+              return { content: 'Error attempting to clear my ' + clearLists + ' for this server!' + strNotified };
+            } )
+            .catch( errSend => {
+              console.error( 'Error attempting to DM you about above error: %o', errSend );
+              return { content: 'Error attempting to clear my ' + clearLists + ' for this server!' + strLogged };
+            } );
+            break;
+          case 'add':
+          case 'remove':
+            const fromInTo = ( modType === 'remove' ? 'from the database ' + ( modMod ? 'bot moderator list' : ( modBlack ? 'black' : 'white' ) + 'list' ) : ( modMod ? 'to' : 'in' ) + ' the database' );
+            const doList = ( modMod ? modType : ( modType === 'add' ? '' : 'de-' ) ) + ( modMod ? ' a moderator' : ( modBlack ? 'blacklist' : 'whitelist' ) );
+            const modTarget = ( modMod || modBlack || modWhite );
+            console.error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to ${doList} ${modTarget} (${botUsers.get( modTarget ).displayName}) ${fromInTo}:\n${objError}` ) );
+            return { content: 'Encountered an error attempting to ' + doList + ' <@' + modTarget + '> ' + fromInTo + '.' + strConsole };
+            break;
+          case 'reset':
+            console.error( chalk.bold.red.bgYellowBright( 'Encountered an error attempting to reset configuration with `/system reset`:\n%o' ), objError );
+            return { content: 'Encountered an error attempting to reset configuration with `/system reset`.' + strConsole };
+            break;
+          case 'set':
+            console.error( chalk.bold.red.bgYellowBright( 'Encountered an error attempting to modify bot configuration in my database:\n%o' ), objError );
+            return { content: 'Encountered an error attempting to modify bot configuration in my database.' + strConsole };
+            break;
+        }
+        break;
+      case 'setPresence':
         break;
       case 'tryFunction':
         console.error( 'Error in %s.js: %s', cmd, objError.stack );
