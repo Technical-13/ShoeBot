@@ -21,7 +21,7 @@ const processed = { cmd: cmd, myTask: myTask, author: author.toJSON(), channel: 
 console.warn( 'errorHandler processed options:%o', processed );
 
   if ( guild ? ( typeof doLog != 'boolean' ? true : options.doLog ) : false ) {
-    const { chanChat, chanDefault, chanError, doLogs, strClosing } = ( doLog ? await logChans( guild ) : { chanChat: null, chanDefault: null, chanError: null, doLogs: doLog, strClosing: null } );
+    const { chanChat, chanDefault, chanError, doLogs, strClosing } = ( doLog ? await logChans( guild ) : { chanChat: null, chanDefault: null, chanError: null, doLogs: false, strClosing: null } );
   }
 
   const ownerId = ( config.botOwnerId || process.env.OWNER_ID );
