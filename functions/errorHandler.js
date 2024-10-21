@@ -49,11 +49,11 @@ console.warn( 'errorHandler recieved options:%o', options );
         let logChan = ( chanType === 'chat' ? chanChat : ( chanType === 'error' ? chanError : chanDefault ) );
         console.error( 'Unable to log to %s channel: %s#%s\n%o', chanType, guild.name, logChan.name, errLog );
         botOwner.send( { content: 'Unable to log to ' + chanType + ' channel <#' + logChan.id + '>.' + strConsole } )
-        .then( errSent => { return interaction.editReply( { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified } ) } )
+        .then( errSent => { return { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified } } )
         .catch( errNotSent => {
           console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
           if ( doLogs && chanType != 'error' ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strLogged + strClosing ); }
-          return interaction.editReply( { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged } );
+          return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
         } );
         break;
       case 'modifyDB':
@@ -62,41 +62,41 @@ console.warn( 'errorHandler recieved options:%o', options );
         switch ( objError.code ) {
           case 50001 :
             if ( doLogs ) { chanError.send( 'Please give me permission to send to <#' + channel.id + '>.' + strClosing ); }
-            return interaction.editReply( { content: 'I do not have permission to send messages in <#' + channel.id + '>.' } );
+            return { content: 'I do not have permission to send messages in <#' + channel.id + '>.' };
             break;
           default:
             console.error( 'Unable to send message for /' + cmd + ' request: %o', objError );
             botOwner.send( { content: 'Unable to send message for `/' + cmd + '` request.' + strConsole } )
             .then( errSent => {
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
-              return interaction.editReply( { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified } );
+              return { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified };
             } )
             .catch( errNotSent => {
               console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strLogged + strClosing ); }
-              return interaction.editReply( { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged } );
+              return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
             } );
         }
         break;
       case 'noMsg':
         switch( objError.code ) {
           case 10008://Unknown Message
-            return interaction.editReply( { content: 'Unable to find message.' } );
+            return { content: 'Unable to find message.' };
             break;
           case 50035://Invalid Form Body\nmessage_id: Value "..." is not snowflake.
-            return interaction.editReply( { content: '`' + msgID + '` is not a valid `message-id`. Please try again.' } );
+            return { content: '`' + msgID + '` is not a valid `message-id`. Please try again.' };
             break;
           default:
             console.error( 'Unable to find message 🆔`' + msgID + '` for /' + cmd + ' request: %o', objError );
             botOwner.send( { content: 'Unable to find message 🆔`' + msgID + '` for `/' + cmd + '` request.' + strConsole } )
             .then( errSent => {
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
-              return interaction.editReply( { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified } );
+              return { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified };
             } )
             .catch( errNotSent => {
               console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strLogged + strClosing ); }
-              return interaction.editReply( { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged } );
+              return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
             } );
         }
         break;
@@ -105,17 +105,17 @@ console.warn( 'errorHandler recieved options:%o', options );
           case 10014://Reaction invalid
             if ( doLogs ) { chanError.send( 'Failed to react to message https://discord.com/channels/' + guild.id + '/' + channel.id + '/' + msgID + ' with `' + rawReaction + '`.' + strClosing ); }
             console.error( '%s: %o', objError.code, objError.message );
-            return interaction.editReply( { content: '`' + rawReaction + '` is not a valid `reaction` to react with. Please try again; the emoji picker is helpful in getting valid reactions.' } );
+            return { content: '`' + rawReaction + '` is not a valid `reaction` to react with. Please try again; the emoji picker is helpful in getting valid reactions.' };
           default:
             console.error( '%s: Reaction to #%o with %o (%s) failed:\n\tMsg: %s\n\tErr: %o', objError.code, msgID, reaction, rawReaction, objError.message, objError );
             botOwner.send( 'Reaction to https://discord.com/channels/' + guild.id + '/' + channel.id + '/' + msgID + ' with `' + rawReaction + '` failed.' + strConsole )
             .then( errSent => {
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
-              return interaction.editReply( { content: 'Unknown Error reacting to message.' + strNotified } );
+              return { content: 'Unknown Error reacting to message.' + strNotified };
             } ).catch( errNotSent => {
               console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strLogged + strClosing ); }
-              return interaction.editReply( { content: 'Unknown Error reacting to message.' + strLogged } );
+              return { content: 'Unknown Error reacting to message.' + strLogged };
             } );
         }
         break;
@@ -127,12 +127,12 @@ console.warn( 'errorHandler recieved options:%o', options );
         botOwner.send( { content: 'Unknown type (' + myTask + ') to resolve error for.' + strConsole } )
         .then( errSent => {
           if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
-          return interaction.editReply( { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified } );
+          return { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified };
         } )
         .catch( errNotSent => {
           console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
           if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strLogged + strClosing ); }
-          return interaction.editReply( { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged } );
+          return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
         } );
     }
   } catch ( errHandleErrors ) { console.error( 'Error in errorHandler.js: %s', errHandleErrors.stack ); }

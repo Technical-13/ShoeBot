@@ -1,7 +1,7 @@
 const { ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
 const userPerms = require( '../../functions/getPerms.js' );
 const logChans = require( '../../functions/getLogChans.js' );
-const errorHandler = require( '../../functions/errorHandler.js' );
+const errHandler = require( '../../functions/errorHandler.js' );
 
 module.exports = {
   name: 'say',
