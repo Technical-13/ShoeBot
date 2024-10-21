@@ -2,7 +2,9 @@ const { ActivityTypes, ApplicationCommandType, InteractionContextType } = requir
 const config = require( '../../config.json' );
 const chalk = require( 'chalk' );
 const { model, Schema } = require( 'mongoose' );
-const botConfigDB = require( '../../models/BotConfig.js' );const thisBotName = process.env.BOT_USERNAME;
+const botConfigDB = require( '../../models/BotConfig.js' );
+const errHandler = require( '../../functions/errorHandler.js' );
+const thisBotName = process.env.BOT_USERNAME;
 const botOwnerID = process.env.OWNER_ID;
 
 
@@ -51,8 +53,7 @@ module.exports = {
     await interaction.deferReply( { ephemeral: true } );
     const { channel, guild, options, user: author } = interaction;
     const strAuthorTag = author.tag;
-    const botConfig = await botConfigDB.findOne( { BotName: thisBotName } )
-      .catch( errFindBot => { console.error( 'Unable to find botConfig:\n%o', errFindBot ); } );
+    const botConfig = await botConfigDB.findOne( { BotName: thisBotName } ).catch( async errFindBot => { await errHandler( errFindBot, { command: 'system', type: 'getBotDB' } ); } );
     const { user: bot } = client;
     const botUsers = client.users.cache;
     const botGuilds = client.guilds.cache;
