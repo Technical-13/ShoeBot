@@ -17,8 +17,11 @@ console.warn( 'errorHandler recieved options:%o', options );
   const rawReaction = ( options.rawReaction ? options.rawReaction : null );
   const reaction = ( options.reaction ? options.reaction : null );
   
-const processed = { cmd: cmd, myTask: myTask, author: author.toJSON(), channel: channel.toJSON(), chanType: chanType, doLog: doLog, guild: guild.toJSON(), msgID: msgID, rawReaction: rawReaction, reaction: reaction }
-console.warn( 'errorHandler processed options:%o', processed );
+  const prcAuthor = ( author ? author.toJSON() : author );
+  const prcChan = ( channel ? channel.toJSON() : channel );
+  const prcGuild = ( guild ? guild.toJSON() : guild );
+  const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, doLog: doLog, guild: prcGuild, msgID: msgID, rawReaction: rawReaction, reaction: reaction }
+  console.warn( 'errorHandler processed options:%o', processed );
 
   if ( guild ? ( typeof doLog != 'boolean' ? true : options.doLog ) : false ) {
     const { chanChat, chanDefault, chanError, doLogs, strClosing } = ( doLog ? await logChans( guild ) : { chanChat: null, chanDefault: null, chanError: null, doLogs: false, strClosing: null } );
