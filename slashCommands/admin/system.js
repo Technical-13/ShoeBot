@@ -101,7 +101,7 @@ module.exports = {
           if ( setStatus || setActivityType || setActivity ) {
             const botPresence = bot.presence.toJSON();
             const botActivities = botPresence.activities[ 0 ];
-            const botActivityType = Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );
+            const botActivityType = botActivities.type;//Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );
             
             const selectActivityType = ( options.getString( 'activity-type' ) || botActivityType || 'Playing' );
             const currActivityName = ( botActivityType === 1 ? botActivities.url : ( botActivityType === 4 ? botActivities.state : botActivities.name ) );
