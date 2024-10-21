@@ -14,12 +14,13 @@ console.warn( 'errorHandler recieved options:%o', options );
   const guild = ( options.guild ? options.guild : null );
   const msgID = ( options.msgID ? options.msgID : null );
   const rawReaction = ( options.rawReaction ? options.rawReaction : null );
-  const reaction = ( options.reaction ? options.reaction : null );
+  const emoji = ( options.reaction ? options.reaction : null );
   
   const prcAuthor = ( author ? author.id : author );
   const prcChan = ( channel ? channel.id : channel );
   const prcGuild = ( guild ? guild.id : guild );
-  const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, guild: prcGuild, msgID: msgID, rawReaction: rawReaction, reaction: reaction }
+  const prcEmoji = ( emoji ? emoji.id : emoji );
+  const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, guild: prcGuild, msgID: msgID, rawReaction: rawReaction, reaction: prcEmoji }
   console.warn( 'errorHandler processed options:%o', processed );
 
   const { chanChat, chanDefault, chanError, doLogs, strClosing } = ( guild ? await logChans( guild ) : { chanChat: null, chanDefault: null, chanError: null, doLogs: false, strClosing: null } );
@@ -104,7 +105,7 @@ console.warn( 'errorHandler recieved options:%o', options );
             console.error( '%s: %o', objError.code, objError.message );
             return { content: '`' + rawReaction + '` is not a valid `reaction` to react with. Please try again; the emoji picker is helpful in getting valid reactions.' };
           default:
-            console.error( '%s: Reaction to #%o with %o (%s) failed:\n\tMsg: %s\n\tErr: %o', objError.code, msgID, reaction, rawReaction, objError.message, objError );
+            console.error( '%s: Reaction to #%o with %o (%s) failed:\n\tMsg: %s\n\tErr: %o', objError.code, msgID, emoji, rawReaction, objError.message, objError );
             botOwner.send( 'Reaction to https://discord.com/channels/' + guild.id + '/' + channel.id + '/' + msgID + ' with `' + rawReaction + '` failed.' + strConsole )
             .then( errSent => {
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
