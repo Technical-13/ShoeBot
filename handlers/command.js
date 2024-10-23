@@ -14,7 +14,8 @@ module.exports = ( client ) => {
       let command = require( `../commands/${dir}/${file}` );
       const cmdName = file.split( '.js' )[ 0 ];
       if ( command ) {
-        client.commands.set( command.name, command )
+        command.group = dir;
+        client.commands.set( command.name, command );
         if ( command.aliases && Array.isArray( command.aliases ) ) { command.aliases.forEach( alias => { client.aliases.set( alias, command.name ) } ); }
         if ( command.ownerOnly || command.modOnly ) { table.addRow( dir, cmdName, '➰' ); }
         else { table.addRow( dir, cmdName, '✅' ); } }

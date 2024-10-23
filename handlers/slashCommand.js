@@ -31,6 +31,7 @@ module.exports = ( client ) => {
         devOnlyCmds.push( {
           name: slashCommand.name,
           name_localizations: slashCommand.name_localizations ? slashCommand.name_localizations : null,
+          group: dir,
           description: slashCommand.description,
           description_localizations: slashCommand.description_localizations ? slashCommand.description_localizations : null,
           type: slashCommand.type,
@@ -45,6 +46,7 @@ module.exports = ( client ) => {
         slashCommands.push( {
           name: slashCommand.name,
           name_localizations: slashCommand.name_localizations ? slashCommand.name_localizations : null,
+          group: dir,
           description: slashCommand.description,
           description_localizations: slashCommand.description_localizations ? slashCommand.description_localizations : null,
           type: slashCommand.type,
