@@ -6,7 +6,7 @@ const config = require( './config.json' );
 require( 'dotenv' ).config();
 
 ( async () => {
-  await initDatabase();
+  const botConfig = await initDatabase();
 } )();
 
 const client = new Client( {
@@ -31,7 +31,9 @@ client.prefix = config.prefix;
 client.slashCommands = new Collection();
 
 /* ------------------ STATIC COMMANDS ------------------ */
-var staticCmds = config.staticCmds;
+var staticCmds = [];
+if ( config.staticCmds ) { staticCmds.concat( config.staticCmds ); }
+if ( botConfig.StaticCmds ) { staticCmds.concat( botConfig.StaticCmds ); }
 staticCmds.push( 'admin' );
 client.groups.set( 'staticCmds', staticCmds );
 
