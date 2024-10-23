@@ -7,6 +7,7 @@ require( 'dotenv' ).config();
 
 ( async () => {
   const botConfig = await initDatabase();
+  console.log( 'Got my configuration from database:\n%o', botConfig );
 
   const client = new Client( {
     intents: [

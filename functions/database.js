@@ -20,6 +20,7 @@ module.exports = async () => {
     console.log( chalk.greenBright( 'Connected to MongoDB.' ) );
     const newBot = ( await botConfig.countDocuments( { BotName: thisBotName } ) === 0 ? true : false );
     if ( newBot && thisBotName && botOwnerID && clientId && devGuildId ) {
+      console.log( 'Creating new bot database.' );
       const newBotConfig = {
         BotName: thisBotName,
         Blacklist: [],
@@ -41,7 +42,11 @@ module.exports = async () => {
       if ( !clientId ) { throw new Error( chalk.bold.redBright( 'Owner missing attempting to initialize bot configuration in my database.' ) ); }
       if ( !devGuildId ) { throw new Error( chalk.bold.redBright( 'DevGuild missing attempting to initialize bot configuration in my database.' ) ); }
     }
-    else { return await botConfig.findOne( { BotName: thisBotName } ); }
+    else {
+      const myConfig = await botConfig.findOne( { BotName: thisBotName } );
+      console.log( 'Returning my configuration from database:\n%o', myConfig );
+      return myConfig;
+    }
   } )
   .catch( dbConnectErr => { console.error( chalk.bold.red( `Failed to connect to MongoDB:\n${dbConnectErr}` ) ); } );
 }
