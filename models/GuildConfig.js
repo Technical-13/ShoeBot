@@ -3,7 +3,7 @@ const { model, Schema } = require( 'mongoose' );
 let guildSchema = new Schema( {
   Guild: String,
   Blacklist: { Members: [ String ], Roles: [ String ] },
-  Commands [ String ],
+  Commands: [ String ],
   Invite: String,
   Logs: {
     Active: Boolean,
