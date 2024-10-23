@@ -19,11 +19,12 @@ const client = new Client( {
 } );
 
 /* ------------------ COLLECTIONS ------------------ */
-client.commands = new Collection();
 client.aliases = new Collection();
+client.commands = new Collection();
+client.groups = new Collection();
 client.events = new Collection();
-client.slashCommands = new Collection();
 client.prefix = config.prefix;
+client.slashCommands = new Collection();
 
 module.exports = client;
 
