@@ -7,44 +7,44 @@ require( 'dotenv' ).config();
 
 ( async () => {
   const botConfig = await initDatabase();
-} )();
 
-const client = new Client( {
-	intents: [
-		GatewayIntentBits.Guilds, 
-		GatewayIntentBits.GuildMessages, 
-		GatewayIntentBits.GuildPresences, 
-		GatewayIntentBits.GuildMessageReactions, 
-		GatewayIntentBits.DirectMessages,
-		GatewayIntentBits.GuildMembers,
-		GatewayIntentBits.MessageContent,
-	], 
-	partials: [ Partials.Channel, Partials.Message, Partials.User, Partials.GuildMember, Partials.Reaction ]
-} );
+  const client = new Client( {
+    intents: [
+      GatewayIntentBits.Guilds, 
+      GatewayIntentBits.GuildMessages, 
+      GatewayIntentBits.GuildPresences, 
+      GatewayIntentBits.GuildMessageReactions, 
+      GatewayIntentBits.DirectMessages,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.MessageContent,
+    ], 
+    partials: [ Partials.Channel, Partials.Message, Partials.User, Partials.GuildMember, Partials.Reaction ]
+  } );
 
-/* ------------------ COLLECTIONS ------------------ */
-client.aliases = new Collection();
-client.commands = new Collection();
-client.groups = new Collection();
-client.events = new Collection();
-client.prefix = config.prefix;
-client.slashCommands = new Collection();
+/* -------------------- COLLECTIONS -------------------- */
+  client.aliases = new Collection();
+  client.commands = new Collection();
+  client.groups = new Collection();
+  client.events = new Collection();
+  client.prefix = config.prefix;
+  client.slashCommands = new Collection();
 
 /* ------------------ STATIC COMMANDS ------------------ */
-var staticCmds = [];
-if ( config.staticCmds ) { staticCmds.concat( config.staticCmds ); }
-if ( botConfig.StaticCmds ) { staticCmds.concat( botConfig.StaticCmds ); }
-staticCmds.push( 'admin' );
-client.groups.set( 'staticCmds', staticCmds );
+  var staticCmds = [];
+  if ( config.staticCmds ) { staticCmds.concat( config.staticCmds ); }
+  if ( botConfig.StaticCmds ) { staticCmds.concat( botConfig.StaticCmds ); }
+  staticCmds.push( 'admin' );
+  client.groups.set( 'staticCmds', staticCmds );
 
-module.exports = client;
+  module.exports = client;
 
-fs.readdirSync( './handlers' ).forEach( ( handler ) => {
-	require( `./handlers/${handler}` )( client );
-} );
+  fs.readdirSync( './handlers' ).forEach( ( handler ) => {
+    require( `./handlers/${handler}` )( client );
+  } );
 
-client.login( process.env.token )
+  client.login( process.env.token )
   .then( async loggedIn => { console.log( 'Successfully connected!' ); } )
   .catch( errLogin => { console.error( 'There was an error logging in:\n%s', errLogin.stack ); } );
+} )();
 
 keepAlive();
