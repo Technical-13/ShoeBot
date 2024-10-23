@@ -5,6 +5,8 @@ const { Client, GatewayIntentBits, Partials, Collection } = require( 'discord.js
 const config = require( './config.json' );
 require( 'dotenv' ).config();
 
+await initDatabase();
+
 const client = new Client( {
 	intents: [
 		GatewayIntentBits.Guilds, 
@@ -32,8 +34,6 @@ staticCmds.push( 'admin' );
 client.groups.set( 'staticCmds', staticCmds );
 
 module.exports = client;
-
-initDatabase();
 
 fs.readdirSync( './handlers' ).forEach( ( handler ) => {
 	require( `./handlers/${handler}` )( client );
