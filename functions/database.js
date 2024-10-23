@@ -29,7 +29,6 @@ module.exports = async () => {
         Mods: ( config.moderatorIds || [] ),
         Owner: botOwnerID,
         Prefix: ( config.prefix || '!' ),
-        StaticCmds: [],
         Whitelist: []
       };
       await botConfig.create( newBotConfig )

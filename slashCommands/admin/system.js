@@ -327,13 +327,13 @@ module.exports = {
           if ( thisBotName && botOwnerID && clientId && devGuildId ) {
             await botConfigDB.updateOne( { BotName: thisBotName }, {
               BotName: thisBotName,
+              Blacklist: [],
               ClientID: clientId,
+              DevGuild: devGuildId,
+              Mods: ( config.moderatorIds || [] ),
               Owner: botOwnerID,
               Prefix: ( config.prefix || '!' ),
-              Blacklist: [],
-              Whitelist: [],
-              Mods: ( config.moderatorIds || [] ),
-              DevGuild: devGuildId
+              Whitelist: []
             }, { upsert: true } )
             .then( resetSuccess => {
               console.log( chalk.bold.greenBright( 'Bot configuration reset in my database.' ) );
@@ -356,13 +356,13 @@ module.exports = {
             newDevGuild = ( options.getString( 'dev-guild' ) || botConfig.DevGuild || config.devGuildId );
             await botConfigDB.updateOne( { BotName: thisBotName }, {
                 BotName: newName,
+                Blacklist: arrBlackList,
                 ClientID: botConfig.ClientID,
+                DevGuild: newDevGuild,
+                Mods: botMods,
                 Owner: newOwnerId,
                 Prefix: newPrefix,
-                Blacklist: arrBlackList,
-                Whitelist: arrWhiteList,
-                Mods: botMods,
-                DevGuild: newDevGuild
+                Whitelist: arrWhiteList
             }, { upsert: true } )
             .then( setSuccess => {
               console.log( chalk.bold.greenBright( 'Bot configuration modified in my database.' ) );

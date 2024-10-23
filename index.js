@@ -33,7 +33,6 @@ require( 'dotenv' ).config();
 /* ------------------ STATIC COMMANDS ------------------ */
   var staticCmds = [];
   if ( config.staticCmds ) { staticCmds.concat( config.staticCmds ); }
-  if ( botConfig.StaticCmds ) { staticCmds.concat( botConfig.StaticCmds ); }
   staticCmds.push( 'admin' );
   client.groups.set( 'staticCmds', staticCmds );
 

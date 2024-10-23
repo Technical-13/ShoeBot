@@ -8,7 +8,6 @@ let botSchema = new Schema( {
   Mods: [ String ],
   Owner: String,
   Prefix: String,
-  StaticCmds: [ String ],
   Whitelist: [ String ]
 } );
 
