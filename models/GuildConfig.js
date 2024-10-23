@@ -17,8 +17,8 @@ let guildSchema = new Schema( {
     Channel: String,
     Msg: String,
     Role: String
-  }
-  Whitelist: { Members: [ String ], Roles: [ String ] },
+  },
+  Whitelist: { Members: [ String ], Roles: [ String ] }
 } );
 
 module.exports = model( 'GuildConfig', guildSchema );
