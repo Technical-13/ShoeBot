@@ -26,6 +26,11 @@ client.events = new Collection();
 client.prefix = config.prefix;
 client.slashCommands = new Collection();
 
+/* ------------------ STATIC COMMANDS ------------------ */
+var staticCmds = config.staticCmds;
+staticCmds.push( 'admin' );
+client.groups.set( 'staticCmds', staticCmds );
+
 module.exports = client;
 
 initDatabase();
