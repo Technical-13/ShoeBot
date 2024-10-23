@@ -5,7 +5,9 @@ const { Client, GatewayIntentBits, Partials, Collection } = require( 'discord.js
 const config = require( './config.json' );
 require( 'dotenv' ).config();
 
-await initDatabase();
+( async () => {
+  await initDatabase();
+} )();
 
 const client = new Client( {
 	intents: [
