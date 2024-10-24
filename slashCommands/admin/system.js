@@ -144,7 +144,7 @@ module.exports = {
                 console.log( chalk.bold.greenBright( `Blacklisted ${addBlack} (${botUsers.get( addBlack ).displayName}) in the database.` ) );
                 return interaction.editReply( { content: 'Blacklisted <@' + addBlack + '> in the database.' } );
               } )
-              .catch( async addError => { return interaction.editReply( { content: await errHandler( addError, { command: 'system', modBlack: addBlack, modType: 'add', type: 'modifyDB' } ) } ); } );
+              .catch( async addError => { return interaction.editReply( { content: await errHandler( addError, { command: 'system', modBlack: addBlack, modType: 'add', type: 'modifyBotDB' } ) } ); } );
             }
           }
           if ( addMod ) {
@@ -173,7 +173,7 @@ module.exports = {
                 console.log( chalk.bold.greenBright( `Added moderator, ${addMod} (${botUsers.get( addMod ).displayName}), to database.` ) );
                 return interaction.editReply( { content: 'Added moderator, <@' + addMod + '>, to database.' } );
               } )
-              .catch( async addError => { return interaction.editReply( { content: await errHandler( addError, { command: 'system', modMod: addMod, modType: 'add', type: 'modifyDB' } ) } ); } );
+              .catch( async addError => { return interaction.editReply( { content: await errHandler( addError, { command: 'system', modMod: addMod, modType: 'add', type: 'modifyBotDB' } ) } ); } );
             }
           }
           if ( addWhite ) {
@@ -202,7 +202,7 @@ module.exports = {
                 console.log( chalk.bold.greenBright( `Whitelisted ${addWhite} (${botUsers.get( addWhite ).displayName}) in the database.` ) );
                 return interaction.editReply( { content: 'Whitelisted <@' + addWhite + '> in the database.' } );
               } )
-              .catch( async addError => { return interaction.editReply( { content: await errHandler( addError, { command: 'system', modWhite: addWhite, modType: 'add', type: 'modifyDB' } ) } ); } );
+              .catch( async addError => { return interaction.editReply( { content: await errHandler( addError, { command: 'system', modWhite: addWhite, modType: 'add', type: 'modifyBotDB' } ) } ); } );
             }
           }
           break;
@@ -246,7 +246,7 @@ module.exports = {
               interaction.deleteReply();
               return channel.send( { content: 'My ' + clearLists + haveHas + ' been cleared.' } );
             } )
-            .catch( async clearError => { return interaction.editReply( await errHandler( clearError, { author: author, clearLists: clearLists, command: 'system', guild: guild, type: 'modifyDB' } ) ); } );
+            .catch( async clearError => { return interaction.editReply( await errHandler( clearError, { author: author, clearLists: clearLists, command: 'system', guild: guild, modType: 'clear', type: 'modifyBotDB' } ) ); } );
           }
           break;
         case 'remove':
@@ -271,7 +271,7 @@ module.exports = {
                 console.log( chalk.bold.greenBright( `Removed ${remBlack} (${botUsers.get( remBlack ).displayName}) from Blacklist in the database.` ) );
                 return interaction.editReply( { content: 'Removed <@' + remBlack + '> from Blacklist in the database.' } );
               } )
-              .catch( async remError => { return interaction.editReply( { content: await errHandler( remError, { command: 'system', modBlack: remBlack, modType: 'remove', type: 'modifyDB' } ) } ); } );
+              .catch( async remError => { return interaction.editReply( { content: await errHandler( remError, { command: 'system', modBlack: remBlack, modType: 'remove', type: 'modifyBotDB' } ) } ); } );
             }
           }
           if ( remMod ) {
@@ -292,7 +292,7 @@ module.exports = {
                 console.log( chalk.bold.greenBright( `Removed moderator, ${remMod} (${botUsers.get( remMod ).displayName}), from database.` ) );
                 return interaction.editReply( { content: 'Removed moderator, <@' + remMod + '>, from database.' } );
               } )
-              .catch( async remError => { return interaction.editReply( { content: await errHandler( remError, { command: 'system', modMod: remMod, modType: 'remove', type: 'modifyDB' } ) } ); } );
+              .catch( async remError => { return interaction.editReply( { content: await errHandler( remError, { command: 'system', modMod: remMod, modType: 'remove', type: 'modifyBotDB' } ) } ); } );
             }
           }
           if ( remWhite ) {
@@ -313,7 +313,7 @@ module.exports = {
                 console.log( chalk.bold.greenBright( `Removed ${remWhite} (${botUsers.get( remWhite ).displayName}) from Whitelist in the database.` ) );
                 return interaction.editReply( { content: 'Removed <@' + remWhite + '> from Whitelist in the database.' } );
               } )
-              .catch( async remError => { return interaction.editReply( { content: await errHandler( remError, { command: 'system', modWhite: remWhite, modType: 'remove', type: 'modifyDB' } ) } ); } );
+              .catch( async remError => { return interaction.editReply( { content: await errHandler( remError, { command: 'system', modWhite: remWhite, modType: 'remove', type: 'modifyBotDB' } ) } ); } );
             }
           }
           break;
@@ -337,7 +337,7 @@ module.exports = {
               console.log( chalk.bold.greenBright( 'Bot configuration reset in my database.' ) );
               return interaction.editReply( { content: 'Bot configuration reset in my database.' } );
             } )
-            .catch( async resetError => { return interaction.editReply( { content: await errHandler( resetError, { command: 'system', type: 'modifyDB' } ) } ); } );
+            .catch( async resetError => { return interaction.editReply( { content: await errHandler( resetError, { command: 'system', modType: 'reset', type: 'modifyBotDB' } ) } ); } );
           }
           else {
             if ( !thisBotName ) { console.error( chalk.bold.redBright( 'BotName missing attempting to reset configuration with `/system reset`.' ) ); }
@@ -378,7 +378,7 @@ module.exports = {
                 'Moderators: ' + strModList
               } );
             } )
-            .catch( async setError => { return interaction.editReply( { content: await errHandler( setError, { command: 'system', type: 'modifyDB' } ) } ); } );
+            .catch( async setError => { return interaction.editReply( { content: await errHandler( setError, { command: 'system', modType: 'set', type: 'modifyBotDB' } ) } ); } );
           }
           break;
       }
