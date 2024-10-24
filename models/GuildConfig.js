@@ -12,6 +12,7 @@ let guildSchema = new Schema( {
     Error: String
   },
   Prefix: String,
+  Premium: Boolean,
   Welcome: {
     Active: Boolean,
     Channel: String,

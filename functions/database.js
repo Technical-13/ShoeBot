@@ -43,8 +43,7 @@ module.exports = async () => {
     }
     else {
       const myConfig = await botConfig.findOne( { BotName: thisBotName } );
-      console.log( 'Returning my configuration from database:' );
-      console.log( myConfig );
+      console.log( 'Returning configuration from database:\n%o', myConfig );
       return myConfig;
     }
   } )

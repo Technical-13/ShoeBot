@@ -20,17 +20,17 @@ module.exports = {
       { type: 6, name: 'moderator', description: 'User to add as a moderator.' },
       { type: 6, name: 'whitelist', description: 'User to permit to use all non-mod commands.' }
     ] }/* add //*/,
-    { type: 1, name: 'clear', description: 'Clear guild\'s black, white. and/or moderator lists.', options: [
-      { type: 5, name: 'blacklist', description: 'Clear guild\'s blacklist.' },
-      { type: 5, name: 'moderators', description: 'Clear guild\'s moderator list.' },
-      { type: 5, name: 'whitelist', description: 'Clear guild\'s whitelist.' }
+    { type: 1, name: 'clear', description: 'Clear bot\'s black, white, and/or moderator lists.', options: [
+      { type: 5, name: 'blacklist', description: 'Clear bot\'s blacklist.' },
+      { type: 5, name: 'moderators', description: 'Clear bot\'s moderator list.' },
+      { type: 5, name: 'whitelist', description: 'Clear bot\'s whitelist.' }
     ] }/* clear //*/,
     { type: 1, name: 'get', description: 'Get my current configuration.', options: [
       { type: 5, name: 'share', description: 'Share result to current channel instead of making it ephemeral.' }
     ] },
     { type: 1, name: 'remove', description: 'Remove a user from one of my lists.', options: [
       { type: 6, name: 'blacklist', description: 'User to remove from blacklist.' },
-      { type: 6, name: 'moderator', description: 'User to remove from moderator.' },
+      { type: 6, name: 'moderator', description: 'User to remove as moderator.' },
       { type: 6, name: 'whitelist', description: 'User to remove from whitelist.' }
     ] }/* remove //*/,
     { type: 1, name: 'reset', description: 'Watch me rise from the ashes like a phoenix.' },
@@ -43,7 +43,6 @@ module.exports = {
         { name: 'Listening', value: 'Listening' }, { name: 'Watching', value: 'Watching' },
         { name: 'Custom', value: 'Custom' }, { name: 'Competing', value: 'Competing' } ] },
       { type: 3, name: 'activity', description: 'Set the activity.' },
-      { type: 3, name: 'name', description: 'What\'s my name!?' },
       { type: 3, name: 'prefix', description: 'What character do I look for!?' },
       { type: 6, name: 'owner', description: 'Who is my master!?' },
       { type: 3, name: 'dev-guild', description: 'Where am I from!?' }
@@ -52,11 +51,10 @@ module.exports = {
   run: async ( client, interaction ) => {
     await interaction.deferReply( { ephemeral: true } );
     const { channel, guild, options, user: author } = interaction;
-    const strAuthorTag = author.tag;
     const botConfig = await botConfigDB.findOne( { BotName: thisBotName } ).catch( async errFindBot => { await errHandler( errFindBot, { command: 'system', type: 'getBotDB' } ); } );
-    const { user: bot } = client;
-    const botUsers = client.users.cache;
-    const botGuilds = client.guilds.cache;
+    const { guilds, user: bot, users } = client;
+    const botUsers = users.cache;
+    const botGuilds = guilds.cache;
     const botOwner = botUsers.get( botConfig.Owner );
     const isBotOwner = ( author.id === botOwner.id ? true : false );
     const arrBlackList = ( botConfig.Blacklist || [] );
