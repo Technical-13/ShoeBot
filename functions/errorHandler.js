@@ -204,7 +204,15 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
               const fromIn = ( modType === 'remove' ? 'from the database ' + ( modBlack ? 'black' : 'white' ) + 'list' : ' in the database' );
               const doList = ( modType === 'add' ? '' : 'de-' ) + ( modBlack ? 'blacklist' : 'whitelist' );
               const modTarget = ( modBlack || modWhite );
-              console.error( 'Error attempting to %s %s (%s) %s:\n%o', doList, modTarget, botUsers.get( modTarget ).displayName, fromIn, objError );
+              var modTargetName;
+              switch ( modTargetType ) {
+                case 'GuildMember':
+                  modTargetName = '@' + botUsers.get( modTarget ).displayName;
+                  break;
+                case 'Role':
+                  modTargetName = '&' + guild.roles.cache.get( modTarget ).name;
+              }
+              console.error( 'Error attempting to %s %s (%s) %s:\n%o', doList, modTarget, modTargetName, fromIn, objError );
               return { content: 'Error attempting to ' + doList + ' <@' + modTarget + '> ' + fromIn + '.' + strConsole };
             }
             if ( command === 'system' ) {
