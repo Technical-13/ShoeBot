@@ -33,7 +33,7 @@ module.exports = async () => {
       };
       await botConfig.create( newBotConfig )
       .then( initSuccess => { console.log( chalk.bold.greenBright( 'Bot configuration initialized in my database.' ) ); return newBotConfig; } )
-      .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( `Encountered an error attempting to initialize bot configuration in my database:\n${initError}` ) ); } );
+      .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to initialize bot configuration in my database:\n${initError}` ) ); } );
     }
     else if ( !thisBotName || !botOwnerID || !clientId || !devGuildId ) {
       if ( !thisBotName ) { throw new Error( chalk.bold.redBright( 'BotName missing attempting to initialize bot configuration in my database.' ) ); }

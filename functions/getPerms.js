@@ -67,11 +67,11 @@ module.exports = async ( user, guild, doBlacklist = true ) => {
         await guildConfigDB.create( createConfig )
         .then( createSuccess => {
           console.log( 'Created a default DB entry for %s that was not set up.', guild.name );
-          botOwner.send( 'Encountered an error attempting to find `' + guild.name + '`(:id:' + guild.id + ') in my database, so I created it with default config.' );
+          botOwner.send( 'Error attempting to find `' + guild.name + '`(:id:' + guild.id + ') in my database, so I created it with default config.' );
         } )
         .catch( createError => {
-          console.error( 'Encountered an error attempting to create %s (ID:%s) guild configuration in my database in config.js:\n%s', guild.name, guild.id, createError.stack );
-          botOwner.send( 'Encountered an error attempting to create `' + guild.name + '`(:id:' + guild.id + ') guild configuration in my database.  Please check console for details.' );
+          console.error( 'Error attempting to create %s (ID:%s) guild configuration in my database in config.js:\n%s', guild.name, guild.id, createError.stack );
+          botOwner.send( 'Error attempting to create `' + guild.name + '`(:id:' + guild.id + ') guild configuration in my database.  Please check console for details.' );
         } );
         guildConfig = createConfig;
       }
