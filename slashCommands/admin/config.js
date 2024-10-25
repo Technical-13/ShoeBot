@@ -243,12 +243,12 @@ module.exports = {
         }
       }
       if ( hasManageGuild ) {// add, logs, remove, welcome
+        let addDone = [];
         switch ( myTask ) {
           case 'add':
             let addBlack = ( options.getMentionable( 'blacklist' ) ? options.getMentionable( 'blacklist' ) : null );
             let addWhite = ( options.getMentionable( 'whitelist' ) ? options.getMentionable( 'whitelist' ) : null );
             if ( !addBlack && !addWhite ) { return interaction.editReply( { content: 'You forgot to tell me which member or role to add.' } ); }
-            let addDone = [];
             if ( addBlack ) {
               errHandlerOptions.modTargetType = addBlack.constructor.name;
               errHandlerOptions.modBlack = addBlack.id;
@@ -330,7 +330,6 @@ module.exports = {
             let remBlack = ( options.getMentionable( 'blacklist' ) ? options.getMentionable( 'blacklist' ) : null );
             let remWhite = ( options.getMentionable( 'whitelist' ) ? options.getMentionable( 'whitelist' ) : null );
             if ( !remBlack && !remWhite ) { return interaction.editReply( { content: 'You forgot to tell me which member or role to remove.' } ); }
-            let addDone = [];
             if ( remBlack ) {
               errHandlerOptions.modTargetType = remBlack.constructor.name;
               errHandlerOptions.modBlack = remBlack.id;
