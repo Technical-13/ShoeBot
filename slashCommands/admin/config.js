@@ -204,6 +204,7 @@ module.exports = {
             successResult = 'My ' + clearLists + ' for this server ' + haveHas + ' been cleared.';
             break;
           case 'commands':
+            return interaction.editReply( { content: 'Coming **SOON:tm:**' } );// SOON SOON SOON SOON SOON SOON SOON SOON SOON SOON
             break;
           case 'reset':
             newConfig = createConfig;
@@ -256,20 +257,20 @@ module.exports = {
               let blackActions;
               switch ( addBlack.constructor.name ) {
                 case 'GuildMember':
-                  if ( oldBlackMembers.indexOf( addBlack.id ) != -1 ) { return interaction.editReply( { content: '<@' + addBlack.id + '> is already on the blacklist!' } ) }
-                  oldBlackMembers.push( addBlack.id );
+                  if ( oldBlackMembers.indexOf( addBlack.id ) != -1 ) { return interaction.editReply( { content: '<@' + addBlack.id + '> is already on the blacklist!' } ) }                  
+                  newConfig.Blacklist.Members = oldBlackMembers.concat( [ addBlack.id ] );
                   blackActions = '<@' + addBlack.id + '> was added';
                   if ( oldWhiteMembers.indexOf( addBlack.id ) != -1 ) {
-                    oldWhiteMembers.splice( oldWhiteMembers.indexOf( addBlack.id ), 1 );
+                    newConfig.Whitelist.Members = oldWhiteMembers.splice( oldWhiteMembers.indexOf( addBlack.id ), 1 );
                     blackActions = '<@' + addBlack.id + '> was moved from the whitelist';
                   }
                   break;
                 case 'Role':
                   if ( oldBlackRoles.indexOf( addBlack.id ) != -1 ) { return interaction.editReply( { content: '<@&' + addBlack.id + '> is already on the blacklist!' } ) }
-                  oldBlackRoles.push( addBlack.id );
+                  newConfig.Blacklist.Roles = oldBlackRoles.concat( [ addBlack.id ] );
                   blackActions = '<@&' + addBlack.id + '> was added';
                   if ( oldWhiteRoles.indexOf( addBlack.id ) != -1 ) {
-                    oldWhiteRoles.splice( oldWhiteRoles.indexOf( addBlack.id ), 1 );
+                    newConfig.Whitelist.Roles = oldWhiteRoles.splice( oldWhiteRoles.indexOf( addBlack.id ), 1 );
                     blackActions = '<@&' + addBlack.id + '> was moved from the whitelist';
                   }
                   break;
@@ -290,19 +291,19 @@ module.exports = {
               switch ( addWhite.constructor.name ) {
                 case 'GuildMember':
                   if ( oldWhiteMembers.indexOf( addWhite.id ) != -1 ) { return interaction.editReply( { content: '<@' + addWhite.id + '> is already on the blacklist!' } ) }
-                  oldWhiteMembers.push( addWhite.id );
+                  newConfig.Whitelist.Members = oldWhiteMembers.concat( [ addWhite.id ] );
                   whiteActions = '<@' + addWhite.id + '> was added';
                   if ( oldBlackMembers.indexOf( addWhite.id ) != -1 ) {
-                    oldBlackMembers.splice( oldBlackMembers.indexOf( addWhite.id ), 1 );
+                    newConfig.Blacklist.Members = oldBlackMembers.splice( oldBlackMembers.indexOf( addWhite.id ), 1 );
                     whiteActions = '<@' + addWhite.id + '> was moved from the blacklist';
                   }
                   break;
                 case 'Role':
                   if ( oldWhiteRoles.indexOf( addWhite.id ) != -1 ) { return interaction.editReply( { content: '<@&' + addWhite.id + '> is already on the blacklist!' } ) }
-                  oldWhiteRoles.push( addWhite.id );
+                  newConfig.Whitelist.Roles = oldWhiteRoles.concat( [ addWhite.id ] );
                   whiteActions = '<@&' + addWhite.id + '> was added';
                   if ( oldBlackRoles.indexOf( addWhite.id ) != -1 ) {
-                    oldBlackRoles.splice( oldBlackRoles.indexOf( addWhite.id ), 1 );
+                    newConfig.Blacklist.Roles = oldBlackRoles.splice( oldBlackRoles.indexOf( addWhite.id ), 1 );
                     whiteActions = '<@&' + addWhite.id + '> was moved from the blacklist';
                   }
                   break;
@@ -326,6 +327,7 @@ module.exports = {
             var setChat = ( options.getChannel( 'log-chat' ) ? options.getChannel( 'log-chat' ).id : ( setDefault ? setDefault : null ) );
             var setError = ( options.getChannel( 'log-error' ) ? options.getChannel( 'log-error' ).id : ( setDefault ? setDefault : null ) );
             if ( !changedLogsActive && !setDefault && !setChat && !setError ) { return interaction.editReply( { content: 'You forgot to tell me what logs to change.' } ); }
+            return interaction.editReply( { content: 'Coming **SOON:tm:**' } );// SOON SOON SOON SOON SOON SOON SOON SOON SOON SOON
             break;
           case 'remove':
             let remBlack = ( options.getMentionable( 'blacklist' ) ? options.getMentionable( 'blacklist' ) : null );
@@ -338,12 +340,12 @@ module.exports = {
               switch ( remBlack.constructor.name ) {
                 case 'GuildMember':
                   if ( oldBlackMembers.indexOf( remBlack.id ) === -1 ) { return interaction.editReply( { content: '<@' + remBlack.id + '> was not on the blacklist!' } ) }
-                  oldBlackMembers.splice( remBlack.id, 1 );
+                  newConfig.Blacklist.Members = oldBlackMembers.splice( remBlack.id, 1 );
                   whiteActions = '<@' + remBlack.id + '> was removed';
                   break;
                 case 'Role':
                   if ( oldBlackRoles.indexOf( remBlack.id ) === -1 ) { return interaction.editReply( { content: '<@&' + remBlack.id + '> was not on the blacklist!' } ) }
-                  oldBlackRoles.splice( remBlack.id, 1 );
+                  newConfig.Blacklist.Roles = oldBlackRoles.splice( remBlack.id, 1 );
                   whiteActions = '<@&' + remBlack.id + '> was removed';
                   break;
                 default:
@@ -363,12 +365,12 @@ module.exports = {
               switch ( remWhite.constructor.name ) {
                 case 'GuildMember':
                   if ( oldWhiteMembers.indexOf( remWhite.id ) === -1 ) { return interaction.editReply( { content: '<@' + remWhite.id + '> was not on the whitelist!' } ) }
-                  oldWhiteMembers.splice( remWhite.id, 1 );
+                  newConfig.Whitelist.Members = oldWhiteMembers.splice( remWhite.id, 1 );
                   whiteActions = '<@' + remWhite.id + '> was removed';
                   break;
                 case 'Role':
                   if ( oldWhiteRoles.indexOf( remWhite.id ) === -1 ) { return interaction.editReply( { content: '<@&' + remWhite.id + '> was not on the whitelist!' } ) }
-                  oldWhiteRoles.splice( remWhite.id, 1 );
+                  newConfig.Whitelist.Roles = oldWhiteRoles.splice( remWhite.id, 1 );
                   whiteActions = '<@&' + remWhite.id + '> was removed';
                   break;
                 default:
@@ -393,6 +395,7 @@ module.exports = {
             var joinWelcome = ( options.getRole( 'welcome-role' ) ? options.getRole( 'welcome-role' ).id : null );
             var giveRole = ( options.getBoolean( 'welcome-role-give' ) ? options.getBoolean( 'welcome-role-give' ) : ( joinWelcome ? true : false ) );
             if ( !changedWelcomeActive && !strWelcome && !setWelcome && !joinWelcome ) { return interaction.editReply( { content: 'You forgot to tell me what welcoming stuff to change.' } ); }
+            return interaction.editReply( { content: 'Coming **SOON:tm:**' } );// SOON SOON SOON SOON SOON SOON SOON SOON SOON SOON
             break;
         }
       }
