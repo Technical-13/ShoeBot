@@ -236,6 +236,7 @@ module.exports = {
             }
             let setsDone;
             switch ( setDone.length ) {
+              case 0: setsDone = '**NOTHING**'; break;
               case 1: setsDone = setDone[ 0 ]; break;
               case 2: setsDone = setDone.join( ' and ' ); break;
               default:
