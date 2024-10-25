@@ -95,10 +95,10 @@ module.exports = async ( user, guild, doBlacklist = true ) => {
     if ( guildBlacklist.length > 0 ) {
       for ( const role of guildBlacklist ) {
         let roleMembers = Array.from( await guild.roles.cache.get( role ).members.keys() );
-        arrBlackGuild.concat( roleMembers );
+        arrBlackGuild = arrBlackGuild.concat( roleMembers );
       }
     }
-    if ( arrBlackMembers.length > 0 ) { arrBlackGuild.concat( arrBlackMembers ); }
+    if ( arrBlackMembers.length > 0 ) { arrBlackGuild = arrBlackGuild.concat( arrBlackMembers ); }
     const isGuildBlacklisted = ( guildBlacklist.indexOf( user.id ) != -1 ? true : false );
 
     const guildWhitelist = ( guildConfig.Whitelist ? ( guildConfig.Whitelist.Roles || [] ) : [] );
@@ -107,10 +107,10 @@ module.exports = async ( user, guild, doBlacklist = true ) => {
     if ( guildWhitelist.length > 0 ) {
       for ( const role of guildWhitelist ) {
         let roleMembers = Array.from( await guild.roles.cache.get( role ).members.keys() );
-        arrWhiteGuild.concat( roleMembers );
+        arrWhiteGuild = arrWhiteGuild.concat( roleMembers );
       }
     }
-    if ( arrWhiteMembers.length > 0 ) { arrWhiteGuild.concat( arrWhiteMembers ); }    
+    if ( arrWhiteMembers.length > 0 ) { arrWhiteGuild = arrWhiteGuild.concat( arrWhiteMembers ); }    
     const isGuildWhitelisted = ( guildWhitelist.indexOf( user.id ) != -1 ? true : false );
     
     const guildPrefix = ( guildConfig.Prefix || globalPrefix );

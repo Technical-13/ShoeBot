@@ -86,13 +86,13 @@ console.log( 'Blacklisted roles to process: %i', oldBlackRoles.length );
       for ( const role of oldBlackRoles ) {
 console.log( 'Role to process: %s', role );
         let roleMembers = Array.from( await guild.roles.cache.get( role ).members.keys() );
-console.log( 'roleMembers: %p', roleMembers );
-        oldBlackGuild.concat( roleMembers );
+console.log( 'roleMembers: %o', roleMembers );
+        oldBlackGuild = oldBlackGuild.concat( roleMembers );
 console.log( 'New oldBlackGuild: %o', oldBlackGuild );
       }
     }
 console.log( 'Blacklisted members to add: %i', oldBlackMembers.length );
-    if ( oldBlackMembers.length > 0 ) { oldBlackGuild.concat( oldBlackMembers ); }
+    if ( oldBlackMembers.length > 0 ) { oldBlackGuild = oldBlackGuild.concat( oldBlackMembers ); }
 console.log( 'New oldBlackGuild: %o', oldBlackGuild );
     const oldCommands = oldConfig.Commands;
     const oldInvite = oldConfig.Invite;
@@ -117,13 +117,13 @@ console.log( 'Whitelisted roles to process: %i', oldWhiteRoles.length );
       for ( const role of oldWhiteRoles ) {
 console.log( 'Role to process: %s', role );
         let roleMembers = Array.from( await guild.roles.cache.get( role ).members.keys() );
-console.log( 'roleMembers: %p', roleMembers );
-        oldWhiteGuild.concat( roleMembers );
+console.log( 'roleMembers: %o', roleMembers );
+        oldWhiteGuild = oldWhiteGuild.concat( roleMembers );
 console.log( 'New oldWhiteGuild: %o', oldWhiteGuild );
       }
     }
 console.log( 'Whitelisted members to add: %i', oldWhiteMembers.length );
-    if ( oldWhiteMembers.length > 0 ) { oldWhiteGuild.concat( oldWhiteMembers ); }
+    if ( oldWhiteMembers.length > 0 ) { oldWhiteGuild = oldWhiteGuild.concat( oldWhiteMembers ); }
 console.log( 'New oldWhiteGuild: %o', oldWhiteGuild );
     
     const chanDefaultLog = ( oldLogDefault ? guild.channels.cache.get( oldLogDefault ) : guildOwner );
