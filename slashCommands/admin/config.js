@@ -22,7 +22,7 @@ module.exports = {
     { type: 1, name: 'get', description: 'Get all settings for the server.', options: [// share
       { type: 5, name: 'share', description: 'Share result to current channel instead of making it ephemeral.' }
     ] },//*/
-    { type: 1, name: 'logs', description: '', options: [// do-logs, log-chat, log-default, log-error
+    { type: 1, name: 'logs', description: '(Dis|En)able logs and set channels for them.', options: [// do-logs, log-chat, log-default, log-error
       { type: 5, name: 'do-logs', description: 'Send logs for uses of commands that may be devious in nature' },// disable all logs
       { type: 7, name: 'log-chat', description: 'Channel to log chat command (`/edit`, `/react`, `/reply`, and `/say`) requests.' },// chat channel
       { type: 7, name: 'log-default', description: 'Channel to log all requests not otherwise specified.' },// default channel
