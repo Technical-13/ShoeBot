@@ -94,7 +94,7 @@ module.exports = async ( user, guild, doBlacklist = true ) => {
     var arrBlackGuild = [];
     if ( guildBlacklist.length > 0 ) {
       for ( const role of guildBlacklist ) {
-        let roleMembers = await role.members.cache.fetch();
+        let roleMembers = Array.from( await guild.roles.cache.get( role ).members.keys() );
         arrBlackGuild.concat( roleMembers );
       }
     }
@@ -106,7 +106,7 @@ module.exports = async ( user, guild, doBlacklist = true ) => {
     var arrWhiteGuild = [];
     if ( guildWhitelist.length > 0 ) {
       for ( const role of guildWhitelist ) {
-        let roleMembers = await role.members.cache.fetch();
+        let roleMembers = Array.from( await guild.roles.cache.get( role ).members.keys() );
         arrWhiteGuild.concat( roleMembers );
       }
     }
