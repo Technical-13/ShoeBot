@@ -26,7 +26,8 @@ module.exports = {
       { type: 5, name: 'do-logs', description: 'Send logs for uses of commands that may be devious in nature' },// disable all logs
       { type: 7, name: 'log-chat', description: 'Channel to log chat command (`/edit`, `/react`, `/reply`, and `/say`) requests.' },// chat channel
       { type: 7, name: 'log-default', description: 'Channel to log all requests not otherwise specified.' },// default channel
-      { type: 7, name: 'log-error', description: 'Channel to log errors.' }// error channel
+      { type: 7, name: 'log-error', description: 'Channel to log errors.' },// error channel
+      { type: 5, name: 'log-reset', description: 'Reset logging to enabled and all logs DMed to guild owner.' }// reset log settings
     ] },//*/
     { type: 1, name: 'remove', description: 'Remove a user from the guild blacklist or whitelist.', options: [// blacklist, whitelist
       { type: 9, name: 'blacklist', description: 'Role or Member to remove from blacklist.' },
@@ -44,7 +45,8 @@ module.exports = {
       { type: 5, name: 'welcome-dm', description: 'Send the welcome message to DM?  (default: TRUE)' },// welcome dm
       { type: 7, name: 'welcome-channel', description: 'Which channel would you like to send the message?' },// welcome channel
       { type: 5, name: 'welcome-role-give', description: 'Give new members a role on join?' },// give welcome role
-      { type: 8, name: 'welcome-role', description: 'Which role, if any, would you like to give new members on join?' }// welcome role
+      { type: 8, name: 'welcome-role', description: 'Which role, if any, would you like to give new members on join?' },// welcome role
+      { type: 5, name: 'welcome-reset', description: 'Reset welcoming of new members to disabled.' },// reset welcomer settings
     ] }//*/
   ],
   run: async ( client, interaction ) => {
@@ -239,7 +241,7 @@ module.exports = {
                 let lastDone = setDone.pop();
                 setsDone = setDone.join( ', ' ) + ', and ' + lastDone;
             }
-            successResultLog = setsDone + ( setsDone.length === 1 ? ' was' : ' were' ) + ' set by <@' + author.id + '>.';
+            successResultLog = setsDone + ( setDone.length === 1 ? ' was' : ' were' ) + ' set by <@' + author.id + '>.';
             successResultReply = 'You have set ' + setsDone + '.';
             break;
         }
@@ -326,7 +328,8 @@ module.exports = {
             var setDefault = ( options.getChannel( 'log-default' ) ? options.getChannel( 'log-default' ).id : null );
             var setChat = ( options.getChannel( 'log-chat' ) ? options.getChannel( 'log-chat' ).id : ( setDefault ? setDefault : null ) );
             var setError = ( options.getChannel( 'log-error' ) ? options.getChannel( 'log-error' ).id : ( setDefault ? setDefault : null ) );
-            if ( !changedLogsActive && !setDefault && !setChat && !setError ) { return interaction.editReply( { content: 'You forgot to tell me what logs to change.' } ); }
+            var clearLogChans = ( options.getBoolean( 'log-reset' ) ? options.getBoolean( 'log-reset' ) : false );
+            if ( !changedLogsActive && !setDefault && !setChat && !setError && !clearLogChans ) { return interaction.editReply( { content: 'You forgot to tell me what logs to change.' } ); }
             let setDone = [];
             if ( changedLogsActive ) {
               newConfig.Logs.Active = boolLogs;
@@ -344,16 +347,24 @@ module.exports = {
               newConfig.Logs.Error = setError;
               setDone.push( 'Error log' );
             }
+            if ( clearLogChans ) {
+              newConfig.Logs.Active = true;
+              newConfig.Logs.Chat = null;
+              newConfig.Logs.Default = null;
+              newConfig.Logs.Error = null;
+              setDone = [];
+            }
             let setsDone;
             switch ( setDone.length ) {
+              case 0: setsDone = 'All Log Settings'; break;
               case 1: setsDone = setDone[ 0 ]; break;
               case 2: setsDone = setDone.join( ' and ' ); break;
               default:
                 let lastDone = setDone.pop();
                 setsDone = setDone.join( ', ' ) + ', and ' + lastDone;
             }
-            successResultLog = setsDone + ( setsDone.length === 1 ? ' was' : ' were' ) + ' set by <@' + author.id + '>.';
-            successResultReply = 'You have set ' + setsDone + '.';
+            successResultLog = setsDone + ( setDone.length === 0 ? ' were re' : ( setDone.length === 1 ? ' was ' : ' were ' ) ) + 'set by <@' + author.id + '>.';
+            successResultReply = 'You have ' + ( setDone.length === 0 ? 'reset ' : 'set the ' ) + setsDone + '.';
             break;
           case 'remove':
             let remBlack = ( options.getMentionable( 'blacklist' ) ? options.getMentionable( 'blacklist' ) : null );
