@@ -28,16 +28,16 @@ client.on( 'messageCreate', async message => {
   const arrOtherCodes = [];
   const arrContent = content.trim().split( ' ' );
   const arrOtherTypeCodes = [ 'GC', 'TB', 'WM', 'GL', 'TL', 'PR', 'BM', 'GT' ];
-  for ( let word of arrContent ) {
-    let word = word.trim().match( /^((GC|TB|WM|GL|TL|PR|BM|GT)[a-zA-Z0-9]{2,6})/ );console.log('word: %o',word);
-    let wordPrefix = ( word ? word[ 2 ] : '' );console.log('wordPrefix: %o',wordPrefix);
-    word = ( word ? word[ 0 ].toUpperCase() : '' );console.log('word: %o',word);
+  for ( let word of arrContent ) {console.log('word: %o',word);
+    let arrWord = word.trim().match( /^((GC|TB|WM|GL|TL|PR|BM|GT)[a-zA-Z0-9]{2,6})/ );console.log('arrWord: %o',arrWord);
+    let code = ( arrWord ? arrWord[ 1 ].toUpperCase() : '' );console.log('code: %o',code);
+    let wordPrefix = ( arrWord ? arrWord[ 2 ] : '' );console.log('wordPrefix: %o',wordPrefix);
     if ( wordPrefix === 'GC' ) {
-      arrGcCodes.push( word );
+      arrGcCodes.push( code );
       hasCodes.GC = true;
     }
     else if ( arrOtherTypeCodes.indexOf( wordPrefix ) != -1 ) {
-      arrOtherCodes.push( word );
+      arrOtherCodes.push( code );
       hasCodes[ wordPrefix ] = true;
     }
   }
