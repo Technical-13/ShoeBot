@@ -129,7 +129,7 @@ module.exports = {
     const isAnyoneTask = ( objTasks.anyone.indexOf( myTask ) != -1 ? true : false );
 
     if ( isAnyoneTask ) {// get
-      let showCommands = '**' + ( oldConfig.Commands.length === 0 ? 'Administrator commands only!' : '[ ' + oldConfig.Commands.join( ', ' ) + ' ]' ) + '**';
+      let showCommands = '**' + ( oldConfig.Commands.length === 0 ? 'All commands!' : '[ ' + oldConfig.Commands.join( ', ' ) + ' ]' ) + '**';
       let showInvite = ( oldConfig.Invite ? '<#' + oldConfig.Invite + '>' : '**My best guess** ¯\_(ツ)_/¯' );
       let showChat = ( oldLogChat ? '<#' + oldLogChat + '>' : 'DM to <@' + guild.ownerId + '>' );
       let showDefault = ( oldLogDefault ? '<#' + oldLogDefault + '>' : 'DM to <@' + guild.ownerId + '>' );
@@ -168,7 +168,7 @@ module.exports = {
       return interaction.editReply( { content: 'Sorry, you do not have permission to do that.  Please talk to <@' + guildOwner.id + '> or one of my masters if you think you shouldn\'t have gotten this error.' } );
     }
     else {
-      const newConfig = {
+      var newConfig = {
         Guild: guild.id,
         Blacklist: oldBlacklist,
         Commands: oldCommands,
