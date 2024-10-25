@@ -197,7 +197,8 @@ module.exports = {
             if ( !clearBlack && !clearWhite ) { return interaction.editReply( { content: 'You forgot to tell me which list to clear.' } ); }
             if ( clearBlack ) { newConfig.Blacklist = { Members: [], Roles: [] }; }
             if ( clearWhite ) { newConfig.Whitelist = { Members: [], Roles: [] }; }
-            errHandlerOptions.clearLists = ( clearWhite && clearBlack ? 'white and black lists' : ( clearWhite ? 'whitelist' : 'blacklist' ) );
+            let clearLists = ( clearWhite && clearBlack ? 'white and black lists' : ( clearWhite ? 'whitelist' : 'blacklist' ) );
+            errHandlerOptions.clearLists = clearLists;
             let haveHas = ( clearWhite && clearBlack ? 'have' : 'has' );
             successResultLog = 'My ' + clearLists + ' for this server ' + haveHas + ' been cleared.';
             successResult = 'My ' + clearLists + ' for this server ' + haveHas + ' been cleared.';
