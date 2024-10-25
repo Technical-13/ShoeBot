@@ -335,12 +335,12 @@ module.exports = {
             successResult = addDone.join( ' and ' ) + ' for this server.';
             break;
           case 'logs':
-            let changedLogsActive = ( options.getBoolean( 'logs' ) !== null ? true : false );
+            let changedLogsActive = ( options.getBoolean( 'do-logs' ) !== null ? true : false );
             let changedLogsDefault = options.getChannel( 'log-default' );
             let changedLogsChat = options.getChannel( 'log-chat' );
             let changedLogsError = options.getChannel( 'log-error' );
             let changedLogsRESET = ( options.getBoolean( 'log-reset' ) !== null ? true : false );
-            var boolLogs = ( changedLogsActive ? options.getBoolean( 'logs' ) : true );
+            var boolLogs = ( changedLogsActive ? options.getBoolean( 'do-logs' ) : true );
             var setDefault = ( changedLogsDefault ? options.getChannel( 'log-default' ).id : null );
             var setChat = ( changedLogsChat ? options.getChannel( 'log-chat' ).id : ( setDefault ? setDefault : null ) );
             var setError = ( changedLogsError ? options.getChannel( 'log-error' ).id : ( setDefault ? setDefault : null ) );
