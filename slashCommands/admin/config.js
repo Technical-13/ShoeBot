@@ -214,27 +214,29 @@ module.exports = {
             successResultReply = 'Guild settings reset.';
             break;
           case 'set':
-            let setInvite = ( options.getChannel( 'invite' ) ? options.getChannel( 'invite' ).id : null );
-            let setPrefix = ( options.getString( 'prefix' ) ? options.getString( 'prefix' ) : globalPrefix );
-            let changedPrefix = ( setPrefix != oldPrefix ? true : false );
-            let setPremium = ( options.getBoolean( 'premium' ) ? options.getBoolean( 'premium' ) : true );
-            let changedPremium = ( setPremium != oldPremium ? true : false );
-            if ( !setInvite && !changedPrefix && !changedPremium ) { return interaction.editReply( { content: 'You forgot to tell me what to set.' } ); }
+            let changedInvite = options.getChannel( 'invite' );
+            let changedPrefix = options.getString( 'prefix' );
+            let changedPremium = options.getBoolean( 'premium' );
+            let setInvite = ( changedInvite ? options.getChannel( 'invite' ).id : null );
+            let setPrefix = ( changedPrefix ? options.getString( 'prefix' ) : globalPrefix );
+            let setPremium = ( changedPremium ? options.getBoolean( 'premium' ) : true );
+            if ( !changedInvite && !changedPrefix && !changedPremium ) { return interaction.editReply( { content: 'You forgot to tell me what to set.' } ); }
             let setDone = [];
             if ( setInvite ) {
               newConfig.Invite = setInvite;
               setDone.push( 'Invite' );
             }
-            if ( changedPrefix ) {
+            if ( setPrefix ) {
               newConfig.Prefix = setPrefix;
               setDone.push( 'Prefix to **`' + setPrefix + '`**' );
             }
-            if ( changedPremium ) {
+            if ( setPremium != oldPremium ) {
               newConfig.Premium = setPremium;
               setDone.push( 'Premium to **' + ( setPremium ? 'EN' : 'DIS' ) + 'ABLED**' );
             }
             let setsDone;
             switch ( setDone.length ) {
+              case 0: setsDone = 'Nothing'; break;
               case 1: setsDone = setDone[ 0 ]; break;
               case 2: setsDone = setDone.join( ' and ' ); break;
               default:
