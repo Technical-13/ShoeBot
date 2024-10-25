@@ -233,13 +233,13 @@ module.exports = {
             }
             let setsDone;
             switch ( setDone.length ) {
-              case 1: setsDone = setDone[ 0 ] + ' was'; break;
-              case 2: setsDone = setDone.join( ' and ' ) + ' were'; break;
+              case 1: setsDone = setDone[ 0 ]; break;
+              case 2: setsDone = setDone.join( ' and ' ); break;
               default:
                 let lastDone = setDone.pop();
-                setsDone = setDone.join( ', ' ) + ', and ' + lastDone + ' were';
+                setsDone = setDone.join( ', ' ) + ', and ' + lastDone;
             }
-            successResultLog = setsDone + ' set by <@' + author.id + '>.';
+            successResultLog = setsDone + ( setsDone.length === 1 ? ' was' : ' were' ) + ' set by <@' + author.id + '>.';
             successResultReply = 'You have set ' + setsDone + '.';
             break;
         }
@@ -322,7 +322,7 @@ module.exports = {
             break;
           case 'logs':
             var boolLogs = ( options.getBoolean( 'logs' ) ? options.getBoolean( 'logs' ) : true );
-            let changedLogsActive = ( boolLogs === oldLogActive ? true : false );
+            let changedLogsActive = ( boolLogs != oldLogActive ? true : false );
             var setDefault = ( options.getChannel( 'log-default' ) ? options.getChannel( 'log-default' ).id : null );
             var setChat = ( options.getChannel( 'log-chat' ) ? options.getChannel( 'log-chat' ).id : ( setDefault ? setDefault : null ) );
             var setError = ( options.getChannel( 'log-error' ) ? options.getChannel( 'log-error' ).id : ( setDefault ? setDefault : null ) );
@@ -346,13 +346,13 @@ module.exports = {
             }
             let setsDone;
             switch ( setDone.length ) {
-              case 1: setsDone = setDone[ 0 ] + ' was'; break;
-              case 2: setsDone = setDone.join( ' and ' ) + ' were'; break;
+              case 1: setsDone = setDone[ 0 ]; break;
+              case 2: setsDone = setDone.join( ' and ' ); break;
               default:
                 let lastDone = setDone.pop();
-                setsDone = setDone.join( ', ' ) + ', and ' + lastDone + ' were';
+                setsDone = setDone.join( ', ' ) + ', and ' + lastDone;
             }
-            successResultLog = setsDone + ' set by <@' + author.id + '>.';
+            successResultLog = setsDone + ( setsDone.length === 1 ? ' was' : ' were' ) + ' set by <@' + author.id + '>.';
             successResultReply = 'You have set ' + setsDone + '.';
             break;
           case 'remove':
