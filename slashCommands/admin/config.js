@@ -226,7 +226,7 @@ module.exports = {
               newConfig.Invite = setInvite;
               setDone.push( 'Invite' );
             }
-            if ( setPrefix ) {
+            if ( setPrefix != oldPrefix ) {
               newConfig.Prefix = setPrefix;
               setDone.push( 'Prefix to **`' + setPrefix + '`**' );
             }
@@ -236,14 +236,13 @@ module.exports = {
             }
             let setsDone;
             switch ( setDone.length ) {
-              case 0: setsDone = 'Nothing'; break;
               case 1: setsDone = setDone[ 0 ]; break;
               case 2: setsDone = setDone.join( ' and ' ); break;
               default:
                 let lastDone = setDone.pop();
                 setsDone = setDone.join( ', ' ) + ', and ' + lastDone;
             }
-            successResultLog = setsDone + ( setDone.length === 1 ? ' was' : ' were' ) + ' set by <@' + author.id + '>.';
+            successResultLog = ( setDone.length === 0 ? '' : setsDone + ( setDone.length === 1 ? ' was' : ' were' ) + ' set by <@' + author.id + '>.' );
             successResultReply = 'You have set ' + setsDone + '.';
             break;
         }
@@ -440,15 +439,16 @@ module.exports = {
       }
       await guildConfigDB.updateOne( { Guild: oldConfig.Guild }, newConfig, { upsert: true } )
       .then( updateSuccess => {
-        if ( newConfig.Logs.Active ) {
+        if ( newConfig.Logs.Active && successResultLog ) {
           chanDefaultLog.send( { content: successResultLog } )
           .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'default', command: 'config', guild: guild, type: 'logLogs' } ) ); } );
         }
         if ( successResultReply ) { interaction.editReply( { content: successResultReply } ); }
-        else {// deleteReply & return channel.send
+        else if ( successResult ) {// deleteReply & return channel.send
           interaction.deleteReply();
           return channel.send( { content: successResult } );
         }
+        else { interaction.editReply( { content: 'No result provided!' } ); }
       } )
       .catch( async updateError => { return interaction.editReply( { content: await errHandler( updateError, errHandlerOptions ) } ); } );
     }
