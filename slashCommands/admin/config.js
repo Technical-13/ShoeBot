@@ -214,9 +214,11 @@ module.exports = {
             successResultReply = 'Guild settings reset.';
             break;
           case 'set':
-            let changedInvite = ( options.getChannel( 'invite' ) || null );
-            let changedPrefix = ( options.getString( 'prefix' ) || null );console.log( options.getBoolean( 'premium' ) );
-            let changedPremium = ( ( options.getBoolean( 'premium' ) || null ) !== null ? true : false );
+            let changedInvite = options.getChannel( 'invite' );
+            let changedPrefix = options.getString( 'prefix' );
+console.log( 'Input: ' + options.getBoolean( 'premium' ) );
+            let changedPremium = ( options.getBoolean( 'premium' ) !== null ? true : false );
+console.log( 'Changed: ' + ( changedPremium ? 'true' : 'false' ) + '\n-----------------------------------------' );
             let setInvite = ( changedInvite ? options.getChannel( 'invite' ).id : null );
             let setPrefix = ( changedPrefix ? options.getString( 'prefix' ) : globalPrefix );
             let setPremium = ( changedPremium ? options.getBoolean( 'premium' ) : true );
