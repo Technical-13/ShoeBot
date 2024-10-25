@@ -149,7 +149,15 @@ module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
       content: false
     }
 
-    if ( debug ) { console.log( 'getPerms is returning: %o', results ); }
+    if ( debug ) {
+      let resultKeys = Object.keys( results );
+      let debugResults = {};
+      for ( const key of resultKeys ) {
+        if ( typeof( results[ key ] ) != 'object' ) { debugResults[ key ] = results[ key ]; }
+        else { debugResults[ key ] = '{ ' + results[ key ].constructor.name + ': ' + results[ key ].id + ' }'; }
+      }
+      console.log( 'getPerms is returning: %o', debugResults );
+    }
       
     if ( doBlacklist && isBlacklisted && !isGlobalWhitelisted ) {
       let contact = ( isGuildBlacklisted ? guildOwner.id : botOwner.id );
