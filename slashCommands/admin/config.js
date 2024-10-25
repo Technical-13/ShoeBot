@@ -409,4 +409,5 @@ module.exports = {
       } )
       .catch( async updateError => { return interaction.editReply( { content: await errHandler( updateError, errHandlerOptions ) } ); } );
     }
+  }
 };
