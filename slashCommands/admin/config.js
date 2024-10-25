@@ -22,7 +22,7 @@ module.exports = {
     { type: 1, name: 'get', description: 'Get all settings for the server.', options: [// share
       { type: 5, name: 'share', description: 'Share result to current channel instead of making it ephemeral.' }
     ] },//*/
-    /*{ type: 1, name: 'logs', description: '', options: [// do-logs, log-chat, log-default, log-error
+    { type: 1, name: 'logs', description: '', options: [// do-logs, log-chat, log-default, log-error
       { type: 5, name: 'do-logs', description: 'Send logs for uses of commands that may be devious in nature' },// disable all logs
       { type: 7, name: 'log-chat', description: 'Channel to log chat command (`/edit`, `/react`, `/reply`, and `/say`) requests.' },// chat channel
       { type: 7, name: 'log-default', description: 'Channel to log all requests not otherwise specified.' },// default channel
@@ -120,7 +120,7 @@ module.exports = {
     const canAdmin = ( hasAdministrator || ( hasManageGuild && isGuildWhitelisted ) );
     const objTasks = {
       admin: [ 'clear', 'reset', 'set' ],//, 'commands'
-      manager: [ 'add', 'remove' ],//, 'logs', 'welcome'
+      manager: [ 'add', 'logs', 'remove' ],//, 'welcome'
       anyone: [ 'get' ]
     };
     const myTask = options.getSubcommand();
@@ -241,7 +241,7 @@ module.exports = {
             }
             successResultLog = setsDone + ' set by <@' + author.id + '>.';
             successResultReply = 'You have set ' + setsDone + '.';
-          break;
+            break;
         }
       }
       if ( hasManageGuild ) {// add, logs, remove, welcome
@@ -327,7 +327,33 @@ module.exports = {
             var setChat = ( options.getChannel( 'log-chat' ) ? options.getChannel( 'log-chat' ).id : ( setDefault ? setDefault : null ) );
             var setError = ( options.getChannel( 'log-error' ) ? options.getChannel( 'log-error' ).id : ( setDefault ? setDefault : null ) );
             if ( !changedLogsActive && !setDefault && !setChat && !setError ) { return interaction.editReply( { content: 'You forgot to tell me what logs to change.' } ); }
-            return interaction.editReply( { content: 'Coming **SOON:tm:**' } );// SOON SOON SOON SOON SOON SOON SOON SOON SOON SOON
+            let setDone = [];
+            if ( changedLogsActive ) {
+              newConfig.Logs.Active = boolLogs;
+              setDone.push( 'Logs active' );
+            }
+            if ( setChat ) {
+              newConfig.Logs.Chat = setChat;
+              setDone.push( 'Chat log' );
+            }
+            if ( setDefault ) {
+              newConfig.Logs.Default = setDefault;
+              setDone.push( 'Default log' );
+            }
+            if ( setError ) {
+              newConfig.Logs.Error = setError;
+              setDone.push( 'Error log' );
+            }
+            let setsDone;
+            switch ( setDone.length ) {
+              case 1: setsDone = setDone[ 0 ] + ' was'; break;
+              case 2: setsDone = setDone.join( ' and ' ) + ' were'; break;
+              default:
+                let lastDone = setDone.pop();
+                setsDone = setDone.join( ', ' ) + ', and ' + lastDone + ' were';
+            }
+            successResultLog = setsDone + ' set by <@' + author.id + '>.';
+            successResultReply = 'You have set ' + setsDone + '.';
             break;
           case 'remove':
             let remBlack = ( options.getMentionable( 'blacklist' ) ? options.getMentionable( 'blacklist' ) : null );
