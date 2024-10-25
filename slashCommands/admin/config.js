@@ -222,6 +222,7 @@ module.exports = {
             let setPremium = ( changedPremium ? options.getBoolean( 'premium' ) : true );
             if ( !changedInvite && !changedPrefix && !changedPremium ) { return interaction.editReply( { content: 'You forgot to tell me what to set.' } ); }
             let setDone = [];
+            let alreadyDone = [];
             if ( setInvite ) {
               newConfig.Invite = setInvite;
               setDone.push( 'Invite' );
@@ -229,11 +230,11 @@ module.exports = {
             if ( setPrefix != oldPrefix ) {
               newConfig.Prefix = setPrefix;
               setDone.push( 'Prefix to **`' + setPrefix + '`**' );
-            }
+            } else { alreadyDone.push( 'Prefix was already `' + setPrefix + '`' ); }
             if ( setPremium != oldPremium ) {
               newConfig.Premium = setPremium;
               setDone.push( 'Premium to **' + ( setPremium ? 'EN' : 'DIS' ) + 'ABLED**' );
-            }
+            } else { alreadyDone.push( 'Premium was already ' + ( setPremium ? 'EN' : 'DIS' ) + 'ABLED**' ); }
             let setsDone;
             switch ( setDone.length ) {
               case 0: setsDone = '**NOTHING**'; break;
@@ -243,8 +244,17 @@ module.exports = {
                 let lastDone = setDone.pop();
                 setsDone = setDone.join( ', ' ) + ', and ' + lastDone;
             }
+            let allsDone;
+            switch ( alreadyDone.length ) {
+              case 0: allsDone = ''; break;
+              case 1: allsDone = alreadyDone[ 0 ]; break;
+              case 2: allsDone = alreadyDone.join( ' and ' ); break;
+              default:
+                let lastDone = alreadyDone.pop();
+                allsDone = alreadyDone.join( ', ' ) + ', and ' + lastDone;
+            }
             successResultLog = ( setDone.length === 0 ? '' : setsDone + ( setDone.length === 1 ? ' was' : ' were' ) + ' set by <@' + author.id + '>.' );
-            successResultReply = 'You have set ' + setsDone + '.';
+            successResultReply = 'You have set ' + setsDone + ( alreadyDone.length === 0 ? '' : '(' + allsDone + ')' ) + '.';
             break;
         }
       }
