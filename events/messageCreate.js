@@ -29,16 +29,15 @@ client.on( 'messageCreate', async message => {
   const arrContent = content.trim().split( ' ' );
   const arrOtherTypeCodes = [ 'GC', 'TB', 'WM', 'GL', 'TL', 'PR', 'BM', 'GT' ];
   for ( let word of arrContent ) {
-    word = word.trim();console.log('word: %o',word);
-    let wordPrefix = word.slice( 0, 2 );console.log('wordPrefix: %o',wordPrefix);
-    word = word.match( /^((?:GC|TB|WM|GL|TL|PR|BM|GT)[A-Z0-9]{2,6})/gi );console.log('word: %o',word);
-    let code = ( word ? word[ 0 ].toUpperCase() : '' );console.log('code: %o',code);
-    if ( code.startsWith( 'GC' ) ) {
-      arrGcCodes.push( code );
+    word = word.trim().match( /^((GC|TB|WM|GL|TL|PR|BM|GT)[a-zA-Z0-9]{2,6})/ );console.log('word: %o',word);
+    let wordPrefix = ( word ? word[ 2 ] : '' );console.log('wordPrefix: %o',wordPrefix);
+    let word = ( word ? word[ 0 ].toUpperCase() : '' );console.log('word: %o',word);
+    if ( word.startsWith( 'GC' ) ) {
+      arrGcCodes.push( word );
       hasCodes.GC = true;
     }
     else if ( arrOtherTypeCodes.indexOf( wordPrefix ) != -1 ) {
-      arrOtherCodes.push( code );
+      arrOtherCodes.push( word );
       hasCodes[ wordPrefix ] = true;
     }
   }
