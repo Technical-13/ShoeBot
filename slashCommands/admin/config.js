@@ -351,7 +351,7 @@ module.exports = {
             if ( boolLogs != oldLogActive ) {
               newConfig.Logs.Active = boolLogs;
               setDone.push( 'Logs active to **' + ( boolLogs ? 'EN' : 'DIS' ) + 'ABLED**' );
-            } else if ( changedLogsActive ) { alreadyDone.push( 'Logs active was already **' + ( boolLogs ? 'EN' : 'DIS' ) + 'ABLED**' ); }
+            } else if ( changedLogsActive ) { alreadyDone.push( 'Logs were already **' + ( boolLogs ? 'EN' : 'DIS' ) + 'ABLED**' ); }
             if ( setChat ) {
               newConfig.Logs.Chat = setChat;
               setDone.push( 'Chat log' );
