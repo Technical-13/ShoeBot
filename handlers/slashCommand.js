@@ -43,7 +43,7 @@ module.exports = ( client ) => {
             default_permission: slashCommand.default_permission ? slashCommand.default_permission : null,
             default_member_permissions: slashCommand.default_member_permissions ? PermissionsBitField.resolve( slashCommand.default_member_permissions ).toString() : null
           } );
-          cmdGroup.push( slashCommand.name );
+//          cmdGroup.push( slashCommand.name );
           client.slashCommands.set( slashCommand.name, slashCommand );
           arrCmdRow[ 1 ] = cmdName;
           arrCmdRow.push( '➰' );
@@ -60,7 +60,7 @@ module.exports = ( client ) => {
             default_permission: slashCommand.default_permission ? slashCommand.default_permission : null,
             default_member_permissions: slashCommand.default_member_permissions ? PermissionsBitField.resolve( slashCommand.default_member_permissions ).toString() : null
           } );
-//          cmdGroup.push( slashCommand.name );
+          cmdGroup.push( slashCommand.name );
           client.slashCommands.set( slashCommand.name, slashCommand );
           arrCmdRow[ 1 ] = cmdName;
           arrCmdRow.push( '✅' );
@@ -76,7 +76,7 @@ module.exports = ( client ) => {
 
   let statusPut = chalk.yellow( 'Slash Commands' ) + ':\n\t';
   const whoFor = ( DEV_MODE ? chalk.yellow( 'DEV_GUILD_ID: ' + DEV_GUILD_ID ) : chalk.green( 'EVERYONE!' ) );
-  
+
   ( async () => {
     if ( UPDATE_SLASH_COMMANDS ) {
       if ( devOnlyCmds && !DEV_MODE ) {
@@ -123,7 +123,7 @@ module.exports = ( client ) => {
       Object.keys( buildTable ).forEach( cmdKey => {
         buildTable[ cmdKey ].push( '❎' );
         table.addRow( buildTable[ cmdKey ] );
-      } );    
+      } );
     }
     console.log( chalk.red( table.toString() ) );
     console.log( statusPut );
