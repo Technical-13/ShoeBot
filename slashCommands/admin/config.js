@@ -290,7 +290,7 @@ module.exports = {
               let whiteActions;
               switch ( addWhite.constructor.name ) {
                 case 'GuildMember':
-                  if ( oldWhiteMembers.indexOf( addWhite.id ) != -1 ) { return interaction.editReply( { content: '<@' + addWhite.id + '> is already on the blacklist!' } ) }
+                  if ( oldWhiteMembers.indexOf( addWhite.id ) != -1 ) { return interaction.editReply( { content: '<@' + addWhite.id + '> is already on the whitelist!' } ) }
                   newConfig.Whitelist.Members = oldWhiteMembers.concat( [ addWhite.id ] );
                   whiteActions = '<@' + addWhite.id + '> was added';
                   if ( oldBlackMembers.indexOf( addWhite.id ) != -1 ) {
@@ -299,7 +299,7 @@ module.exports = {
                   }
                   break;
                 case 'Role':
-                  if ( oldWhiteRoles.indexOf( addWhite.id ) != -1 ) { return interaction.editReply( { content: '<@&' + addWhite.id + '> is already on the blacklist!' } ) }
+                  if ( oldWhiteRoles.indexOf( addWhite.id ) != -1 ) { return interaction.editReply( { content: '<@&' + addWhite.id + '> is already on the whitelist!' } ) }
                   newConfig.Whitelist.Roles = oldWhiteRoles.concat( [ addWhite.id ] );
                   whiteActions = '<@&' + addWhite.id + '> was added';
                   if ( oldBlackRoles.indexOf( addWhite.id ) != -1 ) {
@@ -309,7 +309,7 @@ module.exports = {
                   break;
                 default:
                   console.log( '<@%s> tried to get me to add `%s: %s` to the whitelist of https://discord.com/channels/%s', author.id, addWhite.constructor.name, addWhite.id, guild.id );
-                  botOwner.send( { content: '<@' + author.id + '> tried to get me to add `' + addWhite.constructor.name + ': ' + addWhite.id + '` to the blacklist of https://discord.com/channels/' + guild.id } )
+                  botOwner.send( { content: '<@' + author.id + '> tried to get me to add `' + addWhite.constructor.name + ': ' + addWhite.id + '` to the whitelist of https://discord.com/channels/' + guild.id } )
                   .then( sentOwner => {
                     return interaction.editReply( { content: 'I don\'t know who or what `' + addWhite.constructor.name + ': ' + addWhite.id + '` is.  My owner should be looking into it shortly.' } );
                   } )
