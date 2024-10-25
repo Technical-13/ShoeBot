@@ -381,7 +381,7 @@ module.exports = {
                   } )
                   .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'config', guild: guild, type: 'errSend' } ) ); } );
               }
-              addDone.push( blackActions + ' from the whitelist' );
+              addDone.push( whiteActions + ' from the whitelist' );
             }
             successResultLog = addDone.join( ' and ' ) + ' for this server.';
             successResult = addDone.join( ' and ' ) + ' for this server.';
