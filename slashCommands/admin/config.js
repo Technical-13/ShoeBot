@@ -83,7 +83,7 @@ module.exports = {
     var oldBlackGuild = [];
     if ( oldBlackRoles.length > 0 ) {
       for ( const role of oldBlackRoles ) {
-        let roleMembers = await role.members.cache.fetch();
+        let roleMembers = Array.from( await guild.roles.cache.get( role ).members.keys() );
         oldBlackGuild.concat( roleMembers );
       }
     }
@@ -108,7 +108,7 @@ module.exports = {
     var oldWhiteGuild = [];
     if ( oldWhiteRoles.length > 0 ) {
       for ( const role of oldWhiteRoles ) {
-        let roleMembers = await role.members.cache.fetch();
+        let roleMembers = Array.from( await guild.roles.cache.get( role ).members.keys() );
         oldWhiteGuild.concat( roleMembers );
       }
     }
