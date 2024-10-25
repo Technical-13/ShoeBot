@@ -227,11 +227,11 @@ module.exports = {
             }
             if ( setPrefix != oldPrefix ) {
               newConfig.Prefix = setPrefix;
-              setDone.push( 'Prefix' );
+              setDone.push( 'Prefix to **`' + setPrefix + '`**' );
             }
             if ( setPremium != oldPremium ) {
               newConfig.Premium = setPremium;
-              setDone.push( 'Premium' );
+              setDone.push( 'Premium to **' + ( setPremium ? 'EN' : 'DIS' ) + 'ABLED**' );
             }
             let setsDone;
             switch ( setDone.length ) {
@@ -333,7 +333,7 @@ module.exports = {
             let setDone = [];
             if ( changedLogsActive ) {
               newConfig.Logs.Active = boolLogs;
-              setDone.push( 'Logs active' );
+              setDone.push( 'Logs active to **' + ( boolLogs ? 'EN' : 'DIS' ) + 'ABLED**' );
             }
             if ( setChat ) {
               newConfig.Logs.Chat = setChat;
