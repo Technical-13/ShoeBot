@@ -216,20 +216,20 @@ module.exports = {
           case 'set':
             let setInvite = ( options.getChannel( 'invite' ) ? options.getChannel( 'invite' ).id : null );
             let setPrefix = ( options.getString( 'prefix' ) ? options.getString( 'prefix' ) : globalPrefix );
-            let changedPrefix = ( setPrefix === oldPrefix ? true : false );
+            let changedPrefix = ( setPrefix != oldPrefix ? true : false );
             let setPremium = ( options.getBoolean( 'premium' ) ? options.getBoolean( 'premium' ) : true );
-            let changedPremium = ( setPremium === oldPremium ? true : false );
+            let changedPremium = ( setPremium != oldPremium ? true : false );
             if ( !setInvite && !changedPrefix && !changedPremium ) { return interaction.editReply( { content: 'You forgot to tell me what to set.' } ); }
             let setDone = [];
             if ( setInvite ) {
               newConfig.Invite = setInvite;
               setDone.push( 'Invite' );
             }
-            if ( setPrefix != oldPrefix ) {
+            if ( changedPrefix ) {
               newConfig.Prefix = setPrefix;
               setDone.push( 'Prefix to **`' + setPrefix + '`**' );
             }
-            if ( setPremium != oldPremium ) {
+            if ( changedPremium ) {
               newConfig.Premium = setPremium;
               setDone.push( 'Premium to **' + ( setPremium ? 'EN' : 'DIS' ) + 'ABLED**' );
             }
