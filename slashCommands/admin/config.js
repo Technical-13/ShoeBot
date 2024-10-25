@@ -140,8 +140,8 @@ module.exports = {
       let showWelcomeChan = 'sent to ' + ( '<#' + oldConfig.Welcome.Channel + '>' || 'DM' );
       let showWelcomeMsg = ' with the following message:\n```\n' + oldConfig.Welcome.Msg + '\n```\n';
       let showWelcome = ( oldConfig.Welcome.Active ? showWelcomeRole + showWelcomeChan + showWelcomeMsg : '**`DISABLED`**.' );
-      let showBlackList = '**' + ( arrBlackGuild.length === 0 ? 'No one is blacklisted!' : '[ **<@' + arrBlackGuild.join( '>**, **<@' ) + '>** ]' ) + '**';
-      let showWhiteList = '**' + ( arrWhiteGuild.length === 0 ? 'No one is whitelisted!' : '[ **<@' + arrWhiteGuild.join( '>**, **<@' ) + '>** ]' ) + '**';
+      let showBlackList = '**' + ( oldBlackGuild.length === 0 ? 'No one is blacklisted!' : '[ **<@' + oldBlackGuild.join( '>**, **<@' ) + '>** ]' ) + '**';
+      let showWhiteList = '**' + ( oldWhiteGuild.length === 0 ? 'No one is whitelisted!' : '[ **<@' + oldWhiteGuild.join( '>**, **<@' ) + '>** ]' ) + '**';
 
       showConfigs = 'Guild configuration:\n\t' +
         'Invite channel is: ' + showInvite + '\n\t' +
