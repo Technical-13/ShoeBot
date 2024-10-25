@@ -216,7 +216,7 @@ module.exports = {
           case 'set':
             let changedInvite = ( options.getChannel( 'invite' ) || null );
             let changedPrefix = ( options.getString( 'prefix' ) || null );
-            let changedPremium = ( options.getBoolean( 'premium' ) || null );
+            let changedPremium = ( ( options.getBoolean( 'premium' ) || null ) !== null ? true : false );
             let setInvite = ( changedInvite ? options.getChannel( 'invite' ).id : null );
             let setPrefix = ( changedPrefix ? options.getString( 'prefix' ) : globalPrefix );
             let setPremium = ( changedPremium ? options.getBoolean( 'premium' ) : true );
