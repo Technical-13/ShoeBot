@@ -148,8 +148,8 @@ module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
       isWhitelisted: isWhitelisted,
       content: false
     }
-    
-    if ( debug ) { console.log( 'getPerms is returning: ' + results ); }
+
+    if ( debug ) { console.log( 'getPerms is returning: %o', results ); }
       
     if ( doBlacklist && isBlacklisted && !isGlobalWhitelisted ) {
       let contact = ( isGuildBlacklisted ? guildOwner.id : botOwner.id );
