@@ -38,13 +38,16 @@ module.exports = async ( rawString, obj = { guild: null, member: null } ) => {
     notAvailable[ '{{member.ping}}' ] = 'member';
   }
 
+console.log( 'transclusions: %o', transclusions );
+console.log( 'notAvailable: %o', notAvailable );
   arrTemplates = rawString.match( /\{\{((?:bot|guild)\.[a-z\.]*)\}\}/g );
+console.log( 'arrTemplates: %o', arrTemplates );
   arrTemplates.forEach( template => {
-    if ( transclusions[ template ] ) { rawString.replace( template, transclusions[ template ] ); }
-    else if ( notAvailable[ template ] ) { rawString.replace( template, '*(unknown ' + notAvailable[ template ] + ')*' ); }
+    if ( transclusions[ template ] ) { rawString.replace( template, transclusions[ template ] );console.log( 'template transclusions: %o', template ); }
+    else if ( notAvailable[ template ] ) { rawString.replace( template, '*(unknown ' + notAvailable[ template ] + ')*' );console.log( 'template notAvailable: %o', template ); }
     else {
       rawString.replace( template, '[*' + template + '*](<https://github.com/Technical-13/' + bot.username + '/issues/new?labels=enhancement&template=feature_request.md&title=' + encodeURI( 'Please add ' + template + ' to transclude.js' ) + '>)' );
-      console.log( 'Someone tried to transclude %s, search for a GitHub feature_request:\n https://github.com/Technical-13/%s/issues?q=%s', chalk.bold.red( template ), bot.username, encodeURI( 'Please add ' + template + ' to transclude.js' ) );
+      console.log( 'Someone tried to transclude %s, search for a GitHub feature request:\n https://github.com/Technical-13/%s/issues?q=%s', chalk.bold.red( template ), bot.username, encodeURI( 'Please add ' + template + ' to transclude.js' ) );
     }
   } );
 };
