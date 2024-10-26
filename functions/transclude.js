@@ -1,5 +1,6 @@
 const client = require( '..' );
 const config = require( '../config.json' );
+const chalk = require( 'chalk' );
 const duration = require( './duration.js' );
 
 module.exports = async ( rawString, objects = { guild: null, member: null } ) => {
@@ -31,7 +32,7 @@ module.exports = async ( rawString, objects = { guild: null, member: null } ) =>
     if ( transclusions[ template ] ) { rawString.replace( template, transclusions[ template ] ); }
     else {
       rawString.replace( template, '[*' + template + '*](<https://github.com/Technical-13/' + bot.username + '/issues/new?labels=enhancement&template=feature_request.md&title=' + encodeURI( 'Please add ' + template + ' to transclude.js' ) + '>)' );
-      console.log( 'Someone tried to transclude %s in %s.  Search for a GitHub feature_request: https://github.com/Technical-13/%s/issues?q=%s', template, guild.name, bot.username, encodeURI( 'Please add ' + template + ' to transclude.js' ) );
+      console.log( 'Someone tried to transclude %s.  Search for a GitHub feature_request: https://github.com/Technical-13/%s/issues?q=%s', chalk.bold.red( template ), bot.username, encodeURI( 'Please add ' + template + ' to transclude.js' ) );
     }
   } );
 };
