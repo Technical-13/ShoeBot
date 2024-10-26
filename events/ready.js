@@ -18,13 +18,14 @@ client.on( 'ready', async rdy => {
   const firstActivity = config.activities[ 0 ];
   setTimeout( async () => { await client.user.setPresence( { activities: [ { type: activityTypes[ firstActivity.type ], name: firstActivity.name } ], status: 'online' } ); }, 180000 );
 
-  const servingGuilds = [ { type: 'Listening', name: client.guilds.cache.size + ' servers.' } ];
-  const servingUsers = [ { type: 'Watching', name: client.users.cache.size + ' members.' } ];
+  const servingGuilds = [ { type: 'Watching', name: client.guilds.cache.size + ' servers.' } ];
+  const servingUsers = [ { type: 'Listening', name: client.users.cache.size + ' members.' } ];
   const cycleActivities = [].concat( config.activities, servingGuilds, servingUsers );
   const intActivities = cycleActivities.length;
   var iAct = 1;
   setInterval( async () => {
-    let thisActivity = cycleActivities[ iAct++ ];
+    let activityIndex = ( iAct++ % intActivities );
+    let thisActivity = cycleActivities[ activityIndex ];
     await client.user.setPresence( { activities: [ { type: activityTypes[ thisActivity.type ], name: thisActivity.name } ], status: 'online' } );
   }, 300000 );
 
