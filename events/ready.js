@@ -1,7 +1,7 @@
 const client = require( '..' );
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
-const transclude = require( '../functions/transclude.js' );
+const parse = require( '../functions/parser.js' );
 
 client.on( 'ready', async rdy => {
   const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };
@@ -29,7 +29,7 @@ client.on( 'ready', async rdy => {
     let activityIndex = ( iAct++ % intActivities );
     let thisActivity = cycleActivities[ activityIndex ];
     let actType = activityTypes[ thisActivity.type ];
-    let actName = await transclude( thisActivity.name );
+    let actName = await parse( thisActivity.name );
     await client.user.setPresence( { activities: [ { type: actType, name: actName } ], status: 'online' } );
   }, 300000 );
 
