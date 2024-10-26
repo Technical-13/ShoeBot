@@ -18,11 +18,11 @@ client.on( 'ready', async rdy => {
   const firstActivity = config.activities[ 0 ];
   setTimeout( async () => { await client.user.setPresence( { activities: [ { type: activityTypes[ firstActivity.type ], name: firstActivity.name } ], status: 'online' } ); }, 180000 );
 
-  const servingGuilds = [ { type: 'Listening', name: 'for activity in ' + client.guilds.size + ' servers.' } ];
-  const servingUsers = [ { type: 'Watching', name: 'to the messages of ' + client.users.size + ' members.' } ];
+  const servingGuilds = [ { type: 'Listening', name: client.guilds.cache.size + ' servers.' } ];
+  const servingUsers = [ { type: 'Watching', name: client.users.cache.size + ' members.' } ];
   const cycleActivities = [].concat( config.activities, servingGuilds, servingUsers );
   const intActivities = cycleActivities.length;
-  var iAct = 0;
+  var iAct = 1;
   setInterval( async () => {
     let thisActivity = cycleActivities[ iAct++ ];
     await client.user.setPresence( { activities: [ { type: activityTypes[ thisActivity.type ], name: thisActivity.name } ], status: 'online' } );
