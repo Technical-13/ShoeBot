@@ -8,6 +8,7 @@ module.exports = async ( rawString, obj = { guild: null, member: null } ) => {
   const guild = ( member ? member.guild : ( obj.guild ? obj.guild : null ) );
   const bot = client.user;
 
+/* DEBUGGING */console.log( 'client.uptime: %o', client.uptime );/* DEBUGGING */
   const currUptime = await duration( client.uptime );
   const transclusions = {
     '{{bot.name}}': bot.displayName,

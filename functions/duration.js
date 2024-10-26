@@ -1,6 +1,8 @@
 const client = require( '..' );
 
 module.exports = async ( ms, getUnits = { getWeeks: false, getDays: true, getHours: true, getMinutes: true, getSeconds: false } ) => {
+/* DEBUGGING */console.log( 'ms: %o', ms );/* DEBUGGING */
+/* DEBUGGING */console.log( 'getUnits: %o', getUnits );/* DEBUGGING */
   if ( isNaN( ms ) ) { return '∅ms'; }
   const objUnits = {
     wks: ( typeof getUnits.getWeeks != 'boolean' ? false : getUnits.getWeeks ),
