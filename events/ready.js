@@ -1,18 +1,7 @@
 const client = require( '..' );
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
-
-const getUptime = () => {
-  let totalSeconds = ( client.uptime / 1000 );
-  let days = Math.floor( totalSeconds / 86400 );
-  totalSeconds %= 86400;
-  let hours = Math.floor( totalSeconds / 3600 );
-  totalSeconds %= 3600;
-  let minutes = Math.floor( totalSeconds / 60 );
-  let seconds = Math.floor( totalSeconds % 60 );
-
-  return ( days === 0 ? '' : days + 'd ' ) + ( hours === 0 ? '' : hours + 'hr ' ) + ( minutes === 0 ? '' : minutes + 'm' );
-};
+const transclude = require( '../functions/transclude.js' );
 
 client.on( 'ready', async rdy => {
   const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };
@@ -30,16 +19,18 @@ client.on( 'ready', async rdy => {
   const firstActivity = config.activities[ 0 ];
   setTimeout( async () => { await client.user.setPresence( { activities: [ { type: activityTypes[ firstActivity.type ], name: firstActivity.name } ], status: 'online' } ); }, 180000 );
 
-  const servingGuilds = [ { type: 'Custom', name: 'Watching ' + client.guilds.cache.size + ' servers.' } ];
-  const servingUsers = [ { type: 'Custom', name: 'Listening to ' + client.users.cache.size + ' members.' } ];
-  const botUptime = [ { type: 'Custom', name: 'Uptime: ' + getUptime() } ];
+  const servingGuilds = [ { type: 'Custom', name: 'Watching {{bot.servers}} servers.' } ];
+  const servingUsers = [ { type: 'Custom', name: 'Listening to {{bot.users}} members.' } ];
+  const botUptime = [ { type: 'Custom', name: 'Uptime: {{bot.uptime}}' } ];
   const cycleActivities = [].concat( config.activities, servingGuilds, servingUsers, botUptime );
   const intActivities = cycleActivities.length;
   var iAct = 1;
   setInterval( async () => {
     let activityIndex = ( iAct++ % intActivities );
     let thisActivity = cycleActivities[ activityIndex ];
-    await client.user.setPresence( { activities: [ { type: activityTypes[ thisActivity.type ], name: thisActivity.name } ], status: 'online' } );
+    let actType = activityTypes[ thisActivity.type ];
+    let actName = await transclude( thisActivity.name );
+    await client.user.setPresence( { activities: [ { type: actType, name: actName } ], status: 'online' } );
   }, 300000 );
 
   console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) );
