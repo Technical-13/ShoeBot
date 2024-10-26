@@ -8,7 +8,6 @@ module.exports = async ( rawString, obj = { guild: null, member: null } ) => {
   const guild = ( member ? member.guild : ( obj.guild ? obj.guild : null ) );
   const bot = client.user;
 
-/* DEBUGGING */console.log( 'client.uptime: %o', client.uptime );/* DEBUGGING */
   const currUptime = await duration( client.uptime );
   const transclusions = {
     '{{bot.name}}': bot.displayName,
@@ -42,15 +41,9 @@ module.exports = async ( rawString, obj = { guild: null, member: null } ) => {
 
   arrTemplates = rawString.match( /\{\{((?:bot|guild|member)\.[a-z\.]*)\}\}/g );
   var parsed = rawString;
-/* DEBUGGING */
-console.log( 'currUptime: %o', currUptime );
-console.log( 'transclusions: %o', transclusions );
-console.log( 'notAvailable: %o', notAvailable );
-console.log( 'arrTemplates: %o', arrTemplates );
-/* DEBUGGING */
   arrTemplates.forEach( template => {
-    if ( transclusions[ template ] ) { parsed = parsed.replace( template, transclusions[ template ] );/* DEBUGGING */console.log( 'template transclusions: %o', template );/* DEBUGGING */ }
-    else if ( notAvailable[ template ] ) { parsed = parsed.replace( template, '*(unknown ' + notAvailable[ template ] + ')*' );/* DEBUGGING */console.log( 'template notAvailable: %o', template );/* DEBUGGING */ }
+    if ( transclusions[ template ] ) { parsed = parsed.replace( template, transclusions[ template ] ); }
+    else if ( notAvailable[ template ] ) { parsed = parsed.replace( template, '*(unknown ' + notAvailable[ template ] + ')*' ); }
     else {
       parsed = parsed.replace( template, '[*' + template + '*](<https://github.com/Technical-13/' + bot.username + '/issues/new?labels=enhancement&template=feature_request.md&title=' + encodeURI( 'Please add ' + template + ' to transclude.js' ) + '>)' );
       console.log( 'Someone tried to transclude %s, search for a GitHub feature request:\n https://github.com/Technical-13/%s/issues?q=%s', chalk.bold.red( template ), bot.username, encodeURI( 'Please add ' + template + ' to transclude.js' ) );

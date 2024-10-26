@@ -1,8 +1,6 @@
 const client = require( '..' );
 
 module.exports = async ( ms, getUnits = { getWeeks: false, getDays: true, getHours: true, getMinutes: true, getSeconds: false } ) => {
-/* DEBUGGING */console.log( 'ms: %o', ms );/* DEBUGGING */
-/* DEBUGGING */console.log( 'getUnits: %o', getUnits );/* DEBUGGING */
   if ( isNaN( ms ) ) { return '∅ms'; }
   const objUnits = {
     wks: ( typeof getUnits.getWeeks != 'boolean' ? false : getUnits.getWeeks ),
@@ -11,7 +9,6 @@ module.exports = async ( ms, getUnits = { getWeeks: false, getDays: true, getHou
     min: ( typeof getUnits.getMinutes != 'boolean' ? true : getUnits.getMinutes ),
     secs: ( typeof getUnits.getSeconds != 'boolean' ? false : getUnits.getSeconds ),
   };
-/* DEBUGGING */console.log( 'objUnits: %o', objUnits );/* DEBUGGING */
 
   if ( objUnits.wks || objUnits.days || objUnits.hrs || objUnits.min || objUnits.secs ) {
     var intWeeks, intDays, intHours, intMinutes, intSeconds;
@@ -20,21 +17,16 @@ module.exports = async ( ms, getUnits = { getWeeks: false, getDays: true, getHou
       intWeeks = Math.floor( totalSeconds / 604800 );
       totalSeconds %= 604800;
     }
-/* DEBUGGING */console.log( 'intWeeks: %o', intWeeks );/* DEBUGGING */
     if ( objUnits.days ) {
       intDays = Math.floor( totalSeconds / 86400 );
       totalSeconds %= 86400;
     }
-/* DEBUGGING */console.log( 'intDays: %o', intDays );/* DEBUGGING */
     if ( objUnits.hrs ) {
       intHours = Math.floor( totalSeconds / 3600 );
       totalSeconds %= 3600;
     }
-/* DEBUGGING */console.log( 'intHours: %o', intHours );/* DEBUGGING */
     if ( objUnits.min ) { intMinutes = Math.floor( totalSeconds / 60 ); }
-/* DEBUGGING */console.log( 'intMinutes: %o', intMinutes );/* DEBUGGING */
     if ( objUnits.secs ) { intSeconds = Math.floor( totalSeconds % 60 ); }
-/* DEBUGGING */console.log( 'intSeconds: %o', intSeconds );/* DEBUGGING */
 
     const result = [];
     if ( objUnits.wks && intWeeks != 0 ) { result.push( intWeeks + ' week' + ( intWeeks === 1 ? '' : 's' ) + ',' ); }
@@ -42,9 +34,8 @@ module.exports = async ( ms, getUnits = { getWeeks: false, getDays: true, getHou
     if ( objUnits.hrs && intHours != 0 ) { result.push( intHours + ' hour' + ( intHours === 1 ? '' : 's' ) + ',' ); }
     if ( objUnits.min && intMinutes != 0 ) { result.push( intMinutes + ' minute' + ( intMinutes === 1 ? '' : 's' ) + ',' ); }
     if ( objUnits.secs && intSeconds != 0 ) { result.push( intSeconds + ' second' + ( intSeconds === 1 ? '' : 's' ) + ',' ); }
-/* DEBUGGING */console.log( 'result: %o', result );/* DEBUGGING */
 
-    return result.join( ' ' );
+    return ( result.join( ' ' ) ? result.join( ' ' ) : ms + 'ms' );
   }
   else { return ms + 'ms'; }
 };
