@@ -28,7 +28,7 @@ module.exports = async ( rawString, objects = { guild: null, member: null } ) =>
 
   arrTemplates = rawString.match( /\{\{((?:bot|guild)\.[a-z\.]*)\}\}/g );
   arrTemplates.forEach( template => {
-    if ( transclusions.indexOf( template ) != -1 { rawString.replace( template, transclusions[ template ] ); }
+    if ( transclusions.indexOf( template ) != -1 ) { rawString.replace( template, transclusions[ template ] ); }
     else {
       rawString.replace( template, '[*' + template + '*](<https://github.com/Technical-13/' + bot.username + '/issues/new?labels=enhancement&template=feature_request.md&title=' + encodeURI( 'Please add ' + template + ' to transclude.js' ) + '>)' );
       console.log( 'Someone tried to transclude %s in %s.  Search for a GitHub feature_request: https://github.com/Technical-13/%s/issues?q=%s', template, guild.name, bot.username, encodeURI( 'Please add ' + template + ' to transclude.js' ) );
