@@ -7,7 +7,7 @@ module.exports = async ( rawString, objects = { guild: null, member: null } ) =>
 
   const transclusions = {
     '{{bot.name}}': bot.displayName,
-    '{{bot.owner.name}}': client.users.get( client.ownerId ).displayName,
+    '{{bot.owner.name}}': client.users.cache.get( client.ownerId ).displayName,
     '{{bot.owner.ping}}': '<@' + client.ownerId + '>',
     '{{bot.servers}}': client.guilds.cache.size,
     '{{bot.users}}': client.users.cache.size,
