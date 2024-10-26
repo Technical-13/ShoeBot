@@ -3,11 +3,11 @@ const client = require( '..' );
 module.exports = async ( ms, getUnits ) => {// getUnits = { getWeeks: false, getDays: true, getHours: true, getMinutes: true, getSeconds: false }
   if ( isNaN( ms ) ) { return '∅ms'; }
   const objUnits = {
-    wks: ( typeof getUnits.getWeeks != 'boolean' ? false : getUnits.getWeeks ),
-    days: ( typeof getUnits.getDays != 'boolean' ? true : getUnits.getDays ),
-    hrs: ( typeof getUnits.getHours != 'boolean' ? true : getUnits.getHours ),
-    min: ( typeof getUnits.getMinutes != 'boolean' ? true : getUnits.getMinutes ),
-    secs: ( typeof getUnits.getSeconds != 'boolean' ? false : getUnits.getSeconds ),
+    wks: ( !getUnits.getWeeks ? false : ( typeof getUnits.getWeeks != 'boolean' ? false : getUnits.getWeeks ) ),
+    days: ( !getUnits.getDays ? true : ( typeof getUnits.getDays != 'boolean' ? true : getUnits.getDays ) ),
+    hrs: ( !getUnits.getHours ? true : ( typeof getUnits.getHours != 'boolean' ? true : getUnits.getHours ) ),
+    min: ( !getUnits.getMinutes ? true : ( typeof getUnits.getMinutes != 'boolean' ? true : getUnits.getMinutes ) ),
+    secs: ( !getUnits.getSeconds ? false : ( typeof getUnits.getSeconds != 'boolean' ? false : getUnits.getSeconds ) ),
   };
 
   if ( objUnits.wks || objUnits.days || objUnits.hrs || objUnits.min || objUnits.secs ) {
