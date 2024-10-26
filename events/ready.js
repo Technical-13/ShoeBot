@@ -29,7 +29,7 @@ client.on( 'ready', async rdy => {
     let activityIndex = ( iAct++ % intActivities );
     let thisActivity = cycleActivities[ activityIndex ];
     let actType = activityTypes[ thisActivity.type ];
-    let actName = await parse( thisActivity.name );
+    let actName = await parse( thisActivity.name, { uptime: { getWeeks: true } } );
     await client.user.setPresence( { activities: [ { type: actType, name: actName } ], status: 'online' } );
   }, 300000 );
 

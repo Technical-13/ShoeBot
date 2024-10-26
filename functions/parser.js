@@ -3,12 +3,13 @@ const config = require( '../config.json' );
 const chalk = require( 'chalk' );
 const duration = require( './duration.js' );
 
-module.exports = async ( rawString, obj = { guild: null, member: null } ) => {
+module.exports = async ( rawString, obj = { guild: null, member: null, uptime: null } ) => {
   const member = ( obj.member ? obj.member : null );
   const guild = ( member ? member.guild : ( obj.guild ? obj.guild : null ) );
+  const uptime = ( obj.uptime ? obj.uptime : null );
   const bot = client.user;
 
-  const currUptime = await duration( client.uptime );
+  const currUptime = await duration( client.uptime,  );
   const transclusions = {
     '{{bot.name}}': bot.displayName,
     '{{bot.owner.name}}': client.users.cache.get( client.ownerId ).displayName,
