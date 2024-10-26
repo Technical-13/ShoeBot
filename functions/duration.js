@@ -11,28 +11,29 @@ module.exports = async ( ms, getUnits = { getWeeks: false, getDays: true, getHou
   };
 
   if ( objUnits.wks || objUnits.days || objUnits.hrs || objUnits.min || objUnits.secs ) {
+    var intWeeks, intDays, intHours, intMinutes, intSeconds;
     var totalSeconds = ( ms / 1000 );
     if ( objUnits.wks ) {
-      const intWeeks = Math.floor( totalSeconds / 604800 );
+      intWeeks = Math.floor( totalSeconds / 604800 );
       totalSeconds %= 604800;
     }
     if ( objUnits.days ) {
-      const intDays = Math.floor( totalSeconds / 86400 );
+      intDays = Math.floor( totalSeconds / 86400 );
       totalSeconds %= 86400;
     }
     if ( objUnits.hrs ) {
-      const intHours = Math.floor( totalSeconds / 3600 );
+      intHours = Math.floor( totalSeconds / 3600 );
       totalSeconds %= 3600;
     }
-    if ( objUnits.min ) { const intMinutes = Math.floor( totalSeconds / 60 ); }
-    if ( objUnits.secs ) { const intSeconds = Math.floor( totalSeconds % 60 ); }
+    if ( objUnits.min ) { intMinutes = Math.floor( totalSeconds / 60 ); }
+    if ( objUnits.secs ) { intSeconds = Math.floor( totalSeconds % 60 ); }
 
     const result = [];
-    if ( objUnits.wks ) { result.push( intWeeks === 0 ? '' : intWeeks + ' week' + ( intWeeks === 1 ? '' : 's' ) + ',' ); }
-    if ( objUnits.days ) { result.push( intDays === 0 ? '' : intDays + ' day' + ( intDays === 1 ? '' : 's' ) + ',' ); }
-    if ( objUnits.hrs ) { result.push( intHours === 0 ? '' : intHours + ' hour' + ( intHours === 1 ? '' : 's' ) + ',' ); }
-    if ( objUnits.min ) { result.push( intMinutes === 0 ? '' : intMinutes + ' minute' + ( intMinutes === 1 ? '' : 's' ) + ',' ); }
-    if ( objUnits.secs ) { result.push( intSeconds === 0 ? '' : intSeconds + ' second' + ( intSeconds === 1 ? '' : 's' ) + ',' ); }
+    if ( objUnits.wks && intWeeks != 0 ) { result.push( intWeeks + ' week' + ( intWeeks === 1 ? '' : 's' ) + ',' ); }
+    if ( objUnits.days && intDays != 0 ) { result.push( intDays + ' day' + ( intDays === 1 ? '' : 's' ) + ',' ); }
+    if ( objUnits.hrs && intHours != 0 ) { result.push( intHours + ' hour' + ( intHours === 1 ? '' : 's' ) + ',' ); }
+    if ( objUnits.min && intMinutes != 0 ) { result.push( intMinutes + ' minute' + ( intMinutes === 1 ? '' : 's' ) + ',' ); }
+    if ( objUnits.secs && intSeconds != 0 ) { result.push( intSeconds + ' second' + ( intSeconds === 1 ? '' : 's' ) + ',' ); }
 
     return result.join( ' ' );
   }
