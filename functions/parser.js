@@ -39,7 +39,7 @@ module.exports = async ( rawString, obj = { guild: null, member: null } ) => {
     notAvailable[ '{{member.ping}}' ] = 'member';
   }
 
-  arrTemplates = rawString.match( /\{\{((?:bot|guild)\.[a-z\.]*)\}\}/g );
+  arrTemplates = rawString.match( /\{\{((?:bot|guild|member)\.[a-z\.]*)\}\}/g );
   var parsed = rawString;
 /* DEBUGGING */
 console.log( 'currUptime: %o', currUptime );
@@ -55,6 +55,6 @@ console.log( 'arrTemplates: %o', arrTemplates );
       console.log( 'Someone tried to transclude %s, search for a GitHub feature request:\n https://github.com/Technical-13/%s/issues?q=%s', chalk.bold.red( template ), bot.username, encodeURI( 'Please add ' + template + ' to transclude.js' ) );
     }
   } );
-  
+
   return parsed;
 };
