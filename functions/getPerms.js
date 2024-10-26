@@ -90,10 +90,7 @@ module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
     
     const hasAdministrator = ( ( isBotMod || isGuildOwner || arrAuthorPermissions.indexOf( 'Administrator' ) !== -1 ) ? true : false );
     const checkPermission = ( permission ) => { return ( ( hasAdministrator || arrAuthorPermissions.indexOf( permission ) !== -1 ) ? true : false ); };
-    const hasManageGuild = ( ( hasAdministrator || arrAuthorPermissions.indexOf( 'ManageGuild' ) !== -1 ) ? true : false );
-    const hasManageRoles = ( ( hasAdministrator || arrAuthorPermissions.indexOf( 'ManageRoles' ) !== -1 ) ? true : false );
-    const hasMentionEveryone = ( ( hasAdministrator || arrAuthorPermissions.indexOf( 'MentionEveryone' ) !== -1 ) ? true : false );
-    
+        
     const guildBlacklist = ( guildConfig.Blacklist ? ( guildConfig.Blacklist.Roles || [] ) : [] );
     const arrBlackMembers = ( guildConfig.Blacklist ? ( guildConfig.Blacklist.Members || [] ) : [] );
     var arrBlackGuild = [];
@@ -136,12 +133,9 @@ module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
       isGuildOwner: isGuildOwner,
       hasAdministrator: hasAdministrator,
       checkPermission: checkPermission,
-      hasManageGuild: hasManageGuild,
-      hasManageRoles: hasManageRoles,
       guildAllowsPremium: guildAllowsPremium,
       roleServerBooster: roleServerBooster,
       isServerBooster: isServerBooster,
-      hasMentionEveryone: hasMentionEveryone,
       isGuildBlacklisted: isGuildBlacklisted,
       isGlobalBlacklisted: isGlobalBlacklisted,
       isBlacklisted: isBlacklisted,
