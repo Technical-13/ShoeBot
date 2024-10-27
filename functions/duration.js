@@ -24,28 +24,36 @@ module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, ge
       intDecades = Math.floor( totalSeconds / 315569520000 );
       totalSeconds %= 315569520000;
     }
+    /* TRON */console.log( 'intDecades: %o', intDecades );/* TROFF */
     if ( objUnits.yrs ) {
       intYears = Math.floor( totalSeconds / 31556952000 );
       totalSeconds %= 31556952000;
     }
+    /* TRON */console.log( 'intYears: %o', intYears );/* TROFF */
     if ( objUnits.mos ) {
       intMonths = Math.floor( totalSeconds / 2629746000 );
       totalSeconds %= 2629746000;
     }
+    /* TRON */console.log( 'intMonths: %o', intMonths );/* TROFF */
     if ( objUnits.wks && ( intDecades + intYears + intMonths ) === 0 ) {
       intWeeks = Math.floor( totalSeconds / 604800 );
       totalSeconds %= 604800;
     }
+    /* TRON */console.log( 'intWeeks: %o', intWeeks );/* TROFF */
     if ( objUnits.days ) {
       intDays = Math.floor( totalSeconds / 86400 );
       totalSeconds %= 86400;
     }
+    /* TRON */console.log( 'intDays: %o', intDays );/* TROFF */
     if ( objUnits.hrs ) {
       intHours = Math.floor( totalSeconds / 3600 );
       totalSeconds %= 3600;
     }
+    /* TRON */console.log( 'intHours: %o', intHours );/* TROFF */
     if ( objUnits.min ) { intMinutes = Math.floor( totalSeconds / 60 ); }
+    /* TRON */console.log( 'intMinutes: %o', intMinutes );/* TROFF */
     if ( objUnits.secs ) { intSeconds = Math.floor( totalSeconds % 60 ); }
+    /* TRON */console.log( 'intSeconds: %o', intSeconds );/* TROFF */
 
     const result = [];
     if ( objUnits.xs && intDecades != 0 ) { result.push( intDecades + ' decade' + ( intDecades === 1 ? '' : 's' ) ); }
