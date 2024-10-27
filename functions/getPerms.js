@@ -150,7 +150,13 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
       let debugResults = {};
       for ( const key of resultKeys ) {
         if ( typeof( results[ key ] ) != 'object' ) { debugResults[ key ] = results[ key ]; }
-        else { debugResults[ key ] = '{ ' + results[ key ].constructor.name + ': ' + results[ key ].id + ' }'; }
+        else {
+          let resultObj = results[ key ];
+          let objType = resultObj.constructor.name;
+          let objId = resultObj.id;
+          let objName = ( resultObj.displayName || resultObj.globalName || resultObj.name );
+          debugResults[ key ] = '{ ' + objType + ': ' + objId + ' }';
+        }
       }
       console.log( 'getPerms is returning: %o', debugResults );
     }
@@ -163,5 +169,6 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
       user.send( { content: 'You have been blacklisted from using commands in https://discord.com/channels/' + guild.id + '! Use `/config remove` to remove yourself from the blacklist.' } );
     }
     return results;
-  } catch ( errPerms ) { await errHandler( errPerms, { command: 'getPerms', type: 'tryFunction' } ); }
+  }
+  catch ( errPerms ) { await errHandler( errPerms, { command: 'getPerms', type: 'tryFunction' } ); }
 };
