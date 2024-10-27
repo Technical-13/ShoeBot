@@ -31,7 +31,7 @@ module.exports = {
     await interaction.deferReply( { ephemeral: true } );
     const { channel, guild, options, user: author } = interaction;
     const guildMember = await guild.members.cache.get( author.id );
-    const { isBotMod, checkPermission, guildAllowsPremium, isServerBooster, isWhitelisted, content } = await userPerms( author, guild, true, true );
+    const { isBotMod, checkPermission, guildAllowsPremium, isServerBooster, isWhitelisted, content } = await userPerms( author, guild );
     if ( content ) { return interaction.editReply( { content: content } ); }
 
     const canSpeak = ( isBotMod || checkPermission( 'ManageGuild' ) || isWhitelisted || ( guildAllowsPremium && isServerBooster ) ? true : false );

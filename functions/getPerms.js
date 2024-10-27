@@ -7,14 +7,14 @@ const botConfigDB = require( '../models/BotConfig.js' );
 const guildConfigDB = require( '../models/GuildConfig.js' );
 const errHandler = require( './errorHandler.js' );
 
-module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
+module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
   if ( debug ) {
     const preUser = ( user ? user.id : user );
     const preGuild = ( guild ? guild.id : guild );
     const preProcessed = { user: preUser, guild: preGuild, doBlacklist: doBlacklist };
     console.log( 'getPerms received inputs:%o', preProcessed );
   }
-  
+
   try {
     const botConfig = await botConfigDB.findOne( { BotName: thisBotName } )
     .catch( async errFindBot => { await errorHandler( errFindBot, { command: 'getPerms', type: 'getBotDB' } ); } );
@@ -37,10 +37,10 @@ module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
     var roleServerBooster = null;
     var isServerBooster = false;
     var arrAuthorPermissions = [];
-    
+
     var guildConfig = null;
     var objGuildMembers = null;
-    
+
     if ( guild ) {
       const createConfig = {
         Guild: guild.id,
@@ -87,10 +87,10 @@ module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
       isServerBooster = ( !roleServerBooster ? false : ( roleServerBooster.members.get( user.id ) ? true : false ) );
       arrAuthorPermissions = ( objGuildMembers.get( user.id ).permissions.toArray() || [] );
     }
-    
+
     const hasAdministrator = ( ( isBotMod || isGuildOwner || arrAuthorPermissions.indexOf( 'Administrator' ) !== -1 ) ? true : false );
     const checkPermission = ( permission ) => { return ( ( hasAdministrator || arrAuthorPermissions.indexOf( permission ) !== -1 ) ? true : false ); };
-        
+
     const guildBlacklist = ( guildConfig.Blacklist ? ( guildConfig.Blacklist.Roles || [] ) : [] );
     const arrBlackMembers = ( guildConfig.Blacklist ? ( guildConfig.Blacklist.Members || [] ) : [] );
     var arrBlackGuild = [];
@@ -112,14 +112,14 @@ module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
         arrWhiteGuild = arrWhiteGuild.concat( roleMembers );
       }
     }
-    if ( arrWhiteMembers.length > 0 ) { arrWhiteGuild = arrWhiteGuild.concat( arrWhiteMembers ); }    
+    if ( arrWhiteMembers.length > 0 ) { arrWhiteGuild = arrWhiteGuild.concat( arrWhiteMembers ); }
     const isGuildWhitelisted = ( arrWhiteGuild.indexOf( user.id ) != -1 ? true : false );
-    
+
     const guildPrefix = ( guildConfig.Prefix || globalPrefix );
-    const prefix = ( guildPrefix || globalPrefix || client.prefix );    
+    const prefix = ( guildPrefix || globalPrefix || client.prefix );
     const isBlacklisted = ( isGlobalBlacklisted || ( isGuildBlacklisted && !( isBotMod || isGlobalWhitelisted ) ) );
     const isWhitelisted = ( isGlobalWhitelisted || ( isGuildWhitelisted && !isGlobalBlacklisted ) );
-    
+
     const results = {
       clientId: clientID,
       globalPrefix: globalPrefix,
@@ -154,7 +154,7 @@ module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
       }
       console.log( 'getPerms is returning: %o', debugResults );
     }
-      
+
     if ( doBlacklist && isBlacklisted && !isGlobalWhitelisted ) {
       let contact = ( isGuildBlacklisted ? guildOwner.id : botOwner.id );
       results.content = 'Oh no!  It looks like you have been blacklisted from using my commands' + ( isGuildBlacklisted ? ' in this server!' : '!' ) + '  Please contact <@' + contact + '> to resolve the situation.';
