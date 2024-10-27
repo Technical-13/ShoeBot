@@ -47,7 +47,7 @@ module.exports = {
     if ( myResponse ) {
       if ( canSpeak && ( !mentionsEveryone || checkPermission( 'MentionEveryone' ) ) ) {
         channel.messages.fetch( msgID ).then( async message => {
-          const guildMember = await guild.members.cache.get( message.author.id );
+          const guildMember = await message.guild.members.cache.get( message.author.id );
           const parsedSaying = await parse( myResponse, { author: authorMember, member: guildMember } );
           await message.reply( parsedSaying ).then( async responded => {
             if ( doLogs ) {

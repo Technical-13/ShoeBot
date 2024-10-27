@@ -10,7 +10,7 @@ module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, ge
     days: ( typeof getUnits.getDays != 'boolean' ? true : getUnits.getDays ),
     hrs: ( typeof getUnits.getHours != 'boolean' ? true : getUnits.getHours ),
     min: ( typeof getUnits.getMinutes != 'boolean' ? true : getUnits.getMinutes ),
-    secs: ( typeof getUnits.getSeconds != 'boolean' ? false : getUnits.getSeconds ),
+    secs: ( typeof getUnits.getSeconds != 'boolean' ? false : getUnits.getSeconds )
   };
 
   if ( objUnits.xs || objUnits.yrs || objUnits.mos || objUnits.wks || objUnits.days || objUnits.hrs || objUnits.min || objUnits.secs ) {
