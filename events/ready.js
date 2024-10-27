@@ -26,10 +26,10 @@ client.on( 'ready', async rdy => {
   const intActivities = cycleActivities.length;
   var iAct = 1;
   setInterval( async () => {
-    let activityIndex = ( iAct++ % intActivities );/* DEBUGGING */console.log('activityIndex: %s',activityIndex);/* DEBUGGING */
-    let thisActivity = cycleActivities[ activityIndex ];/* DEBUGGING */console.log('thisActivity: %s',thisActivity);/* DEBUGGING */
-    let actType = activityTypes[ thisActivity.type ];/* DEBUGGING */console.log('actType: %s',actType);/* DEBUGGING */
-    let actName = await parse( thisActivity.name, { uptime: { getWeeks: true } } );/* DEBUGGING */console.log('actName: %s',actName);/* DEBUGGING */
+    let activityIndex = ( iAct++ % intActivities );
+    let thisActivity = cycleActivities[ activityIndex ];
+    let actType = activityTypes[ thisActivity.type ];
+    let actName = await parse( thisActivity.name, { uptime: { getWeeks: true } } );
     await client.user.setPresence( { activities: [ { type: actType, name: actName } ], status: 'online' } );
   }, 300000 );
 
