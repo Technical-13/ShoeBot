@@ -42,7 +42,7 @@ module.exports = async ( rawString, obj = { guild: null, member: null, uptime: n
 
   arrTemplates = rawString.match( /\{\{((?:bot|guild|member)\.[a-z\.]*)\}\}/g );
   var parsed = rawString;
-  if ( arrTemplates.length != 0 ) {
+  if ( arrTemplates ) {
     arrTemplates.forEach( template => {
       if ( transclusions[ template ] ) { parsed = parsed.replace( template, transclusions[ template ] ); }
       else if ( notAvailable[ template ] ) { parsed = parsed.replace( template, '*(unknown ' + notAvailable[ template ] + ')*' ); }
