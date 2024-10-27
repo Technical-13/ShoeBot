@@ -56,6 +56,7 @@ module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, ge
     if ( objUnits.hrs && intHours != 0 ) { result.push( intHours + ' hour' + ( intHours === 1 ? '' : 's' ) ); }
     if ( objUnits.min && intMinutes != 0 ) { result.push( intMinutes + ' minute' + ( intMinutes === 1 ? '' : 's' ) ); }
     if ( objUnits.secs && intSeconds != 0 ) { result.push( intSeconds + ' second' + ( intSeconds === 1 ? '' : 's' ) ); }
+    /* TRON */console.log( 'result: %o', result );/* TROFF */
 
     return ( result.join() ? result.join( ', ' ) : ms + 'ms' );
   }
