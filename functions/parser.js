@@ -12,6 +12,8 @@ module.exports = async ( rawString, obj = { author: null, guild: null, member: n
 
   const currUptime = await duration( client.uptime, uptime );
   const transclusions = {
+    '{{bot.age}}': await duration( Date.now() - client.user.createdTimestamp, { getDecades: true, getYears: true, getMonths: true, getDays: true, getHours: false, getMinutes: false } ),
+    '{{bot.members}}': client.users.cache.size.toLocaleString(),
     '{{bot.name}}': bot.displayName,
     '{{bot.owner.name}}': client.users.cache.get( client.ownerId ).displayName,
     '{{bot.owner.ping}}': '<@' + client.ownerId + '>',
