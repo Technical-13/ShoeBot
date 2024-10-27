@@ -30,7 +30,7 @@ module.exports = {
   run: async ( client, interaction ) => {
     await interaction.deferReply( { ephemeral: true } );
     const { channel, guild, options, user: author } = interaction;
-    const guildMember = await guild.members.cache.get( author.id );
+    const authorMember = await guild.members.cache.get( author.id );
     const { isBotMod, checkPermission, guildAllowsPremium, isServerBooster, isWhitelisted, content } = await userPerms( author, guild );
     if ( content ) { return interaction.editReply( { content: content } ); }
 
@@ -45,9 +45,10 @@ module.exports = {
     const { chanChat, doLogs, strClosing } = await logChans( guild );
 
     if ( myResponse ) {
-      const parsedSaying = await parse( myResponse, { member: guildMember } );
       if ( canSpeak && ( !mentionsEveryone || checkPermission( 'MentionEveryone' ) ) ) {
         channel.messages.fetch( msgID ).then( async message => {
+          const guildMember = await guild.members.cache.get( message.author.id );
+          const parsedSaying = await parse( myResponse, { author: authorMember, member: guildMember } );
           await message.reply( parsedSaying ).then( async responded => {
             if ( doLogs ) {
               chanChat.send( {

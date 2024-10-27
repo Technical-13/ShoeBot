@@ -3,9 +3,10 @@ const config = require( '../config.json' );
 const chalk = require( 'chalk' );
 const duration = require( './duration.js' );
 
-module.exports = async ( rawString, obj = { guild: null, member: null, uptime: null } ) => {
+module.exports = async ( rawString, obj = { author: null, guild: null, member: null, uptime: null } ) => {
+  const author = ( obj.author ? obj.author : null );
   const member = ( obj.member ? obj.member : null );
-  const guild = ( member ? member.guild : ( obj.guild ? obj.guild : null ) );
+  const guild = ( obj.guild ? obj.guild : ( author ? author.guild : ( member ? member.guild : null ) ) );
   const uptime = ( obj.uptime ? obj.uptime : null );
   const bot = client.user;
 
@@ -19,6 +20,14 @@ module.exports = async ( rawString, obj = { guild: null, member: null, uptime: n
     '{{bot.uptime}}': currUptime
   };
   const notAvailable = {};
+
+  if ( author ) {
+    transclusions[ '{{author.name}}' ] = author.displayName;
+    transclusions[ '{{author.ping}}' ] = '<@' + author.id + '>';
+  } else {
+    notAvailable[ '{{author.name}}' ] = 'author';
+    notAvailable[ '{{author.ping}}' ] = 'author';
+  }
 
   if ( guild ) {
     transclusions[ '{{guild.owner.name}}' ] = guild.members.cache.get( guild.ownerId ).displayName;
@@ -40,7 +49,7 @@ module.exports = async ( rawString, obj = { guild: null, member: null, uptime: n
     notAvailable[ '{{member.ping}}' ] = 'member';
   }
 
-  arrTemplates = rawString.match( /\{\{((?:bot|guild|member)\.[a-z\.]*)\}\}/g );
+  arrTemplates = rawString.match( /\{\{((?:author|bot|guild|member)\.[a-z\.]*)\}\}/g );
   var parsed = rawString;
   if ( arrTemplates ) {
     arrTemplates.forEach( template => {
