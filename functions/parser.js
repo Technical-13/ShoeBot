@@ -1,5 +1,6 @@
 const client = require( '..' );
 const config = require( '../config.json' );
+const objTimeString = require( '../time.json' );
 const chalk = require( 'chalk' );
 const duration = require( './duration.js' );
 
@@ -13,11 +14,12 @@ module.exports = async ( rawString, obj = { author: null, guild: null, member: n
 
   const currUptime = await duration( client.uptime, uptime );
   const transclusions = {
-    '{{bot.age}}': await duration( Date.now() - client.user.createdTimestamp, ageUnits ),
+    '{{bot.age}}': await duration( Date.now() - bot.createdTimestamp, ageUnits ),
     '{{bot.members}}': client.users.cache.size.toLocaleString(),
     '{{bot.name}}': bot.displayName,
     '{{bot.owner.name}}': client.users.cache.get( client.ownerId ).displayName,
     '{{bot.owner.ping}}': '<@' + client.ownerId + '>',
+    '{{bot.since}}': bot.createdAt.toLocaleTimeString( 'en-US', objTimeString ),
     '{{bot.servers}}': client.guilds.cache.size.toLocaleString(),
     '{{bot.users}}': client.users.cache.size.toLocaleString(),
     '{{bot.uptime}}': currUptime
@@ -28,17 +30,25 @@ module.exports = async ( rawString, obj = { author: null, guild: null, member: n
     transclusions[ '{{author.age}}' ] = await duration( Date.now() - author.user.createdTimestamp, ageUnits );
     transclusions[ '{{author.guild.age}}' ] = await duration( Date.now() - author.joinedTimestamp, ageUnits );
     transclusions[ '{{author.name}}' ] = author.displayName;
+    transclusions[ '{{author.member.since}}' ] = guild.members.cache.get( author.id ).joinedAt.toLocaleTimeString( 'en-US', objTimeString );
     transclusions[ '{{author.ping}}' ] = '<@' + author.id + '>';
     transclusions[ '{{author.server.age}}' ] = await duration( Date.now() - author.joinedTimestamp, ageUnits );
+    transclusions[ '{{author.since}}' ] = author.user.createdAt.toLocaleTimeString( 'en-US', objTimeString );
   } else {
     notAvailable[ '{{author.age}}' ] = 'author';
     notAvailable[ '{{author.guild.age}}' ] = 'author';
     notAvailable[ '{{author.name}}' ] = 'author';
+    notAvailable[ '{{author.member.since}}' ] = 'author';
     notAvailable[ '{{author.ping}}' ] = 'author';
     notAvailable[ '{{author.server.age}}' ] = 'author';
+    notAvailable[ '{{author.since}}' ] = 'author';
   }
 
   if ( guild ) {
+    transclusions[ '{{bot.guild.age}}' ] = await duration( Date.now() - guild.members.cache.get( bot.id ).joinedAt, ageUnits );
+    transclusions[ '{{bot.guild.since}}' ] = guild.members.cache.get( bot.id ).joinedTimestamp.toLocaleTimeString( 'en-US', objTimeString );
+    transclusions[ '{{bot.server.age}}' ] = await duration( Date.now() - guild.members.cache.get( bot.id ).joinedAt, ageUnits );
+    transclusions[ '{{bot.server.since}}' ] = guild.members.cache.get( bot.id ).joinedTimestamp.toLocaleTimeString( 'en-US', objTimeString );
     transclusions[ '{{guild.age}}' ] = await duration( Date.now() - guild.createdTimestamp, ageUnits );
     transclusions[ '{{guild.owner.name}}' ] = guild.members.cache.get( guild.ownerId ).displayName;
     transclusions[ '{{guild.owner.ping}}' ] = '<@' + guild.ownerId + '>';
@@ -50,6 +60,10 @@ module.exports = async ( rawString, obj = { author: null, guild: null, member: n
     transclusions[ '{{server.members}}' ] = guild.members.cache.size.toLocaleString();
     transclusions[ '{{server.name}}' ] = guild.name;
   } else {
+    notAvailable[ '{{bot.guild.age}}' ] = 'guild';
+    notAvailable[ '{{bot.guild.since}}' ] = 'guild';
+    notAvailable[ '{{bot.server.age}}' ] = 'guild';
+    notAvailable[ '{{bot.server.since}}' ] = 'guild';
     notAvailable[ '{{guild.age}}' ] = 'guild';
     notAvailable[ '{{guild.owner.name}}' ] = 'guild';
     notAvailable[ '{{guild.owner.ping}}' ] = 'guild';
@@ -68,12 +82,16 @@ module.exports = async ( rawString, obj = { author: null, guild: null, member: n
     transclusions[ '{{member.name}}' ] = member.displayName;
     transclusions[ '{{member.ping}}' ] = '<@' + member.id + '>';
     transclusions[ '{{member.server.age}}' ] = await duration( Date.now() - member.joinedTimestamp, ageUnits );
+    transclusions[ '{{member.since}}' ] = guild.members.cache.get( member.id ).joinedAt.toLocaleTimeString( 'en-US', objTimeString );
+    transclusions[ '{{member.user.since}}' ] = member.user.createdAt.toLocaleTimeString( 'en-US', objTimeString );
   } else {
     notAvailable[ '{{member.age}}' ] = 'member';
     notAvailable[ '{{member.guild.age}}' ] = 'member';
     notAvailable[ '{{member.name}}' ] = 'member';
     notAvailable[ '{{member.ping}}' ] = 'member';
     notAvailable[ '{{member.server.age}}' ] = 'member';
+    notAvailable[ '{{member.since}}' ] = 'member';
+    notAvailable[ '{{member.user.since}}' ] = 'member';
   }
 
   arrTemplates = rawString.match( /\{\{((?:author|bot|guild|member)\.[a-z\.]*)\}\}/g );
