@@ -9,7 +9,7 @@ module.exports = async ( rawString, obj = { guild: null, member: null, uptime: n
   const uptime = ( obj.uptime ? obj.uptime : null );
   const bot = client.user;
 
-  const currUptime = await duration( client.uptime,  );
+  const currUptime = await duration( client.uptime, uptime );
   const transclusions = {
     '{{bot.name}}': bot.displayName,
     '{{bot.owner.name}}': client.users.cache.get( client.ownerId ).displayName,
