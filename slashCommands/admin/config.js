@@ -40,7 +40,7 @@ module.exports = {
       { type: 3, name: 'prefix', description: 'Guild specific prefix for bot commands' },// guild prefix
       { type: 5, name: 'premium', description: 'Give nitro server boosters extra bot access? (default: TRUE)' }
     ] },//*/
-    /*{ type: 1, name: 'welcome', description: 'Modify the welcome message options.', options: [// do-welcome, welcome-message, welcome-dm, welcome-channel, welcome-role-give, welcome-role
+    { type: 1, name: 'welcome', description: 'Modify the welcome message options.', options: [// do-welcome, welcome-message, welcome-dm, welcome-channel, welcome-role-give, welcome-role
       { type: 5, name: 'do-welcome', description: 'Send a message to welcome new members to the server?' },// welcomer on/off
       { type: 3, name: 'welcome-message', description: 'Message to send new members to the server?' },// welcome message
       { type: 5, name: 'welcome-dm', description: 'Send the welcome message to DM?  (default: TRUE)' },// welcome dm
