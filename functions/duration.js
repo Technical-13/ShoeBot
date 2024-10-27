@@ -1,7 +1,10 @@
 const client = require( '..' );
 
 module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, getMonths: false, getWeeks: false, getDays: true, getHours: true, getMinutes: true, getSeconds: false } ) => {
+  /* TRON */console.log( 'ms: %o', ms );/* TROFF */
   if ( isNaN( ms ) ) { return '∅ms'; }
+
+  /* TRON */console.log( 'getUnits: %o', getUnits );/* TROFF */
   const objUnits = ( !getUnits ? { xs: false, yrs: false, mos: false, wks: false, days: true, hrs: true, min: true, secs: false } : {
     xs: ( typeof getUnits.getDecades != 'boolean' ? false : getUnits.getDecades ),
     yrs: ( typeof getUnits.getYears != 'boolean' ? false : getUnits.getYears ),
@@ -12,6 +15,7 @@ module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, ge
     min: ( typeof getUnits.getMinutes != 'boolean' ? true : getUnits.getMinutes ),
     secs: ( typeof getUnits.getSeconds != 'boolean' ? false : getUnits.getSeconds )
   } );
+  /* TRON */console.log( 'objUnits: %o', objUnits );/* TROFF */
 
   if ( objUnits.xs || objUnits.yrs || objUnits.mos || objUnits.wks || objUnits.days || objUnits.hrs || objUnits.min || objUnits.secs ) {
     var intDecades, intYears, intMonths, intWeeks, intDays, intHours, intMinutes, intSeconds;
