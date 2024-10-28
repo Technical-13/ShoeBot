@@ -67,7 +67,7 @@ module.exports = {
       Welcome: { Active: false, Channel: null, Msg: null, Role: null },
       Whitelist: { Members: [], Roles: [] }
     };
-    const oldConfig = await guildConfigDB.findOne( { Guild: { ID: guild.id } } ).catch( async errFind => {
+    const oldConfig = ( await guildConfigDB.findOne( { Guild: { ID: guild.id } } ).catch( async errFind => {
       console.error( 'Error attempting to find %s (ID:%s) in my database in config.js:\n%s', guild.name, guild.id, errFind.stack );
       await guildConfigDB.create( createConfig )
       .then( createSuccess => {
@@ -78,8 +78,7 @@ module.exports = {
         console.error( 'Error attempting to create %s (ID:%s) guild configuration in my database in config.js:\n%s', guild.name, guild.id, createError.stack );
         botOwner.send( 'Error attempting to create `' + guild.name + '`(:id:' + guild.id + ') guild configuration in my database.  Please check console for details.' );
       } );
-      return createConfig;
-    } );
+    } ) || createConfig );
     const oldBlacklist = oldConfig.Blacklist;
     const oldBlackRoles = oldBlacklist.Roles;
     const oldBlackMembers = oldBlacklist.Members;
