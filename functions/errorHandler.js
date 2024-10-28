@@ -68,12 +68,15 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
       case 'errEdit':
       case 'errSend':
         switch ( objError.code ) {
-          case 50001 :
+          case 50001 :// No SEND_MESSAGE permission in channel
             if ( doLogs ) { chanError.send( 'Please give me permission to send to <#' + channel.id + '>.' + strClosing ); }
             return { content: 'I do not have permission to send messages in <#' + channel.id + '>.' };
             break;
+          case 50006:// Cannot send an empty message
+            console.error( 'Unable to send message for /' + cmd + ' request: %o', objError.stack );
+            break;
           default:
-            console.error( 'Unable to send message for /' + cmd + ' request: %o', objError );
+            console.error( 'Unable to send message for /' + cmd + ' request: %o', objError.stack );
             botOwner.send( { content: 'Unable to send message for `/' + cmd + '` request.' + strConsole } )
             .then( errSent => {
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
