@@ -260,7 +260,10 @@ module.exports = {
         }
       }
       if ( canAdmin || checkPermission( 'ManageGuild' ) ) {// add, logs, remove, welcome
-        let addDone = [];
+        let setDone = [];
+        let setsDone;
+        let alreadyDone = [];
+        let allsDone;
         switch ( myTask ) {
           case 'add':
             let addBlack = ( options.getMentionable( 'blacklist' ) ? options.getMentionable( 'blacklist' ) : null );
@@ -297,7 +300,7 @@ module.exports = {
                   } )
                   .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'config', guild: guild, type: 'errSend' } ) ); } );
               }
-              addDone.push( blackActions + ' to the blacklist' );
+              setDone.push( blackActions + ' to the blacklist' );
             }
             if ( addWhite ) {
               errHandlerOptions.modTargetType = addWhite.constructor.name;
@@ -330,10 +333,10 @@ module.exports = {
                   } )
                   .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'config', guild: guild, type: 'errSend' } ) ); } );
               }
-              addDone.push( whiteActions + ' to the whitelist' );
+              setDone.push( whiteActions + ' to the whitelist' );
             }
-            successResultLog = addDone.join( ' and ' ) + ' for this server.';
-            successResult = addDone.join( ' and ' ) + ' for this server.';
+            successResultLog = setDone.join( ' and ' ) + ' for this server.';
+            successResult = setDone.join( ' and ' ) + ' for this server.';
             break;
           case 'logs':
             let changedLogsActive = ( options.getBoolean( 'do-logs' ) !== null ? true : false );
@@ -347,8 +350,6 @@ module.exports = {
             var setError = ( changedLogsError ? options.getChannel( 'log-error' ).id : ( setDefault ? setDefault : null ) );
             var clearLogChans = ( changedLogsRESET ? options.getBoolean( 'log-reset' ) : false );
             if ( !changedLogsActive && !setDefault && !setChat && !setError && !changedLogsRESET ) { return interaction.editReply( { content: 'You forgot to tell me what logs to change.' } ); }
-            let setDone = [];
-            let alreadyDone = [];
             if ( boolLogs != oldLogActive ) {
               newConfig.Logs.Active = boolLogs;
               setDone.push( '**' + ( boolLogs ? 'EN' : 'DIS' ) + 'ABLED** Logs' );
@@ -372,7 +373,6 @@ module.exports = {
               newConfig.Logs.Error = null;
               setDone = [];
             }
-            let setsDone;
             switch ( setDone.length ) {
               case 0: setsDone = '**NOTHING**'; break;
               case 1: setsDone = setDone[ 0 ]; break;
@@ -381,7 +381,6 @@ module.exports = {
                 let lastDone = setDone.pop();
                 setsDone = setDone.join( ', ' ) + ', and ' + lastDone;
             }
-            let allsDone;
             switch ( alreadyDone.length ) {
               case 0: allsDone = ''; break;
               case 1: allsDone = alreadyDone[ 0 ]; break;
@@ -420,7 +419,7 @@ module.exports = {
                   } )
                   .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'config', guild: guild, type: 'errSend' } ) ); } );
               }
-              addDone.push( blackActions + ' from the whitelist' );
+              setDone.push( blackActions + ' from the whitelist' );
             }
             if ( remWhite ) {
               errHandlerOptions.modTargetType = remWhite.constructor.name;
@@ -445,10 +444,10 @@ module.exports = {
                   } )
                   .catch( async errSend => { return interaction.editReply( await errHandler( errSend, { command: 'config', guild: guild, type: 'errSend' } ) ); } );
               }
-              addDone.push( whiteActions + ' from the whitelist' );
+              setDone.push( whiteActions + ' from the whitelist' );
             }
-            successResultLog = addDone.join( ' and ' ) + ' for this server.';
-            successResult = addDone.join( ' and ' ) + ' for this server.';
+            successResultLog = setDone.join( ' and ' ) + ' for this server.';
+            successResult = setDone.join( ' and ' ) + ' for this server.';
             break;
           case 'welcome': if ( !isBotOwner ) {
             return interaction.editReply( { content: 'Coming **SOON:tm:**' } ); }// SOON SOON SOON SOON SOON SOON SOON SOON SOON SOON
@@ -467,9 +466,6 @@ module.exports = {
             var newWelcomeRole = ( !newWelcomeClearRole && changedWelcomeRole ? options.getRole( 'welcome-role' ).id : ( oldWelcomeRole || null ) );
             var clearAllWelcomes = ( changedWelcomeRESET ? options.getBoolean( 'welcome-reset' ) : false );
             if ( !changedWelcomeActive && !changedWelcomeChannel && !changedWelcomeDM && !changedWelcomeMsg && !changedWelcomeRole && !changedWelcomeClearRole && !changedWelcomeRESET ) { return interaction.editReply( { content: 'You forgot to tell me what welcoming stuff to change.' } ); }
-            let setDone = [];
-            let alreadyDone = [];
-            /* Change DB stuff here. */
             if ( newWelcomeActive != oldWelcomeActive ) {
               newConfig.Welcome.Active = newWelcomeActive;
               setDone.push( '**' + ( newWelcomeActive ? 'EN' : 'DIS' ) + 'ABLED** Welcoming' );
@@ -493,8 +489,6 @@ module.exports = {
               newConfig.Welcome.Role = null;
               setDone = [];
             }
-            /* Change DB stuff here. */
-            let setsDone;
             switch ( setDone.length ) {
               case 0: setsDone = '**NOTHING**'; break;
               case 1: setsDone = setDone[ 0 ]; break;
@@ -503,7 +497,6 @@ module.exports = {
                 let lastDone = setDone.pop();
                 setsDone = setDone.join( ', ' ) + ', and ' + lastDone;
             }
-            let allsDone;
             switch ( alreadyDone.length ) {
               case 0: allsDone = ''; break;
               case 1: allsDone = alreadyDone[ 0 ]; break;
