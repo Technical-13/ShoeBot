@@ -8,7 +8,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
   const botOwner = client.users.cache.get( client.ownerId );
   const { guild } = member;
 
-  const guildConfig = await guildConfigDB.findOne( { Guild: guild.id } )
+  const guildConfig = await guildConfigDB.findOne( { Guild: { ID: guild.id } } )
   .catch( async errFind => {
     console.error( 'Error attempting to find %s (ID:%s) in my database in config.js:\n%s', guild.name, guild.id, errFind.stack );
   } );

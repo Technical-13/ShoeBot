@@ -14,7 +14,7 @@ module.exports = {
     if ( isBotOwner ) {      
       const guildConfigs = await guildConfigDB.find();
       const guildConfigIds = [];
-      guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry.Guild ); } );
+      guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry.Guild.ID ); } );
       const embedGuilds = [];
       const guildIds = Array.from( client.guilds.cache.keys() );
       

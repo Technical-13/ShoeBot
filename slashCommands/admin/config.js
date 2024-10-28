@@ -57,9 +57,9 @@ module.exports = {
     if ( content ) { return interaction.editReply( { content: content } ); }
 
     const createConfig = {
-      Guild: guild.id,
       Blacklist: { Members: [], Roles: [] },
       Commands: [],
+      Guild: { ID: guild.id, Name: guild.name, Members: guild.members.cache.size },
       Invite: null,
       Logs: { Active: true, Chat: null, Default: null, Error: null },
       Prefix: globalPrefix,
@@ -67,7 +67,7 @@ module.exports = {
       Welcome: { Active: false, Channel: null, Msg: null, Role: null },
       Whitelist: { Members: [], Roles: [] }
     };
-    const oldConfig = await guildConfigDB.findOne( { Guild: guild.id } ).catch( async errFind => {
+    const oldConfig = await guildConfigDB.findOne( { Guild: { ID: guild.id } } ).catch( async errFind => {
       console.error( 'Error attempting to find %s (ID:%s) in my database in config.js:\n%s', guild.name, guild.id, errFind.stack );
       await guildConfigDB.create( createConfig )
       .then( createSuccess => {
@@ -172,9 +172,9 @@ module.exports = {
     }
     else {
       var newConfig = {
-        Guild: guild.id,
         Blacklist: oldBlacklist,
         Commands: oldCommands,
+        Guild: { ID: guild.id, Name: guild.name, Members: guild.members.cache.size },
         Invite: oldInvite,
         Logs: oldLogs,
         Prefix: oldPrefix,
@@ -510,7 +510,7 @@ module.exports = {
             break;
         }
       }
-      await guildConfigDB.updateOne( { Guild: oldConfig.Guild }, newConfig, { upsert: true } )
+      await guildConfigDB.updateOne( { Guild: { ID: oldConfig.Guild.ID } }, newConfig, { upsert: true } )
       .then( updateSuccess => {
         if ( newConfig.Logs.Active && successResultLog ) {
           chanDefaultLog.send( { content: successResultLog } )

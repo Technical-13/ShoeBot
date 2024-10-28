@@ -11,7 +11,7 @@ client.on( 'messageDelete', async message => {
   const objGuildOwner = objGuildMembers.get( guild.ownerId );
   var logChan = objGuildOwner;
 
-  guildConfigDB.findOne( { Guild: guild.id } ).then( async data => {
+  guildConfigDB.findOne( { Guild: { ID: guild.id } } ).then( async data => {
     if ( data ) {  if ( data.Logs.Chat ) { logChan = await guild.channels.cache.get( data.Logs.Default ); } }
     let setupPlease = ( logChan == objGuildOwner ? '\nPlease run `/config` to have these logs go to a channel in the server instead of your DMs.' : '\n----' );
     if ( logChan !== channel ) {

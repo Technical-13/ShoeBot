@@ -1,9 +1,9 @@
 const { model, Schema } = require( 'mongoose' );
 
 let guildSchema = new Schema( {
-  Guild: String,
   Blacklist: { Members: [ String ], Roles: [ String ] },
   Commands: [ String ],
+  Guild: { ID: String, Name: String, Members: Number },
   Invite: String,
   Logs: {
     Active: Boolean,
