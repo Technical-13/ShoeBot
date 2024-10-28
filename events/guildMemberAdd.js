@@ -12,14 +12,22 @@ client.on( 'guildMemberAdd', async ( member ) => {
   .catch( async errFind => {
     console.error( 'Error attempting to find %s (ID:%s) in my database in config.js:\n%s', guild.name, guild.id, errFind.stack );
   } );
+/* TRON */console.log( 'guildConfig: %o', guildConfig ):/* TROFF */
   const doLog = ( !guildConfig ? false : ( !guildConfig.Logs ? false : ( guildConfig.Logs.Active || false ) ) );
+/* TRON */console.log( 'doLog: %o', doLog ):/* TROFF */
   const chanDefaultLog = ( !doLog ? null : member.guild.channels.cache.get( guildConfig.Logs.Default ) );
+/* TRON */console.log( 'chanDefaultLog: %o', chanDefaultLog ):/* TROFF */
   const chanErrorLog = ( !doLog ? null : member.guild.channels.cache.get( guildConfig.Logs.Error ) );
+/* TRON */console.log( 'chanErrorLog: %o', chanErrorLog ):/* TROFF */
   const doWelcome = ( !guildConfig ? false : ( !guildConfig.Welcome ? false : ( guildConfig.Welcome.Active || false ) ) );
+/* TRON */console.log( 'doWelcome: %o', doWelcome ):/* TROFF */
   if ( doWelcome ) {
     const welcomeChan = ( !guildConfig.Welcome.Channel ? member : member.guild.channels.cache.get( guildConfig.Welcome.Channel ) );
+/* TRON */console.log( 'welcomeChan: %o', welcomeChan.name ):/* TROFF */
     const welcomeMsg = parse( guildConfig.Welcome.Msg || 'Welcome {{member.ping}}!\n**{{server.name}}** now has {{server.members}} members!\nPlease reach out to the server owner, {{server.owner.ping}} if you need any help!', { member: member } );
+/* TRON */console.log( 'welcomeMsg: %o', welcomeMsg ):/* TROFF */
     const welcomeRole = ( !guildConfig.Welcome.Role ? null : member.guild.roles.cache.get( guildConfig.Welcome.Role ) );
+/* TRON */console.log( 'welcomeRole: %o', welcomeRole.name ):/* TROFF */
     welcomeChan.send( { content: welcomeMsg } )
     .then( welcomeSent => {
       if ( welcomeRole ) {
@@ -31,7 +39,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
         } )
         .catch( async errRole => {
           if ( doLog && chanErrorLog ) {
-            chanErrorLog.send( { content: await errHandler( errRole, { command: 'guildMemberAdd', type: 'errRole' } ) } );
+            chanErrorLog.send( await errHandler( errRole, { command: 'guildMemberAdd', type: 'errRole' } ) );
           }
         } );
       }
@@ -41,7 +49,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
     } )
     .catch( async errSend => {
       if ( doLog && chanErrorLog ) {
-        chanErrorLog.send( { content: await errHandler( errSend, { command: 'guildMemberAdd', type: 'errSend' } ) } );
+        chanErrorLog.send( await errHandler( errSend, { command: 'guildMemberAdd', type: 'errSend' } ) );
       }
     } );
   }
