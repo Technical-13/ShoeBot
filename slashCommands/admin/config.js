@@ -454,8 +454,8 @@ module.exports = {
             let changedWelcomeActive = ( options.getBoolean( 'do-welcome' ) !== null ? true : false );
             let changedWelcomeChannel = ( options.getChannel( 'welcome-channel' ) ? true : false );
             let changedWelcomeDM = ( options.getBoolean( 'welcome-dm' ) !== null ? true : false );
-            let changedWelcomeMsg = ( options.getChannel( 'welcome-role' ) ? true : false );
-            let changedWelcomeRole = ( options.getRole( 'welcome-channel' ) ? true : false );
+            let changedWelcomeMsg = ( options.getString( 'welcome-message' ) ? true : false );
+            let changedWelcomeRole = ( options.getRole( 'welcome-role' ) ? true : false );
             let changedWelcomeClearRole = ( options.getBoolean( 'welcome-clear-role' ) !== null ? true : false );
             let changedWelcomeRESET = ( options.getBoolean( 'welcome-reset' ) !== null ? true : false );
             var newWelcomeActive = ( changedWelcomeActive ? options.getBoolean( 'do-welcome' ) : ( oldWelcomeActive || false ) );
