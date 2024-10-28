@@ -73,7 +73,8 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             return { content: 'I do not have permission to send messages in <#' + channel.id + '>.' };
             break;
           case 50006:// Cannot send an empty message
-            console.error( 'Unable to send message for /' + cmd + ' request: %o', objError.stack );
+            console.error( 'Cannot send empty message in /' + cmd + ' request: %o', objError.stack );
+            return { content: 'Message you tried to send was empty.' };
             break;
           default:
             console.error( 'Unable to send message for /' + cmd + ' request: %o', objError.stack );
