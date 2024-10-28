@@ -11,7 +11,7 @@ client.on( 'messageDelete', async message => {
   const objGuildOwner = objGuildMembers.get( guild.ownerId );
   var logChan = objGuildOwner;
 
-  guildConfigDB.findOne( { Guild: { ID: guild.id } } ).then( async data => {
+  guildConfigDB.findOne( { _id: guild.id } ).then( async data => {
     if ( data ) {  if ( data.Logs.Chat ) { logChan = await guild.channels.cache.get( data.Logs.Default ); } }
     let setupPlease = ( logChan == objGuildOwner ? '\nPlease run `/config` to have these logs go to a channel in the server instead of your DMs.' : '\n----' );
     if ( logChan !== channel ) {
@@ -27,7 +27,7 @@ client.on( 'messageDelete', async message => {
             strMentions += mentionsIds.join( ', ' ) + ', and ' + lastMention;
         }
       }
-      
+
       var attachments = [];
       if ( message.attachments.size != 0 ) {
         message.attachments.each( attachment => {
@@ -59,7 +59,7 @@ client.on( 'messageDelete', async message => {
           strEmbedList = ' (`' + embeds[ 0 ] + '`)';
         }
       }
-      
+
       const strEmbeds = ( intEmbeds == 0 ? 'no embeds' : intEmbeds == 1 ? 'an embed'  : intEmbeds + ' embeds' ) + strEmbedList + ', and ';
       const content = ( message.content ? 'the following content:\n```\n' + message.content + '\n```' : 'no content.' );
       const msgContained = ( ( attachments.length == 0 && intEmbeds === 0 && !message.content ) ? 'and was completely empty.' : 'with ' + strAttachments + strEmbeds + content );

@@ -11,13 +11,13 @@ module.exports = {
   run: async ( client, message, args ) => {
     const { author, guild } = message;
     const { isBotOwner } = await userPerms( author, guild );
-    if ( isBotOwner ) {      
+    if ( isBotOwner ) {
       const guildConfigs = await guildConfigDB.find();
       const guildConfigIds = [];
-      guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry.Guild.ID ); } );
+      guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry._id ); } );
       const embedGuilds = [];
       const guildIds = Array.from( client.guilds.cache.keys() );
-      
+
       for ( const guildId of guildIds ) {
         const doGuild = client.guilds.cache.get( guildId );
         const objGuild = doGuild.toJSON();
@@ -86,7 +86,7 @@ if ( vanityURLCode ) { console.log( '%s has a vanityURLCode: %s', guildName, van
           .setTimestamp()
           .setThumbnail( iconURL )
           .setFooter( { text: author.displayName + ' requested /guilds information (' + guildIds.length + ')' } );
-  
+
         if ( description ) { thisGuild.addFields( { name: 'Description', value: description } ); }
 
         if ( guildConfigIds.indexOf( guildId ) != -1 ) {
@@ -100,44 +100,44 @@ if ( vanityURLCode ) { console.log( '%s has a vanityURLCode: %s', guildName, van
         } else {
           thisGuild.addFields( { name: '\u200B', value: 'This server not configured.  All logs go to <@' + ownerId + '>' } );
         }
-  
+
         embedGuilds.push( thisGuild );
       }
-      
+
       let intPageNumber = 0;
       const first = new ButtonBuilder().setCustomId( 'firstPage' ).setEmoji( '⏪' ).setStyle( ButtonStyle.Secondary ).setDisabled( true );
       const prev = new ButtonBuilder().setCustomId( 'prevPage' ).setEmoji( '⏮️' ).setStyle( ButtonStyle.Secondary ).setDisabled( true );
       const curr = new ButtonBuilder().setCustomId( 'currPage' ).setLabel( ( intPageNumber + 1 ) + '/' + embedGuilds.length ).setStyle( ButtonStyle.Primary ).setDisabled( true );
       const next = new ButtonBuilder().setCustomId( 'nextPage' ).setEmoji( '⏭️' ).setStyle( ButtonStyle.Secondary ).setDisabled( false );
       const last = new ButtonBuilder().setCustomId( 'lastPage' ).setEmoji( '⏩' ).setStyle( ButtonStyle.Secondary ).setDisabled( false );
-      const buttons = new ActionRowBuilder().addComponents( [ first, prev, curr, next, last ] );      
-      
+      const buttons = new ActionRowBuilder().addComponents( [ first, prev, curr, next, last ] );
+
       const msg = await message.reply( { embeds: [ embedGuilds[ intPageNumber ] ], components: [ buttons ], fetchReply: true } );
-  
+
       const collector = await msg.createMessageComponentCollector( { componentType: ComponentType.Button, time: 60000 } );
-  
+
       collector.on( 'collect', async buttonInteraction => {
         if ( buttonInteraction.user.id != author.id ) { return await buttonInteraction.reply( { content: 'These buttons are not for you <@' + buttonInteraction.user.id + '>!', ephemeral: true } ); }
-  
+
         await buttonInteraction.deferUpdate();
-  
+
         if ( buttonInteraction.customId === 'firstPage' ) { intPageNumber = 0; }
         else if ( buttonInteraction.customId === 'prevPage' ) { if ( intPageNumber > 0 ) { intPageNumber-- } }
         else if ( buttonInteraction.customId === 'nextPage' ) { if ( intPageNumber < ( embedGuilds.length - 1 ) ) { intPageNumber++; } }
         else if ( buttonInteraction.customId === 'lastPage' ) { intPageNumber = ( embedGuilds.length - 1 ); }
         curr.setLabel( ( intPageNumber + 1 ) + '/' + embedGuilds.length );
-  
+
         if ( intPageNumber === 0 ) { first.setDisabled( true ); prev.setDisabled( true ); }
         else { first.setDisabled( false ); prev.setDisabled( false ); }
-  
+
         if ( intPageNumber === ( embedGuilds.length - 1 ) ) { next.setDisabled( true ); last.setDisabled( true ); }
         else { next.setDisabled( false ); last.setDisabled( false ); }
-  
+
         await msg.edit( { embeds: [ embedGuilds[ intPageNumber ] ], components: [ buttons ] } ).catch( errEditPage => { console.error( 'Error in pagination.js editing page:\n%o', errEditPage ); } );
-  
+
         collector.resetTimer();
       } );
-  
+
       collector.on( 'end', async () => {
         message.delete();
         msg.delete();

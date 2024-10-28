@@ -43,9 +43,10 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
 
     if ( guild ) {
       const createConfig = {
+        _id: guild.id,
         Blacklist: { Members: [], Roles: [] },
         Commands: [],
-        Guild: { ID: guild.id, Name: guild.name, Members: guild.members.cache.size },
+        Guild: { Name: guild.name, Members: guild.members.cache.size },
         Invite: null,
         Logs: { Active: true, Chat: null, Default: null, Error: null },
         Prefix: globalPrefix,
@@ -53,7 +54,7 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
         Welcome: { Active: false, Channel: null, Msg: null, Role: null },
         Whitelist: { Members: [], Roles: [] }
       };
-      guildConfig = await guildConfigDB.findOne( { Guild: { ID: guild.id } } ).catch( async errFind => {
+      guildConfig = await guildConfigDB.findOne( { _id: guild.id } ).catch( async errFind => {
         console.error( 'Error attempting to find %s (ID:%s) in my database in config.js:\n%s', guild.name, guild.id, errFind.stack );
         await guildConfigDB.create( createConfig )
         .then( createSuccess => {
