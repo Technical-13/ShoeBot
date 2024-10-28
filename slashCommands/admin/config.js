@@ -452,17 +452,17 @@ module.exports = {
           case 'welcome': if ( !isBotOwner ) {
             return interaction.editReply( { content: 'Coming **SOON:tm:**' } ); }// SOON SOON SOON SOON SOON SOON SOON SOON SOON SOON
             let changedWelcomeActive = ( options.getBoolean( 'do-welcome' ) !== null ? true : false );
-            let changedWelcomeChannel = ( options.getChannel( 'welcome-channel' ) ? true : false );
             let changedWelcomeDM = ( options.getBoolean( 'welcome-dm' ) !== null ? true : false );
+            let changedWelcomeChannel = ( options.getChannel( 'welcome-channel' ) ? true : false );
             let changedWelcomeMsg = ( options.getString( 'welcome-message' ) ? true : false );
-            let changedWelcomeRole = ( options.getRole( 'welcome-role' ) ? true : false );
             let changedWelcomeClearRole = ( options.getBoolean( 'welcome-clear-role' ) !== null ? true : false );
+            let changedWelcomeRole = ( options.getRole( 'welcome-role' ) ? true : false );
             let changedWelcomeRESET = ( options.getBoolean( 'welcome-reset' ) !== null ? true : false );
             var newWelcomeActive = ( changedWelcomeActive ? options.getBoolean( 'do-welcome' ) : ( oldWelcomeActive || false ) );
-            var sendDM = ( changedWelcomeDM ? options.getBoolean( 'welcome-dm' ) : ( oldWelcomeChannel ? false : true ) );
+            var sendDM = ( changedWelcomeDM ? options.getBoolean( 'welcome-dm' ) : ( oldWelcomeChannel || changedWelcomeChannel ? false : true ) );
             var newWelcomeChan = ( !sendDM && changedWelcomeChannel ? options.getChannel( 'welcome-channel' ).id : ( oldWelcomeChannel || null ) );
             var newWelcomeMsg = ( changedWelcomeMsg ? options.getString( 'welcome-message' ) : ( oldWelcomeMsg || null ) );
-            var clearRole = ( changedWelcomeClearRole ? options.getBoolean( 'welcome-clear-role' ) : ( oldWelcomeRole ? false : true ) );
+            var clearRole = ( changedWelcomeClearRole ? options.getBoolean( 'welcome-clear-role' ) : ( oldWelcomeRole || changedWelcomeClearRole ? false : true ) );
             var newWelcomeRole = ( !clearRole && changedWelcomeRole ? options.getRole( 'welcome-role' ).id : ( oldWelcomeRole || null ) );
             var clearAllWelcomes = ( changedWelcomeRESET ? options.getBoolean( 'welcome-reset' ) : false );
             if ( !changedWelcomeActive && !changedWelcomeChannel && !changedWelcomeDM && !changedWelcomeMsg && !changedWelcomeRole && !changedWelcomeClearRole && !changedWelcomeRESET ) { return interaction.editReply( { content: 'You forgot to tell me what welcoming stuff to change.' } ); }
