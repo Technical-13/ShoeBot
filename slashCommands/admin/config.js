@@ -45,8 +45,8 @@ module.exports = {
       { type: 3, name: 'welcome-message', description: 'Message to send new members to the server?' },// welcome message
       { type: 5, name: 'welcome-dm', description: 'Send the welcome message to DM?  (default: TRUE)' },// welcome dm
       { type: 7, name: 'welcome-channel', description: 'Which channel would you like to send the message?' },// welcome channel
-      { type: 5, name: 'welcome-role-give', description: 'Give new members a role on join?' },// give welcome role
       { type: 8, name: 'welcome-role', description: 'Which role, if any, would you like to give new members on join?' },// welcome role
+      { type: 5, name: 'welcome-clear-role', description: 'Clear role to assign' },// clear welcome role
       { type: 5, name: 'welcome-reset', description: 'Reset welcoming of new members to disabled.' },// reset welcomer settings
     ] }//*/
   ],
@@ -337,9 +337,9 @@ module.exports = {
             break;
           case 'logs':
             let changedLogsActive = ( options.getBoolean( 'do-logs' ) !== null ? true : false );
-            let changedLogsDefault = options.getChannel( 'log-default' );
-            let changedLogsChat = options.getChannel( 'log-chat' );
-            let changedLogsError = options.getChannel( 'log-error' );
+            let changedLogsDefault = ( options.getChannel( 'log-default' ) ? true : false );
+            let changedLogsChat = ( options.getChannel( 'log-chat' ) ? true : false );
+            let changedLogsError = ( options.getChannel( 'log-error' ) ? true : false );
             let changedLogsRESET = ( options.getBoolean( 'log-reset' ) !== null ? true : false );
             var boolLogs = ( changedLogsActive ? options.getBoolean( 'do-logs' ) : true );
             var setDefault = ( changedLogsDefault ? options.getChannel( 'log-default' ).id : null );
@@ -351,7 +351,7 @@ module.exports = {
             let alreadyDone = [];
             if ( boolLogs != oldLogActive ) {
               newConfig.Logs.Active = boolLogs;
-              setDone.push( ( boolLogs ? 'EN' : 'DIS' ) + 'ABLED** Logs' );
+              setDone.push( '**' + ( boolLogs ? 'EN' : 'DIS' ) + 'ABLED** Logs' );
             } else if ( changedLogsActive ) { alreadyDone.push( 'Logs were already **' + ( boolLogs ? 'EN' : 'DIS' ) + 'ABLED**' ); }
             if ( setChat ) {
               newConfig.Logs.Chat = setChat;
@@ -452,14 +452,68 @@ module.exports = {
             break;
           case 'welcome': if ( !isBotOwner ) {
             return interaction.editReply( { content: 'Coming **SOON:tm:**' } ); }// SOON SOON SOON SOON SOON SOON SOON SOON SOON SOON
-            var boolWelcome = ( options.getBoolean( 'do-welcome' ) ? options.getBoolean( 'do-welcome' ) : false );
-            let changedWelcomeActive = ( boolWelcome === oldWelcomeActive ? true : false );
-            var setWelcome = ( options.getChannel( 'welcome-channel' ) ? options.getChannel( 'welcome-channel' ).id : null );
-            var sendDM = ( options.getBoolean( 'welcome-dm' ) ? options.getBoolean( 'welcome-dm' ) : ( setWelcome ? false : true ) );
-            var strWelcome = ( options.getString( 'welcome-message' ) ? options.getString( 'welcome-message' ) : null );
-            var joinWelcome = ( options.getRole( 'welcome-role' ) ? options.getRole( 'welcome-role' ).id : null );
-            var giveRole = ( options.getBoolean( 'welcome-role-give' ) ? options.getBoolean( 'welcome-role-give' ) : ( joinWelcome ? true : false ) );
-            if ( !changedWelcomeActive && !strWelcome && !setWelcome && !joinWelcome ) { return interaction.editReply( { content: 'You forgot to tell me what welcoming stuff to change.' } ); }
+            let changedWelcomeActive = ( options.getBoolean( 'do-welcome' ) !== null ? true : false );
+            let changedWelcomeChannel = ( options.getChannel( 'welcome-channel' ) ? true : false );
+            let changedWelcomeDM = ( options.getBoolean( 'welcome-dm' ) !== null ? true : false );
+            let changedWelcomeMsg = ( options.getChannel( 'welcome-role' ) ? true : false );
+            let changedWelcomeRole = ( options.getRole( 'welcome-channel' ) ? true : false );
+            let changedWelcomeClearRole = ( options.getBoolean( 'welcome-clear-role' ) !== null ? true : false );
+            let changedWelcomeRESET = ( options.getBoolean( 'welcome-reset' ) !== null ? true : false );
+            var newWelcomeActive = ( changedWelcomeActive ? options.getBoolean( 'do-welcome' ) : ( oldWelcomeActive || false ) );
+            var sendDM = ( changedWelcomeDM ? options.getBoolean( 'welcome-dm' ) : ( oldWelcomeChannel ? false : true ) );
+            var newWelcomeChan = ( !sendDM && changedWelcomeChannel ? options.getChannel( 'welcome-channel' ).id : ( oldWelcomeChannel || null ) );
+            var newWelcomeMsg = ( changedWelcomeMsg ? options.getString( 'welcome-message' ) : ( oldWelcomeMsg || null ) );
+            var clearRole = ( changedWelcomeClearRole ? options.getBoolean( 'welcome-clear-role' ) : ( oldWelcomeRole ? false : true ) );
+            var newWelcomeRole = ( !newWelcomeClearRole && changedWelcomeRole ? options.getRole( 'welcome-role' ).id : ( oldWelcomeRole || null ) );
+            var clearAllWelcomes = ( changedWelcomeRESET ? options.getBoolean( 'welcome-reset' ) : false );
+            if ( !changedWelcomeActive && !changedWelcomeChannel && !changedWelcomeDM && !changedWelcomeMsg && !changedWelcomeRole && !changedWelcomeClearRole && !changedWelcomeRESET ) { return interaction.editReply( { content: 'You forgot to tell me what welcoming stuff to change.' } ); }
+            let setDone = [];
+            let alreadyDone = [];
+            /* Change DB stuff here. */
+            if ( newWelcomeActive != oldWelcomeActive ) {
+              newConfig.Welcome.Active = newWelcomeActive;
+              setDone.push( '**' + ( newWelcomeActive ? 'EN' : 'DIS' ) + 'ABLED** Welcoming' );
+            } else if ( changedWelcomeActive ) { alreadyDone.push( 'Welcoming was already **' + ( newWelcomeActive ? 'EN' : 'DIS' ) + 'ABLED**' ); }
+            if ( newWelcomeChan ) {
+              newConfig.Welcome.Channel = newWelcomeChan;
+              setDone.push( 'Welcome Channel' );
+            }
+            if ( newWelcomeMsg ) {
+              newConfig.Welcome.Msg = newWelcomeMsg;
+              setDone.push( 'Welcome Message' );
+            }
+            if ( newWelcomeRole ) {
+              newConfig.Welcome.Role = newWelcomeRole;
+              setDone.push( 'Welcome Role' );
+            }
+            if ( clearAllWelcomes ) {
+              newConfig.Welcome.Active = false;
+              newConfig.Welcome.Channel = null;
+              newConfig.Welcome.Msg = null;
+              newConfig.Welcome.Role = null;
+              setDone = [];
+            }
+            /* Change DB stuff here. */
+            let setsDone;
+            switch ( setDone.length ) {
+              case 0: setsDone = '**NOTHING**'; break;
+              case 1: setsDone = setDone[ 0 ]; break;
+              case 2: setsDone = setDone.join( ' and ' ); break;
+              default:
+                let lastDone = setDone.pop();
+                setsDone = setDone.join( ', ' ) + ', and ' + lastDone;
+            }
+            let allsDone;
+            switch ( alreadyDone.length ) {
+              case 0: allsDone = ''; break;
+              case 1: allsDone = alreadyDone[ 0 ]; break;
+              case 2: allsDone = alreadyDone.join( ' and ' ); break;
+              default:
+                let lastDone = alreadyDone.pop();
+                allsDone = alreadyDone.join( ', ' ) + ', and ' + lastDone;
+            }
+            successResultLog = ( setDone.length === 0 ? '' : setsDone + ( setDone.length === 1 ? ' was' : ' were' ) + ' set by <@' + author.id + '>.' );
+            successResultReply = 'You have set ' + setsDone + ( alreadyDone.length === 0 ? '' : ' (' + allsDone + ')' ) + '.';
             break;
         }
       }
