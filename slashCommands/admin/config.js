@@ -463,7 +463,7 @@ module.exports = {
             var newWelcomeChan = ( !sendDM && changedWelcomeChannel ? options.getChannel( 'welcome-channel' ).id : ( oldWelcomeChannel || null ) );
             var newWelcomeMsg = ( changedWelcomeMsg ? options.getString( 'welcome-message' ) : ( oldWelcomeMsg || null ) );
             var clearRole = ( changedWelcomeClearRole ? options.getBoolean( 'welcome-clear-role' ) : ( oldWelcomeRole ? false : true ) );
-            var newWelcomeRole = ( !newWelcomeClearRole && changedWelcomeRole ? options.getRole( 'welcome-role' ).id : ( oldWelcomeRole || null ) );
+            var newWelcomeRole = ( !clearRole && changedWelcomeRole ? options.getRole( 'welcome-role' ).id : ( oldWelcomeRole || null ) );
             var clearAllWelcomes = ( changedWelcomeRESET ? options.getBoolean( 'welcome-reset' ) : false );
             if ( !changedWelcomeActive && !changedWelcomeChannel && !changedWelcomeDM && !changedWelcomeMsg && !changedWelcomeRole && !changedWelcomeClearRole && !changedWelcomeRESET ) { return interaction.editReply( { content: 'You forgot to tell me what welcoming stuff to change.' } ); }
             if ( newWelcomeActive != oldWelcomeActive ) {
