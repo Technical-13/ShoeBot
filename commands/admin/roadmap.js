@@ -15,7 +15,7 @@ module.exports = {
       'Populate guildDelete.js event. Log in system log channel guild left and add expiration to DB for guild to be removed from DB after 2 weeks.',
       'Create guildUpdate.js to update DB entry if guild.name changes.',
       'Do whatever is defined for guildConfig.Part in guildMemberKick.js, guildMemberBan.js, and/or guildMemberDelete.js',
-      'Create `/verify` command.'.
+      'Create `/verify` command.',
       'Add some more stuff to this array of stuff todo...'
     ];
     const embedToDo = new EmbedBuilder()
