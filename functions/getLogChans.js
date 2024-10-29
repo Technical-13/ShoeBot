@@ -8,9 +8,9 @@ module.exports = async ( guild ) => {
   const ownerId = ( config.botOwnerId || process.env.OWNER_ID );
   const botOwner = client.users.cache.get( ownerId );
   const strConsole = '  Please check the console for details.';
-  
+
   const globalPrefix = ( client.prefix || config.prefix || '!' );
-  
+
   try {
     var guildConfig = { Logs: { Active: true, Chat: null, Default: null, Error: null } };
     var doLogs = false;
@@ -18,12 +18,13 @@ module.exports = async ( guild ) => {
     var chanError = null;
     var chanChat = null;
     var strClosing = '';
-    
+
     if ( guild ) {
-      const createConfig = {
+      const createConfig = {.
+        _id: guild.id,
         Blacklist: { Members: [], Roles: [] },
         Commands: [],
-        Guild: { ID: guild.id, Name: guild.name, Members: guild.members.cache.size },
+        Guild: {  Name: guild.name, Members: guild.members.cache.size },
         Invite: null,
         Logs: { Active: true, Chat: null, Default: null, Error: null },
         Prefix: globalPrefix,
@@ -31,7 +32,7 @@ module.exports = async ( guild ) => {
         Welcome: { Active: false, Channel: null, Msg: null, Role: null },
         Whitelist: { Members: [], Roles: [] }
       };
-      guildConfig = await guildConfigDB.findOne( { Guild: { ID: guild.id } } ).catch( async errFind => {
+      guildConfig = await guildConfigDB.findOne( { _id: guild.id } ).catch( async errFind => {
         console.error( 'Error attempting to find %s (ID:%s) in my database in config.js:\n%s', guild.name, guild.id, errFind.stack );
         await guildConfigDB.create( createConfig )
         .then( createSuccess => {
@@ -56,16 +57,16 @@ module.exports = async ( guild ) => {
         } );
         guildConfig = createConfig;
       }
-    
+
       doLogs = ( guildConfig.Logs.Active || true );
       guildOwner = guild.members.cache.get( guild.ownerId );
       chanDefault = ( guildConfig.Logs.Default ? guild.channels.cache.get( guildConfig.Logs.Default ) : guildOwner );
       chanError = ( guildConfig.Logs.Error ? guild.channels.cache.get( guildConfig.Logs.Error ) : chanDefault );
       chanChat = ( guildConfig.Logs.Chat ? guild.channels.cache.get( guildConfig.Logs.Chat ) : chanDefault );
-      
+
       strClosing = '\n' + ( chanDefault == guildOwner ? '\nPlease run `/config set` to have these logs go to a channel in the [' + guild.name + '](<https://discord.com/channels/' + guild.id + '>) server or deactivate them instead of to your DMs.' : '\n----' );
     }
-  
+
     return {
       doLogs: doLogs,
       chanDefault: chanDefault,
