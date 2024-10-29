@@ -20,7 +20,7 @@ module.exports = async ( guild ) => {
     var strClosing = '';
 
     if ( guild ) {
-      const createConfig = {.
+      const createConfig = {
         _id: guild.id,
         Blacklist: { Members: [], Roles: [] },
         Commands: [],
