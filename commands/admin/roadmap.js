@@ -7,16 +7,19 @@ module.exports = {
   cooldown: 600000,
   run: async ( client, message, args ) => {
     const arrToDo = [
-      'Add `Version` and `Expires` to GuildConfig.js schema.',
-      'Add `Part` to GuildConfig.js to define what bot does when members leave for any reason. Add settings for this to config.js',
-      'Add `Logs` to BotConfig.js schema.',
+      'Add settings for guildDelete.js this to config.js',
       'Check DB entries are current version in ready.js. Create anything missing and update member count as needed. If expired, delete entry.',
       'Finish guildCreate.js event. Add new guild to DB if not already there. If it is, recreate if expired or update it if not (removing expiration). Tell guild owner how to use bot.',
       'Populate guildDelete.js event. Log in system log channel guild left and add expiration to DB for guild to be removed from DB after 2 weeks.',
       'Create guildUpdate.js to update DB entry if guild.name changes.',
       'Do whatever is defined for guildConfig.Part in guildMemberKick.js, guildMemberBan.js, and/or guildMemberDelete.js',
       'Create `/verify` command.',
-      'Add some more stuff to this array of stuff todo...'
+      'Get the `/bot` command working again so people can get bot info and links to request features and report bugs.',
+      'Move this list so I can add/modify/remove items from Discord.' +
+      '\nAdd integration to make this list an issue on GitHub and be able to view/edit all issues?' +
+      '\n:arrow_right: <https://docs.github.com/en/rest/quickstart?apiVersion=latest>' +
+      '\n:arrow_right: <https://docs.github.com/en/rest/guides/scripting-with-the-rest-api-and-javascript?apiVersion=latest>' +
+      '\n:arrow_right: <https://docs.github.com/en/rest/issues/issues?apiVersion=latest>'
     ];
     const embedToDo = new EmbedBuilder()
       .setTitle( 'Development Roadmap for bot:' )
