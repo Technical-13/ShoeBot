@@ -1,6 +1,6 @@
 const { ApplicationCommandType } = require( 'discord.js' );
 const userPerms = require( '../../functions/getPerms.js' );
-const logChans = require( '../../functions/getLogChans.js' );
+const getGuildConfig = require( '../../functions/getGuildDB.js' );
 const errHandler = require( '../../functions/errorHandler.js' );
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
     const { content } = await userPerms( author, guild );
     if ( content ) { return interaction.editReply( { content: content } ); }
     
-    const { chanChat, doLogs, strClosing } = await logChans( guild );
+    const { Active: doLogs, Chat: chanChat, strClosing } = await getGuildConfig( guild ).Logs;
 
     const cmdInputUser = options.getUser( 'target' );
     const mentionUserID = ( cmdInputUser ? cmdInputUser.id : author.id );

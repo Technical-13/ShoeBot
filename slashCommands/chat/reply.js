@@ -1,6 +1,6 @@
 const { ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
 const userPerms = require( '../../functions/getPerms.js' );
-const logChans = require( '../../functions/getLogChans.js' );
+const getGuildConfig = require( '../../functions/getGuildDB.js' );
 const errHandler = require( '../../functions/errorHandler.js' );
 const parse = require( '../../functions/parser.js' );
 
@@ -42,7 +42,7 @@ module.exports = {
     const strEveryoneHere = ( mentionsEveryone ? '`@' + ( /@everyone/g.test( myResponse ) ? 'everyone' : 'here' ) + '`' : null );
     const strAuthorTag = author.tag;
 
-    const { chanChat, doLogs, strClosing } = await logChans( guild );
+    const { Active: doLogs, Chat: chanChat, strClosing } = await getGuildConfig( guild ).Logs;
 
     if ( myResponse ) {
       if ( canSpeak && ( !mentionsEveryone || checkPermission( 'MentionEveryone' ) ) ) {

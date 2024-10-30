@@ -1,6 +1,6 @@
 const { ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
 const userPerms = require( '../../functions/getPerms.js' );
-const logChans = require( '../../functions/getLogChans.js' );
+const getGuildConfig = require( '../../functions/getGuildDB.js' );
 const errHandler = require( '../../functions/errorHandler.js' );
 
 module.exports = {
@@ -99,7 +99,7 @@ module.exports = {
       'sv-SE': 'Det gick inte att hitta ett specifikt meddelande att svara på.'
     };
 
-    const { doLogs, chanDefault, chanError, strClosing } = await logChans( guild );
+    const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = await getGuildConfig( guild ).Logs;
 
     if ( msgID && !( /[\d]{18,19}/.test( msgID ) ) ) { return interaction.editReply( { content: '`' + msgID + '` ' + i18InvalidMsgId[ locale ] } ); }
     else if ( msgID ) {

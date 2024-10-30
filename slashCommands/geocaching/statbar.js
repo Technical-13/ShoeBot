@@ -1,6 +1,6 @@
 const { ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
 const userPerms = require( '../../functions/getPerms.js' );
-const logChans = require( '../../functions/getLogChans.js' );
+const getGuildConfig = require( '../../functions/getGuildDB.js' );
 const errHandler = require( '../../functions/errorHandler.js' );
 
 module.exports = {
@@ -52,7 +52,7 @@ module.exports = {
     const { channel, guild, options, user: author } = interaction;
     const { content } = await userPerms( author, guild );
     if ( content ) { return interaction.editReply( { content: content } ); }
-    
+
     const today = ( new Date() );
     const intYear = today.getFullYear();
     const intMonthNow = today.getMonth();
@@ -68,8 +68,8 @@ module.exports = {
     const strUseName = ( strInputUserDisplayName ? strInputUserDisplayName : strAuthorDisplayName );
     const encName = encodeURI( strUseName ).replace( '&', '%26' );
 		const strLabcaches = ( options.getBoolean( 'labcaches' ) ? '&includeLabcaches' : '' );
-    
-    const { doLogs, chanDefault, chanError, strClosing } = await logChans( guild );    
+
+    const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = await getGuildConfig( guild ).Logs;
 
     channel.send( { content:
       'StatBar for: ' + ( objInputUser == null ? strUseName : '<@' +  objInputUser + '>' ) + '\nhttps://cdn2.project-gc.com/statbar.php?quote=https://discord.me/Geocaching%20-%20' + intYear + '-' + intMonth + '-' + intDay + strLabcaches + '&user=' + encName
@@ -89,6 +89,6 @@ module.exports = {
         chanError.send( { content: 'Error sending `/statbar` result to <#' + channel.id + '>' + strClosing } )
         .catch( async errLog => { await errHandler( errLog, { chanType: 'error', command: 'statbar', guild: guild, type: 'logLogs' } ); } );
       }
-    } );    
+    } );
   }
 };

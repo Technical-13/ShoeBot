@@ -1,6 +1,6 @@
 const { ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
 const userPerms = require( '../../functions/getPerms.js' );
-const logChans = require( '../../functions/getLogChans.js' );
+const getGuildConfig = require( '../../functions/getGuildDB.js' );
 const errHandler = require( '../../functions/errorHandler.js' );
 
 module.exports = {
@@ -37,7 +37,7 @@ module.exports = {
     const theReaction = options.getString( 'reaction' );
     const strAuthorTag = author.tag;
 
-    const { chanChat, doLogs, strClosing } = await logChans( guild );
+    const { Active: doLogs, Chat: chanChat, strClosing } = await getGuildConfig( guild ).Logs;
 
     var myReaction = theReaction;
     var rxp = /<:(.*)?:([\d]*)>/;

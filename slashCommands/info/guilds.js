@@ -1,9 +1,8 @@
 const { ApplicationCommandType, EmbedBuilder } = require( 'discord.js' );
-const { model, Schema } = require( 'mongoose' );
 const guildConfigDB = require( '../../models/GuildConfig.js' );
 const errHandler = require( '../../functions/errorHandler.js' );
 const userPerms = require( '../../functions/getPerms.js' );
-const logChans = require( '../../functions/getLogChans.js' );
+//const getGuildConfig = require( '../../functions/getGuildDB.js' );
 const pagination = require( '../../functions/pagination.js' );
 
 

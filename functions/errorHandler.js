@@ -2,7 +2,8 @@ const client = require( '..' );
 require( 'dotenv' ).config();
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
-const logChans = require( './getLogChans.js' );
+const getBotConfig = require( './getBotDB.js' );
+const getGuildConfig = require( './getGuildDB.js' );
 
 module.exports = async ( objError, options = { command: 'undefined', debug: false, type: 'undefined' } ) => {
   const { command, debug, type } = options;
@@ -32,7 +33,7 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
   const channel = ( options.channel ? options.channel : null );
   const chanType = ( options.chanType ? options.chanType : null );
   const clearLists = ( options.clearLists ? options.clearLists : null );
-  const guild = ( options.guild ? options.guild : null );
+  const guild = ( options.guild ? options.guild : ( channel ? channel.guild : ( author ? author.guild : null ) ) );
   const inviteChanURL = ( options.inviteChanURL ? options.inviteChanURL : null );
   const inviteGuild = ( options.inviteGuild ? options.inviteGuild : null );
   const modBlack = ( options.modBlack ? options.modBlack : null );
@@ -53,11 +54,13 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
     console.warn( 'errorHandler processed options:%o', processed );
   }
 
-  const { chanChat, chanDefault, chanError, doLogs, strClosing } = ( guild ? await logChans( guild ) : { chanChat: null, chanDefault: null, chanError: null, doLogs: false, strClosing: null } );
-  const { chanError: chanInviteError, doLogs: doInviteLogs, strClosing: strInviteClosing } = ( inviteGuild ? await logChans( inviteGuild ) : { chanError: chanError, doLogs: doLogs, strClosing: strClosing } );
+  const botConfig = await getBotConfig();
+  const guildConfig = await getGuildConfig( guild );
+  const { Active: doLogs, Error: chanError, strClosing } = guildConfig.Logs;
+  const { Active: doInviteLogs,Error: chanInviteError,  strClosing: strInviteClosing } = ( inviteGuild ? await guildConfig( inviteGuild ).Logs : { Active: doLogs, Error: chanError, strClosing: strClosing } );
 
   const botUsers = client.users.cache;
-  const ownerId = ( config.botOwnerId || process.env.OWNER_ID );
+  const ownerId = ( botConfig.Owner || client.ownerId || config.botOwnerId || process.env.OWNER_ID );
   const botOwner = botUsers.get( ownerId );
   const strConsole = '  Please check the console for details.';
   const strNotified = '  Error has been logged and my owner, <@' + botOwner.id + '>, has been notified.';
@@ -65,12 +68,12 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
 
   try {
     switch ( myTask ) {
-      case 'errEdit':
-      case 'errSend':
+      case 'errEdit':// { cmd: '', channel: channel, myTask: 'errEdit' }
+      case 'errSend':// { cmd: '', channel: channel, myTask: 'errSend' }
         switch ( objError.code ) {
           case 50001 :// No SEND_MESSAGE permission in channel
             if ( doLogs ) { chanError.send( 'Please give me permission to send to <#' + channel.id + '>.' + strClosing ); }
-            return { content: 'I do not have permission to send messages in <#' + channel.id + '>.' };
+            return { content: 'I do not have permission to send messages to <#' + channel.id + '>.' };
             break;
           case 50006:// Cannot send an empty message
             console.error( 'Cannot send empty message in /' + cmd + ' request: %o', objError.stack );
@@ -90,7 +93,7 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             } );
         }
         break;
-      case 'errFetch':
+      case 'errFetch':// { cmd: '', msgID: msgID, myTask: 'errFetch' }
         switch( objError.code ) {
           case 10008://Unknown Message
             return { content: 'Unable to find message.' };
@@ -112,10 +115,10 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             } );
         }
         break;
-      case 'errInvite':
+      case 'errInvite':// { cmd: '', inviteGuild: inviteGuild, inviteChanURL: inviteChanURL, myTask: 'errInvite' }
         switch ( objError.code ) {
           case 10003://Unknown Channel
-            console.log( 'Unknown channel to create invite for %s:\n\tLink: %s', guild.name, inviteChanURL );
+            console.log( 'Unknown channel to create invite for %s:\n\tLink: %s', inviteGuild.name, inviteChanURL );
             if ( doInviteLogs ) { chanInviteError.send( 'I couldn\'t figure out which channel to make an invite to for a `/' + cmd + '` request.  Please use `/config set invite` to define which channel you\'d like invites to go to.' + strLogged + strInviteClosing ); }
             break;
           case 50013://Missing permissions
@@ -150,7 +153,7 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             } );
         }
         break;
-      case 'errReact':
+      case 'errReact':// { cmd: '', channel: channel, emoji: emoji, msgID: msgID, myTask: 'errFetch', rawReaction: rawReaction }
         switch ( objError.code ) {
           case 10014://Reaction invalid
             if ( doLogs ) { chanError.send( 'Failed to react to message https://discord.com/channels/' + guild.id + '/' + channel.id + '/' + msgID + ' with `' + rawReaction + '`.' + strClosing ); }
@@ -168,17 +171,7 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             } );
         }
         break;
-      case 'getBotDB':
-        console.error( 'Unable to find botConfig:\n%o', objError );
-        botOwner.send( 'Error attempting to find botConfig.' + strConsole )
-        .catch( errNotSent => { console.error( 'Error attempting to DM you about the above error: %o', errNotSent ); } );
-        break;
-      case 'getGuildDB':
-        console.error( 'Error attempting to find %s(ID:%s) in my database in %s.js:\n%s', guild.name, guild.id, cmd, objError.stack );
-        botOwner.send( 'Error attempting to find `' + guild.name + '`(:id:' + guild.id + ') in my database in ' + cmd + '.' + strConsole )
-        .catch( errNotSent => { console.error( 'Error attempting to DM you about the above error: %o', errNotSent ); } );
-        break;
-      case 'logLogs':
+      case 'logLogs':// { cmd: '', chanType: '', guild: guild, myTask: 'logLogs' }
         let logChan = ( chanType === 'chat' ? chanChat : ( chanType === 'error' ? chanError : chanDefault ) );
         console.error( 'Unable to log to %s channel: %s#%s\n%o', chanType, guild.name, logChan.name, objError );
         botOwner.send( { content: 'Unable to log to ' + chanType + ' channel <#' + logChan.id + '>.' + strConsole } )
@@ -189,22 +182,22 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
           return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
         } );
         break;
-      case 'modifyDB':
+      case 'modifyDB':// { author: author, clearLists: clearLists, cmd: '', modType: '', myTask: 'modifyDB' }
         switch ( modType ) {
           case 'clear':
             console.error( 'Error attempting to clear my %s for %s: %o', clearLists, author.displayName, guild.name, objError );
-            botOwner.send( 'Error attempting to clear my ' + clearLists + ' with `/' + command + ' clear`.' + strConsole )
+            botOwner.send( 'Error attempting to clear my ' + clearLists + ' with `/' + cmd + ' clear`.' + strConsole )
             .then( sentOwner => {
-              return { content: 'Error attempting to clear my ' + clearLists + ( command === 'system' ? '' : ' for this server' ) + '!' + strNotified };
+              return { content: 'Error attempting to clear my ' + clearLists + ( cmd === 'system' ? '' : ' for this server' ) + '!' + strNotified };
             } )
             .catch( errSend => {
               console.error( 'Error attempting to DM you about above error: %o', errSend );
-              return { content: 'Error attempting to clear my ' + clearLists + ( command === 'system' ? '' : ' for this server' ) + '!' + strLogged };
+              return { content: 'Error attempting to clear my ' + clearLists + ( cmd === 'system' ? '' : ' for this server' ) + '!' + strLogged };
             } );
             break;
           case 'add':
           case 'remove':
-            if ( command === 'config' ) {
+            if ( cmd === 'config' ) {
               const fromIn = ( modType === 'remove' ? 'from the database ' + ( modBlack ? 'black' : 'white' ) + 'list' : ' in the database' );
               const doList = ( modType === 'add' ? '' : 'de-' ) + ( modBlack ? 'blacklist' : 'whitelist' );
               const modTarget = ( modBlack || modWhite );
@@ -219,7 +212,7 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
               console.error( 'Error attempting to %s %s (%s) %s:\n%o', doList, modTarget, modTargetName, fromIn, objError );
               return { content: 'Error attempting to ' + doList + ' <@' + modTarget + '> ' + fromIn + '.' + strConsole };
             }
-            if ( command === 'system' ) {
+            if ( cmd === 'system' ) {
               const fromInTo = ( modType === 'remove' ? 'from the database ' + ( modMod ? 'bot moderator list' : ( modBlack ? 'black' : 'white' ) + 'list' ) : ( modMod ? 'to' : 'in' ) + ' the database' );
               const doList = ( modMod ? modType : ( modType === 'add' ? '' : 'de-' ) ) + ( modMod ? ' a moderator' : ( modBlack ? 'blacklist' : 'whitelist' ) );
               const modTarget = ( modMod || modBlack || modWhite );
@@ -228,19 +221,19 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             }
             break;
           case 'reset':
-            console.error( chalk.bold.red.bgYellowBright( 'Error attempting to reset %s configuration with `/%s reset`:\n%o' ), ( command === 'config' ? 'guild' : 'bot' ), command, objError );
-            return { content: 'Error attempting to reset ' + ( command === 'config' ? 'guild' : 'bot' ) + ' configuration with `/' + command + ' reset`.' + strConsole };
+            console.error( chalk.bold.red.bgYellowBright( 'Error attempting to reset %s configuration with `/%s reset`:\n%o' ), ( cmd === 'config' ? 'guild' : 'bot' ), cmd, objError );
+            return { content: 'Error attempting to reset ' + ( cmd === 'config' ? 'guild' : 'bot' ) + ' configuration with `/' + cmd + ' reset`.' + strConsole };
             break;
           case 'set':
-            console.error( 'Error attempting to modify %s configuration in my database:\n%o', ( command === 'config' ? 'guild' : 'bot' ), objError );
-            return { content: 'Error attempting to modify ' + ( command === 'config' ? 'guild' : 'bot' ) + ' configuration in my database.' + strConsole };
+            console.error( 'Error attempting to modify %s configuration in my database:\n%o', ( cmd === 'config' ? 'guild' : 'bot' ), objError );
+            return { content: 'Error attempting to modify ' + ( cmd === 'config' ? 'guild' : 'bot' ) + ' configuration in my database.' + strConsole };
             break;
           default:
-            console.error( chalk.bold.red.bgYellowBright( 'Unknown error attempting to modify %s configuration in my database:\n%o' ), ( command === 'config' ? 'guild' : 'bot' ), objError );
-            return { content: 'Unknown error attempting to modify ' + ( command === 'config' ? 'guild' : 'bot' ) + ' configuration in my database.' + strConsole };
+            console.error( chalk.bold.red.bgYellowBright( 'Unknown error attempting to modify %s configuration in my database:\n%o' ), ( cmd === 'config' ? 'guild' : 'bot' ), objError );
+            return { content: 'Unknown error attempting to modify ' + ( cmd === 'config' ? 'guild' : 'bot' ) + ' configuration in my database.' + strConsole };
         }
         break;
-      case 'setPresence':
+      case 'setPresence':// { cmd: '', myTask: 'setPresence' }
         break;
       case 'tryFunction':
         console.error( 'Error in %s.js: %s', cmd, objError.stack );

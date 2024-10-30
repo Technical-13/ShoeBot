@@ -2,6 +2,7 @@ const client = require( '..' );
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const parse = require( '../functions/parser.js' );
+const getGuildConfig = require( '../functions/getGuildDB.js' );
 
 client.on( 'ready', async rdy => {
   const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };
@@ -34,4 +35,6 @@ client.on( 'ready', async rdy => {
   }, 300000 );
 
   console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) );
+  const guildIds = Array.from( client.guilds.cache.keys() );
+  for ( const guildId of guildIds ) { await getGuildConfig( guildId ); }
 } );

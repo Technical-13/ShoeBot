@@ -8,7 +8,10 @@ let guildSchema = new Schema( {
   },
   Commands: [ String ],
   Expires: Date,
-  Guild: { Name: String, Members: Number },
+  Guild: {
+    Name: String,
+    Members: Number
+  },
   Invite: String,
   Logs: {
     Active: Boolean,
