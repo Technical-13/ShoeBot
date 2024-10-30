@@ -10,6 +10,8 @@ const currVersion = 241030;
 module.exports = async ( guild ) => {
   if ( !guild ) { throw new Error( 'No guild to get.' ); }
 try {
+  console.log( 'members: %o', Array.from( guild.members.keys() ) );
+  console.log( 'cache: %o', Array.from( guild.members.cache.keys() ) );
   const guildOwner = guild.members.cache.get( guild.ownerId );
   if ( !guildOwner ) {
     await guild.leave()
@@ -122,5 +124,5 @@ try {
     .then( updateSuccess => { return updatedGuildConfig; } )
     .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to my database:\n%o' ), guild.name, guildId, updateError ); } );
   }
-} catch ( errGuildDB ) { console.error( 'errGuildDB: %o', errGuildDB ); }
+} catch ( errGuildDB ) { console.error( 'errGuildDB: %o', errGuildDB.stack ); }
 };
