@@ -37,7 +37,8 @@ client.on( 'ready', async rdy => {
   console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) );
   const guildIds = Array.from( client.guilds.cache.keys() );
   for ( const guildId of guildIds ) {
-    console.log( 'Updating guild %s (id: %s)...', chalk.bold.cyan( client.guilds.cache.get( guildId ).name), guildId );
-    await getGuildConfig( guildId );
+    let guild = client.guilds.cache.get( guildId );
+    console.log( 'Updating guild %s (id: %s)...', chalk.bold.cyan( guild.name), guildId );
+    await getGuildConfig( guild );
   }
 } );
