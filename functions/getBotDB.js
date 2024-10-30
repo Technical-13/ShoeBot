@@ -36,7 +36,7 @@ module.exports = async () => {
         Version: currVersion,
         Whitelist: ( currConfig.Whitelist || [] )
       };
-      await botConfig.updateOne( { _id: clientId }, updatedBotConfig, { upsert: true } )
+      return await botConfig.updateOne( { _id: clientId }, updatedBotConfig, { upsert: true } )
       .then( updateSuccess => { return updatedBotConfig; } )
       .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update bot config in my database:\n%o' ), updateError ); } );
     }
@@ -66,7 +66,7 @@ module.exports = async () => {
       Version: currVersion,
       Whitelist: []
     };
-    await botConfig.create( newBotConfig )
+    return await botConfig.create( newBotConfig )
     .then( initSuccess => { console.log( chalk.bold.greenBright( 'Bot configuration initialized in my database.' ) ); return newBotConfig; } )
     .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to initialize bot configuration in my database:\n${initError}` ) ); } );
   }

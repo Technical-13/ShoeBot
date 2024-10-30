@@ -65,7 +65,7 @@ module.exports = async ( guild ) => {
         Roles: []
       }
     };
-    await guildConfig.create( newGuildConfig )
+    return await guildConfig.create( newGuildConfig )
     .then( initSuccess => { console.log( chalk.bold.greenBright( 'Succesfully added %s (id: %s) to my database.' ), guild.name, guildId ); return newGuildConfig; } )
     .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my database:\n%o' ), guild.name, guildId, initError ); } );
   }
@@ -117,7 +117,7 @@ module.exports = async ( guild ) => {
         Roles: ( currWhitelist.Roles || [] )
       }
     };
-    await guildConfig.updateOne( { _id: guildId }, updatedGuildConfig, { upsert: true } )
+    return await guildConfig.updateOne( { _id: guildId }, updatedGuildConfig, { upsert: true } )
     .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', guild.name, guildId ); return updatedGuildConfig; } )
     .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to my database:\n%o' ), guild.name, guildId, updateError ); } );
   }
