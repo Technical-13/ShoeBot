@@ -15,7 +15,6 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
   if ( !guild ) { throw new Error( 'No guild to get user permissions for.' ); }
 
   const botConfig = await getBotConfig();
-console.log( 'botConfig: %o', botConfig );
   const clientID = ( botConfig.ClientID || config.clientId || client.id );
   const botUsers = client.users.cache;
   const botOwner = botUsers.get( botConfig.Owner );
@@ -29,7 +28,6 @@ console.log( 'botConfig: %o', botConfig );
   const globalPrefix = ( botConfig.Prefix || config.prefix || '!' );
 
   const guildConfig = await getGuildConfig( guild );
-console.log( 'guildConfig: %o', guildConfig );
   const isDevGuild = ( guild.id === botConfig.DevGuild ? true : false );
   const objGuildMembers = guild.members.cache;
   const guildOwner = objGuildMembers.get( guild.ownerId );
