@@ -7,10 +7,8 @@ module.exports = {
   cooldown: 600000,
   run: async ( client, message, args ) => {
     const arrToDo = [
-      'Add settings for guildDelete.js this to config.js',
-      'Check DB entries are current version in ready.js. Create anything missing and update member count as needed. If expired, delete entry.',
-      'Finish guildCreate.js event. Add new guild to DB if not already there. If it is, recreate if expired or update it if not (removing expiration). Tell guild owner how to use bot.',
-      'Populate guildDelete.js event. Log in system log channel guild left and add expiration to DB for guild to be removed from DB after 2 weeks.',
+      'Test changes to guildCreate.js and guildDelete.js',
+      'Finish guildCreate.js event telling guild owner how to config bot.',
       'Create guildUpdate.js to update DB entry if guild.name changes.',
       'Do whatever is defined for guildConfig.Part in guildMemberKick.js, guildMemberBan.js, and/or guildMemberDelete.js',
       'Create `/verify` command.',

@@ -46,7 +46,7 @@ client.on( 'guildDelete', async ( guild ) => {
         console.error( 'chanSystem: %s\nchanSafetyAlerts: %s\nchanFirst: %s\ndoChanError: %s\nerrSendDM: %o', chanSystem, chanSafetyAlerts, chanFirst, doChanError, errSendDM );
         botOwner.send( { content: 'Failed to DM <@' + guild.ownerId + '> or find a channel to notify them that I left https://discord.com/channels/' + guild.id + '.' } );
       }
-    } )
+    } );
   } )
   .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to expire in DB:\n%o\nError:\n%o' ), guild.name, guild.id, dbExpires, updateError ); } );
 } );
