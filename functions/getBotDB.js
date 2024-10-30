@@ -15,7 +15,7 @@ module.exports = async () => {
   const newBot = ( await botConfig.countDocuments( { _id: clientId } ) === 0 ? true : false );
   if ( !newBot ) {
     const currConfig = await botConfig.findOne( { _id: clientId } );
-    const configVersion = ( !currConfig.Version ? 0 : currConfig.Version ) );
+    const configVersion = ( !currConfig.Version ? 0 : currConfig.Version );
     if ( configVersion === currVersion ) { return currConfig; }
     else {
       const currLogs = ( currConfig.Logs || { Default: ( logChansConfig.Default || logChansEnv.Default || null ), Error: ( logChansConfig.Error || logChansEnv.Error || null ), JoinPart: ( logChansConfig.JoinPart || logChansEnv.JoinPart || null ) } );
