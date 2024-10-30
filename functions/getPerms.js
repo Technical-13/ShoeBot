@@ -4,7 +4,7 @@ const config = require( '../config.json' );
 const getBotConfig = require( './getBotDB.js' );
 const getGuildConfig = require( './getGuildDB.js' );
 
-module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
+module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
   if ( debug ) {
     const preUser = ( user ? user.id : user );
     const preGuild = ( guild ? guild.id : guild );
