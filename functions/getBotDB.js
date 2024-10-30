@@ -1,7 +1,7 @@
 const client = require( '..' );
 require( 'dotenv' ).config();
 const config = require( '../config.json' );
-const chalk = require( 'chalk'
+const chalk = require( 'chalk' );
 const botConfig = require( '../models/BotConfig.js' );
 const ENV = process.env;
 const currVersion = 241030;
