@@ -71,7 +71,7 @@ module.exports = async ( guild ) => {
   }
   else {
     const currConfig = await guildConfig.findOne( { _id: guildId } );
-    const configVersion = ( !currConfig.Version ? 0 : currConfig.Version ) );
+    const configVersion = ( !currConfig.Version ? 0 : currConfig.Version );
     const currBlacklist = ( currConfig.Blacklist || { Members: [], Roles: [] } );
     const currLogs = ( currConfig.Logs || { Active: true, Chat: null, Default: null, Error: null } );
     const currPart = ( currConfig.Part || { Active: false, Channel: null, Message: null, SaveRoles: true } );
