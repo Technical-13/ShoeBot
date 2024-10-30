@@ -118,7 +118,7 @@ module.exports = async ( guild ) => {
       }
     };
     await guildConfig.updateOne( { _id: guildId }, updatedGuildConfig, { upsert: true } )
-    .then( updateSuccess => { return updatedGuildConfig; } )
+    .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', guild.name, guildId ); return updatedGuildConfig; } )
     .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to my database:\n%o' ), guild.name, guildId, updateError ); } );
   }
 };
