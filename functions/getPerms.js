@@ -4,14 +4,14 @@ const config = require( '../config.json' );
 const getBotConfig = require( './getBotDB.js' );
 const getGuildConfig = require( './getGuildDB.js' );
 
-module.exports = async ( user, doBlacklist = true, debug = true ) => {
+module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
   if ( debug ) {
     const preUser = ( user ? user.id : user );
     const preProcessed = { user: preUser, doBlacklist: doBlacklist };
     console.log( 'getPerms received inputs:%o', preProcessed );
   }
   if ( !user ) { throw new Error( 'No user to get permissions for.' ); }
-  const { guild } = user;
+  if ( !guild ) { throw new Error( 'No guild to get user permissions for.' ); }
 
   const botConfig = await getBotConfig();
   const clientID = ( botConfig.ClientID || config.clientId || client.id );
