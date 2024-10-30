@@ -55,9 +55,9 @@ module.exports = async () => {
       DevGuild: devGuildId,
       IssueRepo: ( config.issueRepo || null ),
       Logs: {
-        Default: ( logChansConfig.Default || logChansEnv.Default || null ),
-        Error: ( logChansConfig.Error || logChansEnv.Error || null ),
-        JoinPart: ( logChansConfig.JoinPart || logChansEnv.JoinPart || null )
+        Default: ( ( !logChansConfig ? null : logChansConfig.Default ) || ( !logChansEnv ? null : logChansEnv.Default ) || null ),
+        Error: ( ( !logChansConfig ? null : logChansConfig.Error ) || ( !logChansEnv ? null : logChansEnv.Error ) || null ),
+        JoinPart: ( ( !logChansConfig ? null : logChansConfig.JoinPart ) || ( !logChansEnv ? null : logChansEnv.JoinPart ) || null )
       },
       Mods: ( config.moderatorIds || [] ),
       Name: ( config.botName || ENV.BOT_USERNAME ),
