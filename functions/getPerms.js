@@ -7,13 +7,15 @@ const getGuildConfig = require( './getGuildDB.js' );
 module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
   if ( debug ) {
     const preUser = ( user ? user.id : user );
-    const preProcessed = { user: preUser, doBlacklist: doBlacklist };
+    const preGuild = ( guild ? guild.id : guild );
+    const preProcessed = { user: preUser, guild: preGuild, doBlacklist: doBlacklist };
     console.log( 'getPerms received inputs:%o', preProcessed );
   }
   if ( !user ) { throw new Error( 'No user to get permissions for.' ); }
   if ( !guild ) { throw new Error( 'No guild to get user permissions for.' ); }
 
   const botConfig = await getBotConfig();
+console.log( 'botConfig: %o', botConfig );
   const clientID = ( botConfig.ClientID || config.clientId || client.id );
   const botUsers = client.users.cache;
   const botOwner = botUsers.get( botConfig.Owner );
@@ -27,6 +29,7 @@ module.exports = async ( user, guild, doBlacklist = true, debug = true ) => {
   const globalPrefix = ( botConfig.Prefix || config.prefix || '!' );
 
   const guildConfig = await getGuildConfig( guild );
+console.log( 'guildConfig: %o', guildConfig );
   const isDevGuild = ( guild.id === botConfig.DevGuild ? true : false );
   const objGuildMembers = guild.members.cache;
   const guildOwner = objGuildMembers.get( guild.ownerId );
