@@ -10,7 +10,19 @@ client.on( 'guildCreate', async ( guild ) => {
     const guildOwner = guild.members.cache.get( guild.ownerId );
     const newGuildConfig = await getGuildConfig( guild )
     .then( gotGuild => {
+      console.log( 'gotGuild: %o', gotGuild );
       console.log( 'I\'ve added %s (id: %s) to my guildDB.', chalk.bold.green( guild.name ), guild.id );
+      /*
+      const chanWidget = ( objGuild.widgetEnabled ? objGuild.widgetChannelId : null );
+      const chanRules = objGuild.rulesChannelId;
+      const chanPublicUpdates = objGuild.publicUpdatesChannelId;
+      const chanSafetyAlerts = objGuild.safetyAlertsChannelId;
+      const chanSystem = objGuild.systemChannelId;
+      const chanFirst = doGuild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.viewable ) { return chan; } } ).first().id;
+      const doneConfig = ( guildConfigIds.indexOf( guildId ) != -1 ? true : false );
+      const definedInvite = ( doneConfig ? guildConfigs[ guildConfigIds.indexOf( guildId ) ].Invite : null );
+      const chanInvite = ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
+      */
       guildOwner.send( { content: 'Hello! You or someone from https://discord.com/channels/' + guild.id + ' with `ADMINISTRATOR` or `MANAGE_SERVER` permissions has added me to your server!' } )
       .catch( errSendDM => {
         const chanSystem = guild.systemChannelId;
