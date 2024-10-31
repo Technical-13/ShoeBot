@@ -58,7 +58,7 @@ module.exports = {
           const definedInvite = leaveGuildDB.Invite;
           const chanInvite = ( leaveGuild.id === guild.id ? channel.id : ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst ) );
           const leaveIn = 5;
-          const leaveMsg = await message.reply( { content: 'I\'m leaving in ' + leaveIn + ' seconds' + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
+          const leaveMsg = await message.reply( { content: 'I\'m leaving in ' + leaveIn + ' seconds' + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ), fetchReply: true } )
           .then( sentLeaving => {
             message.delete().catch( async errDelete => { await errHandler( errDelete, { command: 'part', channel: channel, type: 'errDelete', debug: true } ); } );
             guildOwner.send( { content: 'I\'m leaving https://discord.com/channels/' + guild.id + '/' + chanInvite + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
