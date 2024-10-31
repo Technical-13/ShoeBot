@@ -59,14 +59,14 @@ client.on( 'ready', async rdy => {
   const guildConfigIds = [];
   guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry._id ); } );
   const guildIds = Array.from( client.guilds.cache.keys() );
-  guildIds.forEach( ( guildId ) => {
+  guildIds.forEach( async ( guildId ) => {
     if ( guildConfigIds.indexOf( guildId ) != -1 ) { guildConfigIds.splice( guildConfigIds.indexOf( guildId ), 1 ) }
     let guild = client.guilds.cache.get( guildId );
     console.log( 'Updating guild %s (id: %s)...', chalk.bold.cyan( guild.name), guildId );
     await getGuildConfig( guild );
   }
   if ( guildConfigIds.length !== 0 ) {
-    guildConfigIds.forEach( ( guildId ) => {
+    guildConfigIds.forEach( async ( guildId ) => {
       return await guildConfig.deleteOne( { _id: guildId } )
       .then( delExpired => {
         console.log( 'Succesfully deleted expired %s (id: %s) from my database.', chalk.bold.red( guild.name ), guildId );
