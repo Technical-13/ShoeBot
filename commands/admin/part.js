@@ -10,7 +10,7 @@ module.exports = {
   run: async ( client, message, args ) => {
     try {
       const { author, channel, guild } = message;
-      const { botOwner, isBotOwner, isDevGuild } = await userPerms( author, guild );
+      const { isBotOwner } = await userPerms( author, guild, false, true );
 
       if ( isBotOwner ) {
         let allowRejoin = ( args.length >= 1 && typeof( args[ args.length ] ) === 'boolean' ? args.pop() : true );
@@ -34,7 +34,7 @@ module.exports = {
           ],
         } ) : null );
         message.reply( { content: 'I\'m leaving as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
-        .then( sentLeaving => { message.delete().catch( async errDelete => { await errHandler( errDelete, { cmd: 'part', channel: channel, myTask: 'errDelete' } ); } ); } )
+        .then( sentLeaving => { message.delete().catch( async errDelete => { await errHandler( errDelete, { cmd: 'part', channel: channel, myTask: 'errDelete', debug: true } ); } ); } )
         .catch( errSend => { console.error( 'Failed to alert that I\'m leaving %s (id: %s) as requested by %s (id: %s).', guild.name, guild.id, author.displayName, author.id ); } );
         var leaveGuild;
         if ( args.length === 0 ) { leaveGuild = guild; }

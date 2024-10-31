@@ -75,14 +75,14 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             return { content: 'I do not have permission to `MANAGE_MESSAGES` in <#' + channel.id + '>.' };
             break;
           default:
-            console.error( 'Unable to `MANAGE_MESSAGES` for /' + cmd + ' request: %o', objError.stack );
+            console.error( 'Unable to `MANAGE_MESSAGES` for /' + cmd + ' request: %s', objError.stack );
             botOwner.send( { content: 'Unable to `MANAGE_MESSAGES` for `/' + cmd + '` request.' + strConsole } )
             .then( errSent => {
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
               return { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified };
             } )
             .catch( errNotSent => {
-              console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
+              console.error( 'Error attempting to DM you about the above error: %s', errNotSent.stack );
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strLogged + strClosing ); }
               return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
             } );
@@ -96,18 +96,18 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             return { content: 'I do not have permission to send messages to <#' + channel.id + '>.' };
             break;
           case 50006:// Cannot send an empty message
-            console.error( 'Cannot send empty message in /' + cmd + ' request: %o', objError.stack );
+            console.error( 'Cannot send empty message in /' + cmd + ' request: %s', objError.stack );
             return { content: 'Message you tried to send was empty.' };
             break;
           default:
-            console.error( 'Unable to send message for /' + cmd + ' request: %o', objError.stack );
+            console.error( 'Unable to send message for /' + cmd + ' request: %s', objError.stack );
             botOwner.send( { content: 'Unable to send message for `/' + cmd + '` request.' + strConsole } )
             .then( errSent => {
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
               return { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified };
             } )
             .catch( errNotSent => {
-              console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
+              console.error( 'Error attempting to DM you about the above error: %s', errNotSent.stack );
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strLogged + strClosing ); }
               return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
             } );
@@ -122,14 +122,14 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             return { content: '`' + msgID + '` is not a valid `message-id`. Please try again.' };
             break;
           default:
-            console.error( 'Unable to find message 🆔`' + msgID + '` for /' + cmd + ' request: %o', objError );
+            console.error( 'Unable to find message 🆔`' + msgID + '` for /' + cmd + ' request: %s', objError.stack );
             botOwner.send( { content: 'Unable to find message 🆔`' + msgID + '` for `/' + cmd + '` request.' + strConsole } )
             .then( errSent => {
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
               return { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified };
             } )
             .catch( errNotSent => {
-              console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
+              console.error( 'Error attempting to DM you about the above error: %s', errNotSent.stack );
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strLogged + strClosing ); }
               return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
             } );
@@ -149,26 +149,26 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
                   if ( doInviteLogs ) { chanInviteError.send( 'Please give me permission to send to <#' + channel.id + '>.' + strInviteClosing ); }
                   break;
                 default:
-                  console.error( 'Unable to send message for /' + cmd + ' request: %o', errSend );
+                  console.error( 'Unable to send message for /' + cmd + ' request: %s', errSend.stack );
                   botOwner.send( { content: 'Unable to send message for `/' + cmd + '` request.' + strConsole } )
                   .then( errSent => {
                     if ( doInviteLogs ) { chanInviteError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strInviteClosing ); }
                   } )
                   .catch( errNotSent => {
-                    console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
+                    console.error( 'Error attempting to DM you about the above error: %s', errNotSent.stack );
                     if ( doInviteLogs ) { chanInviteError.send( 'Encounted an error with a `/' + cmd + '` request.' + strLogged + strInviteClosing ); }
                   } );
               }
             } );
             break;
           default:
-            console.error( 'Unable to create an invite for %s:\n%o', inviteGuild.name, objError );
+            console.error( 'Unable to create an invite for %s:\n%s', inviteGuild.name, objError.stack );
             botOwner.send( { content: 'Unable to create an invite to ' + inviteGuild.name + ' for `/' + cmd + '` request.' + strConsole } )
             .then( errSent => {
               if ( doInviteLogs ) { chanInviteError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strInviteClosing ); }
             } )
             .catch( errNotSent => {
-              console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
+              console.error( 'Error attempting to DM you about the above error: %s', errNotSent.stack );
               if ( doInviteLogs ) { chanInviteError.send( 'Encounted an error with a `/' + cmd + '` request.' + strLogged + strInviteClosing ); }
             } );
         }
@@ -179,7 +179,7 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             if ( doLogs ) { chanError.send( 'Failed to react to message https://discord.com/channels/' + guild.id + '/' + channel.id + '/' + msgID + ' with `' + rawReaction + '`.' + strClosing ); }
             return { content: '`' + rawReaction + '` is not a valid `reaction` to react with. Please try again; the emoji picker is helpful in getting valid reactions.' };
           default:
-            console.error( '%s: Reaction to #%o with %o (%s) failed:\n\tMsg: %s\n\tErr: %o', objError.code, msgID, emoji, rawReaction, objError.message, objError );
+            console.error( '%s: Reaction to #%o with %o (%s) failed:\n\tMsg: %s\n\tErr: %s', objError.code, msgID, emoji, rawReaction, objError.message, objError.stack );
             botOwner.send( 'Reaction to https://discord.com/channels/' + guild.id + '/' + channel.id + '/' + msgID + ' with `' + rawReaction + '` failed.' + strConsole )
             .then( errSent => {
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
@@ -254,19 +254,20 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
         }
         break;
       case 'setPresence':// .catch( async setPresence => { await errHandler( setPresence, { cmd: '', myTask: 'setPresence' } ); } );
+        console.error( 'Error in %s.js: %s', cmd, objError.stack );
         break;
       case 'tryFunction':
         console.error( 'Error in %s.js: %s', cmd, objError.stack );
         break;
       default:
-        console.error( 'Unknown type (%s) to resolve error for: %o', myTask, objError );
+        console.error( 'Unknown type (%s) to resolve error for: %s', myTask, objError.stack );
         botOwner.send( { content: 'Unknown type (' + myTask + ') to resolve error for.' + strConsole } )
         .then( errSent => {
           if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
           return { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified };
         } )
         .catch( errNotSent => {
-          console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
+          console.error( 'Error attempting to DM you about the above error: %s', errNotSent.stack );
           if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strLogged + strClosing ); }
           return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
         } );
