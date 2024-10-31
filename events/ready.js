@@ -90,5 +90,5 @@ client.on( 'ready', async rdy => {
       } );
     }
   }
-  catch ( objError ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'ready.js' ), objError.stack ); }
+  catch ( objError ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'ready.js' ), errObject.stack ); }
 } );

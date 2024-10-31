@@ -177,5 +177,5 @@ module.exports = async ( guild ) => {
       }
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'getGuildDB.js' ), objError.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'getGuildDB.js' ), errObject.stack ); }
 };
