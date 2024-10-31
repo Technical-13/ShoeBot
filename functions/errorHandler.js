@@ -4,32 +4,42 @@ const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const getBotConfig = require( './getBotDB.js' );
 const getGuildConfig = require( './getGuildDB.js' );
+const getDebugString = ( thing ) => {
+  if ( typeof( thing ) != 'object' ) { return thing; }
+  else {
+    let resultObj = thing;
+    let objType = ( resultObj ? 'object-' + resultObj.constructor.name : typeof( thing ) );
+    let objId = ( resultObj ? resultObj.id : 'no.id' );
+    let objName = ( resultObj ? ( resultObj.displayName || resultObj.globalName || resultObj.name ) : 'no.name' );
+    return '{ ' + objType + ': { id: ' + objId + ', name: ' + objName + ' } }';
+  }
+};
 
 module.exports = async ( objError, options = { command: 'undefined', debug: false, type: 'undefined' } ) => {
   try {
     const { command, debug, type } = options;
 
     if ( debug ) {
-      const preAuthor = ( !options ? 'NO `options`!' : ( options.author ? options.author.id : options.author ) );
-      const preChan = ( !options ? 'NO `options`!' : ( options.channel ? options.channel.id : options.channel ) );
-      const prechanType = ( !options ? 'NO `options`!' : options.chanType );
-      const preclearLists = ( !options ? 'NO `options`!' : options.clearLists );
-      const preGuild = ( !options ? 'NO `options`!' : ( options.guild ? options.guild.id : options.guild ) );
-      const preinviteChanURL = ( !options ? 'NO `options`!' : options.inviteChanURL );
-      const preinviteGuild = ( !options ? 'NO `options`!' : ( options.inviteGuild ? options.inviteGuild.id : options.inviteGuild ) );
-      const premodBlack = ( !options ? 'NO `options`!' : options.modBlack );
-      const premodMod = ( !options ? 'NO `options`!' : options.modMod );
-      const premodType = ( !options ? 'NO `options`!' : options.modType );
-      const premodWhite = ( !options ? 'NO `options`!' : options.modWhite );
-      const premsgID = ( !options ? 'NO `options`!' : options.msgID );
-      const prerawReaction = ( !options ? 'NO `options`!' : options.rawReaction );
-      const preEmoji = ( !options ? 'NO `options`!' : ( options.emoji ? options.emoji.id : options.emoji ) );
-      const preProcessed = { command: command, type: type, author: preAuthor, channel: preChan, chanType: prechanType, clearLists: preclearLists, guild: preGuild, inviteChanURL: preinviteChanURL, inviteGuild: preinviteGuild, modBlack: premodBlack, modMod: premodMod, modWhite: premodWhite, msgID: premsgID, rawReaction: prerawReaction, reaction: preEmoji };
+      const preAuthor = ( !options ? 'NO `options`!' : getDebugString( options.author ) );
+      const preChan = ( !options ? 'NO `options`!' : getDebugString( options.channel ) );
+      const prechanType = ( !options ? 'NO `options`!' : getDebugString( options.chanType ) );
+      const preclearLists = ( !options ? 'NO `options`!' : getDebugString( options.clearLists ) );
+      const preGuild = ( !options ? 'NO `options`!' : getDebugString( options.guild ) );
+      const preinviteChanURL = ( !options ? 'NO `options`!' : getDebugString( options.inviteChanURL ) );
+      const preinviteGuild = ( !options ? 'NO `options`!' : getDebugString( options.inviteGuild ) );
+      const premodBlack = ( !options ? 'NO `options`!' : getDebugString( options.modBlack ) );
+      const premodMod = ( !options ? 'NO `options`!' : getDebugString( options.modMod ) );
+      const premodType = ( !options ? 'NO `options`!' : getDebugString( options.modType ) );
+      const premodWhite = ( !options ? 'NO `options`!' : getDebugString( options.modWhite ) );
+      const premsgID = ( !options ? 'NO `options`!' : getDebugString( options.msgID ) );
+      const prerawReaction = ( !options ? 'NO `options`!' : getDebugString( options.rawReaction ) );
+      const preEmoji = ( !options ? 'NO `options`!' : getDebugString( options.emoji ) );
+      const preProcessed = { command: '{ typeof: ' + typeof( command ) + ', value: ' + command + ' }', type: '{ typeof: ' + typeof( type ) + ', value: ' + type + ' }', author: preAuthor, channel: preChan, chanType: prechanType, clearLists: preclearLists, guild: preGuild, inviteChanURL: preinviteChanURL, inviteGuild: preinviteGuild, modBlack: premodBlack, modMod: premodMod, modWhite: premodWhite, msgID: premsgID, rawReaction: prerawReaction, reaction: preEmoji };
       console.warn( 'errorHandler recieved options:%o', preProcessed );
     }
 
-    const cmd = ( typeof command === 'string' ? command : 'undefined' );
-    const myTask = ( typeof type === 'string' ? type : 'undefined' );
+    const cmd = ( typeof( command ) === 'string' ? command : 'undefined' );
+    const myTask = ( typeof( type ) === 'string' ? type : 'undefined' );
     const author = ( options.author ? options.author : null );
     const channel = ( options.channel ? options.channel : null );
     const chanType = ( options.chanType ? options.chanType : null );
@@ -46,11 +56,11 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
     const emoji = ( options.reaction ? options.reaction : null );
 
     if ( debug ) {
-      const prcAuthor = ( author ? author.id : author );
-      const prcChan = ( channel ? channel.id : channel );
-      const prcGuild = ( guild ? guild.id : guild );
-      const prcInviteGuild = ( inviteGuild ? inviteGuild.id : inviteGuild );
-      const prcEmoji = ( emoji ? emoji.id : emoji );
+      const prcAuthor = getDebugString( author );
+      const prcChan = getDebugString( channel );
+      const prcGuild = getDebugString( guild );
+      const prcInviteGuild = getDebugString( inviteGuild );
+      const prcEmoji = getDebugString( emoji );
       const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, clearLists: clearLists, guild: prcGuild, inviteChanURL: inviteChanURL, inviteGuild: prcInviteGuild, modBlack: modBlack, modMod: modMod, modType: modType, modWhite: modWhite, msgID: msgID, rawReaction: rawReaction, reaction: prcEmoji };
       console.warn( 'errorHandler processed options:%o', processed );
     }

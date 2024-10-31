@@ -35,7 +35,7 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
     const guildOwner = objGuildMembers.get( guild.ownerId );
     const isGuildOwner = ( user.id === guildOwner.id ? true : false );
     const guildAllowsPremium = guildConfig.Premium;
-    const roleServerBooster = ( guild.roles.premiumSubscriberRole || null );
+    const roleServerBooster = ( guild.roles.premiumSubscriberRole || null );console.log('roleServerBooster: %o', roleServerBooster);
     const isServerBooster = ( !roleServerBooster ? false : ( roleServerBooster.members.get( user.id ) ? true : false ) );
     const arrAuthorPermissions = ( objGuildMembers.get( user.id ).permissions.toArray() || [] );
 
