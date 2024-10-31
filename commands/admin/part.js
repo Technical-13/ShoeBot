@@ -1,4 +1,5 @@
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
+const chalk = require( 'chalk' );
 const userPerms = require( '../../functions/getPerms.js' );
 const errHandler = require( '../../functions/errorHandler.js' );
 const getGuildConfig = require( '../../functions/getGuildDB.js' );
@@ -11,7 +12,7 @@ module.exports = {
   run: async ( client, message, args ) => {
     try {
       const { author, channel, guild } = message;
-      const { isBotOwner, guildOwner } = await userPerms( author, guild, false, true );
+      const { isBotOwner, guildOwner } = await userPerms( author, guild );
 
       if ( isBotOwner ) {
         let allowRejoin = ( args.length >= 1 && typeof( args[ args.length ] ) === 'boolean' ? args.pop() : true );
