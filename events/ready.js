@@ -62,10 +62,38 @@ client.on( 'ready', async rdy => {
     guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry._id ); } );
     const guildIds = Array.from( client.guilds.cache.keys() );
     guildIds.forEach( async ( guildId ) => {
+      const guild = client.guilds.cache.get( guildId );
+      const guildOwner = guild.members.cache.get( guild.ownerId );
       if ( guildConfigIds.indexOf( guildId ) != -1 ) { guildConfigIds.splice( guildConfigIds.indexOf( guildId ), 1 ) }
       let guild = client.guilds.cache.get( guildId );
       console.log( 'Updating guild %s (id: %s)...', chalk.bold.cyan( guild.name), guildId );
-      await getGuildConfig( guild );
+      const currGuildConfig = await getGuildConfig( guild );
+      const doUpdate = false;
+      const newName = ( guild.name !== currGuildConfig.Guild.name ? true : false );
+      const newOwnerID = ( guild.ownerId !== currGuildConfig.Guild.OwnerID ? true : false );
+      const newOwnerName = ( guildOwner.displayName !== currGuildConfig.Guild.OwnerName ? true : false );
+      const newSize = ( guild.members.cache.size !== currGuildConfig.Guild.Members ? true : false );
+      if ( newName ) {// Update guild name
+        currGuildConfig.Guild.Name = guild.name;
+        doUpdate = true;
+      }
+      if ( newOwnerID ) {// Update guild owner id
+        currGuildConfig.Guild.OwnerID = guild.ownerId;
+        doUpdate = true;
+      }
+      if ( newOwnerName ) {// Update guild owner displayName
+        currGuildConfig.Guild.OwnerName = guild.displayName;
+        doUpdate = true;
+      }
+      if ( newSize ) {// Update guild size
+        currGuildConfig.Guild.Members = guild.members.cache.size;
+        doUpdate = true;
+      }
+      if ( doUpdate ) {// Something changed offline
+        await guildConfig.updateOne( { _id: guildId }, currGuildConfig, { upsert: true } )
+        .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( guild.name ), guildId ); } )
+        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to my database:\n%o' ), guild.name, guildId, updateError ); } );
+      }
     } );
     if ( guildConfigIds.length !== 0 ) {
       guildConfigIds.forEach( async ( guildId ) => {
