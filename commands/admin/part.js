@@ -58,7 +58,8 @@ module.exports = {
           const definedInvite = leaveGuildDB.Invite;
           const chanInvite = ( leaveGuild.id === guild.id ? channel.id : ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst ) );
           const leaveIn = 5;
-          const leaveMsg = await message.reply( { content: 'I\'m leaving in ' + leaveIn + ' seconds' + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ), fetchReply: true } )
+          const msgContent = 'I\'m leaving in ' + leaveIn + ' seconds' + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' );
+          const leaveMsg = await message.reply( { content: msgContent } )
           .then( sentLeaving => {
             message.delete().catch( async errDelete => { await errHandler( errDelete, { command: 'part', channel: channel, type: 'errDelete', debug: true } ); } );
             guildOwner.send( { content: 'I\'m leaving https://discord.com/channels/' + guild.id + '/' + chanInvite + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
@@ -66,7 +67,7 @@ module.exports = {
           } )
           .catch( errSend => { console.error( 'Failed to alert in #%s (id: %s) that I\'m leaving %s (id: %s) as requested by %s (id: %s): %s', channel.name, channel.id, guild.name, guild.id, author.displayName, author.id, errSend.stack ); } );
           for ( let i = 1; i < leaveIn; i++ ) {
-            newMsg = leaveMsg.content.replace( ( leaveIn - i + 1 ), ( leaveIn - i ) );
+            newMsg = msgContent.replace( leaveIn, ( leaveIn - i ) );
             setTimeout( () => { leaveMsg.edit( { content: newMsg } ); }, i * 1000 );
           }
 
