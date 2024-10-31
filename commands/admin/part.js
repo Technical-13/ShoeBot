@@ -62,8 +62,13 @@ module.exports = {
           await message.reply( { content: msgContent, fetchReply: true } )
           .then( sentLeaving => {
             for ( let i = 1; i < leaveIn; i++ ) {
-              newMsg = msgContent.replace( leaveIn, ( leaveIn - i ) );
-              setTimeout( () => { sentLeaving.edit( { content: newMsg } ); }, i * 1000 );
+              setTimeout( async () => {
+                newMsg = msgContent.replace( leaveIn, ( leaveIn - i ) );
+                await sentLeaving.edit( { content: newMsg } )
+                .catch( async errEdit => { await errHandler( errEdit, { command: 'part', channel: channel, type: 'errEdit' } ); } );
+              }, i * 1000 );
+              setTimeout( () => { sentLeaving.delete(); }, leaveIn * 1000 );
+
             }
             message.delete().catch( async errDelete => { await errHandler( errDelete, { command: 'part', channel: channel, type: 'errDelete' } ); } );
             guildOwner.send( { content: 'I\'m leaving https://discord.com/channels/' + guild.id + '/' + chanInvite + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
