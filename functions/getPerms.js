@@ -103,9 +103,9 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
         if ( typeof( results[ key ] ) != 'object' ) { debugResults[ key ] = results[ key ]; }
         else {
           let resultObj = results[ key ];
-          let objType = resultObj.constructor.name;
-          let objId = resultObj.id;
-          let objName = ( resultObj.displayName || resultObj.globalName || resultObj.name );
+          let objType = ( resultObj ? resultObj.constructor.name : 'null' );
+          let objId = ( resultObj ? resultObj.id : 'null' );
+          let objName = ( resultObj ? ( resultObj.displayName || resultObj.globalName || resultObj.name ) : 'null' );
           debugResults[ key ] = '{ ' + objType + ': ' + objId + ' }';
         }
       }
