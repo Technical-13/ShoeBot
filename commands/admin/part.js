@@ -67,7 +67,10 @@ module.exports = {
                 await sentLeaving.edit( { content: newMsg } )
                 .catch( async errEdit => { await errHandler( errEdit, { command: 'part', channel: channel, type: 'errEdit' } ); } );
               }, i * 1000 );
-              setTimeout( () => { sentLeaving.delete(); }, leaveIn * 1000 );
+              setTimeout( () => {
+                sentLeaving.edit( { content: 'I left' + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' } )
+                .catch( async errEdit => { await errHandler( errEdit, { command: 'part', channel: channel, type: 'errEdit' } ); } );
+              }, leaveIn * 1000 );
 
             }
             message.delete().catch( async errDelete => { await errHandler( errDelete, { command: 'part', channel: channel, type: 'errDelete' } ); } );
