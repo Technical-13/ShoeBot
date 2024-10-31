@@ -164,5 +164,5 @@ client.on( 'messageCreate', async message => {
       codesResponse.edit( strCodes );
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'messageCreate.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'messageCreate.js' ), objError.stack ); }
 } );

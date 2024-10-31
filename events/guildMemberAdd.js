@@ -47,5 +47,5 @@ client.on( 'guildMemberAdd', async ( member ) => {
       } );
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildMemberAdd.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildMemberAdd.js' ), objError.stack ); }
 } );

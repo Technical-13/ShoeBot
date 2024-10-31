@@ -51,5 +51,5 @@ client.on( 'guildCreate', async ( guild ) => {
       botOwner.send( { content: 'Error adding https://discord.com/channels/' + guild.id + ' to the database.' } );
     } );
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildCreate.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildCreate.js' ), objError.stack ); }
 } );

@@ -78,6 +78,6 @@ module.exports = {
         }
       }
     }
-    catch ( objError ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'part.js' ), errObject.stack ); }
+    catch ( objError ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'part.js' ), objError.stack ); }
   }
 };

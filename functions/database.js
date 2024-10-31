@@ -19,5 +19,5 @@ module.exports = async () => {
     } )
     .catch( dbConnectErr => { console.error( chalk.bold.red( 'Failed to connect to MongoDB:\n%o' ), dbConnectErr ); } );
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'database.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'database.js' ), objError.stack ); }
 }

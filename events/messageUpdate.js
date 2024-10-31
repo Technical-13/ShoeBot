@@ -36,5 +36,5 @@ client.on( 'messageUpdate', async ( oldMessage, newMessage ) => {
       setTimeout( async () => { await msgCleaned.edit( baseMsg ).then( () => { msgCleaned.delete(); } ); }, 15000 );
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'messageUpdate.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'messageUpdate.js' ), objError.stack ); }
 } );

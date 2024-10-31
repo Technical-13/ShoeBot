@@ -59,5 +59,5 @@ module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, ge
     }
     else { return ms + 'ms'; }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'duraction.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'duraction.js' ), objError.stack ); }
 };

@@ -6,5 +6,5 @@ client.on( 'guildMemberRemove', async ( member ) => {
     const { guild } = member;
     console.log( '%s (id:%s) has left %s (id:%s).', member.displayName, member.id, guild.name, guild.id );
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildMemberRemove.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildMemberRemove.js' ), objError.stack ); }
 } );

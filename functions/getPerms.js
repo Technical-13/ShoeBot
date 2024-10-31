@@ -121,5 +121,5 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
     }
     return results;
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'getPerms.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'getPerms.js' ), objError.stack ); }
 };

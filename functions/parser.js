@@ -118,5 +118,5 @@ module.exports = async ( rawString, obj = { author: null, guild: null, member: n
 
     return parsed;
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'parser.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'parser.js' ), objError.stack ); }
 };
