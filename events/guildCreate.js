@@ -1,4 +1,5 @@
 const client = require( '..' );
+const chalk = require( 'chalk' );
 const errHandler = require( '../functions/errorHandler.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 

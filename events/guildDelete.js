@@ -1,4 +1,5 @@
 const client = require( '..' );
+const chalk = require( 'chalk' );
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const objTimeString = require( '../time.json' );
@@ -27,7 +28,8 @@ client.on( 'guildDelete', async ( guild ) => {
       ],
     } );
     const guildConfig = await getGuildConfig( guild );
-    guildConfig.Expires = dbExpires
+    guildConfig.Expires = dbExpires;
+    await guildConfig.markModified( 'Expires' );
     await guildConfig.updateOne( { _id: guild.id }, guildConfig, { upsert: true } )
     .then( updateSuccess => {
       console.log( 'Set expriation of DB entry for %s (id: %s) upon leaving guild.', guild.name, guild.id );
