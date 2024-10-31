@@ -75,7 +75,7 @@ client.on( 'ready', async rdy => {
         .then( delExpired => {
           console.log( 'Succesfully deleted expired %s (id: %s) from my database.', chalk.bold.red( delGuild.Guild.Name ), guildId );
           if ( guildOwner ) {
-            guildOwner.send( { content: 'Hello! It has been a month since someone from [' + delGuild.Guild.Name + '](<https://discord.com/channels/' + guildId + '>) has removed me from your server and I\'ve cleaned out your configuration settings!\nYou can still get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.' } )
+            guildOwner.send( { content: 'Hello! It has been a month since someone has removed me from [' + delGuild.Guild.Name + '](<https://discord.com/channels/' + guildId + '>), and I\'ve cleaned out your configuration settings!\n\nYou can still get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.' } )
             .catch( errSendDM => {
               console.error( 'errSendDM: %s', errSendDM.stack );
               botOwner.send( { content: 'Failed to DM <@' + delGuild.Guild.Owner + '> to notify them that I cleaned the guild, [' + delGuild.Guild.Name + '](<https://discord.com/channels/' + guildId + '>), from my database.' } );
