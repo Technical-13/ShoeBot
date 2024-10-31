@@ -9,7 +9,7 @@ client.on( 'guildCreate', async ( guild ) => {
     const botOwner = client.users.cache.get( client.ownerId );
     const guildOwner = guild.members.cache.get( guild.ownerId );
     const newGuildConfig = await getGuildConfig( guild )
-    .then( gotGuild => {
+    .then( async gotGuild => {
       if ( !gotGuild.Expires ) {
       console.log( 'I\'ve added %s (id: %s) to my guildDB.', chalk.bold.green( guild.name ), guild.id ); }
       else {
