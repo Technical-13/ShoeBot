@@ -1,5 +1,6 @@
 const client = require( '..' );
 const { EmbedBuilder, Collection, PermissionsBitField } = require( 'discord.js' );
+const chalk = require( 'chalk' );
 
 client.on( 'messageUpdate', async ( oldMessage, newMessage ) => {
   try {

@@ -1,5 +1,6 @@
 const client = require( '..' );
 const { Collection } = require( 'discord.js' );
+const chalk = require( 'chalk' );
 const thisBotName = process.env.BOT_USERNAME;
 const { model, Schema } = require( 'mongoose' );
 const guildConfigDB = require( '../models/GuildConfig.js' );

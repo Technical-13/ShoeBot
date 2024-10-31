@@ -1,6 +1,7 @@
 const client = require( '..' );
 const { EmbedBuilder, Collection, PermissionsBitField } = require( 'discord.js' );
 const ms = require( 'ms' );
+const chalk = require( 'chalk' );
 const cooldown = new Collection();
 const cacheinfo = require( '../functions/cacheinfo.js' );
 const gcCacheTypeIcons = require( '../eventTypes.json' );
