@@ -52,7 +52,7 @@ client.on( 'guildDelete', async ( guild ) => {
         }
       } );
     } )
-    .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to expire in DB:\n%o\nError:\n%o' ), guild.name, guild.id, dbExpires, updateError ); } );
+    .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update ${guild.name} (id: ${guild.id}) to expire in DB:\n${dbExpires}\nError:\n${updateError}` ) ); } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildDelete.js' ), errObject.stack ); }
 } );
