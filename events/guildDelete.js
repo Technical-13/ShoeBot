@@ -30,23 +30,20 @@ client.on( 'guildDelete', async ( guild ) => {
       ],
     } );
     const newGuildConfig = await getGuildConfig( guild );
+    const chanWidget = ( guild.widgetEnabled ? guild.widgetChannelId : null );
+    const chanRules = guild.rulesChannelId;
+    const chanPublicUpdates = guild.publicUpdatesChannelId;
+    const chanSafetyAlerts = guild.safetyAlertsChannelId;
+    const chanSystem = guild.systemChannelId;
+    const chanFirst = guild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.viewable ) { return chan; } } ).first().id;
+    const definedInvite = newGuildConfig.Invite;
+      const chanInvite = ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
     newGuildConfig.Expires = dbExpires;
     await guildConfig.updateOne( { _id: guild.id }, newGuildConfig, { upsert: true } )
     .then( updateSuccess => {
-      const chanWidget = ( guild.widgetEnabled ? guild.widgetChannelId : null );
-      const chanRules = guild.rulesChannelId;
-      const chanPublicUpdates = guild.publicUpdatesChannelId;
-      const chanSafetyAlerts = guild.safetyAlertsChannelId;
-      const chanSystem = guild.systemChannelId;
-      const chanFirst = guild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.viewable ) { return chan; } } ).first().id;
-      const definedInvite = updateSuccess.Invite;
-      const chanInvite = ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
       console.log( 'Set expriation of DB entry for %s (id: %s) upon leaving guild to: %o', chalk.bold.red( guild.name ), guild.id, dbExpires.toLocaleTimeString( 'en-US', objTimeString ) );
       guildOwner.send( { content: 'Hello! You or someone from https://discord.com/channels/' + guild.id + '/' + chanInvite + ' has removed me from your server!\nYou can get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.\nI think this might have been an error, so I\'ll save your server\'s configuration settings for a month until `' + dbExpires.toLocaleTimeString( 'en-US', objTimeString ) + '` in case you want me back.' } )
       .catch( errSendDM => {
-        const chanSystem = guild.systemChannelId;
-        const chanSafetyAlerts = guild.safetyAlertsChannelId;
-        const chanFirst = guild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.viewable ) { return chan; } } ).first().id;
         const doChanError = ( chanSystem || chanSafetyAlerts || chanFirst || null );
         if ( doChanError ) {
           doChanError.send( { content: 'Someone from https://discord.com/channels/' + guild.id + ' has removed me from your server and I was unable to DM <@' + guild.ownerId + '> about it directly!\nYou can get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.\nI think this might have been an error, so I\'ll save your server\'s configuration settings for a month until `' + dbExpires.toLocaleTimeString( 'en-US', objTimeString ) + '` in case you want me back.' } )
