@@ -79,7 +79,7 @@ client.on( 'ready', async rdy => {
             botOwner.send( { content: 'Failed to DM <@' + delGuild.Guild.Owner + '> to notify them that I cleaned the guild, [' + delGuild.Guild.Name + '](<https://discord.com/channels/' + guildId + '>), from my database.' } );
           } );
         } )
-        .catch( errDelete => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to deleted %s (id: %s) from my database:\n%o' ), delGuild.Guild.Name, guildId, errDelete ); } );
+        .catch( errDelete => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to delete ${delGuild.Guild.Name} (id: ${guildId}) from my database:\n${errDelete.stack}` ) ); } );
       } );
     }
   }
