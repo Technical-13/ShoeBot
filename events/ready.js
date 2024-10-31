@@ -65,10 +65,10 @@ client.on( 'ready', async rdy => {
       const guild = client.guilds.cache.get( guildId );
       const guildOwner = guild.members.cache.get( guild.ownerId );
       if ( guildConfigIds.indexOf( guildId ) != -1 ) { guildConfigIds.splice( guildConfigIds.indexOf( guildId ), 1 ) }
-      console.log( 'Updating guild %s (id: %s)...', chalk.bold.cyan( guild.name), guildId );
+      console.log( 'Checking guild %s (id: %s)...', chalk.bold.cyan( guild.name), guildId );
       const currGuildConfig = await getGuildConfig( guild );
       var doUpdate = false;
-      const newName = ( guild.name !== currGuildConfig.Guild.name ? true : false );
+      const newName = ( guild.name !== currGuildConfig.Guild.Name ? true : false );
       const newOwnerID = ( guild.ownerId !== currGuildConfig.Guild.OwnerID ? true : false );
       const newOwnerName = ( guildOwner.displayName !== currGuildConfig.Guild.OwnerName ? true : false );
       const newSize = ( guild.members.cache.size !== currGuildConfig.Guild.Members ? true : false );
