@@ -36,7 +36,7 @@ client.on( 'guildDelete', async ( guild ) => {
     const chanPublicUpdates = guild.publicUpdatesChannelId;
     const chanSafetyAlerts = guild.safetyAlertsChannelId;
     const chanSystem = guild.systemChannelId;
-    const chanFirst = guild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.permissionsFor( roleEveryone ).has( 'ViewChannel' ) ) { return chan; } } ).first().id;
+    const chanFirst = guild.channels.cache.filter( chan => !chan.nsfw && chan.permissionsFor( roleEveryone ).has( 'ViewChannel' ) ).first().id;
     const definedInvite = newGuildConfig.Invite;
       const chanInvite = ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
     newGuildConfig.Expires = dbExpires;
