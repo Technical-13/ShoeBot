@@ -24,7 +24,7 @@ client.on( 'guildCreate', async ( guild ) => {
       const chanPublicUpdates = guild.publicUpdatesChannelId;
       const chanSafetyAlerts = guild.safetyAlertsChannelId;
       const chanSystem = guild.systemChannelId;
-      const chanFirst = guild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.permissionsFor( roleEveryone ).has( 'ViewChannel' ) ) { return chan; } } ).first().id;
+      const chanFirst = guild.channels.cache.filter( chan => !chan.nsfw && chan.permissionsFor( roleEveryone ).has( 'ViewChannel' ) ).first().id;
       const definedInvite = gotGuild.Invite;
       const chanInvite = ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
       guildOwner.send( { content: 'Hello! You or someone from https://discord.com/channels/' + guild.id + '/' + chanInvite + ' with `ADMINISTRATOR` or `MANAGE_SERVER` permissions has added me to your server!' } )

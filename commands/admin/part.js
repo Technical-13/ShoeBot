@@ -9,7 +9,7 @@ module.exports = {
   cooldown: 1000,
   run: async ( client, message, args ) => {
     try {
-      const { author, guild } = message;
+      const { author, channel, guild } = message;
       const { botOwner, isBotOwner, isDevGuild } = await userPerms( author, guild );
 
       if ( isBotOwner ) {
