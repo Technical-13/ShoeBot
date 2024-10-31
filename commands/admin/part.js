@@ -1,5 +1,6 @@
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const userPerms = require( '../../functions/getPerms.js' );
+const errHandler = require( '../../functions/errorHandler.js' );
 
 module.exports = {
   name: 'part',
@@ -33,7 +34,7 @@ module.exports = {
           ],
         } ) : null );
         message.reply( { content: 'I\'m leaving as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
-        .then( sentLeaving => { message.delete(); } )
+        .then( sentLeaving => { message.delete().catch( async errDelete => { await errHandler( errDelete, { cmd: 'part', channel: channel, myTask: 'errDelete' } ); } ); } )
         .catch( errSend => { console.error( 'Failed to alert that I\'m leaving %s (id: %s) as requested by %s (id: %s).', guild.name, guild.id, author.displayName, author.id ); } );
         var leaveGuild;
         if ( args.length === 0 ) { leaveGuild = guild; }

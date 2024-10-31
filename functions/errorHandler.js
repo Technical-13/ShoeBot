@@ -68,8 +68,28 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
     const strLogged = '  Error has been logged and my owner, <@' + botOwner.id + '>, couldn\'t be notified.';
 
     switch ( myTask ) {
-      case 'errEdit':// { cmd: '', channel: channel, myTask: 'errEdit' }
-      case 'errSend':// { cmd: '', channel: channel, myTask: 'errSend' }
+      case 'errDelete':// .catch( async errDelete => { await errHandler( errDelete, { cmd: '', channel: channel, myTask: 'errDelete' } ); } );
+        switch ( objError.code ) {
+          case 50001 :// No MANAGE_MESSAGES permission in channel
+            if ( doLogs ) { chanError.send( 'Please give me permission to `MANAGE_MESSAGES` in <#' + channel.id + '>.' + strClosing ); }
+            return { content: 'I do not have permission to `MANAGE_MESSAGES` in <#' + channel.id + '>.' };
+            break;
+          default:
+            console.error( 'Unable to `MANAGE_MESSAGES` for /' + cmd + ' request: %o', objError.stack );
+            botOwner.send( { content: 'Unable to `MANAGE_MESSAGES` for `/' + cmd + '` request.' + strConsole } )
+            .then( errSent => {
+              if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
+              return { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified };
+            } )
+            .catch( errNotSent => {
+              console.error( 'Error attempting to DM you about the above error: %o', errNotSent );
+              if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strLogged + strClosing ); }
+              return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
+            } );
+        }
+        break;
+      case 'errEdit':// .catch( async errEdit => { await errHandler( errEdit, { cmd: '', channel: channel, myTask: 'errEdit' } ); } );
+      case 'errSend':// .catch( async errSend => { await errHandler( errSend, { cmd: '', channel: channel, myTask: 'errSend' } ); } );
         switch ( objError.code ) {
           case 50001 :// No SEND_MESSAGE permission in channel
             if ( doLogs ) { chanError.send( 'Please give me permission to send to <#' + channel.id + '>.' + strClosing ); }
@@ -93,7 +113,7 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             } );
         }
         break;
-      case 'errFetch':// { cmd: '', msgID: msgID, myTask: 'errFetch' }
+      case 'errFetch':// .catch( async errFetch => { await errHandler( errFetch, { cmd: '', msgID: msgID, myTask: 'errFetch' } ); } );
         switch( objError.code ) {
           case 10008://Unknown Message
             return { content: 'Unable to find message.' };
@@ -115,7 +135,7 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             } );
         }
         break;
-      case 'errInvite':// { cmd: '', inviteGuild: inviteGuild, inviteChanURL: inviteChanURL, myTask: 'errInvite' }
+      case 'errInvite':// .catch( async errInvite => { await errHandler( errInvite, { cmd: '', inviteGuild: inviteGuild, inviteChanURL: inviteChanURL, myTask: 'errInvite' } ); } );
         switch ( objError.code ) {
           case 10003://Unknown Channel
             console.log( 'Unknown channel to create invite for %s:\n\tLink: %s', inviteGuild.name, inviteChanURL );
@@ -153,7 +173,7 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             } );
         }
         break;
-      case 'errReact':// { cmd: '', channel: channel, emoji: emoji, msgID: msgID, myTask: 'errFetch', rawReaction: rawReaction }
+      case 'errReact':// .catch( async errFetch => { await errHandler( errFetch, { cmd: '', channel: channel, emoji: emoji, msgID: msgID, myTask: 'errFetch', rawReaction: rawReaction } ); } );
         switch ( objError.code ) {
           case 10014://Reaction invalid
             if ( doLogs ) { chanError.send( 'Failed to react to message https://discord.com/channels/' + guild.id + '/' + channel.id + '/' + msgID + ' with `' + rawReaction + '`.' + strClosing ); }
@@ -171,7 +191,7 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             } );
         }
         break;
-      case 'logLogs':// { cmd: '', chanType: '', guild: guild, myTask: 'logLogs' }
+      case 'logLogs':// .catch( async errLog => { await errHandler( errLog, { cmd: '', chanType: '', guild: guild, myTask: 'logLogs' } ); } );
         let logChan = ( chanType === 'chat' ? chanChat : ( chanType === 'error' ? chanError : chanDefault ) );
         console.error( 'Unable to log to %s channel: %s#%s\n%o', chanType, guild.name, logChan.name, objError );
         botOwner.send( { content: 'Unable to log to ' + chanType + ' channel <#' + logChan.id + '>.' + strConsole } )
@@ -182,7 +202,7 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
           return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
         } );
         break;
-      case 'modifyDB':// { author: author, clearLists: clearLists, cmd: '', modType: '', myTask: 'modifyDB' }
+      case 'modifyDB':// .catch( async modifyDB => { await errHandler( modifyDB, { author: author, clearLists: clearLists, cmd: '', modType: '', myTask: 'modifyDB' } ); } );
         switch ( modType ) {
           case 'clear':
             console.error( 'Error attempting to clear my %s for %s: %o', clearLists, author.displayName, guild.name, objError );
@@ -233,7 +253,7 @@ module.exports = async ( objError, options = { command: 'undefined', debug: fals
             return { content: 'Unknown error attempting to modify ' + ( cmd === 'config' ? 'guild' : 'bot' ) + ' configuration in my database.' + strConsole };
         }
         break;
-      case 'setPresence':// { cmd: '', myTask: 'setPresence' }
+      case 'setPresence':// .catch( async setPresence => { await errHandler( setPresence, { cmd: '', myTask: 'setPresence' } ); } );
         break;
       case 'tryFunction':
         console.error( 'Error in %s.js: %s', cmd, objError.stack );
