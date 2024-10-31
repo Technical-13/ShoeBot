@@ -103,10 +103,10 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
         if ( typeof( results[ key ] ) != 'object' ) { debugResults[ key ] = results[ key ]; }
         else {
           let resultObj = results[ key ];
-          let objType = ( resultObj ? resultObj.constructor.name : 'null' );
-          let objId = ( resultObj ? resultObj.id : 'null' );
-          let objName = ( resultObj ? ( resultObj.displayName || resultObj.globalName || resultObj.name ) : 'null' );
-          debugResults[ key ] = '{ ' + objType + ': ' + objId + ' }';
+          let objType = ( resultObj ? 'object-' + resultObj.constructor.name : typeof( results[ key ] ) );
+          let objId = ( resultObj ? resultObj.id : 'no.id' );
+          let objName = ( resultObj ? ( resultObj.displayName || resultObj.globalName || resultObj.name ) : 'no.name' );
+          debugResults[ key ] = '{ ' + objType + ': { id: ' + objId + ', name: ' + objName + ' } }';
         }
       }
       console.log( 'getPerms is returning: %o', debugResults );
