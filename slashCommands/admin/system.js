@@ -62,7 +62,7 @@ module.exports = {
     const arrWhiteList = ( botConfig.Whitelist || [] );
     const isBotMod = ( ( isBotOwner || botMods.indexOf( author.id ) != -1 ) ? true : false );
     const myTask = options.getSubcommand();
-    
+
     var newName = ( options.getString( 'name' ) || null );
     var newOwner = ( options.getUser( 'owner' ) || null );
     var newPrefix = ( options.getString( 'prefix' ) || null );
@@ -90,21 +90,21 @@ module.exports = {
           else {
             channel.send( { content: showConfigs } )
             .then( sent => { return interaction.editReply( { content: 'I shared the settings in the channel.' } ); } )
-            .catch( async errSend => { return interaction.editReply( { content: await errHandler( errSend, { channel: channel, command: 'system', type: 'errSend' } ) } ); } );        
+            .catch( async errSend => { return interaction.editReply( { content: await errHandler( errSend, { channel: channel, command: 'system', type: 'errSend' } ) } ); } );
           }
         break;
-        case 'set':        
+        case 'set':
           if ( setStatus || setActivityType || setActivity ) {
             const botPresence = bot.presence.toJSON();
             const botActivities = botPresence.activities[ 0 ];
-            const botActivityType = Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );    
+            const botActivityType = Object.keys( ActivityTypes ).find( key => ActivityTypes[ key ] === botActivities.type );
             const selectActivityType = ( options.getString( 'activity-type' ) || botActivityType || 'Playing' );
             const currActivityName = ( botActivityType === 1 ? botActivities.url : ( botActivityType === 4 ? botActivities.state : botActivities.name ) );
             const selectActivityName = ( options.getString( 'activity' ) || currActivityName || '' );
             const setPresenceActivity = [ { type: ActivityTypes[ selectActivityType ], name: selectActivityName } ];
             const newActivity = ( selectActivityType === 'Custom' ? '' : ( selectActivityType === 'Competing' ? selectActivityType + ' in ' : selectActivityType ) ) + selectActivityName;
             const selectStatus = ( options.getString( 'status' ) || botPresence.status );
-            
+
             bot.setPresence( { activities: setPresenceActivity, status: selectStatus } )
             .then( newPresence => { return interaction.editReply( { content: 'My presence has been changed to `' + newActivity + '` and my status is `' + selectStatus + '`' } ); } )
             .catch( async errSetPresence => { return interaction.editReply( { content: await errHandler( errSetPresence, { command: 'system', type: 'setPresence' } ) } ); } );
@@ -231,7 +231,7 @@ module.exports = {
                 let lastList = arrClearLists.pop();
                 clearLists = arrClearLists.join( ', ' ) + ', and ' + lastList + ' lists';
             }
-            
+
             await botConfigDB.updateOne( { BotName: thisBotName }, {
               BotName: botConfig.BotName,
               ClientID: botConfig.ClientID,
@@ -346,7 +346,7 @@ module.exports = {
             if ( !devGuildId ) { console.error( chalk.bold.redBright( 'DevGuild missing attempting to reset configuration with `/system reset`.' ) ); }
           }
           break;
-        case 'set':          
+        case 'set':
           if ( newName || newOwner || newPrefix || newDevGuild ) {
             newName = ( options.getString( 'name' ) || botConfig.BotName || config.botName );
             let newOwnerId = ( newOwner ? newOwner.id : ( botConfig.Owner || config.botOwnerId || botOwnerID ) );

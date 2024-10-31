@@ -65,7 +65,6 @@ client.on( 'ready', async rdy => {
       const guild = client.guilds.cache.get( guildId );
       const guildOwner = guild.members.cache.get( guild.ownerId );
       if ( guildConfigIds.indexOf( guildId ) != -1 ) { guildConfigIds.splice( guildConfigIds.indexOf( guildId ), 1 ) }
-      let guild = client.guilds.cache.get( guildId );
       console.log( 'Updating guild %s (id: %s)...', chalk.bold.cyan( guild.name), guildId );
       const currGuildConfig = await getGuildConfig( guild );
       const doUpdate = false;
