@@ -28,7 +28,7 @@ client.on( 'guildCreate', async ( guild ) => {
       const definedInvite = gotGuild.Invite;
       const chanInvite = ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
       const doChanError = ( !( chanSystem || chanSafetyAlerts || chanFirst || null ) ? null : guild.channels.cache.get( chanSystem || chanSafetyAlerts || chanFirst ) );
-      guildOwner.send( { content: 'Hello! You or someone from https://discord.com/channels/' + guild.id + '/' + chanInvite + ' with `ADMINISTRATOR` or `MANAGE_SERVER` permissions has added me to your server!' } )
+      guildOwner.send( { content: 'Hello! You or someone with `ADMINISTRATOR` or `MANAGE_SERVER` permissions has added me to https://discord.com/channels/' + guild.id + '/' + chanInvite + '!' } )
       .catch( errSendDM => {
         const chanSystem = guild.systemChannelId;
         const chanSafetyAlerts = guild.safetyAlertsChannelId;
@@ -48,8 +48,8 @@ client.on( 'guildCreate', async ( guild ) => {
     } )
     .catch( errGetGuild => {
       console.error( 'Failed to create %s (id: %s) in guildDB on join.', guild.name, guild.id );
-      botOwner.send( { content: 'Error adding https://discord.com/channels/' + guild.id + ' to the database.' } );
+      botOwner.send( { content: 'Error adding [' + guild.name + '](<https://discord.com/channels/' + guild.id + '>) to the database.' } );
     } );
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildCreate.js' ), objError.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildCreate.js' ), errObject.stack ); }
 } );

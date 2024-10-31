@@ -61,18 +61,17 @@ module.exports = {
           const msgContent = 'I\'m leaving in ' + leaveIn + ' seconds' + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' );
           await message.reply( { content: msgContent, fetchReply: true } )
           .then( sentLeaving => {
-            for ( let i = 1; i < leaveIn; i++ ) {
+            for ( let i = 1; i < leaveIn; i++ ) {// Countdown...
               setTimeout( async () => {
                 newMsg = msgContent.replace( leaveIn, ( leaveIn - i ) );
                 await sentLeaving.edit( { content: newMsg } )
                 .catch( async errEdit => { await errHandler( errEdit, { command: 'part', channel: channel, type: 'errEdit' } ); } );
               }, i * 1000 );
-              setTimeout( () => {
-                sentLeaving.edit( { content: 'I left' + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
-                .catch( async errEdit => { await errHandler( errEdit, { command: 'part', channel: channel, type: 'errEdit' } ); } );
-              }, leaveIn * 1000 );
-
             }
+            setTimeout( () => {// All gone!
+              sentLeaving.edit( { content: 'I left' + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
+              .catch( async errEdit => { await errHandler( errEdit, { command: 'part', channel: channel, type: 'errEdit' } ); } );
+            }, leaveIn * 1000 );
             message.delete().catch( async errDelete => { await errHandler( errDelete, { command: 'part', channel: channel, type: 'errDelete' } ); } );
             guildOwner.send( { content: 'I\'m leaving https://discord.com/channels/' + guild.id + '/' + chanInvite + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
             .catch( async errSend => { await errHandler( errSend, { command: 'part', channel: channel, type: 'errSend' } ); } );
