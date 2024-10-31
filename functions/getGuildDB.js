@@ -123,7 +123,7 @@ module.exports = async ( guild ) => {
           }
         };
         return await guildConfig.updateOne( { _id: guildId }, updatedGuildConfig, { upsert: true } )
-        .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', guild.name, guildId ); return updatedGuildConfig; } )
+        .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( guild.name ), guildId ); return updatedGuildConfig; } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to my database:\n%o' ), guild.name, guildId, updateError ); } );
       }
       else {
@@ -148,7 +148,7 @@ module.exports = async ( guild ) => {
         } );
         return await guildConfig.deleteOne( { _id: guildId } )
         .then( delExpired => {
-          console.log( 'Succesfully deleted expired %s (id: %s) from my database.', guild.name, guildId );
+          console.log( 'Succesfully deleted expired %s (id: %s) from my database.', chalk.bold.red( guild.name ), guildId );
           guildOwner.send( { content: 'Hello! It has been a month since someone from https://discord.com/channels/' + guild.id + ' has removed me from your server and I\'ve cleaned out your configuration settings!\nYou can still get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.' } )
           .catch( errSendDM => {
             const chanSystem = guild.systemChannelId;
