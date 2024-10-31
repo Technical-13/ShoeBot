@@ -8,8 +8,8 @@ const chalk = require( 'chalk' );
 module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
   try {
     if ( debug ) {
-      const preUser = ( user ? user.id : user );
-      const preGuild = ( guild ? guild.id : guild );
+      const preUser = ( user ? '{ id: ' + user.id + ', displayName: ' + user.displayName + ' }' : user );
+      const preGuild = ( guild ? '{ id: ' + guild.id + ', name: ' + guild.name + ' }' : guild );
       const preProcessed = { user: preUser, guild: preGuild, doBlacklist: doBlacklist };
       console.log( 'getPerms received inputs:%o', preProcessed );
     }

@@ -6,14 +6,25 @@ module.exports = {
   modOnly: true,
   cooldown: 1000,
   run: async ( client, message, args ) => {
-    const { author, guild } = message;
-    const { botOwner, isBotOwner, isDevGuild } = await userPerms( author, guild );
-    
-    if ( isBotOwner ) {
-      console.log( 'args: %o', args );
- /*     await guild.leave()
-        .then( left => { console.log( 'I left guild (%s)!\n\t%s', left.name, chanLinkUrl ); } )
-        .catch( stayed => { console.error( 'I could NOT leave guild!\n%o', stayed ); } );//*/
+    try {
+      const { author, guild } = message;
+      const { botOwner, isBotOwner, isDevGuild } = await userPerms( author, guild );
+
+      if ( isBotOwner ) {
+        console.log( 'args: %o', args );
+        var leaveGuild;
+        if ( args.length === 0 ) { leaveGuild = guild; }
+        if ( args.length === 1 ) {
+          let guildId = args[ 0 ];
+          if ( !( /[\d]{18,19}/.test( guildId ) ) ) { return interaction.editReply( { content: '`' + guildId + '` is not a valid `guild-id`. Please try again.' } ); }
+          if ( !client.guilds.cache.get( guildId ) ) { return interaction.editReply( { content: 'I wasn\'t in any guild with an id of `' + guildId + '`. Please try again.' } ); }
+          leaveGuild = client.guilds.cache.get( guildId );
+        }
+        await leaveGuild.leave()
+        .then( left => { console.error( 'I left guild %s (id: %s) as requested by %s (id: %s)', guild.name, guild.id, author.displayName, author.id ); } )
+        .catch( stayed => { console.error( 'I could NOT leave guild %s (id: %s) as requested by %s (id: %s):\n%o', guild.name, guild.id, author.displayName, author.id, stayed ); } );
+      }
     }
+    catch ( objError ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'part.js' ), errObject.stack ); }
   }
 };

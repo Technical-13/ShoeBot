@@ -21,6 +21,7 @@ module.exports = {
       for ( const guildId of guildIds ) {
         const doGuild = client.guilds.cache.get( guildId );
         const objGuild = doGuild.toJSON();
+        const roleEveryone = objGuild.roles.cache.find( role => role.name === '@everyone' );
         const guildName = objGuild.name;
         const vanityURLCode = objGuild.vanityURLCode;
 if ( vanityURLCode ) { console.log( '%s has a vanityURLCode: %s', guildName, vanityURLCode ); }//don't know what this looks like in the API...
@@ -29,7 +30,7 @@ if ( vanityURLCode ) { console.log( '%s has a vanityURLCode: %s', guildName, van
         const chanPublicUpdates = objGuild.publicUpdatesChannelId;
         const chanSafetyAlerts = objGuild.safetyAlertsChannelId;
         const chanSystem = objGuild.systemChannelId;
-        const chanFirst = doGuild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.viewable ) { return chan; } } ).first().id;
+        const chanFirst = doGuild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.permissionsFor( roleEveryone ).has( 'ViewChannel' ) ) { return chan; } } ).first().id;
         const doneConfig = ( guildConfigIds.indexOf( guildId ) != -1 ? true : false );
         const definedInvite = ( doneConfig ? guildConfigs[ guildConfigIds.indexOf( guildId ) ].Invite : null );
         const chanInvite = ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );

@@ -30,12 +30,13 @@ client.on( 'guildDelete', async ( guild ) => {
       ],
     } );
     const newGuildConfig = await getGuildConfig( guild );
+    const roleEveryone = guild.roles.cache.find( role => role.name === '@everyone' );
     const chanWidget = ( guild.widgetEnabled ? guild.widgetChannelId : null );
     const chanRules = guild.rulesChannelId;
     const chanPublicUpdates = guild.publicUpdatesChannelId;
     const chanSafetyAlerts = guild.safetyAlertsChannelId;
     const chanSystem = guild.systemChannelId;
-    const chanFirst = guild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.viewable ) { return chan; } } ).first().id;
+    const chanFirst = guild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.permissionsFor( roleEveryone ).has( 'ViewChannel' ) ) { return chan; } } ).first().id;
     const definedInvite = newGuildConfig.Invite;
       const chanInvite = ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
     newGuildConfig.Expires = dbExpires;
