@@ -56,6 +56,7 @@ client.on( 'ready', async rdy => {
   }, 300000 );
 
   console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) );
+  const guildConfigs = await guildConfigDB.find();
   const guildConfigIds = [];
   guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry._id ); } );
   const guildIds = Array.from( client.guilds.cache.keys() );
@@ -64,7 +65,7 @@ client.on( 'ready', async rdy => {
     let guild = client.guilds.cache.get( guildId );
     console.log( 'Updating guild %s (id: %s)...', chalk.bold.cyan( guild.name), guildId );
     await getGuildConfig( guild );
-  }
+  } );
   if ( guildConfigIds.length !== 0 ) {
     guildConfigIds.forEach( async ( guildId ) => {
       return await guildConfig.deleteOne( { _id: guildId } )
