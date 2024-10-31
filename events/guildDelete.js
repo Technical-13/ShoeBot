@@ -8,6 +8,7 @@ const objTimeString = require( '../time.json' );
 client.on( 'guildDelete', async ( guild ) => {
   try {
     const botOwner = client.users.cache.get( client.ownerId );
+    const guildOwner = guild.members.cache.get( guild.ownerId );
     const dbExpires = new Date( ( new Date() ).setMonth( ( new Date() ).getMonth() + 1 ) );
     const inviteUrl = client.generateInvite( {
       permissions: [
