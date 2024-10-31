@@ -10,7 +10,8 @@ let guildSchema = new Schema( {
   Expires: Date,
   Guild: {
     Name: String,
-    Members: Number
+    Members: Number,
+    Owner: String
   },
   Invite: String,
   Logs: {
