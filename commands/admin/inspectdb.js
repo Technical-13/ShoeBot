@@ -30,7 +30,7 @@ if ( vanityURLCode ) { console.log( '%s has a vanityURLCode: %s', guildName, van
         const chanPublicUpdates = objGuild.publicUpdatesChannelId;
         const chanSafetyAlerts = objGuild.safetyAlertsChannelId;
         const chanSystem = objGuild.systemChannelId;
-        const chanFirst = doGuild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.permissionsFor( roleEveryone ).has( 'ViewChannel' ) ) { return chan; } } ).first().id;
+        const chanFirst = Array.from( doGuild.channels.cache.filter( chan => !chan.nsfw && chan.permissionsFor( roleEveryone ).has( 'ViewChannel' ) ).keys() )[ 0 ];
         const doneConfig = ( guildConfigIds.indexOf( guildId ) != -1 ? true : false );
         const definedInvite = ( doneConfig ? guildConfigs[ guildConfigIds.indexOf( guildId ) ].Invite : null );
         const chanInvite = ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
