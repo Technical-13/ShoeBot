@@ -3,6 +3,7 @@ require( 'dotenv' ).config();
 const config = require( '../config.json' );
 const getBotConfig = require( './getBotDB.js' );
 const getGuildConfig = require( './getGuildDB.js' );
+const chalk = require( 'chalk' );
 
 module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
   try {
