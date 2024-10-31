@@ -1,3 +1,4 @@
+const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const userPerms = require( '../../functions/getPerms.js' );
 
 module.exports = {
@@ -11,7 +12,29 @@ module.exports = {
       const { botOwner, isBotOwner, isDevGuild } = await userPerms( author, guild );
 
       if ( isBotOwner ) {
-        console.log( 'args: %o', args );
+        let allowRejoin = ( args.length >= 1 && typeof( args[ args.length ] ) === 'boolean' ? args.pop() : true );
+        const inviteUrl = ( allowRejoin ? client.generateInvite( {
+          permissions: [
+            PermissionFlagsBits.CreateInstantInvite,
+            PermissionFlagsBits.Administrator,
+            PermissionFlagsBits.AddReactions,
+            PermissionFlagsBits.ViewChannel,
+            PermissionFlagsBits.SendMessages,
+            PermissionFlagsBits.EmbedLinks,
+            PermissionFlagsBits.AttachFiles,
+            PermissionFlagsBits.ReadMessageHistory,
+            PermissionFlagsBits.UseExternalEmojis,
+            PermissionFlagsBits.ManageWebhooks,
+            PermissionFlagsBits.UseApplicationCommands
+          ],
+          scopes: [
+            OAuth2Scopes.Bot,
+            OAuth2Scopes.ApplicationsCommands
+          ],
+        } ) : null );
+        message.reply( { content: 'I\'m leaving as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
+        .then( sentLeaving => { message.delete(); } )
+        catch( errSend => { console.error( 'Failed to alert that I\'m leaving %s (id: %s) as requested by %s (id: %s).', guild.name, guild.id, author.displayName, author.id ); } );
         var leaveGuild;
         if ( args.length === 0 ) { leaveGuild = guild; }
         if ( args.length === 1 ) {
