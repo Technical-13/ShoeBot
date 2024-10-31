@@ -67,7 +67,7 @@ client.on( 'ready', async rdy => {
       if ( guildConfigIds.indexOf( guildId ) != -1 ) { guildConfigIds.splice( guildConfigIds.indexOf( guildId ), 1 ) }
       console.log( 'Updating guild %s (id: %s)...', chalk.bold.cyan( guild.name), guildId );
       const currGuildConfig = await getGuildConfig( guild );
-      const doUpdate = false;
+      var doUpdate = false;
       const newName = ( guild.name !== currGuildConfig.Guild.name ? true : false );
       const newOwnerID = ( guild.ownerId !== currGuildConfig.Guild.OwnerID ? true : false );
       const newOwnerName = ( guildOwner.displayName !== currGuildConfig.Guild.OwnerName ? true : false );
