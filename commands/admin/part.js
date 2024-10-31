@@ -35,7 +35,7 @@ module.exports = {
         } ) : null );
         message.reply( { content: 'I\'m leaving as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
         .then( sentLeaving => { message.delete().catch( async errDelete => { await errHandler( errDelete, { cmd: 'part', channel: channel, myTask: 'errDelete', debug: true } ); } ); } )
-        .catch( errSend => { console.error( 'Failed to alert that I\'m leaving %s (id: %s) as requested by %s (id: %s).', guild.name, guild.id, author.displayName, author.id ); } );
+        .catch( errSend => { console.error( 'Failed to alert in #%s (id: %s) that I\'m leaving %s (id: %s) as requested by %s (id: %s): %s'channel.name, channel.id, guild.name, guild.id, author.displayName, author.id, errSend.stack ); } );
         var leaveGuild;
         if ( args.length === 0 ) { leaveGuild = guild; }
         if ( args.length === 1 ) {
