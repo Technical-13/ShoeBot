@@ -29,7 +29,6 @@ client.on( 'guildDelete', async ( guild ) => {
     } );
     const guildConfig = await getGuildConfig( guild );
     guildConfig.Expires = dbExpires;
-    await guildConfig.markModified( 'Expires' );
     await guildConfig.updateOne( { _id: guild.id }, guildConfig, { upsert: true } )
     .then( updateSuccess => {
       console.log( 'Set expriation of DB entry for %s (id: %s) upon leaving guild.', guild.name, guild.id );
