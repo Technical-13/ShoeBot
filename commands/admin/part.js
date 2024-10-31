@@ -1,6 +1,7 @@
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const userPerms = require( '../../functions/getPerms.js' );
 const errHandler = require( '../../functions/errorHandler.js' );
+const getGuildConfig = require( '../../functions/getGuildDB.js' );
 
 module.exports = {
   name: 'part',
@@ -10,7 +11,7 @@ module.exports = {
   run: async ( client, message, args ) => {
     try {
       const { author, channel, guild } = message;
-      const { isBotOwner } = await userPerms( author, guild, false, true );
+      const { isBotOwner, guildOwner } = await userPerms( author, guild, false, true );
 
       if ( isBotOwner ) {
         let allowRejoin = ( args.length >= 1 && typeof( args[ args.length ] ) === 'boolean' ? args.pop() : true );
@@ -45,16 +46,30 @@ module.exports = {
         if ( args.length != 0 ) { leaveReason = args.join( ' ' ).replace( /\|{2}/g, '' ); }
 
         if ( leaveGuild ) {
+          const leaveGuildDB = await getGuildConfig( leaveGuild );
+          const roleEveryone = leaveGuild.roles.cache.find( role => role.name === '@everyone' );
+          const chanWidget = ( leaveGuild.widgetEnabled ? leaveGuild.widgetChannelId : null );
+          const chanRules = leaveGuild.rulesChannelId;
+          const chanPublicUpdates = leaveGuild.publicUpdatesChannelId;
+          const chanSafetyAlerts = leaveGuild.safetyAlertsChannelId;
+          const chanSystem = leaveGuild.systemChannelId;
+          const chanFirst = Array.from( leaveGuild.channels.cache.filter( chan => !chan.nsfw && chan.permissionsFor( roleEveryone ).has( 'ViewChannel' ) ).keys() )[ 0 ];
+          const definedInvite = leaveGuildDB.Invite;
+          const chanInvite = ( leaveGuild.id === guild.id ? channel.id : ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst ) );
           const leaveIn = 5;
           const leaveMsg = await message.reply( { content: 'I\'m leaving in ' + leaveIn + ' seconds' + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
-          .then( sentLeaving => { message.delete().catch( async errDelete => { await errHandler( errDelete, { command: 'part', channel: channel, type: 'errDelete', debug: true } ); } ); } )
+          .then( sentLeaving => {
+            message.delete().catch( async errDelete => { await errHandler( errDelete, { command: 'part', channel: channel, type: 'errDelete', debug: true } ); } );
+            guildOwner.send( { content: 'I\'m leaving https://discord.com/channels/' + guild.id + '/' + chanInvite + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
+            .catch( async errSend => { await errHandler( errSend, { command: 'part', channel: channel, type: 'errSend' } ); } );
+          } )
           .catch( errSend => { console.error( 'Failed to alert in #%s (id: %s) that I\'m leaving %s (id: %s) as requested by %s (id: %s): %s', channel.name, channel.id, guild.name, guild.id, author.displayName, author.id, errSend.stack ); } );
           for ( let i = 1; i < leaveIn; i++ ) {
             newMsg = leaveMsg.content.replace( ( leaveIn - i + 1 ), ( leaveIn - i ) );
             setTimeout( () => { leaveMsg.edit( { content: newMsg } ); }, i * 1000 );
           }
 
-          setTimeout( () => {
+          setTimeout( async () => {
             await leaveGuild.leave()
             .then( left => { console.error( 'I left guild %s (id: %s) as requested by %s (id: %s)', guild.name, guild.id, author.displayName, author.id ); } )
             .catch( stayed => { console.error( 'I could NOT leave guild %s (id: %s) as requested by %s (id: %s):\n%o', guild.name, guild.id, author.displayName, author.id, stayed ); } );

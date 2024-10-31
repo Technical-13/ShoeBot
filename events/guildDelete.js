@@ -47,15 +47,15 @@ client.on( 'guildDelete', async ( guild ) => {
       guildOwner.send( { content: 'Hello! You or someone from https://discord.com/channels/' + guild.id + '/' + chanInvite + ' has removed me from your server!\nYou can get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.\nI think this might have been an error, so I\'ll save your server\'s configuration settings for a month until `' + dbExpires.toLocaleTimeString( 'en-US', objTimeString ) + '` in case you want me back.' } )
       .catch( errSendDM => {
         if ( doChanError ) {
-          doChanError.send( { content: 'Someone from https://discord.com/channels/' + guild.id + ' has removed me from your server and I was unable to DM <@' + guild.ownerId + '> about it directly!\nYou can get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.\nI think this might have been an error, so I\'ll save your server\'s configuration settings for a month until `' + dbExpires.toLocaleTimeString( 'en-US', objTimeString ) + '` in case you want me back.' } )
+          doChanError.send( { content: 'Someone from https://discord.com/channels/' + guild.id + '/' + chanInvite + ' has removed me from your server and I was unable to DM <@' + guild.ownerId + '> about it directly!\nYou can get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.\nI think this might have been an error, so I\'ll save your server\'s configuration settings for a month until `' + dbExpires.toLocaleTimeString( 'en-US', objTimeString ) + '` in case you want me back.' } )
           .catch( errSendChan => {
             console.error( 'chanSystem: %s\nchanSafetyAlerts: %s\nchanFirst: %s\ndoChanError: %s\nerrSendDM: %o\nerrSendChan: %o', chanSystem, chanSafetyAlerts, chanFirst, doChanError, errSendDM, errSendChan );
-            botOwner.send( { content: 'Failed to DM <@' + guild.ownerId + '> or send a message to a channel that I left https://discord.com/channels/' + guild.id + '.' } );
+            botOwner.send( { content: 'Failed to DM <@' + guild.ownerId + '> or send a message to a channel that I left https://discord.com/channels/' + guild.id + '/' + chanInvite + '.' } );
           } );
         }
         else {
           console.error( 'chanSystem: %s\nchanSafetyAlerts: %s\nchanFirst: %s\ndoChanError: %s\nerrSendDM: %o', chanSystem, chanSafetyAlerts, chanFirst, doChanError, errSendDM );
-          botOwner.send( { content: 'Failed to DM <@' + guild.ownerId + '> or find a channel to notify them that I left https://discord.com/channels/' + guild.id + '.' } );
+          botOwner.send( { content: 'Failed to DM <@' + guild.ownerId + '> or find a channel to notify them that I left https://discord.com/channels/' + guild.id + '/' + chanInvite + '.' } );
         }
       } );
     } )
