@@ -9,7 +9,7 @@ client.on( 'guildCreate', async ( guild ) => {
     const guildOwner = guild.members.cache.get( guild.ownerId );
     const guildConfig = await getGuildConfig( guild )
     .then( gotGuild => {
-      console.log( 'I\'ve added %s (id: %s) to my guildDB.', guild.name, guild.id );
+      console.log( 'I\'ve added %s (id: %s) to my guildDB.', chalk.bold.green( guild.name ), guild.id );
       guildOwner.send( { content: 'Hello! You or someone from https://discord.com/channels/' + guild.id + ' with `ADMINISTRATOR` or `MANAGE_SERVER` permissions has added me to your server!' } )
       .catch( errSendDM => {
         const chanSystem = guild.systemChannelId;
@@ -37,7 +37,7 @@ client.on( 'guildCreate', async ( guild ) => {
     else if ( guildConfig.Expires ) {
       guildConfig.Expires = null;
       await guildConfig.updateOne( { _id: guild.id }, guildConfig, { upsert: true } )
-      .then( updateSuccess => { console.log( 'Cleared expriation of DB entry for %s (id: %s) upon joining guild.', guild.name, guild.id ); } )
+      .then( updateSuccess => { console.log( 'Cleared expriation of DB entry for %s (id: %s) upon joining guild.', chalk.bold.green( guild.name ), guild.id ); } )
       .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to clear expiration in DB:\n%o' ), guild.name, guild.id, updateError ); } );
     }
   }

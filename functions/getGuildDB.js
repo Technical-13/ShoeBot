@@ -26,7 +26,7 @@ module.exports = async ( guild ) => {
 
     const newGuild = ( await guildConfig.countDocuments( { _id: guildId } ) === 0 ? true : false );
     if ( newGuild ) {
-      console.log( 'Adding %s (id: %s) to database...', chalk.bold.green( guild.name ), chalk.bold.green( guildId ) );
+      console.log( 'Adding %s (id: %s) to database...', chalk.bold.green( guild.name ), guildId );
       const newGuildConfig = {
         _id: guild.id,
         Blacklist: {
