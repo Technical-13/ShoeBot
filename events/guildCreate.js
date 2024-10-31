@@ -2,12 +2,13 @@ const client = require( '..' );
 const chalk = require( 'chalk' );
 const errHandler = require( '../functions/errorHandler.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
+const guildConfig = require( '../models/GuildConfig.js' );
 
 client.on( 'guildCreate', async ( guild ) => {
   try {
     const botOwner = client.users.cache.get( client.ownerId );
     const guildOwner = guild.members.cache.get( guild.ownerId );
-    const guildConfig = await getGuildConfig( guild )
+    const newGuildConfig = await getGuildConfig( guild )
     .then( gotGuild => {
       console.log( 'I\'ve added %s (id: %s) to my guildDB.', chalk.bold.green( guild.name ), guild.id );
       guildOwner.send( { content: 'Hello! You or someone from https://discord.com/channels/' + guild.id + ' with `ADMINISTRATOR` or `MANAGE_SERVER` permissions has added me to your server!' } )
@@ -33,10 +34,10 @@ client.on( 'guildCreate', async ( guild ) => {
       console.error( 'Failed to create %s (id: %s) in guildDB on join.', guild.name, guild.id );
       botOwner.send( { content: 'Error adding https://discord.com/channels/' + guild.id + ' to the database.' } );
     } );
-    if ( !guildConfig ) { return; }
-    else if ( guildConfig.Expires ) {
-      guildConfig.Expires = null;
-      await guildConfig.updateOne( { _id: guild.id }, guildConfig, { upsert: true } )
+    if ( !newGuildConfig ) { return; }
+    else if ( newGuildConfig.Expires ) {
+      newGuildConfig.Expires = null;
+      await guildConfig.updateOne( { _id: guild.id }, newGuildConfig, { upsert: true } )
       .then( updateSuccess => { console.log( 'Cleared expriation of DB entry for %s (id: %s) upon joining guild.', chalk.bold.green( guild.name ), guild.id ); } )
       .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to clear expiration in DB:\n%o' ), guild.name, guild.id, updateError ); } );
     }
