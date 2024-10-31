@@ -59,23 +59,23 @@ module.exports = {
           const chanInvite = ( leaveGuild.id === guild.id ? channel.id : ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst ) );
           const leaveIn = 5;
           const msgContent = 'I\'m leaving in ' + leaveIn + ' seconds' + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' );
-          const leaveMsg = await message.reply( { content: msgContent } )
+          await message.reply( { content: msgContent, fetchReply: true } )
           .then( sentLeaving => {
-            message.delete().catch( async errDelete => { await errHandler( errDelete, { command: 'part', channel: channel, type: 'errDelete', debug: true } ); } );
+            for ( let i = 1; i < leaveIn; i++ ) {
+              newMsg = msgContent.replace( leaveIn, ( leaveIn - i ) );
+              setTimeout( () => { sentLeaving.edit( { content: newMsg } ); }, i * 1000 );
+            }
+            message.delete().catch( async errDelete => { await errHandler( errDelete, { command: 'part', channel: channel, type: 'errDelete' } ); } );
             guildOwner.send( { content: 'I\'m leaving https://discord.com/channels/' + guild.id + '/' + chanInvite + ( !leaveReason ? '' : ' with reason `' + leaveReason + '`' ) + ' as requested by <@' + author.id + '>.' + ( !inviteUrl ? '' : '  Please feel free to [re-add me](<' + inviteUrl + '>) if you wish!' ) } )
             .catch( async errSend => { await errHandler( errSend, { command: 'part', channel: channel, type: 'errSend' } ); } );
           } )
           .catch( errSend => { console.error( 'Failed to alert in #%s (id: %s) that I\'m leaving %s (id: %s) as requested by %s (id: %s): %s', channel.name, channel.id, guild.name, guild.id, author.displayName, author.id, errSend.stack ); } );
-          for ( let i = 1; i < leaveIn; i++ ) {
-            newMsg = msgContent.replace( leaveIn, ( leaveIn - i ) );
-            setTimeout( () => { leaveMsg.edit( { content: newMsg } ); }, i * 1000 );
-          }
 
           setTimeout( async () => {
             await leaveGuild.leave()
             .then( left => { console.error( 'I left guild %s (id: %s) as requested by %s (id: %s)', guild.name, guild.id, author.displayName, author.id ); } )
             .catch( stayed => { console.error( 'I could NOT leave guild %s (id: %s) as requested by %s (id: %s):\n%o', guild.name, guild.id, author.displayName, author.id, stayed ); } );
-          }, leaveIn + 1000 );
+          }, ( leaveIn + 1 ) * 1000 );
         }
       }
     }
