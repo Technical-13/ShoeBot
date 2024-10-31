@@ -93,6 +93,7 @@ client.on( 'ready', async rdy => {
         .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( guild.name ), guildId ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to my database:\n%o' ), guild.name, guildId, updateError ); } );
       }
+      else { console.log( 'No changes for %s (id: %s) to update.', chalk.bold.green( guild.name ), guildId ); }
     } );
     if ( guildConfigIds.length !== 0 ) {
       guildConfigIds.forEach( async ( guildId ) => {
