@@ -27,12 +27,12 @@ client.on( 'guildCreate', async ( guild ) => {
       const chanFirst = guild.channels.cache.filter( chan => !chan.nsfw && chan.permissionsFor( roleEveryone ).has( 'ViewChannel' ) ).first().id;
       const definedInvite = gotGuild.Invite;
       const chanInvite = ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
+      const doChanError = ( !( chanSystem || chanSafetyAlerts || chanFirst || null ) ? null : guild.channels.cache.get( chanSystem || chanSafetyAlerts || chanFirst ) );
       guildOwner.send( { content: 'Hello! You or someone from https://discord.com/channels/' + guild.id + '/' + chanInvite + ' with `ADMINISTRATOR` or `MANAGE_SERVER` permissions has added me to your server!' } )
       .catch( errSendDM => {
         const chanSystem = guild.systemChannelId;
         const chanSafetyAlerts = guild.safetyAlertsChannelId;
         const chanFirst = guild.channels.cache.filter( chan => { if ( !chan.nsfw && chan.viewable ) { return chan; } } ).first().id;
-        const doChanError = ( chanSystem || chanSafetyAlerts || chanFirst || null );
         if ( doChanError ) {
           doChanError.send( { content: 'Someone from https://discord.com/channels/' + guild.id + ' with `ADMINISTRATOR` or `MANAGE_SERVER` permissions has added me to your server and I was unable to DM <@' + guild.ownerId + '> about it directly!' } )
           .catch( errSendChan => {
