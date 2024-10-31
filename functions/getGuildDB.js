@@ -6,7 +6,7 @@ const guildConfig = require( '../models/GuildConfig.js' );
 const getBotConfig = require( './getBotDB.js' );
 const ENV = process.env;
 const chalk = require( 'chalk' );
-const currVersion = 241031;
+const currVersion = 241031.2;
 
 module.exports = async ( guild ) => {
   try {
@@ -38,7 +38,8 @@ module.exports = async ( guild ) => {
         Guild: {
           Name: guild.name,
           Members: guild.members.cache.size,
-          Owner: guild.ownerId
+          OwnerID: guild.ownerId,
+          OwnerName: guildOwner.displayName
         },
         Invite: null,
         Logs: {
@@ -94,7 +95,8 @@ module.exports = async ( guild ) => {
           Guild: {
             Name: guild.name,
             Members: guild.members.cache.size,
-            Owner: guild.ownerId
+            OwnerID: guild.ownerId,
+            OwnerName: guildOwner.displayName
           },
           Invite: ( currConfig.Invite || null ),
           Logs: {

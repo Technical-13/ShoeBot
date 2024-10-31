@@ -11,7 +11,8 @@ let guildSchema = new Schema( {
   Guild: {
     Name: String,
     Members: Number,
-    Owner: String
+    OwnerID: String,
+    OwnerName: String
   },
   Invite: String,
   Logs: {
