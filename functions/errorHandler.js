@@ -6,67 +6,67 @@ const getBotConfig = require( './getBotDB.js' );
 const getGuildConfig = require( './getGuildDB.js' );
 
 module.exports = async ( objError, options = { command: 'undefined', debug: false, type: 'undefined' } ) => {
-  const { command, debug, type } = options;
-
-  if ( debug ) {
-    const preAuthor = ( !options ? 'NO `options`!' : ( options.author ? options.author.id : options.author ) );
-    const preChan = ( !options ? 'NO `options`!' : ( options.channel ? options.channel.id : options.channel ) );
-    const prechanType = ( !options ? 'NO `options`!' : options.chanType );
-    const preclearLists = ( !options ? 'NO `options`!' : options.clearLists );
-    const preGuild = ( !options ? 'NO `options`!' : ( options.guild ? options.guild.id : options.guild ) );
-    const preinviteChanURL = ( !options ? 'NO `options`!' : options.inviteChanURL );
-    const preinviteGuild = ( !options ? 'NO `options`!' : ( options.inviteGuild ? options.inviteGuild.id : options.inviteGuild ) );
-    const premodBlack = ( !options ? 'NO `options`!' : options.modBlack );
-    const premodMod = ( !options ? 'NO `options`!' : options.modMod );
-    const premodType = ( !options ? 'NO `options`!' : options.modType );
-    const premodWhite = ( !options ? 'NO `options`!' : options.modWhite );
-    const premsgID = ( !options ? 'NO `options`!' : options.msgID );
-    const prerawReaction = ( !options ? 'NO `options`!' : options.rawReaction );
-    const preEmoji = ( !options ? 'NO `options`!' : ( options.emoji ? options.emoji.id : options.emoji ) );
-    const preProcessed = { command: command, type: type, author: preAuthor, channel: preChan, chanType: prechanType, clearLists: preclearLists, guild: preGuild, inviteChanURL: preinviteChanURL, inviteGuild: preinviteGuild, modBlack: premodBlack, modMod: premodMod, modWhite: premodWhite, msgID: premsgID, rawReaction: prerawReaction, reaction: preEmoji };
-    console.warn( 'errorHandler recieved options:%o', preProcessed );
-  }
-
-  const cmd = ( typeof command === 'string' ? command : 'undefined' );
-  const myTask = ( typeof type === 'string' ? type : 'undefined' );
-  const author = ( options.author ? options.author : null );
-  const channel = ( options.channel ? options.channel : null );
-  const chanType = ( options.chanType ? options.chanType : null );
-  const clearLists = ( options.clearLists ? options.clearLists : null );
-  const guild = ( options.guild ? options.guild : ( channel ? channel.guild : ( author ? author.guild : null ) ) );
-  const inviteChanURL = ( options.inviteChanURL ? options.inviteChanURL : null );
-  const inviteGuild = ( options.inviteGuild ? options.inviteGuild : null );
-  const modBlack = ( options.modBlack ? options.modBlack : null );
-  const modMod = ( options.modMod ? options.modMod : null );
-  const modType = ( options.modType ? options.modType : null );
-  const modWhite = ( options.modWhite ? options.modWhite : null );
-  const msgID = ( options.msgID ? options.msgID : null );
-  const rawReaction = ( options.rawReaction ? options.rawReaction : null );
-  const emoji = ( options.reaction ? options.reaction : null );
-
-  if ( debug ) {
-    const prcAuthor = ( author ? author.id : author );
-    const prcChan = ( channel ? channel.id : channel );
-    const prcGuild = ( guild ? guild.id : guild );
-    const prcInviteGuild = ( inviteGuild ? inviteGuild.id : inviteGuild );
-    const prcEmoji = ( emoji ? emoji.id : emoji );
-    const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, clearLists: clearLists, guild: prcGuild, inviteChanURL: inviteChanURL, inviteGuild: prcInviteGuild, modBlack: modBlack, modMod: modMod, modType: modType, modWhite: modWhite, msgID: msgID, rawReaction: rawReaction, reaction: prcEmoji };
-    console.warn( 'errorHandler processed options:%o', processed );
-  }
-
-  const botConfig = await getBotConfig();
-  const guildConfig = await getGuildConfig( guild );
-  const { Active: doLogs, Error: chanError, strClosing } = guildConfig.Logs;
-  const { Active: doInviteLogs,Error: chanInviteError,  strClosing: strInviteClosing } = ( inviteGuild ? await guildConfig( inviteGuild ).Logs : { Active: doLogs, Error: chanError, strClosing: strClosing } );
-
-  const botUsers = client.users.cache;
-  const ownerId = ( botConfig.Owner || client.ownerId || config.botOwnerId || process.env.OWNER_ID );
-  const botOwner = botUsers.get( ownerId );
-  const strConsole = '  Please check the console for details.';
-  const strNotified = '  Error has been logged and my owner, <@' + botOwner.id + '>, has been notified.';
-  const strLogged = '  Error has been logged and my owner, <@' + botOwner.id + '>, couldn\'t be notified.';
-
   try {
+    const { command, debug, type } = options;
+
+    if ( debug ) {
+      const preAuthor = ( !options ? 'NO `options`!' : ( options.author ? options.author.id : options.author ) );
+      const preChan = ( !options ? 'NO `options`!' : ( options.channel ? options.channel.id : options.channel ) );
+      const prechanType = ( !options ? 'NO `options`!' : options.chanType );
+      const preclearLists = ( !options ? 'NO `options`!' : options.clearLists );
+      const preGuild = ( !options ? 'NO `options`!' : ( options.guild ? options.guild.id : options.guild ) );
+      const preinviteChanURL = ( !options ? 'NO `options`!' : options.inviteChanURL );
+      const preinviteGuild = ( !options ? 'NO `options`!' : ( options.inviteGuild ? options.inviteGuild.id : options.inviteGuild ) );
+      const premodBlack = ( !options ? 'NO `options`!' : options.modBlack );
+      const premodMod = ( !options ? 'NO `options`!' : options.modMod );
+      const premodType = ( !options ? 'NO `options`!' : options.modType );
+      const premodWhite = ( !options ? 'NO `options`!' : options.modWhite );
+      const premsgID = ( !options ? 'NO `options`!' : options.msgID );
+      const prerawReaction = ( !options ? 'NO `options`!' : options.rawReaction );
+      const preEmoji = ( !options ? 'NO `options`!' : ( options.emoji ? options.emoji.id : options.emoji ) );
+      const preProcessed = { command: command, type: type, author: preAuthor, channel: preChan, chanType: prechanType, clearLists: preclearLists, guild: preGuild, inviteChanURL: preinviteChanURL, inviteGuild: preinviteGuild, modBlack: premodBlack, modMod: premodMod, modWhite: premodWhite, msgID: premsgID, rawReaction: prerawReaction, reaction: preEmoji };
+      console.warn( 'errorHandler recieved options:%o', preProcessed );
+    }
+
+    const cmd = ( typeof command === 'string' ? command : 'undefined' );
+    const myTask = ( typeof type === 'string' ? type : 'undefined' );
+    const author = ( options.author ? options.author : null );
+    const channel = ( options.channel ? options.channel : null );
+    const chanType = ( options.chanType ? options.chanType : null );
+    const clearLists = ( options.clearLists ? options.clearLists : null );
+    const guild = ( options.guild ? options.guild : ( channel ? channel.guild : ( author ? author.guild : null ) ) );
+    const inviteChanURL = ( options.inviteChanURL ? options.inviteChanURL : null );
+    const inviteGuild = ( options.inviteGuild ? options.inviteGuild : null );
+    const modBlack = ( options.modBlack ? options.modBlack : null );
+    const modMod = ( options.modMod ? options.modMod : null );
+    const modType = ( options.modType ? options.modType : null );
+    const modWhite = ( options.modWhite ? options.modWhite : null );
+    const msgID = ( options.msgID ? options.msgID : null );
+    const rawReaction = ( options.rawReaction ? options.rawReaction : null );
+    const emoji = ( options.reaction ? options.reaction : null );
+
+    if ( debug ) {
+      const prcAuthor = ( author ? author.id : author );
+      const prcChan = ( channel ? channel.id : channel );
+      const prcGuild = ( guild ? guild.id : guild );
+      const prcInviteGuild = ( inviteGuild ? inviteGuild.id : inviteGuild );
+      const prcEmoji = ( emoji ? emoji.id : emoji );
+      const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, clearLists: clearLists, guild: prcGuild, inviteChanURL: inviteChanURL, inviteGuild: prcInviteGuild, modBlack: modBlack, modMod: modMod, modType: modType, modWhite: modWhite, msgID: msgID, rawReaction: rawReaction, reaction: prcEmoji };
+      console.warn( 'errorHandler processed options:%o', processed );
+    }
+
+    const botConfig = await getBotConfig();
+    const guildConfig = await getGuildConfig( guild );
+    const { Active: doLogs, Error: chanError, strClosing } = guildConfig.Logs;
+    const { Active: doInviteLogs,Error: chanInviteError,  strClosing: strInviteClosing } = ( inviteGuild ? await guildConfig( inviteGuild ).Logs : { Active: doLogs, Error: chanError, strClosing: strClosing } );
+
+    const botUsers = client.users.cache;
+    const ownerId = ( botConfig.Owner || client.ownerId || config.botOwnerId || process.env.OWNER_ID );
+    const botOwner = botUsers.get( ownerId );
+    const strConsole = '  Please check the console for details.';
+    const strNotified = '  Error has been logged and my owner, <@' + botOwner.id + '>, has been notified.';
+    const strLogged = '  Error has been logged and my owner, <@' + botOwner.id + '>, couldn\'t be notified.';
+
     switch ( myTask ) {
       case 'errEdit':// { cmd: '', channel: channel, myTask: 'errEdit' }
       case 'errSend':// { cmd: '', channel: channel, myTask: 'errSend' }
