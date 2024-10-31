@@ -33,8 +33,10 @@ client.on( 'guildCreate', async ( guild ) => {
       console.error( 'Failed to create %s (id: %s) in guildDB on join.', guild.name, guild.id );
       botOwner.send( { content: 'Error adding https://discord.com/channels/' + guild.id + ' to the database.' } );
     } );
-    if ( guildConfig.Expires ) {
+    if ( !guildConfig ) { return; }
+    else if ( guildConfig.Expires ) {
       guildConfig.Expires = null;
+      await guildConfig.markModified( 'Expires' );
       await guildConfig.updateOne( { _id: guild.id }, guildConfig, { upsert: true } )
       .then( updateSuccess => { console.log( 'Cleared expriation of DB entry for %s (id: %s) upon joining guild.', guild.name, guild.id ); } )
       .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to clear expiration in DB:\n%o' ), guild.name, guild.id, updateError ); } );

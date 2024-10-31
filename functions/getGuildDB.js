@@ -1,4 +1,5 @@
 const client = require( '..' );
+const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 require( 'dotenv' ).config();
 const config = require( '../config.json' );
 const guildConfig = require( '../models/GuildConfig.js' );
