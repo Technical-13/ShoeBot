@@ -1,19 +1,52 @@
 const client = require( '..' );
 const guildConfig = require( '../models/GuildConfig.js' );
+const userConfig = require( '../models/BotUser.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const errHandler = require( '../functions/errorHandler.js' );
 const parse = require( '../functions/parser.js' );
+const verUserDB = config.verUserDB;
 
 client.on( 'guildMemberAdd', async ( member ) => {
   try {
     const botOwner = client.users.cache.get( client.ownerId );
-    const { guild } = member;
+    const { guild, user } = member;
+
+    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {
+      const newUser = {
+        _id: user.id,
+        Guilds: [],
+        UserName: user.displayName,
+        Score: 0,
+        Version: verUserDB
+      }
+      await userConfig.create( newUser )
+      .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildMemberAdd.js:\n%o' ), user.displayName, user.id, initError ); } );
+    }
+    const currUser = await userConfig.findOne( { _id: user.id } );
+    const userGuilds = [];
+    currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
+    if ( userGuilds.indexOf( guild.id ) === -1 ) {
+      const addGuild = {
+        _id: guild.id,
+        Bans: [],
+        Expires: null,
+        GuildName: guild.name,
+        MemberName: member.displayName,
+        Roles: Array.from( member.roles.cache.keys() ),
+        Score: 0
+      };
+      currUser.Guilds.push( addGuild );
+      currUser.Guilds.sort();
+      userConfig.updateOne( { _id: user.id }, currUser, { upsert: true } )
+      .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add guild %s (id: %s) to user %s (id: %s) in my database in guildMemberAdd.js:\n%o' ), guild.name, guild.id, user.displayName, user.id, updateError ); } );
+    }
 
     const currGuildConfig = await getGuildConfig( guild );
     currGuildConfig.Guild.Members = guild.members.cache.size;
     await guildConfig.updateOne( { _id: guild.id }, currGuildConfig, { upsert: true } )
     .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( guild.name ), guild.id ); } )
     .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to my database:\n%o' ), guild.name, guild.id, updateError ); } );
+
     const doLog = ( !currGuildConfig ? false : ( !currGuildConfig.Logs ? false : ( currGuildConfig.Logs.Active || false ) ) );
     const chanDefaultLog = ( !doLog ? null : member.guild.channels.cache.get( currGuildConfig.Logs.Default ) );
     const chanErrorLog = ( !doLog ? null : member.guild.channels.cache.get( currGuildConfig.Logs.Error ) );

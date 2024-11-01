@@ -4,7 +4,7 @@ const config = require( '../config.json' );
 const chalk = require( 'chalk' );
 const botConfig = require( '../models/BotConfig.js' );
 const ENV = process.env;
-const currVersion = 241030;
+const verBotDB = config.verBotDB;
 
 module.exports = async () => {
   try {
@@ -17,7 +17,7 @@ module.exports = async () => {
     if ( !newBot ) {
       const currConfig = await botConfig.findOne( { _id: clientId } );
       const configVersion = ( !currConfig.Version ? 0 : currConfig.Version );
-      if ( configVersion === currVersion ) { return currConfig; }
+      if ( configVersion === verBotDB ) { return currConfig; }
       else {
         const currLogs = ( currConfig.Logs || { Default: ( logChansConfig.Default || logChansEnv.Default || null ), Error: ( logChansConfig.Error || logChansEnv.Error || null ), JoinPart: ( logChansConfig.JoinPart || logChansEnv.JoinPart || null ) } );
         const updatedBotConfig = {
@@ -34,7 +34,7 @@ module.exports = async () => {
           Name: ( currConfig.Name || config.botName || ENV.BOT_USERNAME ),
           Owner: ( currConfig.Owner || botOwnerID ),
           Prefix: ( currConfig.Prefix || config.prefix || '!' ),
-          Version: currVersion,
+          Version: verBotDB,
           Whitelist: ( currConfig.Whitelist || [] )
         };
         return await botConfig.updateOne( { _id: clientId }, updatedBotConfig, { upsert: true } )
@@ -64,7 +64,7 @@ module.exports = async () => {
         Name: ( config.botName || ENV.BOT_USERNAME ),
         Owner: botOwnerID,
         Prefix: ( config.prefix || '!' ),
-        Version: currVersion,
+        Version: verBotDB,
         Whitelist: []
       };
       return await botConfig.create( newBotConfig )

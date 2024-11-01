@@ -1,6 +1,7 @@
 const client = require( '..' );
 const { EmbedBuilder, Collection, PermissionsBitField } = require( 'discord.js' );
 const cooldown = new Collection();
+const chalk = require( 'chalk' );
 const ms = require( 'ms' );
 
 client.on( 'interactionCreate', async interaction => {

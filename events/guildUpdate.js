@@ -9,20 +9,20 @@ client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {
     const botOwner = client.users.cache.get( client.ownerId );
     const guildId = oldGuild.id;
     const guildOwner = newGuild.members.cache.get( newGuild.ownerId );
-    var doUpdate = false;
     const currGuildConfig = await getGuildConfig( oldGuild );
     const newName = ( newGuild.name !== oldGuild.name ? true : false );
     const newOwner = ( newGuild.ownerId !== oldGuild.ownerId ? true : false );
-    if ( newName ) {
+    var doGuildUpdate = false;
+    if ( newName ) {// Guild name changed
       currGuildConfig.Guild.Name = newGuild.name;
-      doUpdate = true;
+      doGuildUpdate = true;
     }
-    if ( newOwner ) {
+    if ( newOwner ) {// Guild owner id changed
       currGuildConfig.Guild.OwnerID = newGuild.ownerId;
       currGuildConfig.Guild.OwnerName = newGuild.displayName;
-      doUpdate = true;
+      doGuildUpdate = true;
     }
-    if ( doUpdate ) {
+    if ( doGuildUpdate ) {
       currGuildConfig.Guild.Members = newGuild.members.cache.size;
       await guildConfig.updateOne( { _id: guildId }, currGuildConfig, { upsert: true } )
       .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( newGuild.name ), guildId ); } )

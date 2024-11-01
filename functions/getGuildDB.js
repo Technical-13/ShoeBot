@@ -6,7 +6,7 @@ const guildConfig = require( '../models/GuildConfig.js' );
 const getBotConfig = require( './getBotDB.js' );
 const ENV = process.env;
 const chalk = require( 'chalk' );
-const currVersion = 241031.2;
+const verGuildDB = config.verGuildDB;
 
 module.exports = async ( guild ) => {
   try {
@@ -33,6 +33,7 @@ module.exports = async ( guild ) => {
       console.log( 'Adding %s (id: %s) to database...', chalk.bold.green( guild.name ), guildId );
       const newGuildConfig = {
         _id: guild.id,
+        Bans: [],
         Blacklist: {
           Members: [],
           Roles: []
@@ -61,7 +62,7 @@ module.exports = async ( guild ) => {
         },
         Prefix: globalPrefix,
         Premium: true,
-        Version: currVersion,
+        Version: verGuildDB,
         Welcome: {
           Active: false,
           Channel: null,

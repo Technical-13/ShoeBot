@@ -1,4 +1,5 @@
 const client = require( '..' );
+const chalk = require( 'chalk' );
 
 module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, getMonths: false, getWeeks: false, getDays: true, getHours: true, getMinutes: true, getSeconds: false } ) => {
   if ( isNaN( ms ) ) { return '∅ms'; }

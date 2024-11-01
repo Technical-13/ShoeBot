@@ -1,9 +1,11 @@
 const client = require( '..' );
 require( 'dotenv' ).config();
+const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const getBotConfig = require( './getBotDB.js' );
 const getGuildConfig = require( './getGuildDB.js' );
-const chalk = require( 'chalk' );
+const userConfig = require( '../models/BotUser.js' );
+const verUserDB = config.verUserDB;
 
 module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
   try {
@@ -15,6 +17,37 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
     }
     if ( !user ) { throw new Error( 'No user to get permissions for.' ); }
     if ( !guild ) { throw new Error( 'No guild to get user permissions for.' ); }
+
+    const member = guild.members.cache.get( user.id );
+    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {
+      const newUser = {
+        _id: user.id,
+        Guilds: [],
+        UserName: user.displayName,
+        Score: 0,
+        Version: verUserDB
+      }
+      await userConfig.create( newUser )
+      .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in getPerms.js:\n%o' ), user.displayName, user.id, initError ); } );
+    }
+    const currUser = await userConfig.findOne( { _id: user.id } );
+    const userGuilds = [];
+    currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
+    if ( userGuilds.indexOf( guild.id ) === -1 ) {
+      const addGuild = {
+        _id: guild.id,
+        Bans: [],
+        Expires: null,
+        GuildName: guild.name,
+        MemberName: member.displayName,
+        Roles: Array.from( member.roles.cache.keys() ),
+        Score: 0
+      };
+      currUser.Guilds.push( addGuild );
+      currUser.Guilds.sort();
+      userConfig.updateOne( { _id: user.id }, currUser, { upsert: true } )
+      .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add guild %s (id: %s) to user %s (id: %s) in my database in getPerms.js:\n%o' ), guild.name, guild.id, user.displayName, user.id, updateError ); } );
+    }
 
     const botConfig = await getBotConfig();
     const clientID = ( botConfig.ClientID || config.clientId || client.id );
@@ -119,6 +152,7 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
     else if ( doBlacklist && isBotMod && isGuildBlacklisted ) {
       user.send( { content: 'You have been blacklisted from using commands in https://discord.com/channels/' + guild.id + '! Use `/config remove` to remove yourself from the blacklist.' } );
     }
+
     return results;
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'getPerms.js' ), errObject.stack ); }

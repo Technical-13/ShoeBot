@@ -1,8 +1,7 @@
 const { ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
 const config = require( '../../config.json' );
 const chalk = require( 'chalk' );
-const { model, Schema } = require( 'mongoose' );
-const botConfigDB = require( '../../models/BotConfig.js' );
+const botConfig = require( '../../models/BotConfig.js' );
 const errHandler = require( '../../functions/errorHandler.js' );
 const thisBotName = process.env.BOT_USERNAME;
 const botOwnerID = process.env.OWNER_ID;

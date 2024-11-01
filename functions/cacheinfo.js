@@ -1,5 +1,6 @@
 const axios = require( 'axios' );
 const cheerio = require( 'cheerio' );
+const chalk = require( 'chalk' );
 
 module.exports = async ( gcCode ) => {
   try {

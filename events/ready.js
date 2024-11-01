@@ -5,6 +5,10 @@ const config = require( '../config.json' );
 const parse = require( '../functions/parser.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
+const getBotConfig = require( '../functions/getBotDB.js' );
+const userConfig = require( '../models/BotUser.js' );
+const verGuildDB = config.verGuildDB;
+const verUserDB = config.verUserDB;
 
 client.on( 'ready', async rdy => {
   try {
@@ -56,67 +60,196 @@ client.on( 'ready', async rdy => {
       await client.user.setPresence( { activities: [ { type: actType, name: actName } ], status: 'online' } );
     }, 300000 );
 
-    console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) );
     const guildConfigs = await guildConfig.find();
     const guildConfigIds = [];
     guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry._id ); } );
     const guildIds = Array.from( client.guilds.cache.keys() );
-    guildIds.forEach( async ( guildId ) => {
-      const guild = client.guilds.cache.get( guildId );
-      const guildOwner = guild.members.cache.get( guild.ownerId );
+    guildIds.forEach( async ( guildId ) => {// Update guilds I'm still in.
+      let guild = await client.guilds.cache.get( guildId );
+      let guildOwner = guild.members.cache.get( guild.ownerId );
       if ( guildConfigIds.indexOf( guildId ) != -1 ) { guildConfigIds.splice( guildConfigIds.indexOf( guildId ), 1 ) }
       console.log( 'Checking guild %s (id: %s)...', chalk.bold.cyan( guild.name), guildId );
-      const currGuildConfig = await getGuildConfig( guild );
-      var doUpdate = false;
-      const newName = ( guild.name !== currGuildConfig.Guild.Name ? true : false );
-      const newOwnerID = ( guild.ownerId !== currGuildConfig.Guild.OwnerID ? true : false );
-      const newOwnerName = ( guildOwner.displayName !== currGuildConfig.Guild.OwnerName ? true : false );
-      const newSize = ( guild.members.cache.size !== currGuildConfig.Guild.Members ? true : false );
+      let currGuildConfig = await getGuildConfig( guild );
+      let newName = ( guild.name !== currGuildConfig.Guild.Name ? true : false );
+      let newOwnerID = ( guild.ownerId !== currGuildConfig.Guild.OwnerID ? true : false );
+      let newOwnerName = ( guildOwner.displayName !== currGuildConfig.Guild.OwnerName ? true : false );
+      let newSize = ( guild.members.cache.size !== currGuildConfig.Guild.Members ? true : false );
+      let newVersion = ( verGuildDB !== currGuildConfig.Version ? true : false );
+      var newGuildConfig = null;
+      var doGuildUpdate = false;
       if ( newName ) {// Update guild name
         currGuildConfig.Guild.Name = guild.name;
-        doUpdate = true;
+        doGuildUpdate = true;
       }
       if ( newOwnerID ) {// Update guild owner id
         currGuildConfig.Guild.OwnerID = guild.ownerId;
-        doUpdate = true;
+        doGuildUpdate = true;
       }
       if ( newOwnerName ) {// Update guild owner displayName
         currGuildConfig.Guild.OwnerName = guild.displayName;
-        doUpdate = true;
+        doGuildUpdate = true;
       }
       if ( newSize ) {// Update guild size
         currGuildConfig.Guild.Members = guild.members.cache.size;
-        doUpdate = true;
+        doGuildUpdate = true;
       }
-      if ( doUpdate ) {// Something changed offline
-        await guildConfig.updateOne( { _id: guildId }, currGuildConfig, { upsert: true } )
+      if ( newVersion ) {// Update everything
+        const botConfig = await getBotConfig();
+        const logClosing = ( defaultId ) => { return '\n' + ( defaultId == null ? '\nPlease run `/config logs` to have these logs go to a channel in the [' + guild.name + '](<https://discord.com/channels/' + guild.id + '>) server or deactivate them instead of to your DMs.' : '\n----' ); }
+        let Blacklist = ( currGuildConfig.Blacklist || { Members: [], Roles: [] } );
+        let Logs = ( currGuildConfig.Logs || { Active: true, Chat: null, Default: null, Error: null, strClosing: logClosing( null ) } );
+        let Part = ( currGuildConfig.Part || { Active: false, Channel: null, Message: null, SaveRoles: false } );
+        let Welcome = ( currGuildConfig.Welcome || { Active: false, Channel: null, Message: null, Role: null } );
+        let Whitelist = ( currGuildConfig.Whitelist || { Members: [], Roles: [] } );
+        newGuildConfig = {
+          _id: guild.id,
+          Bans: ( currGuildConfig.Bans || [] ),
+          Blacklist: {
+            Members: ( Blacklist.Members || [] ),
+            Roles: ( Blacklist.Roles || [] )
+          },
+          Commands: ( currGuildConfig.Commands || [] ),
+          Expires: ( currGuildConfig.Expires || null ),
+          Guild: {
+            Name: guild.name,
+            Members: guild.members.cache.size,
+            OwnerID: guild.ownerId,
+            OwnerName: guildOwner.displayName
+          },
+          Invite: ( currGuildConfig.Invite || null ),
+          Logs: {
+            Active: (  || true ),
+            Chat: ( Logs.Chat || null ),
+            Default: ( Logs.Default || null ),
+            Error: ( Logs.Error || null ),
+            strClosing: ( Logs.strClosing || logClosing( null ) )
+          },
+          Part: {
+            Active: ( Part.Active || false ),
+            Channel: ( Part.Channel || null ),
+            Message: ( Part.Message || null ),
+            SaveRoles: ( Part.SaveRoles || false )
+          },
+          Prefix: ( currGuildConfig.Prefix || botConfig.Prefix ),
+          Premium: ( currGuildConfig.Premium || true ),
+          Version: verGuildDB,
+          Welcome: {
+            Active: ( Welcome.Active || false ),
+            Channel: ( Welcome.Channel || null ),
+            Message: ( Welcome.Message || null ),
+            Role: ( Welcome.Role || null )
+          },
+          Whitelist: {
+            Members: ( Whitelist.Members || [] ),
+            Roles: ( Whitelist.Roles || [] )
+          }
+        };
+        doGuildUpdate = true;
+      }
+      if ( doGuildUpdate ) {// Something changed offline
+        await guildConfig.updateOne( { _id: guildId }, ( newGuildConfig || currGuildConfig ), { upsert: true } )
         .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( guild.name ), guildId ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to my database:\n%o' ), guild.name, guildId, updateError ); } );
       }
       else { console.log( 'No changes for %s (id: %s) to update.', chalk.bold.green( guild.name ), guildId ); }
     } );
-    if ( guildConfigIds.length !== 0 ) {
+    if ( guildConfigIds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
       guildConfigIds.forEach( async ( guildId ) => {
-        const delGuild = guildConfigs.find( entry => entry.id === guildId );
-        const guildOwner = ( client.users.cache.get( delGuild.Guild.OwnerID ) || null );
-        const ownerName = ( guildOwner ? '<@' + guildOwner.id + '>' : '`' + delGuild.Guild.OwnerName + '`' )
-        await guildConfig.deleteOne( { _id: guildId } )
-        .then( delExpired => {
-          console.log( 'Succesfully deleted expired %s (id: %s) from my database.', chalk.bold.red( delGuild.Guild.Name ), guildId );
-          if ( guildOwner ) {
-            guildOwner.send( { content: 'Hello! It has been a month since someone has removed me from [' + delGuild.Guild.Name + '](<https://discord.com/channels/' + guildId + '>), and I\'ve cleaned out your configuration settings!\n\nYou can still get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.' } )
-            .catch( errSendDM => {
-              console.error( 'errSendDM: %s', errSendDM.stack );
-              botOwner.send( { content: 'Failed to DM ' + ownerName + ' to notify them that I cleaned the guild, [' + delGuild.Guild.Name + '](<https://discord.com/channels/' + guildId + '>), from my database.' } );
-            } );
-          }
-          else {
-            botOwner.send( { content: 'Unable to find ' + ownerName + ' to notify them that I cleaned the guild, [' + delGuild.Guild.Name + '](<https://discord.com/channels/' + guildId + '>), from my database.' } );
-          }
-        } )
-        .catch( errDelete => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to delete ${delGuild.Guild.Name} (id: ${guildId}) from my database:\n${errDelete.stack}` ) ); } );
+        let delGuild = guildConfigs.find( entry => entry.id === guildId );
+        let isExpired = ( delGuild.Expires <= ( new Date() ) ? true : false );
+        if ( isExpired ) {
+          let guildOwner = ( client.users.cache.get( delGuild.Guild.OwnerID ) || null );
+          let ownerName = ( guildOwner ? '<@' + guildOwner.id + '>' : '`' + delGuild.Guild.OwnerName + '`' )
+          await guildConfig.deleteOne( { _id: guildId } )
+          .then( delExpired => {
+            console.log( 'Succesfully deleted expired %s (id: %s) from my database.', chalk.bold.red( delGuild.Guild.Name ), guildId );
+            if ( guildOwner ) {
+              guildOwner.send( { content: 'Hello! It has been a month since someone has removed me from [' + delGuild.Guild.Name + '](<https://discord.com/channels/' + guildId + '>), and I\'ve cleaned out your configuration settings!\n\nYou can still get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.' } )
+              .catch( errSendDM => {
+                console.error( 'errSendDM: %s', errSendDM.stack );
+                botOwner.send( { content: 'Failed to DM ' + ownerName + ' to notify them that I cleaned the guild, [' + delGuild.Guild.Name + '](<https://discord.com/channels/' + guildId + '>), from my database.' } );
+              } );
+            }
+            else {
+              botOwner.send( { content: 'Unable to find ' + ownerName + ' to notify them that I cleaned the guild, [' + delGuild.Guild.Name + '](<https://discord.com/channels/' + guildId + '>), from my database.' } );
+            }
+          } )
+          .catch( errDelete => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to delete ${delGuild.Guild.Name} (id: ${guildId}) from my database:\n${errDelete.stack}` ) ); } );
+        }
       } );
     }
+
+    //const userConfigs = await userConfig.find();
+    //const userConfigIds = [];
+    //userConfigs.forEach( ( entry, i ) => { userConfigIds.push( entry._id ); } );
+    const userIds = Array.from( client.users.cache.keys() );
+    userIds.forEach( async ( userId ) => {// Update users I still am in a guild with.
+      let user = client.users.cache.get( userId );
+      let arrUserGuilds = Array.from( user.guilds.cache.keys() ).toSorted();
+      let currUser = await userConfig.findOne( { _id: userId } );
+      let newName = ( user.displayName !== currUser.UserName ? true : false );
+      let newGuilds = ( arrUserGuilds != currUser.Guilds.sort() ? true : false );
+      let newVersion = ( verGuildDB !== currUser.Version ? true : false );
+      var newUserConfig = null;
+      var doUserUpdate = false;
+      if ( newName ) {// Update user displayName
+        currUser.UserName = user.displayName;
+        doUserUpdate = true;
+      }
+      if ( newGuilds ) {// Update guilds
+        let addedGuilds = currUser.Guilds.filter( a => !arrUserGuilds.includes( a ) );
+        if ( addedGuilds.length > 0 ) {// Added guild(s)
+          addedGuilds.forEach( async ( guildId ) => {
+            let guild = await client.guilds.cache.get( guildId );
+            const addGuild = {
+              _id: guildId,
+              Bans: [],
+              Expires: null,
+              GuildName: guild.name,
+              MemberName: member.displayName,
+              Roles: Array.from( member.roles.cache.keys() ),
+              Score: 0
+            };
+            currUser.Guilds.push( addGuild );
+            currUser.Guilds.sort();
+          } );
+          doUserUpdate = true;
+        }
+        let removedGuilds = arrUserGuilds.filter( r => !currUser.Guilds.includes( r ) );
+        if ( removedGuilds.length > 0 ) {// Removed guild(s)
+          let userGuilds = [];
+          currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
+          removedGuilds.forEach( async ( guildId ) => {
+            let ndxUserGuild = userGuilds.indexOf( guild.id );
+            let currUserGuild = currUser.Guilds[ ndxUserGuild ];
+            let isExpired = ( currUserGuild.Expires <= ( new Date() ) ? true : false );
+            if ( isExpired ) {
+              currUser.Guilds.splice( ndxUserGuild, 1 );
+              currUser.Guilds.sort();
+              doUserUpdate = true;
+            }
+          } );
+        }
+      }
+      if ( newVersion ) {// Update everything
+        let Guilds = null;
+        newUserConfig = {
+          _id: user.id,
+          Guilds: ( currUser.Guilds.sort() || [] ),
+          UserName: ( currUser.UserName || user.displayName ),
+          Score: ( currUser.Score || 0 ),
+          Version: verUserDB
+        };
+        doUserUpdate = true;
+      }
+      if ( doUserUpdate ) {
+        await userConfig.updateOne( { _id: userId }, ( newUserConfig || currUser ), { upsert: true } )
+        .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( user.displayName ), userId ); } )
+        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) in my database:\n%o' ), user.displayName, userId, updateError ); } );
+      }
+    } );
+
+    console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) );
   }
   catch ( objError ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'ready.js' ), errObject.stack ); }
 } );

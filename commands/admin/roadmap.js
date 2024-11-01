@@ -7,10 +7,11 @@ module.exports = {
   cooldown: 600000,
   run: async ( client, message, args ) => {
     const arrToDo = [
-      'Finish guildCreate.js event telling guild owner how to config bot.',
-      'Do whatever is defined for guildConfig.Part in guildMemberKick.js, guildMemberBan.js, and/or guildMemberDelete.js',
+      'ON guildMemberUpdate IF guild owner changes nickname THEN update guildConfig',
       'Move `§part` & `§inspectdb` to `/system`',
       'Update `/config` and `/system` for DB changes',
+      'Do whatever is defined for guildConfig.Part in guildMemberKick.js, guildMemberBan.js, and/or guildMemberDelete.js',
+      'Finish guildCreate.js event telling guild owner how to config bot.',
       'Get the `/bot` command working again so people can get bot info and links to request features and report bugs.',
       'Move this list so I can add/modify/remove items from Discord.' +
       '\nAdd integration to make this list an issue on GitHub and be able to view/edit all issues?' +
@@ -18,7 +19,8 @@ module.exports = {
       '\n:arrow_right: <https://docs.github.com/en/rest/guides/scripting-with-the-rest-api-and-javascript?apiVersion=latest>' +
       '\n:arrow_right: <https://docs.github.com/en/rest/issues/issues?apiVersion=latest>',
       'Get `/guilds` and `/cipher` working.',
-      'Create `/verify` command.'
+      'Create `/verify` command.',
+      'Make `/ban` command to store better information on bans.'
     ];
     const embedToDo = new EmbedBuilder()
       .setTitle( 'Development Roadmap for bot:' )

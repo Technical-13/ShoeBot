@@ -3,12 +3,14 @@ const chalk = require( 'chalk' );
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
+const userConfig = require( '../models/BotUser.js' );
 const objTimeString = require( '../time.json' );
 
 client.on( 'guildDelete', async ( guild ) => {
   try {
     const botOwner = client.users.cache.get( client.ownerId );
-    const guildOwner = guild.members.cache.get( guild.ownerId );
+    const guildMembers = guild.members.cache;
+    const guildOwner = guildMembers.get( guild.ownerId );
     const dbExpires = new Date( ( new Date() ).setMonth( ( new Date() ).getMonth() + 1 ) );
     const inviteUrl = client.generateInvite( {
       permissions: [
@@ -60,6 +62,20 @@ client.on( 'guildDelete', async ( guild ) => {
       } );
     } )
     .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update ${guild.name} (id: ${guild.id}) to expire in DB:\n${dbExpires}\nError:\n${updateError}` ) ); } );
+
+    const memberIds = Array.from( guildMembers.keys() );
+    memberIds.forEach( async ( userId ) => {// Update users for this guild to expire.
+      let currUser = await userConfig.findOne( { _id: userId } );
+      let userGuilds = [];
+      currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
+      let ndxUserGuild = userGuilds.indexOf( guild.id );
+      if ( ndxUserGuild != -1 ) {
+        let currUserGuild = currUser.Guilds[ ndxUserGuild ];
+        currUserGuild.Expires = dbExpires;
+        userConfig.updateOne( { _id: userId }, currUser, { upsert: true } )
+        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update guild %s (id: %s) for user %s (id: %s) to expire %o in my database in guildMemberRemove.js:\n%o' ), guild.name, guild.id, currUser.UserName, userId, dbExpires, updateError ); } );
+      }
+    } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildDelete.js' ), errObject.stack ); }
 } );

@@ -2,6 +2,14 @@ const { model, Schema } = require( 'mongoose' );
 
 let guildSchema = new Schema( {
   _id: String,
+  Bans: [ {
+    _id: String,
+    BanBy: {
+      ID: String,
+      Name: String
+    },
+    Expires: Date
+  } ],
   Blacklist: {
     Members: [ String ],
     Roles: [ String ]

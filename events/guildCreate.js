@@ -3,6 +3,8 @@ const chalk = require( 'chalk' );
 const errHandler = require( '../functions/errorHandler.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
+const userConfig = require( '../models/BotUser.js' );
+const verUserDB = config.verUserDB;
 
 client.on( 'guildCreate', async ( guild ) => {
   try {
@@ -49,6 +51,41 @@ client.on( 'guildCreate', async ( guild ) => {
     .catch( errGetGuild => {
       console.error( 'Failed to create %s (id: %s) in guildDB on join.', guild.name, guild.id );
       botOwner.send( { content: 'Error adding [' + guild.name + '](<https://discord.com/channels/' + guild.id + '>) to the database.' } );
+    } );
+
+    const guildMembers = Array.from( guild.members.cache.keys() );
+    guildMembers.forEach( memberId => {
+      let member = guild.members.cache.get( memberId );
+      let { user } = member;
+      if ( await userConfig.countDocuments( { _id: memberId } ) === 0 ) {
+        const newUser = {
+          _id: memberId,
+          Guilds: [],
+          UserName: user.displayName,
+          Score: 0,
+          Version: verUserDB
+        }
+        await userConfig.create( newUser )
+        .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildCreate.js:\n%o' ), user.displayName, memberId, initError ); } );
+      }
+      const currUser = await userConfig.findOne( { _id: memberId } );
+      const userGuilds = [];
+      currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
+      if ( userGuilds.indexOf( guild.id ) === -1 ) {
+        const addGuild = {
+          _id: guild.id,
+          Bans: [],
+          Expires: null,
+          GuildName: guild.name,
+          MemberName: member.displayName,
+          Roles: Array.from( member.roles.cache.keys() ),
+          Score: 0
+        };
+        currUser.Guilds.push( addGuild );
+        currUser.Guilds.sort();
+        userConfig.updateOne( { _id: user.id }, currUser, { upsert: true } )
+        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add guild %s (id: %s) to user %s (id: %s) in my database in guildCreate.js:\n%o' ), guild.name, guild.id, user.displayName, user.id, updateError ); } );
+      }
     } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildCreate.js' ), errObject.stack ); }
