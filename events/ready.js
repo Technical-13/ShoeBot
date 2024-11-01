@@ -118,7 +118,7 @@ client.on( 'ready', async rdy => {
           },
           Invite: ( currGuildConfig.Invite || null ),
           Logs: {
-            Active: (  || true ),
+            Active: ( Logs.Active || true ),
             Chat: ( Logs.Chat || null ),
             Default: ( Logs.Default || null ),
             Error: ( Logs.Error || null ),
