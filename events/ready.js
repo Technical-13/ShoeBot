@@ -229,7 +229,7 @@ client.on( 'ready', async rdy => {
           let userGuilds = [];
           currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
           removedGuilds.forEach( async ( guildId ) => {
-            let ndxUserGuild = userGuilds.indexOf( guild.id );
+            let ndxUserGuild = userGuilds.indexOf( guildId );
             let currUserGuild = currUser.Guilds[ ndxUserGuild ];
             let isExpired = ( !currUserGuild.Expires ? false : ( currUserGuild.Expires <= ( new Date() ) ? true : false ) );
             if ( isExpired ) {
