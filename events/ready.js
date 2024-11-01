@@ -179,13 +179,10 @@ client.on( 'ready', async rdy => {
       } );
     }
 
-    //const userConfigs = await userConfig.find();
-    //const userConfigIds = [];
-    //userConfigs.forEach( ( entry, i ) => { userConfigIds.push( entry._id ); } );
-    const userIds = Array.from( client.users.cache.keys() );
+    /*const userIds = Array.from( client.users.cache.keys() );
     userIds.forEach( async ( userId ) => {// Update users I still am in a guild with.
       let user = client.users.cache.get( userId );
-      let arrUserGuilds = Array.from( user.guilds.cache.keys() ).toSorted();
+      let arrUserGuilds = Array.from(  ).toSorted();// FIGURE OUT HOW TO GET LIST OF GUILDS!!!
       let currUser = await userConfig.findOne( { _id: userId } );
       let newName = ( user.displayName !== currUser.UserName ? true : false );
       let newGuilds = ( arrUserGuilds != currUser.Guilds.sort() ? true : false );
@@ -247,7 +244,7 @@ client.on( 'ready', async rdy => {
         .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( user.displayName ), userId ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) in my database:\n%o' ), user.displayName, userId, updateError ); } );
       }
-    } );
+    } );//*/
 
     console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) );
   }
