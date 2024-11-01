@@ -198,11 +198,11 @@ client.on( 'ready', async rdy => {
         await userConfig.create( newUser )
         .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildCreate.js:\n%o' ), user.displayName, memberId, initError ); } );
       }
-      let arrUserGuilds =  Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted();/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: arrUserGuilds: %o', user.displayName, arrUserGuilds );}/* TROFF */
+      let arrUserGuilds =  Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted();
       let currUser = await userConfig.findOne( { _id: userId } );
       let userGuilds = [];
       currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
-      userGuilds.sort();/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: userGuilds: %o', user.displayName, userGuilds );}/* TROFF */
+      userGuilds.sort();
       let newName = ( user.displayName !== currUser.UserName ? true : false );
       let newGuilds = ( arrUserGuilds != userGuilds ? true : false );
       let newVersion = ( verUserDB !== currUser.Version ? true : false );
@@ -213,7 +213,7 @@ client.on( 'ready', async rdy => {
         doUserUpdate = true;
       }
       if ( newGuilds ) {// Update guilds
-        let addedGuilds = arrUserGuilds.filter( a => !userGuilds.includes( a ) );/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: addedGuilds: %o', user.displayName, addedGuilds );}/* TROFF */
+        let addedGuilds = arrUserGuilds.filter( a => !userGuilds.includes( a ) );
         if ( addedGuilds.length > 0 ) {// Added guild(s)
           await addedGuilds.forEach( async ( guildId ) => {
             let guild = await client.guilds.cache.get( guildId );
@@ -228,11 +228,11 @@ client.on( 'ready', async rdy => {
               Score: 0
             };
             currUser.Guilds.push( addGuild );
-            currUser.Guilds.sort();/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: currUser.Guilds: %o', user.displayName, currUser.Guilds );}/* TROFF */
+            currUser.Guilds.sort();
           } );
           doUserUpdate = true;
         }
-        let removedGuilds = userGuilds.filter( r => !arrUserGuilds.includes( r ) );/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: removedGuilds: %o', user.displayName, removedGuilds );}/* TROFF */
+        let removedGuilds = userGuilds.filter( r => !arrUserGuilds.includes( r ) );
         if ( removedGuilds.length > 0 ) {// Removed guild(s)
           let userGuilds = [];
           currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
@@ -260,8 +260,8 @@ client.on( 'ready', async rdy => {
         };
         doUserUpdate = true;
       }
-      if ( doUserUpdate ) {/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: newUserConfig: %o', user.displayName, newUserConfig );}/* TROFF */
-        updateUserList.push( chalk.bold.cyan( user.displayName ) );/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: currUser: %o', user.displayName, currUser );}/* TROFF */
+      if ( doUserUpdate ) {
+        updateUserList.push( chalk.bold.cyan( user.displayName ) );/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: ( newUserConfig || currUser ): %o', user.displayName, ( newUserConfig || currUser ) );}/* TROFF */
         await userConfig.updateOne( { _id: userId }, ( newUserConfig || currUser ), { upsert: true } )
         .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( user.displayName ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${user.displayName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
