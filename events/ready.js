@@ -155,7 +155,8 @@ client.on( 'ready', async rdy => {
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update ${guild.name} (id: ${guildId}) to my database:\n${updateError}` ) ); } );
       }
     } );
-    if ( updateGuildList.length > 0 ) { console.log( 'Updating %s: %o', ( updateGuildList.length === 1 ? 'a guild' : updateGuildList.length + ' guilds' ), updateGuildList ); }
+    if ( updateGuildList.length === 0 ) { console.log( 'All guilds are current!' ); }
+    else { console.log( 'Updating %s: %o', ( updateGuildList.length === 1 ? 'a guild' : updateGuildList.length + ' guilds' ), updateGuildList ); }
     if ( guildConfigIds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
       guildConfigIds.forEach( async ( guildId ) => {
         let delGuild = guildConfigs.find( entry => entry.id === guildId );
@@ -261,13 +262,14 @@ client.on( 'ready', async rdy => {
         doUserUpdate = true;
       }
       if ( doUserUpdate ) {
-        updateUserList.push( chalk.bold.cyan( user.displayName ) );/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: ( newUserConfig || currUser ): %o', user.displayName, ( newUserConfig || currUser ) );}/* TROFF */
+        updateUserList.push( chalk.bold.cyan( user.displayName ) );
         await userConfig.updateOne( { _id: userId }, ( newUserConfig || currUser ), { upsert: true } )
         .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( user.displayName ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${user.displayName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
       }
     } );
-    if ( updateUserList.length > 0 ) { console.log( 'Updating %s: %o', ( updateUserList.length === 1 ? 'a user' : updateUserList.length + ' users' ), updateUserList ); }
+    if ( updateUserList.length === 0 ) { console.log( 'All users are current!' ); }
+    else { console.log( 'Updating %s: %o', ( updateUserList.length === 1 ? 'a user' : updateUserList.length + ' users' ), updateUserList ); }
 
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'ready.js' ), errObject.stack ); }
