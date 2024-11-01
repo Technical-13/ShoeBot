@@ -157,10 +157,10 @@ client.on( 'ready', async rdy => {
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update ${guild.name} (id: ${guildId}) to my database:\n${updateError}` ) ); } );
       }
     } );
-    if ( updateGuildList.length === 0 ) { console.log( 'All guilds are current!' ); }
-    else { console.log( 'Updating %i guild%s: %o', updateGuildList.length, ( updateGuildList.length === 1 ? '' :  's' ), updateGuildList ); }
+    if ( updateGuildList.length === 0 ) { console.log( chalk.brightGreen( 'All guilds are current!' ) ); }
+    else { console.log( 'Updating %i guild%s: %o', chalk.yellow( updateGuildList.length ), ( updateGuildList.length === 1 ? '' :  's' ), updateGuildList ); }
     if ( guildConfigIds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
-      console.log( 'Checking to see if guild data for %i guild%s has expired...', guildConfigIds.length, ( guildConfigIds.length === 1 ? '' : 's' ) );
+      console.log( 'Checking to see if guild data for %i guild%s has expired...', chalk.blueBright( guildConfigIds.length ), ( guildConfigIds.length === 1 ? '' : 's' ) );
       guildConfigIds.forEach( async ( guildId ) => {
         let delGuild = guildConfigs.find( entry => entry.id === guildId );
         let isExpired = ( !delGuild.Expires ? false : ( delGuild.Expires <= ( new Date() ) ? true : false ) );
@@ -197,7 +197,7 @@ client.on( 'ready', async rdy => {
 
     const userIds = Array.from( client.users.cache.keys() );
     let updateUserList = [];
-    if ( userIds.length > 0 ) { console.log( 'Checking %i user%s...', userIds.length, ( userIds.length === 1 ? '' : 's' ) ); }
+    if ( userIds.length > 0 ) { console.log( 'Checking %i user%s...', chalk.blueBright( userIds.length ), ( userIds.length === 1 ? '' : 's' ) ); }
     await userIds.forEach( async ( userId ) => {// Update users I still am in a guild with.
       let user = client.users.cache.get( userId );
       if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) {// Add user to DB if not there
@@ -280,8 +280,8 @@ client.on( 'ready', async rdy => {
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${user.displayName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
       }
     } );
-    if ( updateUserList.length === 0 ) { console.log( 'All users are current!' ); }
-    else { console.log( 'Updating %i user%s: %o', updateUserList.length, ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
+    if ( updateUserList.length === 0 ) { console.log( chalk.brightGreen( 'All users are current!' ) ); }
+    else { console.log( 'Updating %i user%s: %o', chalk.yellow( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
 
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
