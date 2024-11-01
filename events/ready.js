@@ -60,6 +60,7 @@ client.on( 'ready', async rdy => {
       let actName = await parse( thisActivity.name, { uptime: { getWeeks: true } } );
       await client.user.setPresence( { activities: [ { type: actType, name: actName } ], status: 'online' } );
     }, 300000 );
+    console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) );
 
     const guildConfigs = await guildConfig.find();
     const guildConfigIds = [];
@@ -69,7 +70,6 @@ client.on( 'ready', async rdy => {
       let guild = await client.guilds.cache.get( guildId );
       let guildOwner = guild.members.cache.get( guild.ownerId );
       if ( guildConfigIds.indexOf( guildId ) != -1 ) { guildConfigIds.splice( guildConfigIds.indexOf( guildId ), 1 ) }
-      console.log( 'Checking guild %s (id: %s)...', chalk.bold.cyan( guild.name), guildId );
       let currGuildConfig = await getGuildConfig( guild );
       let newName = ( guild.name !== currGuildConfig.Guild.Name ? true : false );
       let newOwnerID = ( guild.ownerId !== currGuildConfig.Guild.OwnerID ? true : false );
@@ -148,11 +148,11 @@ client.on( 'ready', async rdy => {
         doGuildUpdate = true;
       }
       if ( doGuildUpdate ) {// Something changed offline
+        console.log( 'Updating guild %s (id: %s)...', chalk.bold.cyan( guild.name), guildId );
         await guildConfig.updateOne( { _id: guildId }, ( newGuildConfig || currGuildConfig ), { upsert: true } )
-        .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( guild.name ), guildId ); } )
-        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to my database:\n%o' ), guild.name, guildId, updateError ); } );
+        .then( updateSuccess => { console.log( 'Succesfully updated guild %s (id: %s) in my database.', chalk.bold.green( guild.name ), guildId ); } )
+        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update ${guild.name} (id: ${guildId}) to my database:\n${updateError}` ) ); } );
       }
-      else { console.log( 'No changes for %s (id: %s) to update.', chalk.bold.green( guild.name ), guildId ); }
     } );
     if ( guildConfigIds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
       guildConfigIds.forEach( async ( guildId ) => {
@@ -160,7 +160,8 @@ client.on( 'ready', async rdy => {
         let isExpired = ( !delGuild.Expires ? false : ( delGuild.Expires <= ( new Date() ) ? true : false ) );
         if ( isExpired ) {
           let guildOwner = ( client.users.cache.get( delGuild.Guild.OwnerID ) || null );
-          let ownerName = ( guildOwner ? '<@' + guildOwner.id + '>' : '`' + delGuild.Guild.OwnerName + '`' )
+          let ownerName = ( guildOwner ? '<@' + guildOwner.id + '>' : '`' + delGuild.Guild.OwnerName + '`' );
+          console.log( 'Deleting expired guild %s (id: %s)...', chalk.bold.red( delGuild.Guild.Name ), guildId );
           await guildConfig.deleteOne( { _id: guildId } )
           .then( delExpired => {
             console.log( 'Succesfully deleted expired %s (id: %s) from my database.', chalk.bold.red( delGuild.Guild.Name ), guildId );
@@ -198,7 +199,7 @@ client.on( 'ready', async rdy => {
       let currUser = await userConfig.findOne( { _id: userId } );
       let newName = ( user.displayName !== currUser.UserName ? true : false );
       let newGuilds = ( arrUserGuilds != currUser.Guilds.sort() ? true : false );
-      let newVersion = ( verGuildDB !== currUser.Version ? true : false );
+      let newVersion = ( verUserDB !== currUser.Version ? true : false );
       var newUserConfig = null;
       var doUserUpdate = false;
       if ( newName ) {// Update user displayName
@@ -254,13 +255,13 @@ client.on( 'ready', async rdy => {
         doUserUpdate = true;
       }
       if ( doUserUpdate ) {
+        console.log( 'Updating user %s (id: %s)...', chalk.bold.cyan( user.displayName ), guildId );
         await userConfig.updateOne( { _id: userId }, ( newUserConfig || currUser ), { upsert: true } )
-        .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( user.displayName ), userId ); } )
-        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) in my database:\n%o' ), user.displayName, userId, updateError ); } );
+        .then( updateSuccess => { console.log( 'Succesfully updated user %s (id: %s) in my database.', chalk.bold.green( user.displayName ), userId ); } )
+        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${user.displayName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
       }
     } );
 
-    console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) );
   }
   catch ( objError ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'ready.js' ), errObject.stack ); }
 } );
