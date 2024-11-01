@@ -215,7 +215,7 @@ client.on( 'ready', async rdy => {
       if ( newGuilds ) {// Update guilds
         let addedGuilds = arrUserGuilds.filter( a => !userGuilds.includes( a ) );/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: addedGuilds: %o', user.displayName, addedGuilds );}/* TROFF */
         if ( addedGuilds.length > 0 ) {// Added guild(s)
-          addedGuilds.forEach( async ( guildId ) => {
+          await addedGuilds.forEach( async ( guildId ) => {
             let guild = await client.guilds.cache.get( guildId );
             let member = guild.members.cache.get( userId );
             const addGuild = {
@@ -228,7 +228,7 @@ client.on( 'ready', async rdy => {
               Score: 0
             };
             currUser.Guilds.push( addGuild );
-            currUser.Guilds.sort();
+            currUser.Guilds.sort();/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: currUser.Guilds: %o', user.displayName, currUser.Guilds );}/* TROFF */
           } );
           doUserUpdate = true;
         }
@@ -260,8 +260,8 @@ client.on( 'ready', async rdy => {
         };
         doUserUpdate = true;
       }
-      if ( doUserUpdate ) {
-        updateUserList.push( chalk.bold.cyan( user.displayName ) );
+      if ( doUserUpdate ) {/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: newUserConfig: %o', user.displayName, newUserConfig );}/* TROFF */
+        updateUserList.push( chalk.bold.cyan( user.displayName ) );/* TRON */if(arrUserGuilds.length>=3){console.log( '%s: currUser: %o', user.displayName, currUser );}/* TROFF */
         await userConfig.updateOne( { _id: userId }, ( newUserConfig || currUser ), { upsert: true } )
         .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( user.displayName ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${user.displayName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
