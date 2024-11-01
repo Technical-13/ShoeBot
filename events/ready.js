@@ -148,9 +148,9 @@ client.on( 'ready', async rdy => {
         doGuildUpdate = true;
       }
       if ( doGuildUpdate ) {// Something changed offline
-        console.log( 'Updating guild %s (id: %s)...', chalk.bold.cyan( guild.name), guildId );
+        console.log( 'Updating guild id: %s (%s)...', guildId, chalk.bold.cyan( guild.name) );
         await guildConfig.updateOne( { _id: guildId }, ( newGuildConfig || currGuildConfig ), { upsert: true } )
-        .then( updateSuccess => { console.log( 'Succesfully updated guild %s (id: %s) in my database.', chalk.bold.green( guild.name ), guildId ); } )
+        .then( updateSuccess => { console.log( 'Succesfully updated guild id: %s (%s) in my database.', guildId, chalk.bold.green( guild.name ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update ${guild.name} (id: ${guildId}) to my database:\n${updateError}` ) ); } );
       }
     } );
@@ -161,10 +161,10 @@ client.on( 'ready', async rdy => {
         if ( isExpired ) {
           let guildOwner = ( client.users.cache.get( delGuild.Guild.OwnerID ) || null );
           let ownerName = ( guildOwner ? '<@' + guildOwner.id + '>' : '`' + delGuild.Guild.OwnerName + '`' );
-          console.log( 'Deleting expired guild %s (id: %s)...', chalk.bold.red( delGuild.Guild.Name ), guildId );
+          console.log( 'Deleting expired guild id: %s (%s)...', guildId, chalk.bold.red( delGuild.Guild.Name ) );
           await guildConfig.deleteOne( { _id: guildId } )
           .then( delExpired => {
-            console.log( 'Succesfully deleted expired %s (id: %s) from my database.', chalk.bold.red( delGuild.Guild.Name ), guildId );
+            console.log( 'Succesfully deleted expired id: %s (%s) from my database.', guildId, chalk.bold.red( delGuild.Guild.Name ) );
             if ( guildOwner ) {
               guildOwner.send( { content: 'Hello! It has been a month since someone has removed me from [' + delGuild.Guild.Name + '](<https://discord.com/channels/' + guildId + '>), and I\'ve cleaned out your configuration settings!\n\nYou can still get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.' } )
               .catch( errSendDM => {
@@ -195,11 +195,11 @@ client.on( 'ready', async rdy => {
         await userConfig.create( newUser )
         .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildCreate.js:\n%o' ), user.displayName, memberId, initError ); } );
       }
-      let arrUserGuilds =  Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted();/* TRON */console.log( 'arrUserGuilds: %o', arrUserGuilds );/* TROFF */
+      let arrUserGuilds =  Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted();/* TRON */if(user.bot){console.log( '%s: arrUserGuilds: %o', user.UserName, arrUserGuilds );}/* TROFF */
       let currUser = await userConfig.findOne( { _id: userId } );
       let userGuilds = [];
       currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
-      userGuilds.sort();/* TRON */console.log( 'userGuilds: %o', userGuilds );/* TROFF */
+      userGuilds.sort();/* TRON */if(user.bot){console.log( '%s: userGuilds: %o', user.UserName, userGuilds );}/* TROFF */
       let newName = ( user.displayName !== currUser.UserName ? true : false );
       let newGuilds = ( arrUserGuilds != userGuilds ? true : false );
       let newVersion = ( verUserDB !== currUser.Version ? true : false );
@@ -210,7 +210,7 @@ client.on( 'ready', async rdy => {
         doUserUpdate = true;
       }
       if ( newGuilds ) {// Update guilds
-        let addedGuilds = arrUserGuilds.filter( a => !userGuilds.includes( a ) );/* TRON */console.log( 'addedGuilds: %o', addedGuilds );/* TROFF */
+        let addedGuilds = arrUserGuilds.filter( a => !userGuilds.includes( a ) );/* TRON */if(user.bot){console.log( '%s: addedGuilds: %o', user.UserName, addedGuilds );}/* TROFF */
         if ( addedGuilds.length > 0 ) {// Added guild(s)
           addedGuilds.forEach( async ( guildId ) => {
             let guild = await client.guilds.cache.get( guildId );
@@ -229,7 +229,7 @@ client.on( 'ready', async rdy => {
           } );
           doUserUpdate = true;
         }
-        let removedGuilds = userGuilds.filter( r => !arrUserGuilds.includes( r ) );/* TRON */console.log( 'removedGuilds: %o', removedGuilds );/* TROFF */
+        let removedGuilds = userGuilds.filter( r => !arrUserGuilds.includes( r ) );/* TRON */if(user.bot){console.log( '%s: removedGuilds: %o', user.UserName, removedGuilds );}/* TROFF */
         if ( removedGuilds.length > 0 ) {// Removed guild(s)
           let userGuilds = [];
           currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
@@ -258,9 +258,9 @@ client.on( 'ready', async rdy => {
         doUserUpdate = true;
       }
       if ( doUserUpdate ) {
-        console.log( 'Updating user %s (id: %s)...', chalk.bold.cyan( user.displayName ), userId );
+        console.log( 'Updating user id: %s (%s)...', userId, chalk.bold.cyan( user.displayName ) );
         await userConfig.updateOne( { _id: userId }, ( newUserConfig || currUser ), { upsert: true } )
-        .then( updateSuccess => { console.log( 'Succesfully updated user %s (id: %s) in my database.', chalk.bold.green( user.displayName ), userId ); } )
+        .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( user.displayName ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${user.displayName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
       }
     } );
