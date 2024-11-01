@@ -1,4 +1,5 @@
 const client = require( '..' );
+const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const userPerms = require( '../functions/getPerms.js' );
 const userConfig = require( '../models/BotUser.js' );

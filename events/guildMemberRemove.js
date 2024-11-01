@@ -1,4 +1,5 @@
 const client = require( '..' );
+const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
