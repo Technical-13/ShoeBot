@@ -189,7 +189,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
             if ( doLogs ) { chanError.send( 'Failed to react to message https://discord.com/channels/' + guild.id + '/' + channel.id + '/' + msgID + ' with `' + rawReaction + '`.' + strClosing ); }
             return { content: '`' + rawReaction + '` is not a valid `reaction` to react with. Please try again; the emoji picker is helpful in getting valid reactions.' };
           default:
-            console.error( '%s: Reaction to #%o with %o (%s) failed:\n\tMsg: %s\n\tErr: %s', errObject.code, msgID, emoji, rawReaction, errObject.message, errObject.stack );
+            console.error( '%s: Reaction to #%o with %s (%s) failed:\n\tMsg: %s\n\tErr: %s', errObject.code, msgID, prcEmoji, rawReaction, errObject.message, errObject.stack );
             botOwner.send( 'Reaction to https://discord.com/channels/' + guild.id + '/' + channel.id + '/' + msgID + ' with `' + rawReaction + '` failed.' + strConsole )
             .then( errSent => {
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
@@ -201,9 +201,9 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
             } );
         }
         break;
-      case 'logLogs':// .catch( async errLog => { await errHandler( errLog, { command: '', chanType: '', guild: guild, type: 'logLogs' } ); } );
+      case 'logLogs':// .catch( async errLog => { await errHandler( errLog, { command: '', chanType: 'chat|default|error', guild: guild, type: 'logLogs' } ); } );
         let logChan = ( chanType === 'chat' ? chanChat : ( chanType === 'error' ? chanError : chanDefault ) );
-        console.error( 'Unable to log to %s channel: %s#%s\n%o', chanType, guild.name, logChan.name, errObject );
+        console.error( 'Unable to log to %s channel: %s#%s\n%s', chanType, guild.name, logChan.name, errObject.stack );
         botOwner.send( { content: 'Unable to log to ' + chanType + ' channel <#' + logChan.id + '>.' + strConsole } )
         .then( errSent => { return { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified } } )
         .catch( errNotSent => {
@@ -215,7 +215,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
       case 'modifyDB':// .catch( async modifyDB => { await errHandler( modifyDB, { author: author, clearLists: clearLists, command: '', modType: '', type: 'modifyDB' } ); } );
         switch ( modType ) {
           case 'clear':
-            console.error( 'Error attempting to clear my %s for %s: %o', clearLists, author.displayName, guild.name, errObject );
+            console.error( 'Error attempting to clear my %s for %s: %s', clearLists, author.displayName, guild.name, errObject.stack );
             botOwner.send( 'Error attempting to clear my ' + clearLists + ' with `/' + cmd + ' clear`.' + strConsole )
             .then( sentOwner => {
               return { content: 'Error attempting to clear my ' + clearLists + ( cmd === 'system' ? '' : ' for this server' ) + '!' + strNotified };
@@ -239,27 +239,27 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
                 case 'Role':
                   modTargetName = '&' + guild.roles.cache.get( modTarget ).name;
               }
-              console.error( 'Error attempting to %s %s (%s) %s:\n%o', doList, modTarget, modTargetName, fromIn, errObject );
+              console.error( 'Error attempting to %s %s (%s) %s:\n%s', doList, modTarget, modTargetName, fromIn, errObject.stack );
               return { content: 'Error attempting to ' + doList + ' <@' + modTarget + '> ' + fromIn + '.' + strConsole };
             }
             if ( cmd === 'system' ) {
               const fromInTo = ( modType === 'remove' ? 'from the database ' + ( modMod ? 'bot moderator list' : ( modBlack ? 'black' : 'white' ) + 'list' ) : ( modMod ? 'to' : 'in' ) + ' the database' );
               const doList = ( modMod ? modType : ( modType === 'add' ? '' : 'de-' ) ) + ( modMod ? ' a moderator' : ( modBlack ? 'blacklist' : 'whitelist' ) );
               const modTarget = ( modMod || modBlack || modWhite );
-              console.error( chalk.bold.red.bgYellowBright( `Error attempting to ${doList} ${modTarget} (${botUsers.get( modTarget ).displayName}) ${fromInTo}:\n${errObject}` ) );
+              console.error( chalk.bold.red.bgYellowBright( `Error attempting to ${doList} ${modTarget} (${botUsers.get( modTarget ).displayName}) ${fromInTo}:\n${errObject.stack}` ) );
               return { content: 'Error attempting to ' + doList + ' <@' + modTarget + '> ' + fromInTo + '.' + strConsole };
             }
             break;
           case 'reset':
-            console.error( chalk.bold.red.bgYellowBright( 'Error attempting to reset %s configuration with `/%s reset`:\n%o' ), ( cmd === 'config' ? 'guild' : 'bot' ), cmd, errObject );
+            console.error( chalk.bold.red.bgYellowBright( 'Error attempting to reset %s configuration with `/%s reset`:\n%s' ), ( cmd === 'config' ? 'guild' : 'bot' ), cmd, errObject.stack );
             return { content: 'Error attempting to reset ' + ( cmd === 'config' ? 'guild' : 'bot' ) + ' configuration with `/' + cmd + ' reset`.' + strConsole };
             break;
           case 'set':
-            console.error( 'Error attempting to modify %s configuration in my database:\n%o', ( cmd === 'config' ? 'guild' : 'bot' ), errObject );
+            console.error( 'Error attempting to modify %s configuration in my database:\n%s', ( cmd === 'config' ? 'guild' : 'bot' ), errObject.stack );
             return { content: 'Error attempting to modify ' + ( cmd === 'config' ? 'guild' : 'bot' ) + ' configuration in my database.' + strConsole };
             break;
           default:
-            console.error( chalk.bold.red.bgYellowBright( 'Unknown error attempting to modify %s configuration in my database:\n%o' ), ( cmd === 'config' ? 'guild' : 'bot' ), errObject );
+            console.error( chalk.bold.red.bgYellowBright( 'Unknown error attempting to modify %s configuration in my database:\n%s' ), ( cmd === 'config' ? 'guild' : 'bot' ), errObject.stack );
             return { content: 'Unknown error attempting to modify ' + ( cmd === 'config' ? 'guild' : 'bot' ) + ' configuration in my database.' + strConsole };
         }
         break;

@@ -6,9 +6,9 @@
   "devGuildId": "192775085420052489",
   "issueRepo": "https://github.com/Technical-13/Signal",
   "logChans": {
-    "Default": "",
-    "Error": "",
-    "JoinPart": ""
+    "Default": "259391732066680833",
+    "Error": "259391732066680833",
+    "JoinPart": "259391732066680833"
   },
   "moderatorIds": [],
   "staticCmds": [],

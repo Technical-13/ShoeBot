@@ -54,5 +54,6 @@ client.on( 'interactionCreate', async interaction => {
       }
       await slashCommand.run( client, interaction );
     }
-  } catch ( error ) { console.log( error ); }
+  }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'messageCreate.js' ), errObject.stack ); }
 } );
