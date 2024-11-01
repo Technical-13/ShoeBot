@@ -67,6 +67,7 @@ client.on( 'ready', async rdy => {
     guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry._id ); } );
     const guildIds = Array.from( client.guilds.cache.keys() );
     let updateGuildList = [];
+    if ( guildIds.length > 0 ) { console.log( 'Checking %i guild%s...', guildIds.length, ( guildIds.length === 1 ? '' : 's' ) ); }
     await guildIds.forEach( async ( guildId ) => {// Update guilds I'm still in.
       let guild = await client.guilds.cache.get( guildId );
       let guildOwner = guild.members.cache.get( guild.ownerId );
@@ -156,8 +157,9 @@ client.on( 'ready', async rdy => {
       }
     } );
     if ( updateGuildList.length === 0 ) { console.log( 'All guilds are current!' ); }
-    else { console.log( 'Updating %s: %o', ( updateGuildList.length === 1 ? 'a guild' : updateGuildList.length + ' guilds' ), updateGuildList ); }
+    else { console.log( 'Updating %i guild%s: %o', updateGuildList.length, ( updateGuildList.length === 1 ? '' :  's' ), updateGuildList ); }
     if ( guildConfigIds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
+      console.log( 'Checking to see if guild data for %i guild%s has expired...', guildConfigIds.length, ( guildConfigIds.length === 1 ? '' : 's' ) );
       guildConfigIds.forEach( async ( guildId ) => {
         let delGuild = guildConfigs.find( entry => entry.id === guildId );
         let isExpired = ( !delGuild.Expires ? false : ( delGuild.Expires <= ( new Date() ) ? true : false ) );
@@ -181,11 +183,13 @@ client.on( 'ready', async rdy => {
           } )
           .catch( errDelete => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to delete ${delGuild.Guild.Name} (id: ${guildId}) from my database:\n${errDelete.stack}` ) ); } );
         }
+        else { console.log( '%s expires: %o', delGuild.Name, delGuild.Expires ); }
       } );
     }
 
     const userIds = Array.from( client.users.cache.keys() );
     let updateUserList = [];
+    if ( userIds.length > 0 ) { console.log( 'Checking %i user%s...', userIds.length, ( userIds.length === 1 ? '' : 's' ) ); }
     await userIds.forEach( async ( userId ) => {// Update users I still am in a guild with.
       let user = client.users.cache.get( userId );
       if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) {// Add user to DB if not there
@@ -269,7 +273,7 @@ client.on( 'ready', async rdy => {
       }
     } );
     if ( updateUserList.length === 0 ) { console.log( 'All users are current!' ); }
-    else { console.log( 'Updating %s: %o', ( updateUserList.length === 1 ? 'a user' : updateUserList.length + ' users' ), updateUserList ); }
+    else { console.log( 'Updating %i user%s: %o', updateUserList.length, ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
 
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'ready.js' ), errObject.stack ); }
