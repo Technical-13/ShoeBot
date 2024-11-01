@@ -156,7 +156,7 @@ client.on( 'ready', async rdy => {
     if ( guildConfigIds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
       guildConfigIds.forEach( async ( guildId ) => {
         let delGuild = guildConfigs.find( entry => entry.id === guildId );
-        let isExpired = ( delGuild.Expires <= ( new Date() ) ? true : false );
+        let isExpired = ( !delGuild.Expires ? false : ( delGuild.Expires <= ( new Date() ) ? true : false ) );
         if ( isExpired ) {
           let guildOwner = ( client.users.cache.get( delGuild.Guild.OwnerID ) || null );
           let ownerName = ( guildOwner ? '<@' + guildOwner.id + '>' : '`' + delGuild.Guild.OwnerName + '`' )
@@ -219,7 +219,7 @@ client.on( 'ready', async rdy => {
           removedGuilds.forEach( async ( guildId ) => {
             let ndxUserGuild = userGuilds.indexOf( guild.id );
             let currUserGuild = currUser.Guilds[ ndxUserGuild ];
-            let isExpired = ( currUserGuild.Expires <= ( new Date() ) ? true : false );
+            let isExpired = ( !currUserGuild.Expires ? false : ( currUserGuild.Expires <= ( new Date() ) ? true : false ) );
             if ( isExpired ) {
               currUser.Guilds.splice( ndxUserGuild, 1 );
               currUser.Guilds.sort();
