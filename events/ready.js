@@ -183,6 +183,17 @@ client.on( 'ready', async rdy => {
     const userIds = Array.from( client.users.cache.keys() );
     userIds.forEach( async ( userId ) => {// Update users I still am in a guild with.
       let user = client.users.cache.get( userId );
+      if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) {// Add user to DB if not there
+        const newUser = {
+          _id: userId,
+          Guilds: [],
+          UserName: user.displayName,
+          Score: 0,
+          Version: verUserDB
+        }
+        await userConfig.create( newUser )
+        .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildCreate.js:\n%o' ), user.displayName, memberId, initError ); } );
+      }
       let arrUserGuilds =  Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted();
       let currUser = await userConfig.findOne( { _id: userId } );
       let newName = ( user.displayName !== currUser.UserName ? true : false );
