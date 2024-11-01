@@ -66,6 +66,7 @@ client.on( 'ready', async rdy => {
     const guildConfigIds = [];
     guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry._id ); } );
     const guildIds = Array.from( client.guilds.cache.keys() );
+    let updateGuildList = [];
     guildIds.forEach( async ( guildId ) => {// Update guilds I'm still in.
       let guild = await client.guilds.cache.get( guildId );
       let guildOwner = guild.members.cache.get( guild.ownerId );
@@ -148,11 +149,14 @@ client.on( 'ready', async rdy => {
         doGuildUpdate = true;
       }
       if ( doGuildUpdate ) {// Something changed offline
-        console.log( 'Updating guild id: %s (%s)...', guildId, chalk.bold.cyan( guild.name) );
+        updateGuildList.push( chalk.bold.cyan( guild.name) );
         await guildConfig.updateOne( { _id: guildId }, ( newGuildConfig || currGuildConfig ), { upsert: true } )
         .then( updateSuccess => { console.log( 'Succesfully updated guild id: %s (%s) in my database.', guildId, chalk.bold.green( guild.name ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update ${guild.name} (id: ${guildId}) to my database:\n${updateError}` ) ); } );
       }
+    } )
+    .then( () => {
+      if ( updateGuildList.length > 0 ) { console.log( 'Updating %s: %o', ( updateGuildList.length === 1 ? 'a guild' : updateGuildList.length + ' guilds' ), updateGuildList ); }
     } );
     if ( guildConfigIds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
       guildConfigIds.forEach( async ( guildId ) => {
@@ -182,6 +186,7 @@ client.on( 'ready', async rdy => {
     }
 
     const userIds = Array.from( client.users.cache.keys() );
+    let updateUserList = [];
     userIds.forEach( async ( userId ) => {// Update users I still am in a guild with.
       let user = client.users.cache.get( userId );
       if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) {// Add user to DB if not there
@@ -258,11 +263,14 @@ client.on( 'ready', async rdy => {
         doUserUpdate = true;
       }
       if ( doUserUpdate ) {
-        console.log( 'Updating user id: %s (%s)...', userId, chalk.bold.cyan( user.displayName ) );
+        updateUserList.push( chalk.bold.cyan( user.displayName ) );
         await userConfig.updateOne( { _id: userId }, ( newUserConfig || currUser ), { upsert: true } )
         .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( user.displayName ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${user.displayName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
       }
+    } )
+    .then( () => {
+      if ( updateUserList.length > 0 ) { console.log( 'Updating %s: %o', ( updateUserList.length === 1 ? 'a user' : updateUserList.length + ' users' ), updateUserList ); }
     } );
 
   }
