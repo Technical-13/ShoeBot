@@ -258,7 +258,7 @@ client.on( 'ready', async rdy => {
         doUserUpdate = true;
       }
       if ( doUserUpdate ) {
-        console.log( 'Updating user %s (id: %s)...', chalk.bold.cyan( user.displayName ), guildId );
+        console.log( 'Updating user %s (id: %s)...', chalk.bold.cyan( user.displayName ), userId );
         await userConfig.updateOne( { _id: userId }, ( newUserConfig || currUser ), { upsert: true } )
         .then( updateSuccess => { console.log( 'Succesfully updated user %s (id: %s) in my database.', chalk.bold.green( user.displayName ), userId ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${user.displayName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
