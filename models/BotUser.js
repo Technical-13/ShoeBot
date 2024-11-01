@@ -2,6 +2,7 @@ const { model, Schema } = require( 'mongoose' );
 
 let userSchema = new Schema( {
   _id: String,
+  Bot: Boolean,
   Guilds: [ {
     _id: String,
     Bans: [ String ],

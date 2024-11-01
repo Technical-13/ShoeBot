@@ -15,6 +15,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
     if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {
       const newUser = {
         _id: user.id,
+        Bot: ( user.bot ? true : false ),
         Guilds: [],
         UserName: user.displayName,
         Score: 0,

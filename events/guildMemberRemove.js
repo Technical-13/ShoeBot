@@ -15,6 +15,7 @@ client.on( 'guildMemberRemove', async ( member ) => {
     if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {
       const newUser = {
         _id: user.id,
+        Bot: ( user.bot ? true : false ),
         Guilds: [ {
           _id: guild.id,
           Bans: [],

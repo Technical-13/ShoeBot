@@ -245,6 +245,7 @@ client.on( 'ready', async rdy => {
         let Guilds = null;
         newUserConfig = {
           _id: user.id,
+          Bot: ( user.bot ? true : false ),
           Guilds: ( currUser.Guilds.sort() || [] ),
           UserName: ( currUser.UserName || user.displayName ),
           Score: ( currUser.Score || 0 ),
