@@ -54,7 +54,7 @@ client.on( 'guildCreate', async ( guild ) => {
     } );
 
     const guildMembers = Array.from( guild.members.cache.keys() );
-    guildMembers.forEach( memberId => {
+    guildMembers.forEach( async memberId => {
       let member = guild.members.cache.get( memberId );
       let { user } = member;
       if ( await userConfig.countDocuments( { _id: memberId } ) === 0 ) {
