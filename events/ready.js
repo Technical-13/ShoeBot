@@ -197,8 +197,11 @@ client.on( 'ready', async rdy => {
       }
       let arrUserGuilds =  Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted();
       let currUser = await userConfig.findOne( { _id: userId } );
+      let userGuilds = [];
+      currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
+      userGuilds.sort();
       let newName = ( user.displayName !== currUser.UserName ? true : false );
-      let newGuilds = ( arrUserGuilds != currUser.Guilds.sort() ? true : false );
+      let newGuilds = ( arrUserGuilds != userGuilds ? true : false );
       let newVersion = ( verUserDB !== currUser.Version ? true : false );
       var newUserConfig = null;
       var doUserUpdate = false;
@@ -207,7 +210,7 @@ client.on( 'ready', async rdy => {
         doUserUpdate = true;
       }
       if ( newGuilds ) {// Update guilds
-        let addedGuilds = arrUserGuilds.filter( a => !currUser.Guilds.includes( a ) );
+        let addedGuilds = arrUserGuilds.filter( a => !userGuilds.includes( a ) );
         if ( addedGuilds.length > 0 ) {// Added guild(s)
           addedGuilds.forEach( async ( guildId ) => {
             let guild = await client.guilds.cache.get( guildId );
@@ -226,7 +229,7 @@ client.on( 'ready', async rdy => {
           } );
           doUserUpdate = true;
         }
-        let removedGuilds = currUser.Guilds.filter( r => !arrUserGuilds.includes( r ) );
+        let removedGuilds = userGuilds.filter( r => !arrUserGuilds.includes( r ) );
         if ( removedGuilds.length > 0 ) {// Removed guild(s)
           let userGuilds = [];
           currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
