@@ -12,6 +12,7 @@ const verUserDB = config.verUserDB;
 
 client.on( 'ready', async rdy => {
   try {
+    const dbExpires = new Date( ( new Date() ).setMonth( ( new Date() ).getMonth() + 1 ) );
     const botOwner = client.users.cache.get( client.ownerId );
     const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };
     const inviteUrl = client.generateInvite( {
@@ -183,7 +184,14 @@ client.on( 'ready', async rdy => {
           } )
           .catch( errDelete => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to delete ${delGuild.Guild.Name} (id: ${guildId}) from my database:\n${errDelete.stack}` ) ); } );
         }
-        else { console.log( '%s expires: %o', delGuild.Name, delGuild.Expires ); }
+        else if ( !delGuild.Expires ) {
+          delGuild.Expires = dbExpires;
+          console.log( 'I was removed from %s while I was offline, so I have set guild to expire: %o', delGuild.Guild.Name, delGuild.Expires );
+          await guildConfig.updateOne( { _id: guildId }, delGuild, { upsert: true } )
+          .then( updateSuccess => { console.log( 'Succesfully updated guild id: %s (%s) in my database.', guildId, chalk.bold.green( delGuild.Guild.Name ) ); } )
+          .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update ${delGuild.Guild.Name} (id: ${guildId}) to my database:\n${updateError}` ) ); } );
+        }
+        else { console.log( '%s expires: %o', delGuild.Guild.Name, delGuild.Expires ); }
       } );
     }
 
