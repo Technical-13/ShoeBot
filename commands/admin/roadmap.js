@@ -7,7 +7,6 @@ module.exports = {
   cooldown: 600000,
   run: async ( client, message, args ) => {
     const arrToDo = [
-      'ON guildMemberUpdate IF guild owner changes nickname THEN update guildConfig',
       'Move `§part` & `§inspectdb` to `/system`',
       'Update `/config` and `/system` for DB changes',
       'Do whatever is defined for guildConfig.Part in guildMemberKick.js, guildMemberBan.js, and/or guildMemberDelete.js',
