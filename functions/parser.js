@@ -1,5 +1,4 @@
 const client = require( '..' );
-const config = require( '../config.json' );
 const objTimeString = require( '../time.json' );
 const chalk = require( 'chalk' );
 const duration = require( './duration.js' );
