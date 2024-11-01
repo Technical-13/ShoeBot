@@ -67,7 +67,7 @@ client.on( 'ready', async rdy => {
     guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry._id ); } );
     const guildIds = Array.from( client.guilds.cache.keys() );
     let updateGuildList = [];
-    guildIds.forEach( async ( guildId ) => {// Update guilds I'm still in.
+    await guildIds.forEach( async ( guildId ) => {// Update guilds I'm still in.
       let guild = await client.guilds.cache.get( guildId );
       let guildOwner = guild.members.cache.get( guild.ownerId );
       if ( guildConfigIds.indexOf( guildId ) != -1 ) { guildConfigIds.splice( guildConfigIds.indexOf( guildId ), 1 ) }
@@ -154,10 +154,8 @@ client.on( 'ready', async rdy => {
         .then( updateSuccess => { console.log( 'Succesfully updated guild id: %s (%s) in my database.', guildId, chalk.bold.green( guild.name ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update ${guild.name} (id: ${guildId}) to my database:\n${updateError}` ) ); } );
       }
-    } )
-    .then( () => {
-      if ( updateGuildList.length > 0 ) { console.log( 'Updating %s: %o', ( updateGuildList.length === 1 ? 'a guild' : updateGuildList.length + ' guilds' ), updateGuildList ); }
     } );
+    if ( updateGuildList.length > 0 ) { console.log( 'Updating %s: %o', ( updateGuildList.length === 1 ? 'a guild' : updateGuildList.length + ' guilds' ), updateGuildList ); }
     if ( guildConfigIds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
       guildConfigIds.forEach( async ( guildId ) => {
         let delGuild = guildConfigs.find( entry => entry.id === guildId );
@@ -187,7 +185,7 @@ client.on( 'ready', async rdy => {
 
     const userIds = Array.from( client.users.cache.keys() );
     let updateUserList = [];
-    userIds.forEach( async ( userId ) => {// Update users I still am in a guild with.
+    await userIds.forEach( async ( userId ) => {// Update users I still am in a guild with.
       let user = client.users.cache.get( userId );
       if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) {// Add user to DB if not there
         const newUser = {
@@ -268,11 +266,9 @@ client.on( 'ready', async rdy => {
         .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( user.displayName ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${user.displayName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
       }
-    } )
-    .then( () => {
-      if ( updateUserList.length > 0 ) { console.log( 'Updating %s: %o', ( updateUserList.length === 1 ? 'a user' : updateUserList.length + ' users' ), updateUserList ); }
     } );
+    if ( updateUserList.length > 0 ) { console.log( 'Updating %s: %o', ( updateUserList.length === 1 ? 'a user' : updateUserList.length + ' users' ), updateUserList ); }
 
   }
-  catch ( objError ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'ready.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'ready.js' ), errObject.stack ); }
 } );
