@@ -68,7 +68,7 @@ client.on( 'ready', async rdy => {
     guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry._id ); } );
     const guildIds = Array.from( client.guilds.cache.keys() );
     let updateGuildList = [];
-    if ( guildIds.length > 0 ) { console.log( 'Checking %i guild%s...', guildIds.length, ( guildIds.length === 1 ? '' : 's' ) ); }
+    if ( guildIds.length > 0 ) { console.log( 'Checking %i guild%s...', chalk.blueBright( guildIds.length ), ( guildIds.length === 1 ? '' : 's' ) ); }
     await guildIds.forEach( async ( guildId ) => {// Update guilds I'm still in.
       let guild = await client.guilds.cache.get( guildId );
       let guildOwner = guild.members.cache.get( guild.ownerId );
@@ -157,7 +157,7 @@ client.on( 'ready', async rdy => {
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update ${guild.name} (id: ${guildId}) to my database:\n${updateError}` ) ); } );
       }
     } );
-    if ( updateGuildList.length === 0 ) { console.log( chalk.greenBright( 'All guilds are current!' ) ); }
+    if ( updateGuildList.length === 0 ) { console.log( chalk.bold.greenBright( 'All guilds are current!' ) ); }
     else { console.log( 'Updating %i guild%s: %o', chalk.yellow( updateGuildList.length ), ( updateGuildList.length === 1 ? '' :  's' ), updateGuildList ); }
     if ( guildConfigIds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
       console.log( 'Checking to see if guild data for %i guild%s has expired...', chalk.blueBright( guildConfigIds.length ), ( guildConfigIds.length === 1 ? '' : 's' ) );
@@ -280,7 +280,7 @@ client.on( 'ready', async rdy => {
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${user.displayName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
       }
     } );
-    if ( updateUserList.length === 0 ) { console.log( chalk.greenBright( 'All users are current!' ) ); }
+    if ( updateUserList.length === 0 ) { console.log( chalk.bold.greenBright( 'All users are current!' ) ); }
     else { console.log( 'Updating %i user%s: %o', chalk.yellow( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
 
   }
