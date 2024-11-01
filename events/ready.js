@@ -183,7 +183,7 @@ client.on( 'ready', async rdy => {
     const userIds = Array.from( client.users.cache.keys() );
     userIds.forEach( async ( userId ) => {// Update users I still am in a guild with.
       let user = client.users.cache.get( userId );
-      let arrUserGuilds =  Array.from( client.guilds.cache.filter( g => g.members.cache.has( author.id ) ).keys() ).toSorted();
+      let arrUserGuilds =  Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted();
       let currUser = await userConfig.findOne( { _id: userId } );
       let newName = ( user.displayName !== currUser.UserName ? true : false );
       let newGuilds = ( arrUserGuilds != currUser.Guilds.sort() ? true : false );
