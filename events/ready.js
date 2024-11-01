@@ -186,12 +186,12 @@ client.on( 'ready', async rdy => {
         }
         else if ( !delGuild.Expires ) {
           delGuild.Expires = dbExpires;
-          console.log( 'I was removed from %s while I was offline, so I have set guild to expire: %o', delGuild.Guild.Name, delGuild.Expires );
+          console.log( 'I was removed from %s while I was offline, so I have set guild to expire: %o', chalk.hex( '#FFA500' ).bold( delGuild.Guild.Name ), delGuild.Expires );
           await guildConfig.updateOne( { _id: guildId }, delGuild, { upsert: true } )
           .then( updateSuccess => { console.log( 'Succesfully updated guild id: %s (%s) in my database.', guildId, chalk.bold.green( delGuild.Guild.Name ) ); } )
           .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update ${delGuild.Guild.Name} (id: ${guildId}) to my database:\n${updateError}` ) ); } );
         }
-        else { console.log( '%s expires: %o', delGuild.Guild.Name, delGuild.Expires ); }
+        else { console.log( 'Guild %s expires: %o', chalk.hex( '#FFA500' ).bold( delGuild.Guild.Name ), delGuild.Expires ); }
       } );
     }
 
@@ -284,5 +284,5 @@ client.on( 'ready', async rdy => {
     else { console.log( 'Updating %i user%s: %o', updateUserList.length, ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
 
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'ready.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
 } );
