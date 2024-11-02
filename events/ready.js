@@ -316,7 +316,7 @@ client.on( 'ready', async rdy => {
         .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( ( newUser || currUser ).UserName ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${( newUser || currUser ).UserName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
       }
-      else if ( !doUserUpdate && ( newName || newGuilds || newVersion ) ) { console.log( 'Nothing to update for %s (%s): %o', currUser._id, currUser.UserName, currUser ); }
+      else if ( !doUserUpdate && ( newName || newGuilds || newVersion ) ) { console.log( 'Nothing to update for %s (%s): %o', currUser._id, currUser.UserName, {newName:newName,newGuilds:newGuilds,newVersion:newVersion,doUserUpdate:doUserUpdate} ); }
     } );
     if ( updateUserList.length === 0 ) { console.log( chalk.bold.greenBright( 'All users are current!' ) ); }
     else { console.log( 'Updating %s user%s: %o', chalk.yellow( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
