@@ -40,7 +40,7 @@ module.exports = {
     const mentionsEveryone = /@(everyone|here)/g.test( mySaying );
     const strEveryoneHere = ( mentionsEveryone ? '`@' + ( /@everyone/g.test( mySaying ) ? 'everyone' : 'here' ) + '`' : null );
 
-    const { Active: doLogs, Chat: chanChat, strClosing } = await getGuildConfig( guild ).Logs;
+    const { Active: doLogs, Chat: chanChat, strClosing } = ( await getGuildConfig( guild ) ).Logs;
 
     if ( mySaying ) {
       const parsedSaying = await parse( mySaying, { member: guildMember } );
