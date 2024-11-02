@@ -99,7 +99,8 @@ module.exports = {
       'sv-SE': 'Det gick inte att hitta ett specifikt meddelande att svara på.'
     };
 
-    const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = await getGuildConfig( guild ).Logs;
+    const logChans = await getGuildConfig( guild );
+    const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = logChans;
 
     if ( msgID && !( /[\d]{18,19}/.test( msgID ) ) ) { return interaction.editReply( { content: '`' + msgID + '` ' + i18InvalidMsgId[ locale ] } ); }
     else if ( msgID ) {

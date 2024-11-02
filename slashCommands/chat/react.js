@@ -37,7 +37,8 @@ module.exports = {
     const theReaction = options.getString( 'reaction' );
     const strAuthorTag = author.tag;
 
-    const { Active: doLogs, Chat: chanChat, strClosing } = await getGuildConfig( guild ).Logs;
+    const logChans = await getGuildConfig( guild );
+    const { Active: doLogs, Chat: chanChat, strClosing } = logChans;
 
     var myReaction = theReaction;
     var rxp = /<:(.*)?:([\d]*)>/;

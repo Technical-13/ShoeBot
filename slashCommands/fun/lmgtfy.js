@@ -26,8 +26,9 @@ module.exports = {
     const { channel, guild, options, user: author } = interaction;
     const { content } = await userPerms( author, guild );
     if ( content ) { return interaction.editReply( { content: content } ); }
-    
-    const { Active: doLogs, Chat: chanChat, strClosing } = await getGuildConfig( guild ).Logs;
+
+    const logChans = await getGuildConfig( guild );
+    const { Active: doLogs, Chat: chanChat, strClosing } = logChans;
 
     const cmdInputUser = options.getUser( 'target' );
     const mentionUserID = ( cmdInputUser ? cmdInputUser.id : author.id );
@@ -36,7 +37,7 @@ module.exports = {
     const service = ( beNice ? 'www.google.com/search' : 'letmegooglethat.com/' );
     const strInputQuery = options.getString( 'query' );
     const q = encodeURI( strInputQuery.replace( / /g, '+' ) );
-    
+
     if ( doLogs && mentionUserID != author.id ) {
       chanChat.send( { content: '<@' + author.id + '> sent ' + mentionUser + ' a `/lmgtfy` for [`' + strInputQuery + '`](<https://' + service + '?q=' + q + '>) in <#' + channel.id + '>, and they were ' + ( beNice ? '' : '**__not__** ' ) + 'nice.' } )
       .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'lmgtfy', guild: guild, type: 'logLogs' } ) ); } );
