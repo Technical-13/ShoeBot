@@ -63,16 +63,26 @@ client.on( 'ready', async rdy => {
     console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) );
 
     const dbExpires = new Date( ( new Date() ).setMonth( ( new Date() ).getMonth() + 1 ) );
-    const guildConfigs = await guildConfig.find();
-    const guildConfigIds = [];
-    guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry._id ); } );
-    const guildIds = Array.from( client.guilds.cache.keys() );
-    let updateGuildList = [];
-    if ( guildIds.length > 0 ) { console.log( 'Checking %s guild%s...', chalk.blueBright( guildIds.length ), ( guildIds.length === 1 ? '' : 's' ) ); }
-    await guildIds.forEach( async ( guildId ) => {// Update guilds I'm still in.
+    const botGuildIds = Array.from( client.guilds.cache.keys() );
+    const storedGuilds = await guildConfig.find();
+    const storedGuildIds = [];
+    storedGuilds.forEach( ( entry, i ) => { storedGuildIds.push( entry._id ); } );
+    let addedGuilds = await botGuildIds.filter( a => !storedGuildIds.includes( a ) );
+    if ( addedGuilds.length > 0 ) {
+      console.log( 'Adding %s new guild%s: %o', chalk.greenBright( addedGuilds.length ), ( addedGuilds.length === 1 ? '' : 's' ), addedGuilds );
+      addedGuilds.forEach( ( guildId ) => { botGuildIds.push( guildId ); } );
+    }
+    let removedGuilds = await storedGuildIds.filter( r => !botGuildIds.includes( r ) );
+    if ( removedGuilds.length > 0 ) {
+      console.log( 'Checking %s lost guild%s: %o', chalk.redBright( removedGuilds.length ), ( removedGuilds.length === 1 ? '' : 's' ), removedGuilds );
+      removedGuilds.forEach( async ( guildId ) => { botGuildIds.push( guildId ); } );
+    }
+    let updateGuildList = [].concat( addedGuilds, removedGuilds );
+    if ( botGuildIds.length > 0 ) { console.log( 'Checking %s guild%s...', chalk.blueBright( botGuildIds.length ), ( botGuildIds.length === 1 ? '' : 's' ) ); }
+    await botGuildIds.forEach( async ( guildId ) => {// Update guilds I'm still in.
       let guild = await client.guilds.cache.get( guildId );
       let guildOwner = guild.members.cache.get( guild.ownerId );
-      if ( guildConfigIds.indexOf( guildId ) != -1 ) { guildConfigIds.splice( guildConfigIds.indexOf( guildId ), 1 ) }
+      if ( storedGuildIds.indexOf( guildId ) != -1 ) { storedGuildIds.splice( storedGuildIds.indexOf( guildId ), 1 ) }
       let currGuildConfig = await getGuildConfig( guild );
       let newName = ( guild.name !== currGuildConfig.Guild.Name ? true : false );
       let newOwnerID = ( guild.ownerId !== currGuildConfig.Guild.OwnerID ? true : false );
@@ -158,11 +168,11 @@ client.on( 'ready', async rdy => {
       }
     } );
     if ( updateGuildList.length === 0 ) { console.log( chalk.bold.greenBright( 'All guilds are current!' ) ); }
-    else { console.log( 'Updating %i guild%s: %o', chalk.yellow( updateGuildList.length ), ( updateGuildList.length === 1 ? '' :  's' ), updateGuildList ); }
-    if ( guildConfigIds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
-      console.log( 'Checking to see if guild data for %s guild%s has expired...', chalk.blueBright( guildConfigIds.length ), ( guildConfigIds.length === 1 ? '' : 's' ) );
-      guildConfigIds.forEach( async ( guildId ) => {
-        let delGuild = guildConfigs.find( entry => entry.id === guildId );
+    else { console.log( 'Updating %s guild%s: %o', chalk.yellow( updateGuildList.length ), ( updateGuildList.length === 1 ? '' :  's' ), updateGuildList ); }
+    if ( storedGuildIds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
+      console.log( 'Checking to see if guild data for %s guild%s has expired...', chalk.blueBright( storedGuildIds.length ), ( storedGuildIds.length === 1 ? '' : 's' ) );
+      storedGuildIds.forEach( async ( guildId ) => {
+        let delGuild = storedGuilds.find( entry => entry.id === guildId );
         let isExpired = ( !delGuild.Expires ? false : ( delGuild.Expires <= ( new Date() ) ? true : false ) );
         if ( isExpired ) {
           let guildOwner = ( client.users.cache.get( delGuild.Guild.OwnerID ) || null );
