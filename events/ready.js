@@ -85,10 +85,11 @@ client.on( 'ready', async rdy => {
     if ( botGuildIds.length > 0 ) { console.log( 'Checking %s guild%s...', chalk.blueBright( botGuildIds.length ), ( botGuildIds.length === 1 ? '' : 's' ) ); }
     await botGuildIds.forEach( async ( guildId ) => {// Update guilds I'm still in.
       let guild = await client.guilds.cache.get( guildId );
-      if ( await guildConfig.countDocuments( { _id: guild.id } ) === 0 ) { await createNewGuild( guild ); }
-      let guildOwner = guild.members.cache.get( guild.ownerId );
-      if ( storedGuildIds.indexOf( guildId ) != -1 ) { storedGuildIds.splice( storedGuildIds.indexOf( guildId ), 1 ) }
+      if ( !guild ) { return; }
+      if ( await guildConfig.countDocuments( { _id: guildId } ) === 0 ) { await createNewGuild( guild ); }
       let currGuildConfig = await getGuildConfig( guild );
+      let guildOwner = guild.members.cache.get( guild.ownerId );
+      let clearExpiration = ( currGuildConfig.Expires && guild ? true : false );
       let newName = ( guild.name !== currGuildConfig.Guild.Name ? true : false );
       let newOwnerID = ( guild.ownerId !== currGuildConfig.Guild.OwnerID ? true : false );
       let newOwnerName = ( guildOwner.displayName !== currGuildConfig.Guild.OwnerName ? true : false );
@@ -174,9 +175,9 @@ client.on( 'ready', async rdy => {
     } );
     if ( updateGuildList.length === 0 ) { console.log( chalk.bold.greenBright( 'All guilds are current!' ) ); }
     else { console.log( 'Updating %s guild%s: %o', chalk.yellow( updateGuildList.length ), ( updateGuildList.length === 1 ? '' :  's' ), updateGuildList ); }
-    if ( storedGuildIds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
-      console.log( 'Checking to see if guild data for %s guild%s has expired...', chalk.blueBright( storedGuildIds.length ), ( storedGuildIds.length === 1 ? '' : 's' ) );
-      storedGuildIds.forEach( async ( guildId ) => {
+    if ( removedGuilds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
+      console.log( 'Checking to see if guild data for %s guild%s has expired...', chalk.blueBright( removedGuilds.length ), ( removedGuilds.length === 1 ? '' : 's' ) );
+      removedGuilds.forEach( async ( guildId ) => {
         let delGuild = storedGuilds.find( entry => entry.id === guildId );
         let isExpired = ( !delGuild.Expires ? false : ( delGuild.Expires <= ( new Date() ) ? true : false ) );
         if ( isExpired ) {
