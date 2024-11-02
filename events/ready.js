@@ -288,7 +288,7 @@ client.on( 'ready', async rdy => {
               currUser.Guilds.splice( i, 1 );
               hasExpired++;
             }
-            else { console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( dbExpires - ( new Date() ), { getWeeks: true } ) ), dbExpires ); }
+            else { console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( currUserGuild.Expires - ( new Date() ), { getWeeks: true } ) ), currUserGuild.Expires ); }
             if ( currUser.Guilds.length === 0 ) { currUser.Guildless = dbExpires; }
             doUserUpdate = ( ( toExpire + hasExpired ) > 0 ? true : false );
           } );

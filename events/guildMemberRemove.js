@@ -51,7 +51,6 @@ client.on( 'guildMemberRemove', async ( member ) => {
     const currGuildConfig = await getGuildConfig( guild );
     currGuildConfig.Guild.Members = guild.members.cache.size;
     await guildConfig.updateOne( { _id: guild.id }, currGuildConfig, { upsert: true } )
-    .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( guild.name ), guild.id ); } )
     .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) in my database:\n%o' ), guild.name, guild.id, updateError ); } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildMemberRemove.js' ), errObject.stack ); }

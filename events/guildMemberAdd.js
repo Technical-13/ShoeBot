@@ -48,7 +48,6 @@ client.on( 'guildMemberAdd', async ( member ) => {
     const currGuildConfig = await getGuildConfig( guild );
     currGuildConfig.Guild.Members = guild.members.cache.size;
     await guildConfig.updateOne( { _id: guild.id }, currGuildConfig, { upsert: true } )
-    .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( guild.name ), guild.id ); } )
     .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to my database:\n%o' ), guild.name, guild.id, updateError ); } );
 
     const doLog = ( !currGuildConfig ? false : ( !currGuildConfig.Logs ? false : ( currGuildConfig.Logs.Active || false ) ) );
