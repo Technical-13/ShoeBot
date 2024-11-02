@@ -97,7 +97,7 @@ client.on( 'ready', async rdy => {
       let newVersion = ( verGuildDB !== currGuildConfig.Version ? true : false );
       var updateGuildVersion = null;
       var doGuildUpdate = false;
-      if ( clearExpiration ) {// Clear expiration date because I'm still in guild!
+      if ( clearExpiration ) {// Clear expiration date because I'm in the guild!
         currGuildConfig.Expires = null;
         doGuildUpdate = true;
       }
@@ -302,8 +302,6 @@ client.on( 'ready', async rdy => {
       }
     } );
     if ( updateUserList.length === 0 ) { console.log( chalk.bold.greenBright( 'My users match my database!' ) ); }
-    else if ( addedUsers.length > 0 ) { console.log( 'Adding %s user%s: %o', chalk.green( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
-    else if ( removedUsers.length > 0 ) { console.log( 'Updating %s lost user%s: %o', chalk.red( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
 
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
