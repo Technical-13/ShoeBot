@@ -195,28 +195,28 @@ client.on( 'ready', async rdy => {
       } );
     }
 
-    const userIds = Array.from( client.users.cache.keys() );/* TRON */console.log( 'userIds:%o', userIds );/* TROFF */
-    const storedUsers = await guildConfig.find();
+    const botUserIds = Array.from( client.users.cache.keys() );/* TRON */console.log( 'botUserIds:%o', botUserIds );/* TROFF */
+    const storedUsers = await guildConfig.find();/* TRON */console.log( 'storedUsers.size:%o', storedUsers.size );/* TROFF */
     const storedUserIds = [];
     storedUsers.forEach( ( entry, i ) => { storedUserIds.push( entry._id ); } );/* TRON */console.log( 'storedUserIds:%o', storedUserIds );/* TROFF */
-    let addedUsers = await userIds.filter( a => !storedUserIds.includes( a ) );/* TRON */console.log( 'addedUsers:%o', addedUsers );/* TROFF */
+    let addedUsers = await botUserIds.filter( a => !storedUserIds.includes( a ) );/* TRON */console.log( 'addedUsers:%o', addedUsers );/* TROFF */
     if ( addedUsers.length > 0 ) {
       console.log( 'Adding %s new user%s:', chalk.greenBright( addedUsers.length ), ( addedUsers.length === 1 ? '' : 's' ) );
       addedUsers.forEach( ( userId ) => {
         //console.log( 'Adding %s (%s)...', userId, chalk.greenBright( client.users.cache.get( userId ).displayName ) );
       } );
     }
-    let removedUsers = await storedUserIds.filter( r => !userIds.includes( r ) );/* TRON */console.log( 'removedUsers:%o', removedUsers );/* TROFF */
+    let removedUsers = await storedUserIds.filter( r => !botUserIds.includes( r ) );/* TRON */console.log( 'removedUsers:%o', removedUsers );/* TROFF */
     if ( removedUsers.length > 0 ) {
       console.log( 'Checking %s expired user%s:', chalk.redBright( removedUsers.length ), ( removedUsers.length === 1 ? '' : 's' ) );
       removedUsers.forEach( async ( userId ) => {
         let currUser = await userConfig.findOne( { _id: userId } );
-        console.log( 'User %s (%s) no longer shares any guild with me...', userId, chalk.greenBright( currUser.UserName ) );
+        console.log( 'User no longer shares any guild with me: %o', currUser );
       } );
     }
     let updateUserList = [];
-    if ( userIds.length > 0 ) { console.log( 'Checking %s user%s...', chalk.blueBright( userIds.length ), ( userIds.length === 1 ? '' : 's' ) ); }
-    await userIds.forEach( async ( userId ) => {// Update users I still am in a guild with.
+    if ( botUserIds.length > 0 ) { console.log( 'Checking %s user%s...', chalk.blueBright( botUserIds.length ), ( botUserIds.length === 1 ? '' : 's' ) ); }
+    await botUserIds.forEach( async ( userId ) => {// Update users I still am in a guild with.
       let user = client.users.cache.get( userId );
       if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) {// Add user to DB if not there
         const newUser = {
