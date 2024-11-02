@@ -209,7 +209,7 @@ client.on( 'ready', async rdy => {
     let removedUsers = storedUserIds.filter( r => !userIds.includes( r ) );
     if ( removedUsers.length > 0 ) {
       console.log( 'Checking %s expired user%s:', chalk.redBright( removedUsers.length ), ( removedUsers.length === 1 ? '' : 's' ) );
-      removedUsers.forEach( ( userId ) => {
+      removedUsers.forEach( async ( userId ) => {
         let currUser = await userConfig.findOne( { _id: userId } );
         console.log( 'User %s (%s) no longer shares any guild with me...', userId, chalk.greenBright( currUser.UserName ) );
       } );
