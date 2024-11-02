@@ -12,7 +12,6 @@ const verUserDB = config.verUserDB;
 
 client.on( 'ready', async rdy => {
   try {
-    const dbExpires = new Date( ( new Date() ).setMonth( ( new Date() ).getMonth() + 1 ) );
     const botOwner = client.users.cache.get( client.ownerId );
     const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };
     const inviteUrl = client.generateInvite( {
