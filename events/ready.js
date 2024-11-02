@@ -279,7 +279,7 @@ client.on( 'ready', async rdy => {
           removedGuilds.forEach( async ( guildId, i ) => {
             let currUserGuild = currUser.Guilds[ i ];
             if ( Object.prototype.toString.call( currUserGuild.Expires ) != '[object Date]' ) {
-              console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, currUserGuild.Name, currUser._id, currUser.UserName, duration( dbExpires - ( new Date() ), { getMonths: true, getWeeks: true } ), dbExpires );
+              console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), await duration( dbExpires - ( new Date() ), { getWeeks: true } ), dbExpires );
               currUserGuild.Expires = dbExpires;
               toExpire++;
             }
@@ -288,7 +288,7 @@ client.on( 'ready', async rdy => {
               currUser.Guilds.splice( i, 1 );
               hasExpired++;
             }
-            else { console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, currUserGuild.Name, currUser._id, currUser.UserName, duration( dbExpires - ( new Date() ), { getMonths: true, getWeeks: true } ), dbExpires ); }
+            else { console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), await duration( dbExpires - ( new Date() ), { getWeeks: true } ), dbExpires ); }
             if ( currUser.Guilds.length === 0 ) { currUser.Guildless = dbExpires; }
             doUserUpdate = ( ( toExpire + hasExpired ) > 0 ? true : false );
           } );
