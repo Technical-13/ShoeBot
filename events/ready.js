@@ -233,7 +233,7 @@ client.on( 'ready', async rdy => {
       let newName = ( !user ? false : ( user.displayName != currUser.UserName ? true : false ) );
       let newGuilds = ( arrUserGuilds != userGuilds ? true : false );
       let newVersion = ( verUserDB != currUser.Version ? true : false );
-      var newUserConfig = null;
+      var newUser = null;
       var doUserUpdate = false;
       if ( newName ) {// Update user displayName
         currUser.UserName = user.displayName;
@@ -280,10 +280,11 @@ client.on( 'ready', async rdy => {
       }
       if ( newVersion ) {// Update everything
         let Guilds = null;
-        newUserConfig = {
+        newUser = {
           _id: user.id,
           Bot: ( user.bot ? true : false ),
           Guilds: ( currUser.Guilds || [] ),
+          Guildless: ( currUser.Guildless || [] ),
           UserName: ( currUser.UserName || user.displayName ),
           Score: ( currUser.Score || 0 ),
           Version: verUserDB
@@ -292,9 +293,9 @@ client.on( 'ready', async rdy => {
       }
       if ( doUserUpdate ) {
         updateUserList.push( chalk.bold.cyan( user.displayName ) );
-        await userConfig.updateOne( { _id: userId }, ( newUserConfig || currUser ), { upsert: true } )
-        .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( user.displayName ) ); } )
-        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${user.displayName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
+        await userConfig.updateOne( { _id: userId }, ( newUser || currUser ), { upsert: true } )
+        .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( ( newUser || currUser ).UserName ) ); } )
+        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${( newUser || currUser ).UserName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
       }
     } );
     if ( updateUserList.length === 0 ) { console.log( chalk.bold.greenBright( 'All users are current!' ) ); }
