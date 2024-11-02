@@ -1,3 +1,4 @@
+const chalk = require( 'chalk' );
 const userConfig = require( '../models/BotUser.js' );
 const createNewUser = require( './createNewUser.js' );
 

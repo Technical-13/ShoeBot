@@ -1,3 +1,4 @@
+const chalk = require( 'chalk' );
 const getBotConfig = require( '../functions/getBotDB.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const config = require( '../config.json' );

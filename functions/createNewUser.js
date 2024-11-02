@@ -1,3 +1,4 @@
+const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const userConfig = require( '../models/BotUser.js' );
 const verUserDB = config.verUserDB;
