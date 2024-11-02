@@ -236,13 +236,12 @@ client.on( 'ready', async rdy => {
         await userConfig.create( newUser )
         .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildCreate.js:\n%o' ), user.displayName, memberId, initError ); } );
       }
-      let arrUserGuilds = ( Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
+      //let botUserGuilds = ( Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
       let currUser = await userConfig.findOne( { _id: userId } );
-      let userGuilds = [];
-      currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
-      userGuilds.sort();
+      let storedUserGuilds = [];
+      currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
       let newName = ( !user ? false : ( user.displayName != currUser.UserName ? true : false ) );
-      let newGuilds = ( arrUserGuilds != userGuilds ? true : false );
+      let newGuilds = false;//( botUserGuilds != storedUserGuilds.sort() ? true : false );
       let newVersion = ( verUserDB != currUser.Version ? true : false );
       var newUser = null;
       var doUserUpdate = false;
@@ -300,11 +299,11 @@ client.on( 'ready', async rdy => {
       if ( newVersion ) {// Update everything
         let Guilds = null;
         newUser = {
-          _id: user.id,
-          Bot: ( user.bot ? true : false ),
+          _id: ( user ? user.id : currUser._id ),
+          Bot: ( ( user ? user.bot : currUser.Bot ) ? true : false ),
           Guilds: ( currUser.Guilds || [] ),
-          Guildless: ( currUser.Guildless || [] ),
-          UserName: ( currUser.UserName || user.displayName ),
+          Guildless: ( currUser.Guildless || null ),
+          UserName: ( currUser.UserName || ( user ? user.displayName : null ) ),
           Score: ( currUser.Score || 0 ),
           Version: verUserDB
         };
