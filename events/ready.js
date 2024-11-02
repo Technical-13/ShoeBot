@@ -236,12 +236,14 @@ client.on( 'ready', async rdy => {
         await userConfig.create( newUser )
         .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildCreate.js:\n%o' ), user.displayName, memberId, initError ); } );
       }
-      //let botUserGuilds = ( Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
+      let botUserGuilds = ( Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
       let currUser = await userConfig.findOne( { _id: userId } );
       let storedUserGuilds = [];
       currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
+      let addedGuilds = storedUserGuilds.filter( a => !botUserGuilds.includes( a ) );
+      let removedGuilds = botUserGuilds.filter( r => !storedUserGuilds.includes( r ) );
       let newName = ( !user ? false : ( user.displayName != currUser.UserName ? true : false ) );
-      let newGuilds = false;//( botUserGuilds != storedUserGuilds.sort() ? true : false );
+      let newGuilds = ( [].concat( addedGuilds, removedGuilds ).length != 0 ? true : false );
       let newVersion = ( verUserDB != currUser.Version ? true : false );
       var newUser = null;
       var doUserUpdate = false;
@@ -250,7 +252,6 @@ client.on( 'ready', async rdy => {
         doUserUpdate = true;
       }
       if ( newGuilds ) {// Update guilds
-        let addedGuilds = arrUserGuilds.filter( a => !userGuilds.includes( a ) );
         if ( addedGuilds.length > 0 ) {// Added guild(s)
           await addedGuilds.forEach( async ( guildId ) => {
             let guild = await client.guilds.cache.get( guildId );
@@ -269,7 +270,6 @@ client.on( 'ready', async rdy => {
           } );
           doUserUpdate = true;
         }
-        let removedGuilds = userGuilds.filter( r => !arrUserGuilds.includes( r ) );
         if ( removedGuilds.length > 0 ) {// Removed guild(s)
           let toExpire = 0;
           let hasExpired = 0;
