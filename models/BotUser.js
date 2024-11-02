@@ -12,8 +12,9 @@ let userSchema = new Schema( {
     Roles: [ String ],
     Score: Number
   } ],
-  UserName: String,
+  Guildless: Date,
   Score: Number,
+  UserName: String,
   Version: Number
 } );
 

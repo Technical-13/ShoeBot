@@ -58,11 +58,12 @@ client.on( 'guildCreate', async ( guild ) => {
     guildMembers.forEach( async memberId => {
       let member = guild.members.cache.get( memberId );
       let { user } = member;
-      if ( await userConfig.countDocuments( { _id: memberId } ) === 0 ) {
+      if ( await userConfig.countDocuments( { _id: memberId } ) === 0 ) {// Create new user in DB if not there.
         const newUser = {
           _id: memberId,
           Bot: ( user.bot ? true : false ),
           Guilds: [],
+          Guildless: null,
           UserName: user.displayName,
           Score: 0,
           Version: verUserDB

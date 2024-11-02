@@ -64,7 +64,29 @@ client.on( 'guildDelete', async ( guild ) => {
     .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update ${guild.name} (id: ${guild.id}) to expire in DB:\n${dbExpires}\nError:\n${updateError}` ) ); } );
 
     const memberIds = Array.from( guildMembers.keys() );
-    memberIds.forEach( async ( userId ) => {// Update users for this guild to expire.
+    memberIds.forEach( async ( memberId ) => {// Update users for this guild to expire.
+      let member = guild.members.cache.get( memberId );
+      if ( await userConfig.countDocuments( { _id: memberId } ) === 0 ) {// Create new user in DB if not there.
+        const newUser = {
+          _id: memberId,
+          Bot: ( user.bot ? true : false ),
+          Guilds: [ {
+            _id: guild.id,
+            Bans: [],
+            Expires: null,
+            GuildName: guild.name,
+            MemberName: member.displayName,
+            Roles: Array.from( member.roles.cache.keys() ),
+            Score: 0
+          } ],
+          Guildless: null,
+          UserName: user.displayName,
+          Score: 0,
+          Version: verUserDB
+        }
+        await userConfig.create( newUser )
+        .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildCreate.js:\n%o' ), user.displayName, memberId, initError ); } );
+      }
       let currUser = await userConfig.findOne( { _id: userId } );
       let userGuilds = [];
       currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );

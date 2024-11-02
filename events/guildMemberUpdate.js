@@ -12,6 +12,27 @@ client.on( 'guildMemberUpdate', async ( oldMember, newMember ) => {
     const { guild, user } = newMember;
     const { isGuildOwner } = await userPerms( guild, user );
 
+    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {// Create new user in DB if not there.
+      const newUser = {
+        _id: user.id,
+        Bot: ( user.bot ? true : false ),
+        Guilds: [ {
+          _id: guild.id,
+          Bans: [],
+          Expires: null,
+          GuildName: guild.name,
+          MemberName: newMember.displayName,
+          Roles: Array.from( newMember.roles.cache.keys() ),
+          Score: 0
+        } ],
+        Guildless: null,
+        UserName: user.displayName,
+        Score: 0,
+        Version: verUserDB
+      }
+      await userConfig.create( newUser )
+      .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildCreate.js:\n%o' ), user.displayName, user.id, initError ); } );
+    }
     const currUser = await userConfig.findOne( { _id: user.id } );
     const userGuilds = [];
     currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );

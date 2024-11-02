@@ -18,6 +18,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
         _id: user.id,
         Bot: ( user.bot ? true : false ),
         Guilds: [],
+        Guildless: null,
         UserName: user.displayName,
         Score: 0,
         Version: verUserDB

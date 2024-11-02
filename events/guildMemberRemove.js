@@ -26,6 +26,7 @@ client.on( 'guildMemberRemove', async ( member ) => {
           Roles: Array.from( member.roles.cache.keys() ),
           Score: 0
         } ],
+        Guildless: null,
         UserName: user.displayName,
         Score: 0,
         Version: verUserDB
