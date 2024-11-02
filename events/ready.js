@@ -265,7 +265,7 @@ client.on( 'ready', async rdy => {
           let hasExpired = 0;
           let userGuilds = [];
           currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
-          removedGuilds.forEach( async ( guildId, 1 ) => {
+          removedGuilds.forEach( async ( guildId, i ) => {
             let currUserGuild = currUser.Guilds[ i ];
             if ( Object.prototype.toString.call( currUserGuild.Expires ) != '[object Date]' ) { currUserGuild.Expires = dbExpires; }
             else if ( currUserGuild.Expires <= ( new Date() ) ) { currUser.Guilds.splice( i, 1 ); }
