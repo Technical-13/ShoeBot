@@ -302,8 +302,8 @@ client.on( 'ready', async rdy => {
       }
     } );
     if ( updateUserList.length === 0 ) { console.log( chalk.bold.greenBright( 'My users match my database!' ) ); }
-    else if ( addedUsers.length > 0 ) { console.log( 'Adding %s user%s: %o', chalk.yellow( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
-    else if ( removedUsers.length > 0 ) { console.log( 'Removing %s user%s: %o', chalk.yellow( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
+    else if ( addedUsers.length > 0 ) { console.log( 'Adding %s user%s: %o', chalk.green( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
+    else if ( removedUsers.length > 0 ) { console.log( 'Updating %s lost user%s: %o', chalk.red( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
 
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
