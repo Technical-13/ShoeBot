@@ -195,22 +195,23 @@ client.on( 'ready', async rdy => {
       } );
     }
 
-    const userIds = Array.from( client.users.cache.keys() );
+    const userIds = Array.from( client.users.cache.keys() );/* TRON */console.log( 'userIds:%o', userIds );/* TROFF */
     const storedUsers = await guildConfig.find();
     const storedUserIds = [];
-    storedUsers.forEach( ( entry, i ) => { storedUserIds.push( entry._id ); } );
-    let addedUsers = userIds.filter( a => !storedUserIds.includes( a ) );
+    storedUsers.forEach( ( entry, i ) => { storedUserIds.push( entry._id ); } );/* TRON */console.log( 'storedUserIds:%o', storedUserIds );/* TROFF */
+    let addedUsers = userIds.filter( a => !storedUserIds.includes( a ) );/* TRON */console.log( 'addedUsers:%o', addedUsers );/* TROFF */
     if ( addedUsers.length > 0 ) {
       console.log( 'Adding %s new user%s:', chalk.greenBright( addedUsers.length ), ( addedUsers.length === 1 ? '' : 's' ) );
       addedUsers.forEach( ( userId ) => {
-        console.log( 'Adding %s (%s)...', userId, chalk.greenBright( client.users.cache.get( userId ).displayName ) );
+        //console.log( 'Adding %s (%s)...', userId, chalk.greenBright( client.users.cache.get( userId ).displayName ) );
       } );
     }
     let removedUsers = storedUserIds.filter( r => !userIds.includes( r ) );
     if ( removedUsers.length > 0 ) {
       console.log( 'Checking %s expired user%s:', chalk.redBright( removedUsers.length ), ( removedUsers.length === 1 ? '' : 's' ) );
       removedUsers.forEach( ( userId ) => {
-        console.log( 'User %s (%s) no longer shares any guild with me...', userId, chalk.greenBright( client.users.cache.get( userId ).displayName ) );
+        let currUser = await userConfig.findOne( { _id: userId } );
+        console.log( 'User %s (%s) no longer shares any guild with me...', userId, chalk.greenBright( currUser.UserName ) );
       } );
     }
     let updateUserList = [];
