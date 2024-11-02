@@ -288,6 +288,7 @@ client.on( 'ready', async rdy => {
               currUser.Guilds.splice( i, 1 );
               hasExpired++;
             }
+            else { console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, currUserGuild.Name, currUser._id, currUser.UserName, duration( dbExpires - ( new Date() ), { getMonths: true, getWeeks: true } ), dbExpires ); }
             if ( currUser.Guilds.length === 0 ) { currUser.Guildless = dbExpires; }
             doUserUpdate = ( ( toExpire + hasExpired ) > 0 ? true : false );
           } );
@@ -316,7 +317,6 @@ client.on( 'ready', async rdy => {
         .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( ( newUser || currUser ).UserName ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${( newUser || currUser ).UserName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
       }
-      else if ( !doUserUpdate && ( newName || newGuilds || newVersion ) ) { console.log( 'Nothing to update for %s (%s): %o', currUser._id, currUser.UserName, {newName:newName,newGuilds:newGuilds,newVersion:newVersion,doUserUpdate:doUserUpdate} ); }
     } );
     if ( updateUserList.length === 0 ) { console.log( chalk.bold.greenBright( 'All users are current!' ) ); }
     else { console.log( 'Updating %s user%s: %o', chalk.yellow( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
