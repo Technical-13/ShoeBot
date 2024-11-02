@@ -256,6 +256,7 @@ client.on( 'ready', async rdy => {
           await addedGuilds.forEach( async ( guildId ) => {
             let guild = await client.guilds.cache.get( guildId );
             let member = guild.members.cache.get( userId );
+            if ( !member ) { return; }
             const addGuild = {
               _id: guildId,
               Bans: [],
