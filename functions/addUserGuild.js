@@ -1,11 +1,12 @@
+const client = require( '..' );
 const chalk = require( 'chalk' );
 const userConfig = require( '../models/BotUser.js' );
 const createNewUser = require( './createNewUser.js' );
 
 module.exports = async ( id, guild ) => {
   try {
+    const user = client.users.cache.get( id );
     const member = guild.members.cache.get( id );
-    const { user } = member;
     if ( await userConfig.countDocuments( { _id: id } ) === 0 ) { await createNewUser( user ); }
     const currUser = await userConfig.findOne( { _id: id } );
     const addGuild = {
