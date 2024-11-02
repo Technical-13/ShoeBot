@@ -46,7 +46,7 @@ client.on( 'guildMemberUpdate', async ( oldMember, newMember ) => {
       doUserUpdate = true;
     }
     if ( newRoles ) {// Added or Removed roles
-      currUserGuild.Roles = Array.from( member.roles.cache.keys() );
+      currUserGuild.Roles = Array.from( newMember.roles.cache.keys() );
       doUserUpdate = true;
     }
     if ( doUserUpdate ) {
