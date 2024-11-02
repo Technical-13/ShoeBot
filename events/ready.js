@@ -3,6 +3,7 @@ const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const parse = require( '../functions/parser.js' );
+const duration = require( '../functions/duration.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const getBotConfig = require( '../functions/getBotDB.js' );
@@ -277,10 +278,18 @@ client.on( 'ready', async rdy => {
           currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
           removedGuilds.forEach( async ( guildId, i ) => {
             let currUserGuild = currUser.Guilds[ i ];
-            if ( Object.prototype.toString.call( currUserGuild.Expires ) != '[object Date]' ) { currUserGuild.Expires = dbExpires; toExpire++; }
-            else if ( currUserGuild.Expires <= ( new Date() ) ) { currUser.Guilds.splice( i, 1 ); hasExpired++; }
+            if ( Object.prototype.toString.call( currUserGuild.Expires ) != '[object Date]' ) {
+              console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, currUserGuild.Name, currUser._id, currUser.UserName, duration( dbExpires - ( new Date() ), { getMonths: true, getWeeks: true } ), dbExpires );
+              currUserGuild.Expires = dbExpires;
+              toExpire++;
+            }
+            else if ( currUserGuild.Expires <= ( new Date() ) ) {
+              console.log( 'Guild %s (%s) expired from %s (%s) on: %o', guildId, currUserGuild.Name, currUser._id, currUser.UserName, dbExpires );
+              currUser.Guilds.splice( i, 1 );
+              hasExpired++;
+            }
             if ( currUser.Guilds.length === 0 ) { currUser.Guildless = dbExpires; }
-            doUserUpdate = true;
+            doUserUpdate = ( ( toExpire + hasExpired ) > 0 ? true : false );
           } );
           toExpire = ( toExpire === 0 ? null : ' updated ' + chalk.bold.red( toExpire ) + ' guild' + ( toExpire === 1 ? '' : 's' ) + ' to expire in a month' );
           hasExpired = ( hasExpired === 0 ? null : ' removed ' + chalk.bold.red( hasExpired ) + ' guild' + ( hasExpired === 1 ? '' : 's' ) + ' from the user' );
@@ -307,6 +316,7 @@ client.on( 'ready', async rdy => {
         .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( ( newUser || currUser ).UserName ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${( newUser || currUser ).UserName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
       }
+      else { console.log( 'Nothing to update for %s (%s): %o', currUser._id, currUser.UserName, currUser ); }
     } );
     if ( updateUserList.length === 0 ) { console.log( chalk.bold.greenBright( 'All users are current!' ) ); }
     else { console.log( 'Updating %s user%s: %o', chalk.yellow( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }

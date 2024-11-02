@@ -12,13 +12,13 @@ module.exports = {
     const { author, guild } = message;
     const { isBotOwner } = await userPerms( author, guild );
     if ( isBotOwner ) {
-      const guildConfigs = await guildConfigDB.find();
-      const guildConfigIds = [];
-      guildConfigs.forEach( ( entry, i ) => { guildConfigIds.push( entry._id ); } );
+      const storedGuilds = await guildConfigDB.find();
+      const storedGuildIds = [];
+      storedGuilds.forEach( ( entry, i ) => { storedGuildIds.push( entry._id ); } );
       const embedGuilds = [];
-      const guildIds = Array.from( client.guilds.cache.keys() );
+      const botGuildIds = Array.from( client.guilds.cache.keys() );
 
-      for ( const guildId of guildIds ) {
+      for ( const guildId of botGuildIds ) {
         const doGuild = client.guilds.cache.get( guildId );
         const objGuild = doGuild.toJSON();
         const roleEveryone = objGuild.roles.cache.find( role => role.name === '@everyone' );
@@ -31,8 +31,8 @@ if ( vanityURLCode ) { console.log( '%s has a vanityURLCode: %s', guildName, van
         const chanSafetyAlerts = objGuild.safetyAlertsChannelId;
         const chanSystem = objGuild.systemChannelId;
         const chanFirst = Array.from( doGuild.channels.cache.filter( chan => !chan.nsfw && chan.permissionsFor( roleEveryone ).has( 'ViewChannel' ) ).keys() )[ 0 ];
-        const doneConfig = ( guildConfigIds.indexOf( guildId ) != -1 ? true : false );
-        const definedInvite = ( doneConfig ? guildConfigs[ guildConfigIds.indexOf( guildId ) ].Invite : null );
+        const doneConfig = ( storedGuildIds.indexOf( guildId ) != -1 ? true : false );
+        const definedInvite = ( doneConfig ? storedGuilds[ storedGuildIds.indexOf( guildId ) ].Invite : null );
         const chanInvite = ( definedInvite || chanWidget || chanRules || chanPublicUpdates || chanSafetyAlerts || chanSystem || chanFirst );
         const chanLinkUrl = 'https://discordapp.com/channels/' + guildId + '/' + chanInvite;
         const ownerId = objGuild.ownerId;
@@ -86,13 +86,13 @@ if ( vanityURLCode ) { console.log( '%s has a vanityURLCode: %s', guildName, van
           .setColor( '#FF00FF' )
           .setTimestamp()
           .setThumbnail( iconURL )
-          .setFooter( { text: author.displayName + ' requested /guilds information (' + guildIds.length + ')' } );
+          .setFooter( { text: author.displayName + ' requested /guilds information (' + botGuildIds.length + ')' } );
 
         if ( description ) { thisGuild.addFields( { name: 'Description', value: description } ); }
 
-        if ( guildConfigIds.indexOf( guildId ) != -1 ) {
-          const indexOfGuild = guildConfigIds.indexOf( guildId )
-          const guildChans = guildConfigs[ indexOfGuild ].Logs;
+        if ( storedGuildIds.indexOf( guildId ) != -1 ) {
+          const indexOfGuild = storedGuildIds.indexOf( guildId )
+          const guildChans = storedGuilds[ indexOfGuild ].Logs;
           thisGuild.addFields(
             { name: '\u200B', value: 'Default Log Channel: <#' + guildChans.Default + '>' },
             { name: '\u200B', value: 'Error Log Channel: <#' + guildChans.Error + '>' },
