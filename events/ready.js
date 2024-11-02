@@ -310,7 +310,7 @@ client.on( 'ready', async rdy => {
         doUserUpdate = true;
       }
       if ( doUserUpdate ) {
-        updateUserList.push( chalk.bold.cyan( user.displayName ) );
+        updateUserList.push( chalk.bold.cyan( !user ? ( newUser || currUser ).UserName : user.displayName ) );
         await userConfig.updateOne( { _id: userId }, ( newUser || currUser ), { upsert: true } )
         .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( ( newUser || currUser ).UserName ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${( newUser || currUser ).UserName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
