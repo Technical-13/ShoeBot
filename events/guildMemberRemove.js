@@ -4,6 +4,8 @@ const config = require( '../config.json' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
+const createNewUser = require( '../functions/createNewUser.js' );
+const addUserGuild = require( '../functions/addUserGuild.js' );
 const errHandler = require( '../functions/errorHandler.js' );
 const parse = require( '../functions/parser.js' );
 const duration = require( '../functions/duration.js' );
@@ -15,31 +17,12 @@ client.on( 'guildMemberRemove', async ( member ) => {
     const { guild, user } = member;
     const dbExpires = new Date( ( new Date() ).setMonth( ( new Date() ).getMonth() + 1 ) );
 
-    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {// Create new user in DB if not there.
-      const newUser = {
-        _id: user.id,
-        Bot: ( user.bot ? true : false ),
-        Guilds: [ {
-          _id: guild.id,
-          Bans: [],
-          Expires: null,
-          GuildName: guild.name,
-          MemberName: member.displayName,
-          Roles: Array.from( member.roles.cache.keys() ),
-          Score: 0
-        } ],
-        Guildless: null,
-        UserName: user.displayName,
-        Score: 0,
-        Version: verUserDB
-      }
-      await userConfig.create( newUser )
-      .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildMemberRemove.js:\n%o' ), user.displayName, user.id, initError ); } );
-    }
+    if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) { await createNewUser( user ); }
+    await addUserGuild( userId, guild );
     const currUser = await userConfig.findOne( { _id: user.id } );
-    const userGuilds = [];
-    currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
-    const ndxUserGuild = userGuilds.indexOf( guild.id );
+    const storedUserGuilds = [];
+    currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
+    const ndxUserGuild = storedUserGuilds.indexOf( guild.id );
     if ( ndxUserGuild != -1 ) {
       let currUserGuild = currUser.Guilds[ ndxUserGuild ];
       currUserGuild.Expires = dbExpires;
@@ -53,5 +36,5 @@ client.on( 'guildMemberRemove', async ( member ) => {
     await guildConfig.updateOne( { _id: guild.id }, currGuildConfig, { upsert: true } )
     .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) in my database:\n%o' ), guild.name, guild.id, updateError ); } );
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildMemberRemove.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'guildMemberRemove.js' ), errObject.stack ); }
 } );

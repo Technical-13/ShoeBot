@@ -2,10 +2,12 @@ const client = require( '..' );
 const chalk = require( 'chalk' );
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
+const createNewUser = require( '../functions/createNewUser.js' );
+const addUserGuild = require( '../functions/addUserGuild.js' );
 const duration = require( '../functions/duration.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
-const objTimeString = require( '../time.json' );
+const objTimeString = require( '../jsonObjects/time.json' );
 
 client.on( 'guildDelete', async ( guild ) => {
   try {
@@ -67,31 +69,12 @@ client.on( 'guildDelete', async ( guild ) => {
     const memberIds = Array.from( guildMembers.keys() );
     memberIds.forEach( async ( memberId ) => {// Update users for this guild to expire.
       let member = guild.members.cache.get( memberId );
-      if ( await userConfig.countDocuments( { _id: memberId } ) === 0 ) {// Create new user in DB if not there.
-        const newUser = {
-          _id: memberId,
-          Bot: ( user.bot ? true : false ),
-          Guilds: [ {
-            _id: guild.id,
-            Bans: [],
-            Expires: null,
-            GuildName: guild.name,
-            MemberName: member.displayName,
-            Roles: Array.from( member.roles.cache.keys() ),
-            Score: 0
-          } ],
-          Guildless: null,
-          UserName: user.displayName,
-          Score: 0,
-          Version: verUserDB
-        }
-        await userConfig.create( newUser )
-        .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildCreate.js:\n%o' ), user.displayName, memberId, initError ); } );
-      }
+      if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) { await createNewUser( user ); }
+      await addUserGuild( userId, guild );
       let currUser = await userConfig.findOne( { _id: userId } );
-      let userGuilds = [];
-      currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
-      let ndxUserGuild = userGuilds.indexOf( guild.id );
+      let storedUserGuilds = [];
+      currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
+      let ndxUserGuild = storedUserGuilds.indexOf( guild.id );
       if ( ndxUserGuild != -1 ) {
         let currUserGuild = currUser.Guilds[ ndxUserGuild ];
         currUserGuild.Expires = dbExpires;

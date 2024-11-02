@@ -2,12 +2,15 @@ const client = require( '..' );
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
-const parse = require( '../functions/parser.js' );
-const duration = require( '../functions/duration.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
-const getGuildConfig = require( '../functions/getGuildDB.js' );
-const getBotConfig = require( '../functions/getBotDB.js' );
 const userConfig = require( '../models/BotUser.js' );
+const getGuildConfig = require( '../functions/getGuildDB.js' );
+const createNewGuild = require( '../functions/createNewGuild.js' );
+const createNewUser = require( '../functions/createNewUser.js' );
+const addUserGuild = require( '../functions/addUserGuild.js' );
+const getBotConfig = require( '../functions/getBotDB.js' );
+const duration = require( '../functions/duration.js' );
+const parse = require( '../functions/parser.js' );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
 
@@ -82,6 +85,7 @@ client.on( 'ready', async rdy => {
     if ( botGuildIds.length > 0 ) { console.log( 'Checking %s guild%s...', chalk.blueBright( botGuildIds.length ), ( botGuildIds.length === 1 ? '' : 's' ) ); }
     await botGuildIds.forEach( async ( guildId ) => {// Update guilds I'm still in.
       let guild = await client.guilds.cache.get( guildId );
+      if ( await guildConfig.countDocuments( { _id: guild.id } ) === 0 ) { await createNewGuild( guild ); }
       let guildOwner = guild.members.cache.get( guild.ownerId );
       if ( storedGuildIds.indexOf( guildId ) != -1 ) { storedGuildIds.splice( storedGuildIds.indexOf( guildId ), 1 ) }
       let currGuildConfig = await getGuildConfig( guild );
@@ -224,18 +228,7 @@ client.on( 'ready', async rdy => {
     if ( botUserIds.length > 0 ) { console.log( 'Checking %s user%s...', chalk.blueBright( botUserIds.length ), ( botUserIds.length === 1 ? '' : 's' ) ); }
     await botUserIds.forEach( async ( userId ) => {// Add new users and update all users in database.
       let user = client.users.cache.get( userId );
-      if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) {// Add user to DB if not there
-        const newUser = {
-          _id: userId,
-          Guilds: [],
-          Guildless: null,
-          UserName: user.displayName,
-          Score: 0,
-          Version: verUserDB
-        }
-        await userConfig.create( newUser )
-        .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildCreate.js:\n%o' ), user.displayName, memberId, initError ); } );
-      }
+      if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) { await createNewUser( user ); }
       let botUserGuilds = ( Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
       let currUser = await userConfig.findOne( { _id: userId } );
       let storedUserGuilds = [];
@@ -255,27 +248,12 @@ client.on( 'ready', async rdy => {
         if ( addedGuilds.length > 0 ) {// Added guild(s)
           await addedGuilds.forEach( async ( guildId ) => {
             let guild = await client.guilds.cache.get( guildId );
-            let member = guild.members.cache.get( userId );
-            if ( !member ) { return; }
-            const addGuild = {
-              _id: guildId,
-              Bans: [],
-              Expires: null,
-              GuildName: guild.name,
-              MemberName: member.displayName,
-              Roles: Array.from( member.roles.cache.keys() ),
-              Score: 0
-            };
-            currUser.Guilds.push( addGuild );
-            currUser.Guildless = null;
+            await addUserGuild( userId, guild );
           } );
-          doUserUpdate = true;
         }
         if ( removedGuilds.length > 0 ) {// Removed guild(s)
           let toExpire = 0;
           let hasExpired = 0;
-          let userGuilds = [];
-          currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
           removedGuilds.forEach( async ( guildId, i ) => {
             let currUserGuild = currUser.Guilds[ i ];
             if ( Object.prototype.toString.call( currUserGuild.Expires ) != '[object Date]' ) {

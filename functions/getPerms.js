@@ -5,6 +5,8 @@ const config = require( '../config.json' );
 const getBotConfig = require( './getBotDB.js' );
 const getGuildConfig = require( './getGuildDB.js' );
 const userConfig = require( '../models/BotUser.js' );
+const createNewUser = require( './createNewUser.js' );
+const addUserGuild = require( './addUserGuild.js' );
 const verUserDB = config.verUserDB;
 
 module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
@@ -19,36 +21,11 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
     if ( !guild ) { throw new Error( 'No guild to get user permissions for.' ); }
 
     const member = guild.members.cache.get( user.id );
-    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {// Create new user in DB if not there.
-      const newUser = {
-        _id: user.id,
-        Guilds: [],
-        Guildless: null,
-        UserName: user.displayName,
-        Score: 0,
-        Version: verUserDB
-      }
-      await userConfig.create( newUser )
-      .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in getPerms.js:\n%o' ), user.displayName, user.id, initError ); } );
-    }
+    if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) { await createNewUser( user ); }
     const currUser = await userConfig.findOne( { _id: user.id } );
-    const userGuilds = [];
-    currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
-    if ( userGuilds.indexOf( guild.id ) === -1 ) {
-      const addGuild = {
-        _id: guild.id,
-        Bans: [],
-        Expires: null,
-        GuildName: guild.name,
-        MemberName: member.displayName,
-        Roles: Array.from( member.roles.cache.keys() ),
-        Score: 0
-      };
-      currUser.Guilds.push( addGuild );
-      currUser.Guildless = null;
-      userConfig.updateOne( { _id: user.id }, currUser, { upsert: true } )
-      .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add guild %s (id: %s) to user %s (id: %s) in my database in getPerms.js:\n%o' ), guild.name, guild.id, user.displayName, user.id, updateError ); } );
-    }
+    const storedUserGuilds = [];
+    currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
+    if ( storedUserGuilds.indexOf( guild.id ) === -1 ) { await addUserGuild( user.id, guild ); }
 
     const botConfig = await getBotConfig();
     const clientID = ( botConfig.ClientID || config.clientId || client.id );

@@ -29,5 +29,5 @@ client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {
       .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update %s (id: %s) to my database:\n%o' ), newGuild.name, guildId, updateError ); } );
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildUpdate.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'guildUpdate.js' ), errObject.stack ); }
 } );

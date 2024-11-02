@@ -4,7 +4,7 @@ const ms = require( 'ms' );
 const chalk = require( 'chalk' );
 const cooldown = new Collection();
 const cacheinfo = require( '../functions/cacheinfo.js' );
-const gcCacheTypeIcons = require( '../eventTypes.json' );
+const gcCacheTypeIcons = require( '../jsonObjects/eventTypes.json' );
 const userPerms = require( '../functions/getPerms.js' );
 
 client.on( 'messageCreate', async message => {
