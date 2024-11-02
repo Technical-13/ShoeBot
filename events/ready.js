@@ -198,7 +198,7 @@ client.on( 'ready', async rdy => {
     const userIds = Array.from( client.users.cache.keys() );
     const storedUsers = await guildConfig.find();
     const storedUserIds = [];
-    storedUser.forEach( ( entry, i ) => { storedUserIds.push( entry._id ); } );
+    storedUsers.forEach( ( entry, i ) => { storedUserIds.push( entry._id ); } );
     let addedUsers = userIds.filter( a => !storedUserIds.includes( a ) );
     if ( addedUsers.length > 0 ) {
       console.log( 'Adding %s new user%s:', chalk.greenBright( addedUsers.length ), ( addedUsers.length === 1 ? '' : 's' ) );
