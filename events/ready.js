@@ -230,9 +230,9 @@ client.on( 'ready', async rdy => {
       let userGuilds = [];
       currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
       userGuilds.sort();
-      let newName = ( user.displayName !== currUser.UserName ? true : false );
+      let newName = ( !user ? false : ( user.displayName != currUser.UserName ? true : false ) );
       let newGuilds = ( arrUserGuilds != userGuilds ? true : false );
-      let newVersion = ( verUserDB !== currUser.Version ? true : false );
+      let newVersion = ( verUserDB != currUser.Version ? true : false );
       var newUserConfig = null;
       var doUserUpdate = false;
       if ( newName ) {// Update user displayName
