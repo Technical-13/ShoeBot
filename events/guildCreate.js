@@ -85,7 +85,7 @@ client.on( 'guildCreate', async ( guild ) => {
           Score: 0
         };
         currUser.Guilds.push( addGuild );
-        currUser.Guilds.sort();
+        currUser.Guildless = null;
         userConfig.updateOne( { _id: user.id }, currUser, { upsert: true } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add guild %s (id: %s) to user %s (id: %s) in my database in guildCreate.js:\n%o' ), guild.name, guild.id, user.displayName, user.id, updateError ); } );
       }

@@ -19,10 +19,11 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
     if ( !guild ) { throw new Error( 'No guild to get user permissions for.' ); }
 
     const member = guild.members.cache.get( user.id );
-    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {
+    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {// Create new user in DB if not there.
       const newUser = {
         _id: user.id,
         Guilds: [],
+        Guildless: null,
         UserName: user.displayName,
         Score: 0,
         Version: verUserDB
@@ -44,7 +45,7 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
         Score: 0
       };
       currUser.Guilds.push( addGuild );
-      currUser.Guilds.sort();
+      currUser.Guildless = null;
       userConfig.updateOne( { _id: user.id }, currUser, { upsert: true } )
       .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add guild %s (id: %s) to user %s (id: %s) in my database in getPerms.js:\n%o' ), guild.name, guild.id, user.displayName, user.id, updateError ); } );
     }

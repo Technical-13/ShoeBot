@@ -13,7 +13,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
     const botOwner = client.users.cache.get( client.ownerId );
     const { guild, user } = member;
 
-    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {
+    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {// Create new user in DB if not there.
       const newUser = {
         _id: user.id,
         Bot: ( user.bot ? true : false ),
@@ -40,7 +40,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
         Score: 0
       };
       currUser.Guilds.push( addGuild );
-      currUser.Guilds.sort();
+      currUser.Guildless = null;
       userConfig.updateOne( { _id: user.id }, currUser, { upsert: true } )
       .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add guild %s (id: %s) to user %s (id: %s) in my database in guildMemberAdd.js:\n%o' ), guild.name, guild.id, user.displayName, user.id, updateError ); } );
     }

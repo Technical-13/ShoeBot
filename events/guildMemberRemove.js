@@ -13,7 +13,7 @@ client.on( 'guildMemberRemove', async ( member ) => {
     const botOwner = client.users.cache.get( client.ownerId );
     const { guild, user } = member;
 
-    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {
+    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {// Create new user in DB if not there.
       const newUser = {
         _id: user.id,
         Bot: ( user.bot ? true : false ),
