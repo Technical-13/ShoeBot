@@ -17,8 +17,8 @@ client.on( 'guildMemberRemove', async ( member ) => {
     const { guild, user } = member;
     const dbExpires = new Date( ( new Date() ).setMonth( ( new Date() ).getMonth() + 1 ) );
 
-    if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) { await createNewUser( user ); }
-    await addUserGuild( userId, guild );
+    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) { await createNewUser( user ); }
+    await addUserGuild( user.id, guild );
     const currUser = await userConfig.findOne( { _id: user.id } );
     const storedUserGuilds = [];
     currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );

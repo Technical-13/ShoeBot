@@ -15,11 +15,11 @@ client.on( 'guildMemberAdd', async ( member ) => {
     const botOwner = client.users.cache.get( client.ownerId );
     const { guild, user } = member;
 
-    if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) { await createNewUser( user ); }
+    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) { await createNewUser( user ); }
     const currUser = await userConfig.findOne( { _id: user.id } );
     const storedUserGuilds = [];
     currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
-    if ( storedUserGuilds.indexOf( guild.id ) === -1 ) { await addUserGuild( userId, guild ); }
+    if ( storedUserGuilds.indexOf( guild.id ) === -1 ) { await addUserGuild( user.id, guild ); }
 
     const currGuildConfig = await getGuildConfig( guild );
     currGuildConfig.Guild.Members = guild.members.cache.size;

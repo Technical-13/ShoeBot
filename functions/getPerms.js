@@ -21,7 +21,7 @@ module.exports = async ( user, guild, doBlacklist = true, debug = false ) => {
     if ( !guild ) { throw new Error( 'No guild to get user permissions for.' ); }
 
     const member = guild.members.cache.get( user.id );
-    if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) { await createNewUser( user ); }
+    if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) { await createNewUser( user ); }
     const currUser = await userConfig.findOne( { _id: user.id } );
     const storedUserGuilds = [];
     currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
