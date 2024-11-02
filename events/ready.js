@@ -208,10 +208,16 @@ client.on( 'ready', async rdy => {
     }
     let removedUsers = await storedUserIds.filter( r => !botUserIds.includes( r ) );
     if ( removedUsers.length > 0 ) {
-      console.log( 'Checking %s expired user%s:', chalk.redBright( removedUsers.length ), ( removedUsers.length === 1 ? '' : 's' ) );
+      console.log( 'Checking %s lost user%s: %o', chalk.redBright( removedUsers.length ), ( removedUsers.length === 1 ? '' : 's' ), removedUsers );
+      const dbExpires = new Date( ( new Date() ).setMonth( ( new Date() ).getMonth() + 1 ) );
       removedUsers.forEach( async ( userId ) => {
         let currUser = await userConfig.findOne( { _id: userId } );
-        console.log( 'User %s (%s) no longer shares any guild with me: %o', userId, chalk.redBright( currUser.UserName ), currUser );
+        await currUser.Guilds.forEach( dbGuild => {
+          dbGuild.Expires = dbExpires;
+          await userConfig.updateOne( { _id: userId }, currUser, { upsert: true } )
+          .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update guild %s (id: %s) for user %s (id: %s) to expire %o in my database in  ready.js:\n%o' ), dbGuild.name, dbGuild._id, currUser.UserName, userId, dbExpires, updateError ); } );
+        } );
+        console.log( 'User %s (%s) no longer shares any guild with me and I\'ve updated all guilds to expire in a month: %o', userId, chalk.redBright( currUser.UserName ), currUser );
       } );
     }
     let updateUserList = [];
