@@ -240,10 +240,10 @@ client.on( 'ready', async rdy => {
       let currUser = await userConfig.findOne( { _id: userId } );
       let storedUserGuilds = [];
       currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
-      let addedGuilds = storedUserGuilds.filter( a => !botUserGuilds.includes( a ) );/* TRON */if(addedGuilds.length>0){console.log( '%s addedGuilds: %o', currUser.UserName, addedGuilds );}/* TROFF */
-      let removedGuilds = botUserGuilds.filter( r => !storedUserGuilds.includes( r ) );/* TRON */if(removedGuilds.length>0){console.log( '%s removedGuilds: %o', currUser.UserName, removedGuilds );}/* TROFF */
+      let addedGuilds = botUserGuilds.filter( a => !storedUserGuilds.includes( a ) );
+      let removedGuilds = storedUserGuilds.filter( r => !botUserGuilds.includes( r ) );
       let newName = ( !user ? false : ( user.displayName != currUser.UserName ? true : false ) );
-      let newGuilds = ( [].concat( addedGuilds, removedGuilds ).length > 0 ? true : false );/* TRON */if(newGuilds){console.log( '%s newGuilds: %o', currUser.UserName, newGuilds );}/* TROFF */
+      let newGuilds = ( [].concat( addedGuilds, removedGuilds ).length > 0 ? true : false );
       let newVersion = ( verUserDB != currUser.Version ? true : false );
       var newUser = null;
       var doUserUpdate = false;
