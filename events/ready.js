@@ -195,23 +195,23 @@ client.on( 'ready', async rdy => {
       } );
     }
 
-    const botUserIds = Array.from( client.users.cache.keys() );/* TRON */console.log( 'botUserIds:%o', botUserIds );/* TROFF */
-    const storedUsers = await guildConfig.find();/* TRON */console.log( 'storedUsers.size:%o', storedUsers.size );/* TROFF */
+    const botUserIds = Array.from( client.users.cache.keys() );
+    const storedUsers = await userConfig.find();
     const storedUserIds = [];
-    storedUsers.forEach( ( entry, i ) => { storedUserIds.push( entry._id ); } );/* TRON */console.log( 'storedUserIds:%o', storedUserIds );/* TROFF */
-    let addedUsers = await botUserIds.filter( a => !storedUserIds.includes( a ) );/* TRON */console.log( 'addedUsers:%o', addedUsers );/* TROFF */
+    storedUsers.forEach( ( entry, i ) => { storedUserIds.push( entry._id ); } );
+    let addedUsers = await botUserIds.filter( a => !storedUserIds.includes( a ) );
     if ( addedUsers.length > 0 ) {
       console.log( 'Adding %s new user%s:', chalk.greenBright( addedUsers.length ), ( addedUsers.length === 1 ? '' : 's' ) );
       addedUsers.forEach( ( userId ) => {
-        //console.log( 'Adding %s (%s)...', userId, chalk.greenBright( client.users.cache.get( userId ).displayName ) );
+        console.log( 'Adding %s (%s)...', userId, chalk.greenBright( client.users.cache.get( userId ).displayName ) );
       } );
     }
-    let removedUsers = await storedUserIds.filter( r => !botUserIds.includes( r ) );/* TRON */console.log( 'removedUsers:%o', removedUsers );/* TROFF */
+    let removedUsers = await storedUserIds.filter( r => !botUserIds.includes( r ) );
     if ( removedUsers.length > 0 ) {
       console.log( 'Checking %s expired user%s:', chalk.redBright( removedUsers.length ), ( removedUsers.length === 1 ? '' : 's' ) );
       removedUsers.forEach( async ( userId ) => {
         let currUser = await userConfig.findOne( { _id: userId } );
-        console.log( 'User no longer shares any guild with me: %o', currUser );
+        console.log( 'User %s (%s) no longer shares any guild with me: %o', userId, chalk.redBright( currUser.UserName ), currUser );
       } );
     }
     let updateUserList = [];
