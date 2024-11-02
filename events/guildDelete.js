@@ -2,6 +2,7 @@ const client = require( '..' );
 const chalk = require( 'chalk' );
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
+const duration = require( '../functions/duration.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
 const objTimeString = require( '../time.json' );
@@ -94,8 +95,9 @@ client.on( 'guildDelete', async ( guild ) => {
       if ( ndxUserGuild != -1 ) {
         let currUserGuild = currUser.Guilds[ ndxUserGuild ];
         currUserGuild.Expires = dbExpires;
+        console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guild.id, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( dbExpires - ( new Date() ), { getWeeks: true } ) ), dbExpires );
         userConfig.updateOne( { _id: userId }, currUser, { upsert: true } )
-        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update guild %s (id: %s) for user %s (id: %s) to expire %o in my database in guildMemberRemove.js:\n%o' ), guild.name, guild.id, currUser.UserName, userId, dbExpires, updateError ); } );
+        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update guild %s (id: %s) for user %s (id: %s) to expire %o in my database in guildDelete.js:\n%o' ), guild.name, guild.id, currUser.UserName, userId, dbExpires, updateError ); } );
       }
     } );
   }

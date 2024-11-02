@@ -10,7 +10,7 @@ const verUserDB = config.verUserDB;
 client.on( 'guildMemberUpdate', async ( oldMember, newMember ) => {
   try {
     const { guild, user } = newMember;
-    const { isGuildOwner } = await userPerms( guild, user );
+    const { isGuildOwner } = await userPerms( user, guild );
 
     if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {// Create new user in DB if not there.
       const newUser = {
