@@ -203,14 +203,14 @@ client.on( 'ready', async rdy => {
     if ( addedUsers.length > 0 ) {
       console.log( 'Adding %s new user%s:', chalk.greenBright( addedUsers.length ), ( addedUsers.length === 1 ? '' : 's' ) );
       addedUsers.forEach( ( userId ) => {
-        console.log( 'Adding %s (%s)...', userId, chalk.greenBright( client.users.get( userId ).displayName ) );
+        console.log( 'Adding %s (%s)...', userId, chalk.greenBright( client.users.cache.get( userId ).displayName ) );
       } );
     }
     let removedUsers = storedUserIds.filter( r => !userIds.includes( r ) );
     if ( removedUsers.length > 0 ) {
       console.log( 'Checking %s expired user%s:', chalk.redBright( removedUsers.length ), ( removedUsers.length === 1 ? '' : 's' ) );
       removedUsers.forEach( ( userId ) => {
-        console.log( 'User %s (%s) no longer shares any guild with me...', userId, chalk.greenBright( client.users.get( userId ).displayName ) );
+        console.log( 'User %s (%s) no longer shares any guild with me...', userId, chalk.greenBright( client.users.cache.get( userId ).displayName ) );
       } );
     }
     let updateUserList = [];
