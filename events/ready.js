@@ -214,7 +214,7 @@ client.on( 'ready', async rdy => {
         let currUser = await userConfig.findOne( { _id: userId } );
         await currUser.Guilds.forEach( dbGuild => {
           dbGuild.Expires = dbExpires;
-          await userConfig.updateOne( { _id: userId }, currUser, { upsert: true } )
+          userConfig.updateOne( { _id: userId }, currUser, { upsert: true } )
           .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to update guild %s (id: %s) for user %s (id: %s) to expire %o in my database in  ready.js:\n%o' ), dbGuild.name, dbGuild._id, currUser.UserName, userId, dbExpires, updateError ); } );
         } );
         console.log( 'User %s (%s) no longer shares any guild with me and I\'ve updated all guilds to expire in a month: %o', userId, chalk.redBright( currUser.UserName ), currUser );
