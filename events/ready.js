@@ -225,7 +225,7 @@ client.on( 'ready', async rdy => {
         await userConfig.create( newUser )
         .catch( initError => { throw new Error( chalk.bold.red.bgYellowBright( 'Error attempting to add %s (id: %s) to my user database in guildCreate.js:\n%o' ), user.displayName, memberId, initError ); } );
       }
-      let arrUserGuilds =  Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted();
+      let arrUserGuilds = ( Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
       let currUser = await userConfig.findOne( { _id: userId } );
       let userGuilds = [];
       currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
@@ -267,8 +267,8 @@ client.on( 'ready', async rdy => {
           currUser.Guilds.forEach( ( entry, i ) => { userGuilds.push( entry._id ); } );
           removedGuilds.forEach( async ( guildId, i ) => {
             let currUserGuild = currUser.Guilds[ i ];
-            if ( Object.prototype.toString.call( currUserGuild.Expires ) != '[object Date]' ) { currUserGuild.Expires = dbExpires; }
-            else if ( currUserGuild.Expires <= ( new Date() ) ) { currUser.Guilds.splice( i, 1 ); }
+            if ( Object.prototype.toString.call( currUserGuild.Expires ) != '[object Date]' ) { currUserGuild.Expires = dbExpires; toExpire++; }
+            else if ( currUserGuild.Expires <= ( new Date() ) ) { currUser.Guilds.splice( i, 1 ); hasExpired++; }
             if ( currUser.Guilds.length === 0 ) { currUser.Guildless = dbExpires; }
             doUserUpdate = true;
           } );
@@ -298,7 +298,7 @@ client.on( 'ready', async rdy => {
       }
     } );
     if ( updateUserList.length === 0 ) { console.log( chalk.bold.greenBright( 'All users are current!' ) ); }
-    else { console.log( 'Updating %i user%s: %o', chalk.yellow( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
+    else { console.log( 'Updating %s user%s: %o', chalk.yellow( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ), updateUserList ); }
 
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
