@@ -50,7 +50,7 @@ module.exports = {
   run: async ( client, interaction ) => {
     await interaction.deferReply( { ephemeral: true } );
     const { channel, guild, options, user: author } = interaction;
-    const botConfig = await botConfigDB.findOne( { BotName: thisBotName } ).catch( async errFindBot => { await errHandler( errFindBot, { command: 'system', type: 'getBotDB' } ); } );
+    const botConfig = await botConfig.findOne( { _id: client.id } ).catch( async errFindBot => { await errHandler( errFindBot, { command: 'system', type: 'getBotDB' } ); } );
     const { guilds, user: bot, users } = client;
     const botUsers = users.cache;
     const botGuilds = guilds.cache;
