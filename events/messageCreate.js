@@ -16,6 +16,7 @@ client.on( 'messageCreate', async message => {
     const bot = client.user;
     const objGuildMembers = guild.members.cache;
 
+    const gcWhitelist = [ 'GCD' ];
     var hasCodes = {
       GC: false,// Geocache
       TB: false,// Trackable
@@ -30,9 +31,11 @@ client.on( 'messageCreate', async message => {
     const arrOtherCodes = [];
     const arrContent = content.trim().split( ' ' );
     const arrOtherTypeCodes = [ 'GC', 'TB', 'WM', 'GL', 'TL', 'PR', 'BM', 'GT' ];
+    const oldRegex = new RegExp('^((GC|TB|WM|GL|TL|PR|BM|GT)[a-fA-F0-9]{2,3})', 'g' );
+    const newRegex = new RegExp('^((GC|TB|WM|GL|TL|PR|BM|GT)[a-uA-U0-9]{4,7})', 'g' );
     for ( let word of arrContent ) {
-      let arrWord = word.trim().match( /^((GC|TB|WM|GL|TL|PR|BM|GT)[a-zA-Z0-9]{2,6})/ );
-      let code = ( arrWord ? arrWord[ 1 ].toUpperCase() : '' );
+      let arrWord = word.trim().match( word.length <= 5 ? oldRegex : newRegex );
+      let code = ( arrWord ? arrWord[ 0 ].toUpperCase() : ( gcWhitelist.indexOf( word ) != -1 ? word.toUpperCase() : '' ) );
       let wordPrefix = ( arrWord ? arrWord[ 2 ] : '' );
       if ( wordPrefix === 'GC' ) {
         arrGcCodes.push( code );
@@ -43,6 +46,8 @@ client.on( 'messageCreate', async message => {
         hasCodes[ wordPrefix ] = true;
       }
     }
+    arrGcCodes = arrGcCodes.filter( ( val, i, arr ) => { return i == arr.indexOf( val ); } );
+    arrOtherCodes = arrOtherCodes.filter( ( val, i, arr ) => { return i == arr.indexOf( val ); } );
 
     const hasPrefix = ( content.startsWith( prefix ) || content.startsWith( '§' ) );
     const meMentionPrefix = '<@' + clientId + '>';
@@ -139,12 +144,12 @@ client.on( 'messageCreate', async message => {
           strCodeTypes = arrCodeTypes.join( ', ' ) + ', and ' + lastType;
       }
       let strCodes = strCodeTypes + ' code' + strPlural + ' detected, here ' + ( intCodes === 1 ? 'is the ' : 'are ' ) + 'link' + strPlural + ':';
-      const codesResponse = await channel.send( strCodes );
+      const codesResponse = await message.reply( strCodes );
       for ( let gcCode of arrGcCodes ) {
         await codesResponse.edit( strCodes + '\n<:Signal:398980726000975914> ...attempting to gather information about [' + gcCode + '](<https://coord.info/' + gcCode + '>)...' );
         let objCache = await cacheinfo( gcCode );
         if ( objCache.failed ) {
-          strCodes += '\n<:RIP:1015415145180176535> **Failed to get information about __[' + gcCode + '](<https://coord.info/' + gcCode + '>)__: ' + objCache.error + '...**';
+          strCodes += '\n<:RIP:1015415145180176535> **Failed to get info for __[' + gcCode + '](<https://coord.info/' + gcCode + '>)__: ' + objCache.error + '...**';
           await codesResponse.edit( strCodes );
         } else {
           let cacheName = objCache.name;
@@ -157,7 +162,7 @@ client.on( 'messageCreate', async message => {
           if ( objCache.archived || objCache.locked ) { strCodes += '<:archived:467385636173905942>'; }
           else if ( objCache.disabled ) { strCodes += '<:disabled:467385661415227393>'; }
           let dtURL = '[[' + objCache.difficulty + '/' + objCache.terrain + ']](<https://www.geocaching.com/help/index.php?pg=kb.page&inc=1&id=82>)';
-          strCodes += cacheTypeIcon + ' [' + cacheName + '](<https://coord.info/' + objCache.code + '>) by ' + objCache.nameCO + ' ' + dtURL;
+          strCodes += cacheTypeIcon + ' [`' + gcCode + '`: ' + cacheName + '](<https://coord.info/' + objCache.code + '>) by ' + objCache.nameCO + ' ' + dtURL;
           await codesResponse.edit( strCodes );
         }
       }
