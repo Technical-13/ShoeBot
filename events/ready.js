@@ -257,23 +257,23 @@ client.on( 'ready', async rdy => {
           } );
         }
         if ( removedGuilds.length > 0 ) {// Removed guild(s)
-          let toExpire = 0;/* TRON */console.log( 'toExpire: %o', toExpire );/*TROFF */
-          let hasExpired = 0;/* TRON */console.log( 'hasExpired: %o', hasExpired );/*TROFF */
+          let toExpire = 0;/* TRON */console.log( '%s toExpire: %o', currUser.UserName, toExpire );/*TROFF */
+          let hasExpired = 0;/* TRON */console.log( '%s hasExpired: %o',, currUser.UserName hasExpired );/*TROFF */
           removedGuilds.forEach( async ( guildId, i ) => {
             let currUserGuild = currUser.Guilds[ i ];
             if ( Object.prototype.toString.call( currUserGuild.Expires ) != '[object Date]' ) {
               console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( dbExpires - ( new Date() ), { getWeeks: true } ) ), dbExpires );
               currUserGuild.Expires = dbExpires;
-              toExpire++;/* TRON */console.log( 'toExpire: %o', toExpire );/*TROFF */
+              toExpire++;/* TRON */console.log( '%s toExpire: %o', currUser.UserName, toExpire );/*TROFF */
             }
             else if ( currUserGuild.Expires <= ( new Date() ) ) {
               console.log( 'Guild %s (%s) expired from %s (%s) on: %o', guildId, currUserGuild.Name, currUser._id, currUser.UserName, dbExpires );
               currUser.Guilds.splice( i, 1 );
-              hasExpired++;/* TRON */console.log( 'hasExpired: %o', hasExpired );/*TROFF */
+              hasExpired++;/* TRON */console.log( '%s hasExpired: %o', currUser.UserName, hasExpired );/*TROFF */
             }
             else { console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( currUserGuild.Expires - ( new Date() ), { getWeeks: true } ) ), currUserGuild.Expires ); }
             if ( currUser.Guilds.length === 0 ) { currUser.Guildless = dbExpires; }
-            doUserUpdate = ( ( toExpire + hasExpired ) > 0 ? true : false );/* TRON */console.log( 'toExpire: %o\nhasExpired: %o\ndoUserUpdate: %o', toExpire, hasExpired, doUserUpdate );/*TROFF */
+            doUserUpdate = ( ( toExpire + hasExpired ) > 0 ? true : false );/* TRON */console.log( '%s toExpire: %o\nhasExpired: %o\ndoUserUpdate: %o', currUser.UserName, toExpire, hasExpired, doUserUpdate );/*TROFF */
           } );
           toExpire = ( toExpire === 0 ? null : ' updated ' + chalk.bold.red( toExpire ) + ' guild' + ( toExpire === 1 ? '' : 's' ) + ' to expire in a month' );
           hasExpired = ( hasExpired === 0 ? null : ' removed ' + chalk.bold.red( hasExpired ) + ' guild' + ( hasExpired === 1 ? '' : 's' ) + ' from the user' );
