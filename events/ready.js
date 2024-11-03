@@ -230,76 +230,84 @@ client.on( 'ready', async rdy => {
       removedUsers.forEach( async ( userId ) => { botUserIds.push( userId ); } );
     }
     let updateUserList = [].concat( addedUsers, removedUsers );
-    if ( botUserIds.length > 0 ) { console.log( 'Checking %s user%s...', chalk.blueBright( botUserIds.length ), ( botUserIds.length === 1 ? '' : 's' ) ); }
-    await botUserIds.forEach( async ( userId ) => {// Add new users and update all users in database.
-      let user = client.users.cache.get( userId );
-      if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) { await createNewUser( user ); }
-      let botUserGuilds = ( Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
-      let currUser = await userConfig.findOne( { _id: userId } );
-      let storedUserGuilds = [];
-      currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
-      let addedGuilds = botUserGuilds.filter( a => !storedUserGuilds.includes( a ) );
-      let removedGuilds = storedUserGuilds.filter( r => !botUserGuilds.includes( r ) );
-      let newName = ( !user ? false : ( user.displayName != currUser.UserName ? true : false ) );
-      let newGuilds = ( [].concat( addedGuilds, removedGuilds ).length > 0 ? true : false );
-      let newVersion = ( verUserDB != currUser.Version ? true : false );
-      var updateUserVersion = null;
-      var doUserUpdate = false;
-      if ( newName ) {// Update user displayName
-        currUser.UserName = user.displayName;
-        doUserUpdate = true;
-      }
-      if ( newGuilds ) {// Update guilds
-        if ( addedGuilds.length > 0 ) {// Added guild(s)
-          await addedGuilds.forEach( async ( guildId ) => {
-            let guild = await client.guilds.cache.get( guildId );
-            await addUserGuild( userId, guild );
-          } );
-        }
-        if ( removedGuilds.length > 0 ) {// Removed guild(s)
-          console.log( 'User %s (%s) no longer shares any guild with me.', userId, chalk.redBright( currUser.UserName ) );
-          removedGuilds.forEach( async ( guildId, i ) => {
-            let currUserGuild = currUser.Guilds[ i ];
-            if ( Object.prototype.toString.call( currUserGuild.Expires ) != '[object Date]' ) {
-              console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( dbExpires - ( new Date() ), { getWeeks: true } ) ), dbExpires );
-              currUserGuild.Expires = dbExpires;
-              doUserUpdate = true;/* TRON */console.log( '%s expires %s: %o', currUser.UserName, currUserGuild.GuildName, doUserUpdate );/* TROFF */
+    if ( botUserIds.length > 0 ) { console.log( 'Checking on %s user%s...', chalk.blueBright( botUserIds.length ), ( botUserIds.length === 1 ? '' : 's' ) ); }
+    new Promise( async ( resolve, reject ) => {
+      await botUserIds.forEach( async ( userId ) => {// Add new users and update all users in database.
+        new Promise( async ( resolve, reject ) => {
+          let user = client.users.cache.get( userId );
+          if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) { await createNewUser( user ); }
+          let botUserGuilds = ( Array.from( client.guilds.cache.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
+          let currUser = await userConfig.findOne( { _id: userId } );
+          let storedUserGuilds = [];
+          currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
+          let addedGuilds = botUserGuilds.filter( a => !storedUserGuilds.includes( a ) );
+          let removedGuilds = storedUserGuilds.filter( r => !botUserGuilds.includes( r ) );
+          let newName = ( !user ? false : ( user.displayName != currUser.UserName ? true : false ) );
+          let newGuilds = ( [].concat( addedGuilds, removedGuilds ).length > 0 ? true : false );
+          let newVersion = ( verUserDB != currUser.Version ? true : false );
+          var updateUserVersion = null;
+          var doUserUpdate = false;
+          if ( newName ) {// Update user displayName
+            currUser.UserName = user.displayName;
+            doUserUpdate = true;
+          }
+          if ( newGuilds ) {// Update guilds
+            if ( addedGuilds.length > 0 ) {// Added guild(s)
+              await addedGuilds.forEach( async ( guildId ) => {
+                let guild = await client.guilds.cache.get( guildId );
+                await addUserGuild( userId, guild );
+              } );
             }
-            else if ( currUserGuild.Expires <= ( new Date() ) ) {
-              console.log( 'Guild %s (%s) expired from %s (%s) on: %o', guildId, currUserGuild.Name, currUser._id, currUser.UserName, dbExpires );
-              currUser.Guilds.splice( i, 1 );
-              doUserUpdate = true;/* TRON */console.log( '%s expired %s: %o', currUser.UserName, currUserGuild.GuildName, doUserUpdate );/* TROFF */
+            if ( removedGuilds.length > 0 ) {// Removed guild(s)
+              removedGuilds.forEach( async ( guildId, i ) => {
+                let currUserGuild = currUser.Guilds[ i ];
+                if ( Object.prototype.toString.call( currUserGuild.Expires ) != '[object Date]' ) {
+                  console.log( 'Marking guild %s (%s) to expire for %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( dbExpires - ( new Date() ), { getWeeks: true } ) ), dbExpires );
+                  currUserGuild.Expires = dbExpires;
+                  doUserUpdate = true;
+                }
+                else if ( currUserGuild.Expires <= ( new Date() ) ) {
+                  console.log( 'Removing expired guild %s (%s) from %s (%s) on: %o', guildId, currUserGuild.Name, currUser._id, currUser.UserName, dbExpires );
+                  currUser.Guilds.splice( i, 1 );
+                  doUserUpdate = true;
+                }
+                else { console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( currUserGuild.Expires - ( new Date() ), { getWeeks: true } ) ), currUserGuild.Expires ); }
+                if ( currUser.Guilds.length === 0 && !currUser.Guildless ) {
+                  console.log( 'User %s (%s) no longer shares any guild with me.', userId, chalk.redBright( currUser.UserName ) );
+                  currUser.Guildless = dbExpires;
+                  doUserUpdate = true;
+                }
+              } );
             }
-            else { console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( currUserGuild.Expires - ( new Date() ), { getWeeks: true } ) ), currUserGuild.Expires ); }
-            if ( currUser.Guilds.length === 0 && !currUser.Guildless ) {
-              currUser.Guildless = dbExpires;
-              doUserUpdate = true;/* TRON */console.log( '%s guildless %s: %o', currUser.UserName, currUserGuild.GuildName, doUserUpdate );/* TROFF */
-            }
-          } );
-        }
-        /* TRON */console.log( '%s doUpdate: %o', currUser.UserName, doUserUpdate );/* TROFF */
-      }
-      if ( newVersion ) {// Update everything
-        let Guilds = null;
-        updateUserVersion = {
-          _id: ( user ? user.id : currUser._id ),
-          Bot: ( ( user ? user.bot : currUser.Bot ) ? true : false ),
-          Guilds: ( currUser.Guilds || [] ),
-          Guildless: ( currUser.Guildless || null ),
-          UserName: ( currUser.UserName || ( user ? user.displayName : null ) ),
-          Score: ( currUser.Score || 0 ),
-          Version: verUserDB
-        };
-        doUserUpdate = true;
-      }
-      setTimeout( async () => { if ( doUserUpdate ) {
-        updateUserList.push( chalk.bold.cyan( !user ? ( updateUserVersion || currUser ).UserName : user.displayName ) );
-        await userConfig.updateOne( { _id: userId }, ( updateUserVersion || currUser ), { upsert: true } )
-        .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( ( updateUserVersion || currUser ).UserName ) ); } )
-        .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${( updateUserVersion || currUser ).UserName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
-      } }, 1000 );//While this will *probably* work, it's a terrible way to do it and I should find another way...
+          }
+          if ( newVersion ) {// Update everything
+            let Guilds = null;
+            updateUserVersion = {
+              _id: ( user ? user.id : currUser._id ),
+              Bot: ( ( user ? user.bot : currUser.Bot ) ? true : false ),
+              Guilds: ( currUser.Guilds || [] ),
+              Guildless: ( currUser.Guildless || null ),
+              UserName: ( currUser.UserName || ( user ? user.displayName : null ) ),
+              Score: ( currUser.Score || 0 ),
+              Version: verUserDB
+            };
+            doUserUpdate = true;
+          }
+          if ( doUserUpdate ) { resolve( updateUserVersion || currUser ); }
+        } )
+        .then( updatedUser => {
+          updateUserList.push( chalk.bold.cyan( !user ? updatedUser.UserName : user.displayName ) );
+          await userConfig.updateOne( { _id: userId }, updatedUser, { upsert: true } )
+          .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( updatedUser.UserName ) ); } )
+          .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${updatedUser.UserName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
+        } );
+      } );
+      resolve( updateUserList );
+    } )
+    .then( ( updateUserList ) => {
+      if ( updateUserList.length === 0 ) { console.log( chalk.bold.greenBright( 'My users match my database!' ) ); }
+      else { console.log( 'I updated %s user%s in my database!', chalk.bold.greenBright( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ) ); }
     } );
-    if ( updateUserList.length === 0 ) { console.log( chalk.bold.greenBright( 'My users match my database!' ) ); }
 
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
