@@ -292,12 +292,12 @@ client.on( 'ready', async rdy => {
         };
         doUserUpdate = true;
       }
-      if ( doUserUpdate ) {
+      setTimeout( () => { if ( doUserUpdate ) {
         updateUserList.push( chalk.bold.cyan( !user ? ( updateUserVersion || currUser ).UserName : user.displayName ) );
         await userConfig.updateOne( { _id: userId }, ( updateUserVersion || currUser ), { upsert: true } )
         .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( ( updateUserVersion || currUser ).UserName ) ); } )
         .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${( updateUserVersion || currUser ).UserName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
-      }
+      }, 1000 );//While this will *probably* work, it's a terrible way to do it and I should find another way...
     } );
     if ( updateUserList.length === 0 ) { console.log( chalk.bold.greenBright( 'My users match my database!' ) ); }
 
