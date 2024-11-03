@@ -295,11 +295,13 @@ client.on( 'ready', async rdy => {
           }
           if ( doUserUpdate ) { resolve( updateUserVersion || currUser ); }
         } )
-        .then( updatedUser => {
-          updateUserList.push( chalk.bold.cyan( !user ? updatedUser.UserName : user.displayName ) );
-          await userConfig.updateOne( { _id: userId }, updatedUser, { upsert: true } )
-          .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( updatedUser.UserName ) ); } )
-          .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${updatedUser.UserName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
+        .then( async ( updatedUser ) => {
+          if ( updatedUser ) {
+            updateUserList.push( chalk.bold.cyan( !user ? updatedUser.UserName : user.displayName ) );
+            await userConfig.updateOne( { _id: userId }, updatedUser, { upsert: true } )
+            .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( updatedUser.UserName ) ); } )
+            .catch( updateError => { throw new Error( chalk.bold.red.bgYellowBright( `Error attempting to update user ${updatedUser.UserName} (id: ${userId}) in my database:\n${updateError}` ) ); } );
+          }
         } );
       } );
       resolve( updateUserList );
