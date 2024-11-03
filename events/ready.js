@@ -292,7 +292,7 @@ client.on( 'ready', async rdy => {
         };
         doUserUpdate = true;
       }
-      setTimeout( () => { if ( doUserUpdate ) {
+      setTimeout( async () => { if ( doUserUpdate ) {
         updateUserList.push( chalk.bold.cyan( !user ? ( updateUserVersion || currUser ).UserName : user.displayName ) );
         await userConfig.updateOne( { _id: userId }, ( updateUserVersion || currUser ), { upsert: true } )
         .then( updateSuccess => { console.log( 'Succesfully updated user id: %s (%s) in my database.', userId, chalk.bold.green( ( updateUserVersion || currUser ).UserName ) ); } )
