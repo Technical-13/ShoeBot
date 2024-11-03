@@ -277,6 +277,7 @@ client.on( 'ready', async rdy => {
             }
           } );
         }
+        /* TRON */console.log( '%s doUpdate: %o', currUser.UserName, doUserUpdate );/* TROFF */
       }
       if ( newVersion ) {// Update everything
         let Guilds = null;
@@ -291,7 +292,6 @@ client.on( 'ready', async rdy => {
         };
         doUserUpdate = true;
       }
-      /* TRON */console.log( '%s doUpdate: %o', currUser.UserName, doUserUpdate );/* TROFF */
       if ( doUserUpdate ) {
         updateUserList.push( chalk.bold.cyan( !user ? ( updateUserVersion || currUser ).UserName : user.displayName ) );
         await userConfig.updateOne( { _id: userId }, ( updateUserVersion || currUser ), { upsert: true } )
