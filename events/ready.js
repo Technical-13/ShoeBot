@@ -259,23 +259,21 @@ client.on( 'ready', async rdy => {
         if ( removedGuilds.length > 0 ) {// Removed guild(s)
           console.log( 'User %s (%s) no longer shares any guild with me.', userId, chalk.redBright( currUser.UserName ) );
           removedGuilds.forEach( async ( guildId, i ) => {
-            let toExpire = 0;
-            let hasExpired = 0;
             let currUserGuild = currUser.Guilds[ i ];
             if ( Object.prototype.toString.call( currUserGuild.Expires ) != '[object Date]' ) {
               console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( dbExpires - ( new Date() ), { getWeeks: true } ) ), dbExpires );
               currUserGuild.Expires = dbExpires;
-              doUserUpdate = true;
+              doUserUpdate = true;/* TRON */console.log( '%s expires %s: %o', currUser.UserName, currUserGuild.GuildName, doUserUpdate );/* TROFF */
             }
             else if ( currUserGuild.Expires <= ( new Date() ) ) {
               console.log( 'Guild %s (%s) expired from %s (%s) on: %o', guildId, currUserGuild.Name, currUser._id, currUser.UserName, dbExpires );
               currUser.Guilds.splice( i, 1 );
-              doUserUpdate = true;
+              doUserUpdate = true;/* TRON */console.log( '%s expired %s: %o', currUser.UserName, currUserGuild.GuildName, doUserUpdate );/* TROFF */
             }
             else { console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( currUserGuild.Expires - ( new Date() ), { getWeeks: true } ) ), currUserGuild.Expires ); }
             if ( currUser.Guilds.length === 0 && !currUser.Guildless ) {
               currUser.Guildless = dbExpires;
-              doUserUpdate = true;
+              doUserUpdate = true;/* TRON */console.log( '%s guildless %s: %o', currUser.UserName, currUserGuild.GuildName, doUserUpdate );/* TROFF */
             }
           } );
         }
@@ -293,6 +291,7 @@ client.on( 'ready', async rdy => {
         };
         doUserUpdate = true;
       }
+      /* TRON */console.log( '%s doUpdate: %o', currUser.UserName, doUserUpdate );/* TROFF */
       if ( doUserUpdate ) {
         updateUserList.push( chalk.bold.cyan( !user ? ( updateUserVersion || currUser ).UserName : user.displayName ) );
         await userConfig.updateOne( { _id: userId }, ( updateUserVersion || currUser ), { upsert: true } )
