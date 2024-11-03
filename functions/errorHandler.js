@@ -73,6 +73,8 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
     const botUsers = client.users.cache;
     const ownerId = ( botConfig.Owner || client.ownerId || config.botOwnerId || process.env.OWNER_ID );
     const botOwner = botUsers.get( ownerId );
+    const chanName = ( !channel ? 'guild#channel: undefined' : guild.name + '#' + channel.name );
+    const chanLink = ( !channel ? 'guild#channel: undefined' : 'https://discord.com/channels/' + guild.id + '/' + channel.id );
     const strConsole = '  Please check the console for details.';
     const strNotified = '  Error has been logged and my owner, <@' + botOwner.id + '>, has been notified.';
     const strLogged = '  Error has been logged and my owner, <@' + botOwner.id + '>, couldn\'t be notified.';
@@ -102,16 +104,21 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
       case 'errSend':// .catch( async errSend => { await errHandler( errSend, { command: '', channel: channel, type: 'errSend' } ); } );
         switch ( errObject.code ) {
           case 50001 :// No SEND_MESSAGE permission in channel
+            if ( debug ) { console.error( 'I do not have permission to send messages to %s for /%s request: %s\n\t%s', chanName, cmd, chanLink, errObject.stack ); }
             if ( doLogs ) { chanError.send( 'Please give me permission to send to <#' + channel.id + '>.' + strClosing ); }
             return { content: 'I do not have permission to send messages to <#' + channel.id + '>.' };
             break;
           case 50006:// Cannot send an empty message
-            console.error( 'Cannot send empty message in /' + cmd + ' request: %s', errObject.stack );
+            if ( debug ) { console.error( 'Cannot send empty message to %s in /%s request: %s\n\t%s', chanName, cmd, chanLink, errObject.stack ); }
             return { content: 'Message you tried to send was empty.' };
             break;
+          case 50035:// Message > 2,000 character limit
+            if ( debug ) { console.error( 'Cannot send message > 2,000 characters to %s in /%s request: %s\n\t%s', chanName, cmd, chanLink, errObject.stack ); }
+            return { content: 'Message you tried to send was longer than the 2,000 character limit.' };
+            break;
           default:
-            console.error( 'Unable to send message for /' + cmd + ' request: %s', errObject.stack );
-            botOwner.send( { content: 'Unable to send message for `/' + cmd + '` request.' + strConsole } )
+            console.error( 'Unable to send message to %s for /%s request: %s\n\t%s', chanName, cmd, chanLink, errObject.stack );
+            botOwner.send( { content: 'Unable to send message to ' + chanLink + ' for `/' + cmd + '` request.' + strConsole } )
             .then( errSent => {
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
               return { content: 'Encounted an error with your `/' + cmd + '` request.' + strNotified };
@@ -186,11 +193,11 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
       case 'errReact':// .catch( async errFetch => { await errHandler( errFetch, { command: '', channel: channel, emoji: emoji, msgID: msgID, type: 'errFetch', rawReaction: rawReaction } ); } );
         switch ( errObject.code ) {
           case 10014://Reaction invalid
-            if ( doLogs ) { chanError.send( 'Failed to react to message https://discord.com/channels/' + guild.id + '/' + channel.id + '/' + msgID + ' with `' + rawReaction + '`.' + strClosing ); }
+            if ( doLogs ) { chanError.send( 'Failed to react to message ' + chanLink + '/' + msgID + ' with `' + rawReaction + '`.' + strClosing ); }
             return { content: '`' + rawReaction + '` is not a valid `reaction` to react with. Please try again; the emoji picker is helpful in getting valid reactions.' };
           default:
             console.error( '%s: Reaction to #%o with %s (%s) failed:\n\tMsg: %s\n\tErr: %s', errObject.code, msgID, prcEmoji, rawReaction, errObject.message, errObject.stack );
-            botOwner.send( 'Reaction to https://discord.com/channels/' + guild.id + '/' + channel.id + '/' + msgID + ' with `' + rawReaction + '` failed.' + strConsole )
+            botOwner.send( 'Reaction to ' + chanLink + '/' + msgID + ' with `' + rawReaction + '` failed.' + strConsole )
             .then( errSent => {
               if ( doLogs ) { chanError.send( 'Encounted an error with a `/' + cmd + '` request.' + strNotified + strClosing ); }
               return { content: 'Unknown Error reacting to message.' + strNotified };

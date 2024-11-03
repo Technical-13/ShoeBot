@@ -229,7 +229,7 @@ client.on( 'ready', async rdy => {
       console.log( 'Checking %s lost user%s: %o', chalk.redBright( removedUsers.length ), ( removedUsers.length === 1 ? '' : 's' ), removedUsers );
       removedUsers.forEach( async ( userId ) => { botUserIds.push( userId ); } );
     }
-    let updateUserList = [].concat( addedUsers, removedUsers );
+    let updateUserList = [];
     if ( botUserIds.length > 0 ) { console.log( 'Checking on %s user%s...', chalk.blueBright( botUserIds.length ), ( botUserIds.length === 1 ? '' : 's' ) ); }
     new Promise( async ( resolve, reject ) => {
       await botUserIds.forEach( async ( userId ) => {// Add new users and update all users in database.
@@ -272,12 +272,12 @@ client.on( 'ready', async rdy => {
                   doUserUpdate = true;
                 }
                 else { console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( currUserGuild.Expires - ( new Date() ), { getWeeks: true } ) ), currUserGuild.Expires ); }
-                if ( currUser.Guilds.length === 0 && !currUser.Guildless ) {
-                  console.log( 'User %s (%s) no longer shares any guild with me.', userId, chalk.redBright( currUser.UserName ) );
-                  currUser.Guildless = dbExpires;
-                  doUserUpdate = true;
-                }
               } );
+              if ( currUser.Guilds.length === 0 && !currUser.Guildless ) {
+                console.log( 'User %s (%s) no longer shares any guild with me.', userId, chalk.redBright( currUser.UserName ) );
+                currUser.Guildless = dbExpires;
+                doUserUpdate = true;
+              }
             }
           }
           if ( newVersion ) {// Update everything
@@ -293,7 +293,7 @@ client.on( 'ready', async rdy => {
             };
             doUserUpdate = true;
           }
-          if ( doUserUpdate ) { resolve( updateUserVersion || currUser ); }
+          resolve( !doUserUpdate ? doUserUpdate : ( updateUserVersion || currUser ) );
         } )
         .then( async ( updatedUser ) => {
           if ( updatedUser ) {
@@ -308,7 +308,7 @@ client.on( 'ready', async rdy => {
     } )
     .then( ( updateUserList ) => {
       if ( updateUserList.length === 0 ) { console.log( chalk.bold.greenBright( 'My users match my database!' ) ); }
-      else { console.log( 'I updated %s user%s in my database!', chalk.bold.greenBright( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ) ); }
+      else { console.log( 'I updated %s user%s in my database!', chalk.bold.yellow( updateUserList.length ), ( updateUserList.length === 1 ? '' : 's' ) ); }
     } );
 
   }
