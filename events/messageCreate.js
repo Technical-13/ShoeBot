@@ -29,14 +29,14 @@ client.on( 'messageCreate', async message => {
     };
     var arrGcCodes = [];
     var arrOtherCodes = [];
-    const arrContent = content.trim().split( ' ' );/* TRON */console.log( 'arrContent', arrContent );/* TROFF */
+    const arrContent = content.trim().split( ' ' );
     const arrOtherTypeCodes = [ 'GC', 'TB', 'WM', 'GL', 'TL', 'PR', 'BM', 'GT' ];
     const oldRegex = new RegExp('^((GC|TB|WM|GL|TL|PR|BM|GT)[a-fA-F0-9]{2,3})', 'g' );
     const newRegex = new RegExp('^((GC|TB|WM|GL|TL|PR|BM|GT)[a-uA-U0-9]{4,7})', 'g' );
     for ( let word of arrContent ) {
-      let arrWord = word.trim().match( word.length <= 5 ? oldRegex : newRegex );/* TRON */console.log( 'arrWord', arrWord );/* TROFF */
-      let code = ( arrWord ? arrWord[ 0 ].toUpperCase() : ( gcWhitelist.indexOf( word ) != -1 ? word.toUpperCase() : '' ) );/* TRON */console.log( 'code', code );/* TROFF */
-      let wordPrefix = ( arrWord ? arrWord[ 2 ] : '' );
+      let arrWord = word.trim().match( word.length <= 5 ? oldRegex : newRegex );
+      let code = ( arrWord ? arrWord[ 0 ].toUpperCase() : ( gcWhitelist.indexOf( word ) != -1 ? word.toUpperCase() : '' ) );
+      let wordPrefix = code.slice( 0, 2 );
       if ( wordPrefix === 'GC' ) {
         arrGcCodes.push( code );
         hasCodes.GC = true;
@@ -46,8 +46,8 @@ client.on( 'messageCreate', async message => {
         hasCodes[ wordPrefix ] = true;
       }
     }
-    arrGcCodes = arrGcCodes.filter( ( val, i, arr ) => { return i == arr.indexOf( val ); } );/* TRON */console.log( 'arrGcCodes', arrGcCodes );/* TROFF */
-    arrOtherCodes = arrOtherCodes.filter( ( val, i, arr ) => { return i == arr.indexOf( val ); } );/* TRON */console.log( 'arrOtherCodes', arrOtherCodes );/* TROFF */
+    arrGcCodes = arrGcCodes.filter( ( val, i, arr ) => { return i == arr.indexOf( val ); } );
+    arrOtherCodes = arrOtherCodes.filter( ( val, i, arr ) => { return i == arr.indexOf( val ); } );
 
     const hasPrefix = ( content.startsWith( prefix ) || content.startsWith( '§' ) );
     const meMentionPrefix = '<@' + clientId + '>';

@@ -262,7 +262,7 @@ client.on( 'ready', async rdy => {
           removedGuilds.forEach( async ( guildId, i ) => {
             let currUserGuild = currUser.Guilds[ i ];
             if ( Object.prototype.toString.call( currUserGuild.Expires ) != '[object Date]' ) {
-              console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), await duration( dbExpires - ( new Date() ), { getWeeks: true } ), dbExpires );
+              console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guildId, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( dbExpires - ( new Date() ), { getWeeks: true } ) ), dbExpires );
               currUserGuild.Expires = dbExpires;
               toExpire++;
             }
