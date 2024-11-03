@@ -27,8 +27,8 @@ client.on( 'messageCreate', async message => {
       BM: false,// Bookmark
       GT: false//  GeoTour
     };
-    const arrGcCodes = [];
-    const arrOtherCodes = [];
+    var arrGcCodes = [];
+    var arrOtherCodes = [];
     const arrContent = content.trim().split( ' ' );
     const arrOtherTypeCodes = [ 'GC', 'TB', 'WM', 'GL', 'TL', 'PR', 'BM', 'GT' ];
     const oldRegex = new RegExp('^((GC|TB|WM|GL|TL|PR|BM|GT)[a-fA-F0-9]{2,3})', 'g' );
