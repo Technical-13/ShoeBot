@@ -185,7 +185,7 @@ client.on( 'ready', async rdy => {
         resolve( updateGuildList );
       } );
     } )
-    .then( updateGuildList ) => {
+    .then( ( updateGuildList ) => {
       if ( updateGuildList.length === 0 ) { console.log( chalk.bold.greenBright( 'My guilds match my database!' ) ); }
       else { console.log( 'Updating %s guild%s: %o', chalk.yellow( updateGuildList.length ), ( updateGuildList.length === 1 ? '' :  's' ), updateGuildList ); }
       if ( removedGuilds.length !== 0 ) {// Update/Delete guilds I'm no longer in.
