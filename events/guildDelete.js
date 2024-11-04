@@ -84,5 +84,5 @@ client.on( 'guildDelete', async ( guild ) => {
       }
     } );
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildDelete.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'guildDelete.js' ), errObject.stack ); }
 } );

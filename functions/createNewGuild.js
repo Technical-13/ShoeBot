@@ -5,8 +5,8 @@ const config = require( '../config.json' );
 const verGuildDB = config.verGuildDB;
 
 module.exports = async ( guild ) => {
-  if ( !guild ) { throw new Error( chalk.bold.red( `No guild in createNewGuild.js: ${guild}` ) ); }
   try {
+    if ( !guild ) { throw new Error( chalk.bold.red( `No guild in createNewGuild.js: ${guild}` ) ); }
     if ( await guildConfig.countDocuments( { _id: guild.id } ) === 0 ) {
       const botConfig = await getBotConfig();
       const globalPrefix = ( botConfig.Prefix || config.prefix || '!' );

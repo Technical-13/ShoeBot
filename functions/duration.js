@@ -2,9 +2,8 @@ const client = require( '..' );
 const chalk = require( 'chalk' );
 
 module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, getMonths: false, getWeeks: false, getDays: true, getHours: true, getMinutes: true, getSeconds: false } ) => {
-  if ( isNaN( ms ) ) { return '∅ms'; }
-
   try {
+    if ( isNaN( ms ) ) { return '∅ms'; }
     const objUnits = ( !getUnits ? { xs: false, yrs: false, mos: false, wks: false, days: true, hrs: true, min: true, secs: false } : {
       xs: ( typeof getUnits.getDecades != 'boolean' ? false : getUnits.getDecades ),
       yrs: ( typeof getUnits.getYears != 'boolean' ? false : getUnits.getYears ),
@@ -60,5 +59,5 @@ module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, ge
     }
     else { return ms + 'ms'; }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'duraction.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'duraction.js' ), errObject.stack ); }
 };

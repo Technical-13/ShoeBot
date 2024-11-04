@@ -4,8 +4,8 @@ const userConfig = require( '../models/BotUser.js' );
 const verUserDB = config.verUserDB;
 
 module.exports = async ( user ) => {
-  if ( !user ) { throw new Error( chalk.bold.red( `No user in createNewUser.js: ${user}` ) ); }
   try {
+    if ( !user ) { throw new Error( chalk.bold.red( `No user in createNewUser.js: ${user}` ) ); }
     if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) {
       const newBotUser = {
         _id: user.id,

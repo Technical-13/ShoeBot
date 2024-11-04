@@ -289,5 +289,6 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
           return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
         } );
     }
-  } catch ( errHandleErrors ) { console.error( 'Error in errorHandler.js: %s', errHandleErrors.stack ); }
+  }
+  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'errorHandler.js' ), errObject.stack ); }
 };
