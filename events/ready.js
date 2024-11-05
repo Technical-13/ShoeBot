@@ -164,13 +164,13 @@ client.on( 'ready', async rdy => {
 
       resolve( {
         guilds: {
-          db: storedGuilds,
+//          db: storedGuilds,
           add: addedGuildIds,
           remove: removedGuildIds,
           update: updateGuildIds
         },
         users: {
-          db: storedUsers,
+//          db: storedUsers,
           add: addedUserIds,
           remove: removedUserIds,
           update: updateUserIds
