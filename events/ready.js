@@ -79,7 +79,7 @@ client.on( 'ready', async rdy => {
       const addedGuildIds = botGuildIds.filter( a => !storedGuildIds.includes( a ) );
       const removedGuildIds = storedGuildIds.filter( r => !botGuildIds.includes( r ) );
       const ioGuildIds = [].concat( addedGuildIds, removedGuildIds ).sort();
-      const updateGuildIds = allGuildIds.getDiff( ioGuildIds ).getDistinct();
+      const updateGuildIds = allGuildIds.filter( u => !ioGuildIds.includes( u )  ).getDistinct();
       for ( let guildId of updateGuildIds ) {
         let ndxGuild = updateGuildIds.indexOf( guildId );
         let botGuild = client.guilds.cache.get( guildId );
@@ -144,7 +144,7 @@ client.on( 'ready', async rdy => {
       const addedUserIds = botUserIds.filter( a => !storedUserIds.includes( a ) );
       const removedUserIds = storedUserIds.filter( r => !botUserIds.includes( r ) );
       const ioUserIds = [].concat( addedUserIds, removedUserIds ).sort();
-      const updateUserIds = allUserIds.getDiff( ioUserIds ).getDistinct();
+      const updateUserIds = allUserIds.filter( u => !ioUserIds.includes( u ) ).getDistinct();
       for ( let userId of updateUserIds ) {
         let ndxUser = updateUserIds.indexOf( userId );
         let botUser = client.users.cache.get( userId );
