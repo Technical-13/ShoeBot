@@ -11,12 +11,12 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const getBotConfig = require( '../functions/getBotDB.js' );
 const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
-const botVerbosity = ( config.verbosity || 1 );
+const botVerbosity = 4;//( config.verbosity || 1 );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
 Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
 Array.prototype.getDistinct = function() { return this.filter( ( val, i, arr ) => i == arr.indexOf( val ) ) }
-Object.prototype.valMatch = function( that ) { return JSON.stringify( this ) == JSON.stringify( that ) }
+Object.prototype.valMatch = function( that ) { return this == that }
 
 client.on( 'ready', async rdy => {
   try {
@@ -100,13 +100,13 @@ client.on( 'ready', async rdy => {
           OwnerName: guildOwner.displayName
         };
         expectedEntry.Version = verGuildDB;
+        actualEntry = JSON.stringify( actualEntry );
+        expectedEntry = JSON.stringify( expectedEntry );
         if ( expectedEntry.valMatch( actualEntry ) ) {
-          if ( botVerbosity >= 2 ) { console.log( 'G:%s: %s === %s', botGuild.name, actualEntry, expectedEntry ); }
+          if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s === %s', botGuild.name, actualEntry, expectedEntry ); }
           updateGuildIds.splice( ndxGuild, 1 );
         }
-        else {
-          if ( ndxGuild == 2 ) { console.log( 'G:%s: %s === %s', botGuild.name, actualEntry, expectedEntry ); }
-        }
+        else if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s != %s', botGuild.name, actualEntry, expectedEntry ); }
       }
       if ( botVerbosity >= 3 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
@@ -128,22 +128,18 @@ client.on( 'ready', async rdy => {
         let ndxUser = updateUserIds.indexOf( userId );
         let botUser = client.users.cache.get( userId );
         let actualEntry = storedUsers.filter( u => u._id === userId );
-        let expectedEntry = {
-          _id: botUser.id,
-          Bot: botUser.bot,
-          Guilds: actualEntry.Guilds,
-          Guildless: actualEntry.Guildless,
-          UserName: botUser.displayName,
-          Score: actualEntry.Score,
-          Version: verUserDB
-        };
+        let expectedEntry = actualEntry;
+        expectedEntry._id = botUser.id;
+        expectedEntry.Bot = botUser.bot;
+        expectedEntry.UserName = botUser.displayName;
+        expectedEntry.Version = verUserDB;
+        actualEntry = JSON.stringify( actualEntry );
+        expectedEntry = JSON.stringify( expectedEntry );
         if ( expectedEntry.valMatch( actualEntry ) ) {
-          if ( botVerbosity >= 2 ) { console.log( 'U:%s: %s === %s', botUser.displayName, actualEntry, expectedEntry ); }
+          if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s === %s', botUser.displayName, actualEntry, expectedEntry ); }
           updateUserIds.splice( ndxUser, 1 );
         }
-        else {
-          if ( ndxUser == 285 ) { console.log( 'U:%s: %s === %s', botUser.displayName, actualEntry, expectedEntry ); }
-        }
+        else if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s != %s', botUser.displayName, actualEntry, expectedEntry ); }
       }
       if ( botVerbosity >= 3 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
 
