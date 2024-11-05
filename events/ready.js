@@ -88,6 +88,7 @@ client.on( 'ready', async rdy => {
       for ( let guildId of updateGuildIds ) {
         let ndxGuild = updateGuildIds.indexOf( guildId );
         let botGuild = client.guilds.cache.get( guildId );
+        let guildOwner = botGuild.members.cache.get( botGuild.ownerId );
         let actualEntry = storedGuilds.filter( g => g._id === guildId );
         let Blacklist = ( actualEntry.Blacklist || { Members: [], Roles: [] } );
         let Logs = ( actualEntry.Logs || { Active: true, Chat: null, Default: null, Error: null } );
@@ -114,8 +115,7 @@ client.on( 'ready', async rdy => {
             Active: Logs.Active,
             Chat: Logs.Chat,
             Default: Logs.Default,
-            Error: Logs.Error,
-            strClosing: Logs.strClosing
+            Error: Logs.Error
           },
           Part: {
             Active: Part.Active,
