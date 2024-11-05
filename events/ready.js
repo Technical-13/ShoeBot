@@ -75,7 +75,7 @@ client.on( 'ready', async rdy => {
       if ( !Array.isArray( botGuildIds ) ) { reject( { message: 'Unable to retrieve guilds bot is in.' } ); }
       const storedGuilds = await guildConfig.find();
       const storedGuildIds = Array.from( storedGuilds.keys() );
-      if ( !Array.isArray( storedGuildIds )' ) { reject( { message: 'Unable to retrieve bot\'s guilds from database.' } ); }
+      if ( !Array.isArray( storedGuildIds ) ) { reject( { message: 'Unable to retrieve bot\'s guilds from database.' } ); }
       const allGuildIds = [].concat( botGuildIds, storedGuildIds ).getDistinct().sort();
       const addedGuildIds = botGuildIds.getDiff( storedGuildIds );
       const removedGuildIds = storedGuildIds.getDiff( botGuildIds );
