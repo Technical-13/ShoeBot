@@ -90,9 +90,9 @@ client.on( 'ready', async rdy => {
         let botGuild = client.guilds.cache.get( guildId );
         let actualEntry = storedGuilds.filter( g => g._id === guildId );
         let Blacklist = actualEntry.Blacklist;
-        let Logs = actualEntry.Logs:
-        let Part = actualEntry.Part:
-        let Welcome = actualEntry.Welcome:
+        let Logs = actualEntry.Logs;
+        let Part = actualEntry.Part;
+        let Welcome = actualEntry.Welcome;
         let Whitelist = actualEntry.Whitelist;
         let expectedEntry = {
           _id: botGuild.id,

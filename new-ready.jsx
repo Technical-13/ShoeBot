@@ -13,8 +13,8 @@ const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
-Array.prototype.getDiff = function( arrOld ) { return this.filter( a => !arrOld.includes( a ) ); };
-Array.prototype.getDistinct = function() { return this.filter( ( val, i, arr ) => i == arr.indexOf( val ) ); }
+Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
+Array.prototype.getDistinct = function() { return this.filter( ( val, i, arr ) => i == arr.indexOf( val ) ) }
 Object.prototype.valMatch = function( that ) { return JSON.stringify( this ) == JSON.stringify( that ) }
 
 client.on( 'ready', async rdy => {
@@ -72,24 +72,28 @@ client.on( 'ready', async rdy => {
     const dbExpires = new Date( ( new Date() ).setMonth( ( new Date() ).getMonth() + 1 ) );
     new Promise( async ( resolve, reject ) => {
       const botGuildIds = Array.from( client.guilds.cache.keys() );
+      console.log( 'botGuildIds: %o', botGuildIds );
       if ( !Array.isArray( botGuildIds ) ) { reject( { message: 'Unable to retrieve guilds bot is in.' } ); }
       const storedGuilds = await guildConfig.find();
-      const storedGuildIds = Array.from( storedGuilds.keys() );
+      const storedGuildIds = Array.from( storedGuilds.map( val => val._id ) );
+      console.log( 'storedGuildIds: %o', storedGuildIds );
       if ( !Array.isArray( storedGuildIds ) ) { reject( { message: 'Unable to retrieve bot\'s guilds from database.' } ); }
       const allGuildIds = [].concat( botGuildIds, storedGuildIds ).getDistinct().sort();
       const addedGuildIds = botGuildIds.getDiff( storedGuildIds );
+      console.log( 'addedGuildIds: %o', addedGuildIds );
       const removedGuildIds = storedGuildIds.getDiff( botGuildIds );
+      console.log( 'removedGuildIds: %o', removedGuildIds );
       const ioGuildIds = [].concat( addedGuildIds, removedGuildIds ).sort();
       const updateGuildIds = allGuildIds.getDiff( ioGuildIds ).getDistinct();
       for ( let guildId of updateGuildIds ) {
         let ndxGuild = updateGuildIds.indexOf( guildId );
         let botGuild = client.guilds.cache.get( guildId );
         let actualEntry = storedGuilds.filter( g => g._id === guildId );
-        let Blacklist = ( actualEntry.Blacklist || { Members: [], Roles: [] } );
-        let Logs = ( actualEntry.Logs || { Active: true, Chat: null, Default: null, Error: null, strClosing: logClosing( null ) } );
-        let Part = ( actualEntry.Part || { Active: false, Channel: null, Message: null, SaveRoles: false } );
-        let Welcome = ( actualEntry.Welcome || { Active: false, Channel: null, Message: null, Role: null } );
-        let Whitelist = ( actualEntry.Whitelist || { Members: [], Roles: [] } );
+        let Blacklist = actualEntry.Blacklist;
+        let Logs = actualEntry.Logs;
+        let Part = actualEntry.Part;
+        let Welcome = actualEntry.Welcome;
+        let Whitelist = actualEntry.Whitelist;
         let expectedEntry = {
           _id: botGuild.id,
           Bans: actualEntry.Bans,
@@ -137,13 +141,17 @@ client.on( 'ready', async rdy => {
       }
 
       const botUserIds = Array.from( client.users.cache.keys() );
+      console.log( 'botUserIds: %o', botUserIds );
       if ( !Array.isArray( botUserIds ) ) { reject( { message: 'Unable to retrieve bot\'s mutual users.' } ); }
       const storedUsers = await userConfig.find();
-      const storedUserIds = Array.from( storedUsers.keys() );
+      const storedUserIds = Array.from( storedUsers.map( val => val._id ) );
+      console.log( 'storedUserIds: %o', storedUserIds );
       if ( !Array.isArray( storedUserIds ) ) { reject( { message: 'Unable to retrieve userlist from database.' } ); }
       const allUserIds = [].concat( botUserIds, storedUserIds ).getDistinct().sort();
       const addedUserIds = botUserIds.getDiff( storedUserIds );
+      console.log( 'addedUserIds: %o', addedUserIds );
       const removedUserIds = storedUserIds.getDiff( botUserIds );
+      console.log( 'removedUserIds: %o', removedUserIds );
       const ioUserIds = [].concat( addedUserIds, removedUserIds ).sort();
       const updateUserIds = allUserIds.getDiff( ioUserIds ).getDistinct();
       for ( let userId of updateUserIds ) {
@@ -178,7 +186,7 @@ client.on( 'ready', async rdy => {
       } );
     } )
     .then( async ( data ) => {
-      console.log( 'data: %o', data );
+      console.log( 'Done...' );
     } )
     .catch( ( rejected ) => { console.error( rejected.message ); } );
   }
