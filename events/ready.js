@@ -103,10 +103,10 @@ client.on( 'ready', async rdy => {
         actualEntry = JSON.stringify( actualEntry );
         expectedEntry = JSON.stringify( expectedEntry );
         if ( expectedEntry.valMatch( actualEntry ) ) {
-          if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s === %s', chalk.bold.greenBright( botGuild.name ), chalk.bold.greenBright( actualEntry ), expectedEntry ); }
+          if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s %s %s', chalk.bold.greenBright( botGuild.name ), chalk.bold.greenBright( '===' ), actualEntry, expectedEntry ); }
           updateGuildIds.splice( ndxGuild, 1 );
         }
-        else if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s != %s', chalk.bold.red( botGuild.name ), chalk.bold.red( actualEntry ), expectedEntry ); }
+        else if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s %s %s', chalk.bold.red( botGuild.name ), chalk.bold.red( '!=' ), actualEntry, expectedEntry ); }
       }
       if ( botVerbosity >= 3 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
@@ -136,10 +136,10 @@ client.on( 'ready', async rdy => {
         actualEntry = JSON.stringify( actualEntry );
         expectedEntry = JSON.stringify( expectedEntry );
         if ( expectedEntry.valMatch( actualEntry ) ) {
-          if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s === %s', chalk.bold.greenBright( botUser.displayName ), chalk.bold.greenBright( actualEntry ), expectedEntry ); }
+          if ( botVerbosity >= 5 ) { console.log( 'U:%s: %s %s %s', chalk.bold.greenBright( botUser.displayName ), chalk.bold.greenBright( '===' ), actualEntry, expectedEntry ); }
           updateUserIds.splice( ndxUser, 1 );
         }
-        else if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s != %s', chalk.bold.red( botUser.displayName ), chalk.bold.red( actualEntry ), expectedEntry ); }
+        else if ( botVerbosity >= 5 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), chalk.bold.red( '!=' ), actualEntry, expectedEntry ); }
       }
       if ( botVerbosity >= 3 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
 
