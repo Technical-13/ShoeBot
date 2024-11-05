@@ -142,6 +142,9 @@ client.on( 'ready', async rdy => {
           if ( botVerbosity >= 2 ) { console.log( 'G:%s: %s === %s', botGuild.name, actualEntry, expectedEntry ); }
           updateGuildIds.splice( ndxGuild, 1 );
         }
+        else {
+          if ( ndxGuild == 2 ) { console.log( 'G:%s: %s === %s', botGuild.name, actualEntry, expectedEntry ); }
+        }
       }
       if ( botVerbosity >= 3 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
@@ -175,6 +178,9 @@ client.on( 'ready', async rdy => {
         if ( expectedEntry.valMatch( actualEntry ) ) {
           if ( botVerbosity >= 2 ) { console.log( 'U:%s: %s === %s', botUser.displayName, actualEntry, expectedEntry ); }
           updateUserIds.splice( ndxUser, 1 );
+        }
+        else {
+          if ( ndxUser == 285 ) { console.log( 'U:%s: %s === %s', botUser.displayName, actualEntry, expectedEntry ); }
         }
       }
       if ( botVerbosity >= 3 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
