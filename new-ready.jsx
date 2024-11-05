@@ -72,10 +72,10 @@ client.on( 'ready', async rdy => {
     const dbExpires = new Date( ( new Date() ).setMonth( ( new Date() ).getMonth() + 1 ) );
     new Promise( async ( resolve, reject ) => {
       const botGuildIds = Array.from( client.guilds.cache.keys() );
-      if ( typeof( botGuildIds ) != 'array' ) { reject( { message: 'Unable to retrieve guilds bot is in.' } ); }
+      if ( !Array.isArray( botGuildIds ) ) { reject( { message: 'Unable to retrieve guilds bot is in.' } ); }
       const storedGuilds = await guildConfig.find();
       const storedGuildIds = Array.from( storedGuilds.keys() );
-      if ( typeof( storedGuildIds ) != 'array' ) { reject( { message: 'Unable to retrieve bot\'s guilds from database.' } ); }
+      if ( !Array.isArray( storedGuildIds )' ) { reject( { message: 'Unable to retrieve bot\'s guilds from database.' } ); }
       const allGuildIds = [].concat( botGuildIds, storedGuildIds ).getDistinct().sort();
       const addedGuildIds = botGuildIds.getDiff( storedGuildIds );
       const removedGuildIds = storedGuildIds.getDiff( botGuildIds );
@@ -137,10 +137,10 @@ client.on( 'ready', async rdy => {
       }
 
       const botUserIds = Array.from( client.users.cache.keys() );
-      if ( typeof( botUserIds ) != 'array' ) { reject( { message: 'Unable to retrieve bot\'s mutual users.' } ); }
+      if ( !Array.isArray( botUserIds ) ) { reject( { message: 'Unable to retrieve bot\'s mutual users.' } ); }
       const storedUsers = await userConfig.find();
       const storedUserIds = Array.from( storedUsers.keys() );
-      if ( typeof( storedUserIds ) != 'array' ) { reject( { message: 'Unable to retrieve userlist from database.' } ); }
+      if ( !Array.isArray( storedUserIds ) ) { reject( { message: 'Unable to retrieve userlist from database.' } ); }
       const allUserIds = [].concat( botUserIds, storedUserIds ).getDistinct().sort();
       const addedUserIds = botUserIds.getDiff( storedUserIds );
       const removedUserIds = storedUserIds.getDiff( botUserIds );
@@ -180,7 +180,7 @@ client.on( 'ready', async rdy => {
     .then( async ( data ) => {
       console.log( 'data: %o', data );
     } )
-    .catch( ( rejected ) => { console.log( 'rejected: %o', rejected ); } );
+    .catch( ( rejected ) => { console.error( rejected.message ); } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
 } );
