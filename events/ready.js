@@ -91,53 +91,15 @@ client.on( 'ready', async rdy => {
         let botGuild = client.guilds.cache.get( guildId );
         let guildOwner = botGuild.members.cache.get( botGuild.ownerId );
         let actualEntry = storedGuilds.filter( g => g._id === guildId );
-        let Blacklist = ( actualEntry.Blacklist || { Members: [], Roles: [] } );
-        let Logs = ( actualEntry.Logs || { Active: true, Chat: null, Default: null, Error: null } );
-        let Part = ( actualEntry.Part || { Active: false, Channel: null, Message: null, SaveRoles: false } );
-        let Welcome = ( actualEntry.Welcome || { Active: false, Channel: null, Message: null, Role: null } );
-        let Whitelist = ( actualEntry.Whitelist || { Members: [], Roles: [] } );
-        let expectedEntry = {
-          _id: botGuild.id,
-          Bans: actualEntry.Bans,
-          Blacklist: {
-            Members: Blacklist.Members,
-            Roles: Blacklist.Roles
-          },
-          Commands: actualEntry.Commands,
-          Expires: actualEntry.Expires,
-          Guild: {
-            Name: botGuild.name,
-            Members: botGuild.members.cache.size,
-            OwnerID: botGuild.ownerId,
-            OwnerName: guildOwner.displayName
-          },
-          Invite: actualEntry.Invite,
-          Logs: {
-            Active: Logs.Active,
-            Chat: Logs.Chat,
-            Default: Logs.Default,
-            Error: Logs.Error
-          },
-          Part: {
-            Active: Part.Active,
-            Channel: Part.Channel,
-            Message: Part.Message,
-            SaveRoles: Part.SaveRoles
-          },
-          Prefix: actualEntry.Prefix,
-          Premium: actualEntry.Premium,
-          Version: verGuildDB,
-          Welcome: {
-            Active: Welcome.Active,
-            Channel: Welcome.Channel,
-            Message: Welcome.Message,
-            Role: Welcome.Role
-          },
-          Whitelist: {
-            Members: Whitelist.Members,
-            Roles: Whitelist.Roles
-          }
+        let expectedEntry = actualEntry;
+        expectedEntry._id = botGuild.id;
+        expectedEntry.Guild = {
+          Name: botGuild.name,
+          Members: botGuild.members.cache.size,
+          OwnerID: botGuild.ownerId,
+          OwnerName: guildOwner.displayName
         };
+        expectedEntry.Version = verGuildDB;
         if ( expectedEntry.valMatch( actualEntry ) ) {
           if ( botVerbosity >= 2 ) { console.log( 'G:%s: %s === %s', botGuild.name, actualEntry, expectedEntry ); }
           updateGuildIds.splice( ndxGuild, 1 );
