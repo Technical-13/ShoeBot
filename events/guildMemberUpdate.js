@@ -52,5 +52,5 @@ client.on( 'guildMemberUpdate', async ( oldMember, newMember ) => {
       }
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.bold.hex( '#FFA500' )( 'guildMemberUpdate.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.bold.hex( '#FFA500' )( 'guildMemberUpdate.js' ), errObject.stack ); }
 } );

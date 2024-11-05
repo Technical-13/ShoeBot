@@ -74,6 +74,6 @@ module.exports = {
 
       interaction.reply( { content: strRollTotal } );
     }
-    catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'roll.js' ), errObject.stack ); }
+    catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'roll.js' ), errObject.stack ); }
   }
 }

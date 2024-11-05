@@ -49,6 +49,6 @@ module.exports = {
         .catch( async errFetch => { return interaction.editReply( await errHandler( errFetch, { command: 'delete', msgID: msgID, type: 'errFetch' } ) ); } );
       }
     }
-    catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'delete.js' ), errObject.stack ); }
+    catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'delete.js' ), errObject.stack ); }
   }
 };

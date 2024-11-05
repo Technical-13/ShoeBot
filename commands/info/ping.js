@@ -7,6 +7,6 @@ module.exports = {
       const msg = await message.reply( 'Pinging...' )
       await msg.edit( `Pong! **${client.ws.ping} ms**` )
     }
-    catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'commands/info/ping.js' ), errObject.stack ); }
+    catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'commands/info/ping.js' ), errObject.stack ); }
 	}
 };

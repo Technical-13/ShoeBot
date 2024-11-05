@@ -58,6 +58,6 @@ module.exports = {
       } )
       .catch( async errFetch => { interaction.editReply( await errHandler( errFetch, { command: 'react', msgID: msgID, type: 'errFetch' } ) ); } );
     }
-    catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'react.js' ), errObject.stack ); }
+    catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'react.js' ), errObject.stack ); }
   }
 };

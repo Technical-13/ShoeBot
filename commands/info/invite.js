@@ -44,6 +44,6 @@ module.exports = {
       setTimeout( () => { msgInvite.delete(); }, 180000 );
       message.delete();
     }
-    catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'commands/info/invite.js' ), errObject.stack ); }
+    catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'commands/info/invite.js' ), errObject.stack ); }
 	}
 };

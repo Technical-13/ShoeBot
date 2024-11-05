@@ -6,7 +6,7 @@ const verGuildDB = config.verGuildDB;
 
 module.exports = async ( guild ) => {
   try {
-    if ( !guild ) { throw new Error( chalk.bold.red( `No guild in createNewGuild.js: ${guild}` ) ); }
+    if ( !guild ) { throw new Error( chalk.bold.red( `No guild: ${guild}` ) ); }
     if ( await guildConfig.countDocuments( { _id: guild.id } ) === 0 ) {
       const botConfig = await getBotConfig();
       const globalPrefix = ( botConfig.Prefix || config.prefix || '!' );
@@ -59,5 +59,5 @@ module.exports = async ( guild ) => {
     }
     else { console.error( 'Guild %s (%s) already exists in my database.', user.id, user.displayName ); }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'createNewGuild.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'createNewGuild.js' ), errObject.stack ); }
 };

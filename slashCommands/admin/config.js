@@ -527,6 +527,6 @@ module.exports = {
         .catch( async updateError => { return interaction.editReply( { content: await errHandler( updateError, errHandlerOptions ) } ); } );
       }
     }
-    catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'config.js' ), errObject.stack ); }
+    catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'config.js' ), errObject.stack ); }
   }
 };

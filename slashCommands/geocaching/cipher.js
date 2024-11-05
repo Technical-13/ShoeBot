@@ -26,6 +26,6 @@ module.exports = {
 
       return interaction.editReply( { content: 'Comming **SOON**:tm:' } );
     }
-    catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'cipher.js' ), errObject.stack ); }
+    catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'cipher.js' ), errObject.stack ); }
   }
 };

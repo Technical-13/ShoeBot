@@ -36,5 +36,5 @@ client.on( 'guildMemberRemove', async ( member ) => {
     await guildConfig.updateOne( { _id: guild.id }, currGuildConfig, { upsert: true } )
     .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( 'Error attempting to update %s (id: %s) in my database:\n%o' ), guild.name, guild.id, updateError ); } );
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'guildMemberRemove.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'guildMemberRemove.js' ), errObject.stack ); }
 } );

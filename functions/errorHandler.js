@@ -290,5 +290,5 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
         } );
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'errorHandler.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'errorHandler.js' ), errObject.stack ); }
 };

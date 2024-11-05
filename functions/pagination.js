@@ -52,5 +52,5 @@ module.exports = async ( interaction, pages, options = { intPageNumber: 0, time:
     collector.on( 'end', async () => { await msg.delete(); } );
     
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'pagination.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'pagination.js' ), errObject.stack ); }
 };

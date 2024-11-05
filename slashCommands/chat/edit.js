@@ -81,6 +81,6 @@ module.exports = {
       }
       else { interaction.editReply( { content: 'I don\'t know what to say.' } ); }
     }
-    catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'edit.js' ), errObject.stack ); }
+    catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'edit.js' ), errObject.stack ); }
   }
 };

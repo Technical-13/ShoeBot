@@ -101,6 +101,6 @@ if ( vanityURLCode ) { console.log( '%s has a vanityURLCode: %s', guildName, van
       }
       await pagination( interaction, embedGuilds, { intPageNumber: startGuild } );
     }
-    catch ( errObject ) { console.error( 'Uncaught error in %s: %s', chalk.hex( '#FFA500' ).bold( 'guilds.js' ), errObject.stack ); }
+    catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'guilds.js' ), errObject.stack ); }
   }
 };
