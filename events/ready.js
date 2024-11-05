@@ -16,7 +16,7 @@ const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
 Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
 Array.prototype.getDistinct = function() { return this.filter( ( val, i, arr ) => i == arr.indexOf( val ) ) }
-Object.prototype.valMatch = function( that ) { return JSON.stringify( JSON.parse( this ) ) == JSON.stringify( that ) }
+Object.prototype.valMatch = function( that ) { return JSON.stringify( this ) == JSON.stringify( that ) }
 
 client.on( 'ready', async rdy => {
   try {
