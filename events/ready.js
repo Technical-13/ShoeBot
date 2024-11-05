@@ -13,8 +13,8 @@ const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
-Array.prototype.getDiff = function( arrOld ) { return this.filter( a => !arrOld.includes( a ) ); };
-Array.prototype.getDistinct = function() { return this.filter( ( val, i, arr ) => i == arr.indexOf( val ) ); }
+Array.prototype.getDiff = function( arrOld ) { return this.filter( a => !arrOld.includes( a ) ) };
+Array.prototype.getDistinct = function() { return this.filter( ( val, i, arr ) => i == arr.indexOf( val ) ) }
 Object.prototype.valMatch = function( that ) { return JSON.stringify( this ) == JSON.stringify( that ) }
 
 client.on( 'ready', async rdy => {
