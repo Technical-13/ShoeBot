@@ -89,11 +89,11 @@ client.on( 'ready', async rdy => {
         let ndxGuild = updateGuildIds.indexOf( guildId );
         let botGuild = client.guilds.cache.get( guildId );
         let actualEntry = storedGuilds.filter( g => g._id === guildId );
-        let Blacklist = actualEntry.Blacklist;
-        let Logs = actualEntry.Logs;
-        let Part = actualEntry.Part;
-        let Welcome = actualEntry.Welcome;
-        let Whitelist = actualEntry.Whitelist;
+        let Blacklist = ( actualEntry.Blacklist || { Members: [], Roles: [] } );
+        let Logs = ( actualEntry.Logs || { Active: true, Chat: null, Default: null, Error: null } );
+        let Part = ( actualEntry.Part || { Active: false, Channel: null, Message: null, SaveRoles: false } );
+        let Welcome = ( actualEntry.Welcome || { Active: false, Channel: null, Message: null, Role: null } );
+        let Whitelist = ( actualEntry.Whitelist || { Members: [], Roles: [] } );
         let expectedEntry = {
           _id: botGuild.id,
           Bans: actualEntry.Bans,
