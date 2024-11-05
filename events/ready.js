@@ -75,7 +75,7 @@ client.on( 'ready', async rdy => {
       console.log( 'botGuildIds: %o', botGuildIds );
       if ( !Array.isArray( botGuildIds ) ) { reject( { message: 'Unable to retrieve guilds bot is in.' } ); }
       const storedGuilds = await guildConfig.find();
-      const storedGuildIds = Array.from( storedGuilds.keys() );
+      const storedGuildIds = Array.from( storedGuilds.map( val => val._id ) );
       console.log( 'storedGuildIds: %o', storedGuildIds );
       if ( !Array.isArray( storedGuildIds ) ) { reject( { message: 'Unable to retrieve bot\'s guilds from database.' } ); }
       const allGuildIds = [].concat( botGuildIds, storedGuildIds ).getDistinct().sort();
@@ -144,7 +144,7 @@ client.on( 'ready', async rdy => {
       console.log( 'botUserIds: %o', botUserIds );
       if ( !Array.isArray( botUserIds ) ) { reject( { message: 'Unable to retrieve bot\'s mutual users.' } ); }
       const storedUsers = await userConfig.find();
-      const storedUserIds = Array.from( storedUsers.keys() );
+      const storedUserIds = Array.from( storedUsers.map( val => val._id ) );
       console.log( 'storedUserIds: %o', storedUserIds );
       if ( !Array.isArray( storedUserIds ) ) { reject( { message: 'Unable to retrieve userlist from database.' } ); }
       const allUserIds = [].concat( botUserIds, storedUserIds ).getDistinct().sort();
