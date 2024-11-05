@@ -13,7 +13,6 @@ const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
-Array.prototype.getDiff = function( arrOld ) { return this.filter( a => !arrOld.includes( a ) ) };
 Array.prototype.getDistinct = function() { return this.filter( ( val, i, arr ) => i == arr.indexOf( val ) ) }
 Object.prototype.valMatch = function( that ) { return JSON.stringify( this ) == JSON.stringify( that ) }
 
@@ -77,8 +76,8 @@ client.on( 'ready', async rdy => {
       const storedGuildIds = Array.from( storedGuilds.keys() );
       if ( !Array.isArray( storedGuildIds ) ) { reject( { message: 'Unable to retrieve bot\'s guilds from database.' } ); }
       const allGuildIds = [].concat( botGuildIds, storedGuildIds ).getDistinct().sort();
-      const addedGuildIds = botGuildIds.getDiff( storedGuildIds );
-      const removedGuildIds = storedGuildIds.getDiff( botGuildIds );
+      const addedGuildIds = botGuildIds.filter( a => !storedGuildIds.includes( a ) );
+      const removedGuildIds = storedGuildIds.filter( r => !botGuildIds.includes( r ) );
       const ioGuildIds = [].concat( addedGuildIds, removedGuildIds ).sort();
       const updateGuildIds = allGuildIds.getDiff( ioGuildIds ).getDistinct();
       for ( let guildId of updateGuildIds ) {
@@ -142,8 +141,8 @@ client.on( 'ready', async rdy => {
       const storedUserIds = Array.from( storedUsers.keys() );
       if ( !Array.isArray( storedUserIds ) ) { reject( { message: 'Unable to retrieve userlist from database.' } ); }
       const allUserIds = [].concat( botUserIds, storedUserIds ).getDistinct().sort();
-      const addedUserIds = botUserIds.getDiff( storedUserIds );
-      const removedUserIds = storedUserIds.getDiff( botUserIds );
+      const addedUserIds = botUserIds.filter( a => !storedUserIds.includes( a ) );
+      const removedUserIds = storedUserIds.filter( r => !botUserIds.includes( r ) );
       const ioUserIds = [].concat( addedUserIds, removedUserIds ).sort();
       const updateUserIds = allUserIds.getDiff( ioUserIds ).getDistinct();
       for ( let userId of updateUserIds ) {
