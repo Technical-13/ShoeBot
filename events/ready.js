@@ -11,6 +11,7 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const getBotConfig = require( '../functions/getBotDB.js' );
 const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
+const botVerbosity = ( config.verbosity || 1 );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
 Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
@@ -45,7 +46,7 @@ client.on( 'ready', async rdy => {
     const today = ( new Date() );
     const objTimeString = {"hour":"2-digit","hourCycle":"h24","minute":"2-digit","second":"2-digit","timeZone":"America/New_York","timeZoneName":"short"};
     const botTime = today.toLocaleTimeString( 'en-US', objTimeString );
-    console.log( chalk.bold( `The bot owner's local time is ${botTime}.` ) );
+    if ( botVerbosity >= 1 ) { console.log( chalk.bold( `The bot owner's local time is ${botTime}.` ) ); }
     const hour = parseInt( botTime.split( ':' )[ 0 ] );
     const myTime = ( hour >= 5 && hour < 12 ? 'morning' : ( hour >= 12 && hour < 18 ? 'afternoon' : ( hour >= 18 && hour < 23 ? 'evening' : 'nighttime' ) ) );
     const myCup = ( hour >= 5 && hour < 12 ? 'my ' : ( hour >= 12 && hour < 18 ? 'an ' : 'a ' ) ) + myTime;
@@ -67,22 +68,22 @@ client.on( 'ready', async rdy => {
       let actName = await parse( thisActivity.name, { uptime: { getWeeks: true } } );
       await client.user.setPresence( { activities: [ { type: actType, name: actName } ], status: 'online' } );
     }, 300000 );
-    console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) );
+    if ( botVerbosity >= 1 ) { console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) ); }
 
     const dbExpires = new Date( ( new Date() ).setMonth( ( new Date() ).getMonth() + 1 ) );
     new Promise( async ( resolve, reject ) => {
       const botGuildIds = Array.from( client.guilds.cache.keys() );
-      console.log( 'botGuildIds: %o', botGuildIds );
+      if ( botVerbosity >= 4 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
       if ( !Array.isArray( botGuildIds ) ) { reject( { message: 'Unable to retrieve guilds bot is in.' } ); }
       const storedGuilds = await guildConfig.find();
       const storedGuildIds = Array.from( storedGuilds.map( val => val._id ) );
-      console.log( 'storedGuildIds: %o', storedGuildIds );
+      if ( botVerbosity >= 4 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
       if ( !Array.isArray( storedGuildIds ) ) { reject( { message: 'Unable to retrieve bot\'s guilds from database.' } ); }
       const allGuildIds = [].concat( botGuildIds, storedGuildIds ).getDistinct().sort();
       const addedGuildIds = botGuildIds.getDiff( storedGuildIds );
-      console.log( 'addedGuildIds: %o', addedGuildIds );
+      if ( botVerbosity >= 3 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
       const removedGuildIds = storedGuildIds.getDiff( botGuildIds );
-      console.log( 'removedGuildIds: %o', removedGuildIds );
+      if ( botVerbosity >= 3 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
       const ioGuildIds = [].concat( addedGuildIds, removedGuildIds ).sort();
       const updateGuildIds = allGuildIds.getDiff( ioGuildIds ).getDistinct();
       for ( let guildId of updateGuildIds ) {
@@ -139,19 +140,20 @@ client.on( 'ready', async rdy => {
         };
         if ( expectedEntry.valMatch( actualEntry ) ) { updateGuildIds.splice( ndxGuild, 1 ) }
       }
+      if ( botVerbosity >= 3 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
       const botUserIds = Array.from( client.users.cache.keys() );
-      console.log( 'botUserIds: %o', botUserIds );
+      if ( botVerbosity >= 4 ) { console.log( 'botUserIds: %o', botUserIds ); }
       if ( !Array.isArray( botUserIds ) ) { reject( { message: 'Unable to retrieve bot\'s mutual users.' } ); }
       const storedUsers = await userConfig.find();
       const storedUserIds = Array.from( storedUsers.map( val => val._id ) );
-      console.log( 'storedUserIds: %o', storedUserIds );
+      if ( botVerbosity >= 4 ) { console.log( 'storedUserIds: %o', storedUserIds ); }
       if ( !Array.isArray( storedUserIds ) ) { reject( { message: 'Unable to retrieve userlist from database.' } ); }
       const allUserIds = [].concat( botUserIds, storedUserIds ).getDistinct().sort();
       const addedUserIds = botUserIds.getDiff( storedUserIds );
-      console.log( 'addedUserIds: %o', addedUserIds );
+      if ( botVerbosity >= 3 ) { console.log( 'addedUserIds: %o', addedUserIds ); }
       const removedUserIds = storedUserIds.getDiff( botUserIds );
-      console.log( 'removedUserIds: %o', removedUserIds );
+      if ( botVerbosity >= 3 ) { console.log( 'removedUserIds: %o', removedUserIds ); }
       const ioUserIds = [].concat( addedUserIds, removedUserIds ).sort();
       const updateUserIds = allUserIds.getDiff( ioUserIds ).getDistinct();
       for ( let userId of updateUserIds ) {
@@ -169,6 +171,7 @@ client.on( 'ready', async rdy => {
         };
         if ( expectedEntry.valMatch( actualEntry ) ) { updateUserIds.splice( ndxUser, 1 ) }
       }
+      if ( botVerbosity >= 3 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
 
       resolve( {
         guilds: {
