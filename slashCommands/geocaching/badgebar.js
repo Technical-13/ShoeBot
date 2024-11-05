@@ -57,15 +57,11 @@ module.exports = {
       const intDayNow = today.getDate();
       const intDay = ( intDayNow <= 9 ? '0' + intDayNow.toString() : intDayNow.toString() );
 
-      const strAuthorDisplayName = members.get( author.id ).displayName;
-      const strInputUser = ( options.getString( 'gc-name' ) || null );
-      const objInputUser = ( options.getUser( 'discord-user' ) || null );
-      const strInputUserDisplayName = ( objInputUser ? objInputUser.displayName : strInputUser );
-      const strUseName = ( strInputUserDisplayName ? strInputUserDisplayName : strAuthorDisplayName );
+      const strUseName = ( options.getString( 'gc-name' ) || members.get( options.getUser( 'discord-user' ).id || author.id ).displayName );
       const encName = encodeURI( strUseName ).replace( '&', '%26' );
 
       const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = logChans;
+      const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = logChans.Logs;
 
       channel.send( { content:
         'BadgeBar for ' + ( objInputUser ? '<@' +  objInputUser.id + '>' : strUseName ) +

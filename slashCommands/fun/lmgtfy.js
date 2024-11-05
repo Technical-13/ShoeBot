@@ -29,7 +29,7 @@ module.exports = {
       if ( content ) { return interaction.editReply( { content: content } ); }
 
       const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Chat: chanChat, strClosing } = logChans;
+      const { Active: doLogs, Chat: chanChat, strClosing } = logChans.Logs;
 
       const cmdInputUser = options.getUser( 'target' );
       const mentionUserID = ( cmdInputUser ? cmdInputUser.id : author.id );

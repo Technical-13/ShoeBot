@@ -101,7 +101,7 @@ module.exports = {
       };
 
       const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = logChans;
+      const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = logChans.Logs;
 
       if ( msgID && !( /[\d]{18,19}/.test( msgID ) ) ) { return interaction.editReply( { content: '`' + msgID + '` ' + i18InvalidMsgId[ locale ] } ); }
       else if ( msgID ) {

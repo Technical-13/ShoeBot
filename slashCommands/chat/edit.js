@@ -44,7 +44,7 @@ module.exports = {
       const strAuthorTag = author.tag;
 
       const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Chat: chanChat, strClosing } = logChans;
+      const { Active: doLogs, Chat: chanChat, strClosing } = logChans.Logs;
 
       if ( mySaying ) {
         const parsedSaying = await parse( mySaying, { member: guildMember } );
