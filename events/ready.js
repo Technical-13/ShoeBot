@@ -179,7 +179,8 @@ client.on( 'ready', async rdy => {
     } )
     .then( async ( data ) => {
       console.log( 'data: %o', data );
-    } );
+    } )
+    .catch( ( rejected ) => { console.log( 'rejected: %o', rejected ); } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
 } );
