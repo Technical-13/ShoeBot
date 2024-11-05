@@ -138,7 +138,10 @@ client.on( 'ready', async rdy => {
             Roles: Whitelist.Roles
           }
         };
-        if ( expectedEntry.valMatch( actualEntry ) ) { updateGuildIds.splice( ndxGuild, 1 ) }
+        if ( expectedEntry.valMatch( actualEntry ) ) {
+          if ( botVerbosity >= 2 ) { console.log( 'G:%s: %s === %s', botGuild.name, actualEntry, expectedEntry ); }
+          updateGuildIds.splice( ndxGuild, 1 );
+        }
       }
       if ( botVerbosity >= 3 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
@@ -169,7 +172,10 @@ client.on( 'ready', async rdy => {
           Score: actualEntry.Score,
           Version: verUserDB
         };
-        if ( expectedEntry.valMatch( actualEntry ) ) { updateUserIds.splice( ndxUser, 1 ) }
+        if ( expectedEntry.valMatch( actualEntry ) ) {
+          if ( botVerbosity >= 2 ) { console.log( 'U:%s: %s === %s', botUser.displayName, actualEntry, expectedEntry ); }
+          updateUserIds.splice( ndxUser, 1 );
+        }
       }
       if ( botVerbosity >= 3 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
 
