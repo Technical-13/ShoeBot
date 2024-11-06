@@ -220,7 +220,7 @@ client.on( 'ready', async rdy => {
         for ( let userId of update ) {
           let updatedUsers = [];
           let updatedUser = db.filter( g => g._id === userId )[ 0 ];
-          await userConfig.updateOne( { _id === userId }, updatedUser, { upsert: true } )
+          await userConfig.updateOne( { _id:  userId }, updatedUser, { upsert: true } )
           .then( updateSuccess => {
             console.log( 'Succesfully updated U:%s in my database.', chalk.bold.green( updatedUser.UserName ) );
             updatedUsers.push( userId );
@@ -265,7 +265,7 @@ client.on( 'ready', async rdy => {
         for ( let guildId of update ) {
           let updatedGuilds = [];
           let updatedGuild = db.filter( g => g._id === guildId )[ 0 ];
-          await userConfig.updateOne( { _id === guildId }, updatedGuild, { upsert: true } )
+          await userConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
           .then( updateSuccess => {
             console.log( 'Succesfully updated G:%s in my database.', chalk.bold.green( updatedGuild.Name ) );
             updatedGuilds.push( guildId );
