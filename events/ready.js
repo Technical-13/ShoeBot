@@ -223,8 +223,9 @@ client.on( 'ready', async rdy => {
           if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( addUser.displayName ) ); }
           await createNewUser( addUser );
           let addUserGuilds = ( Array.from( botGuilds.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
-          for ( let guild of addUserGuilds ) {
-          if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s...', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
+          for ( let guildId of addUserGuilds ) {
+            let guild = await botGuilds.get( guildId );
+            if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s...', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
             await addUserGuild( userId, guild );
           }
         }
