@@ -232,8 +232,8 @@ client.on( 'ready', async rdy => {
           db.push( newUser );
           addedUsers.push( userId );
         }
+        users.add = add.getDiff( addedUsers );
         users.added = addedUsers;
-        add = add.getDiff( addedUsers );
       }
 
       return data;
@@ -251,8 +251,8 @@ client.on( 'ready', async rdy => {
           db.push( newGuild );
           addedGuilds.push( guildId );
         }
+        guilds.add = add.getDiff( addedGuilds );
         guilds.added = addedGuilds;
-        add = add.getDiff( addedGuilds );
       }
 
       return data;
