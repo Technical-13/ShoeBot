@@ -117,7 +117,7 @@ client.on( 'ready', async rdy => {
             }
             else if ( userGuild.Expires <= ( new Date() ) ) {// If past .Expires Date, remove the guild from the Guilds array
               if ( botVerbosity >= 4 ) { console.log( 'U:%s G:%s removed.', chalk.bold.redBright( storedUser.UserName ), chalk.bold.redBright( userGuild.GuildName ) ); }
-              userGuilds.splice( userGuildIds.indexOf( guildId ), 1 );
+              userGuilds.splice( userGuildIds.indexOf( userGuild._id ), 1 );
               updateUserIds.push( userId );
             }
           }
