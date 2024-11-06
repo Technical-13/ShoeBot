@@ -75,17 +75,13 @@ client.on( 'ready', async rdy => {
     const botUsers = client.users.cache
     new Promise( async ( resolve, reject ) => {
       const botGuildIds = Array.from( botGuilds.keys() );
-      if ( botVerbosity >= 4 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
       if ( !Array.isArray( botGuildIds ) ) { reject( { message: 'Unable to retrieve guilds bot is in.' } ); }
       const storedGuilds = await guildConfig.find();
       const storedGuildIds = Array.from( storedGuilds.map( val => val._id ) );
-      if ( botVerbosity >= 4 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
       if ( !Array.isArray( storedGuildIds ) ) { reject( { message: 'Unable to retrieve bot\'s guilds from database.' } ); }
       const allGuildIds = [].concat( botGuildIds, storedGuildIds ).getDistinct().sort();
       const addedGuildIds = botGuildIds.getDiff( storedGuildIds );
-      if ( botVerbosity >= 3 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
       const removedGuildIds = storedGuildIds.getDiff( botGuildIds );
-      if ( botVerbosity >= 3 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
       const ioGuildIds = [].concat( addedGuildIds, removedGuildIds ).sort();
       let updateGuildIds = allGuildIds.getDiff( ioGuildIds ).getDistinct();
       const unchangedGuildIds = [];
@@ -105,14 +101,34 @@ client.on( 'ready', async rdy => {
         expectedEntry.Version = verGuildDB;
         actualEntry = JSON.stringify( actualEntry );
         expectedEntry = JSON.stringify( expectedEntry );
-        if ( expectedEntry.valMatch( actualEntry ) ) {
+        if ( expectedEntry.valMatch( actualEntry ) ) {// push to unchangedGuildIds
           if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s %s %s', chalk.bold.greenBright( botGuild.name ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
           unchangedGuildIds.push( guildId );
         }
         else if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s %s %s', chalk.bold.red( botGuild.name ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
-      if ( botVerbosity >= 3 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
       updateGuildIds = updateGuildIds.getDiff( unchangedGuildIds );
+      if ( removedGuildIds.length != 0 ) {
+        for ( let guildId of removedGuildIds ) {
+          let dbGuild = db.filter( g => g._id === guildId );
+          let isExpired = ( !dbGuild.Expires ? false : ( dbGuild.Expires <= ( new Date() ) ? true : false ) );
+          if ( !isExpired && !dbGuild.Expires ) {// add Expires Date, push id to update, take id out of removedGuildIds
+            if ( botVerbosity >= 4 ) { console.log( 'G:%s now Expires: %s', chalk.bold.greenBright( botGuild.name ), dbExpires ); }
+            dbGuild.Expires = dbExpires;
+            updateGuildIds.push( guildId );
+            removedGuildIds.splice( removedGuildIds.indexOf( guildId ), 1 );
+          }
+          else if ( !isExpired ) {// unchanged++ and take id out of removedGuildIds
+            unchangedGuildIds.push( guildId );
+            removedGuildIds.splice( removedGuildIds.indexOf( guildId ), 1 );
+          }
+        }
+      }
+      if ( botVerbosity >= 4 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
+      if ( botVerbosity >= 3 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
+      if ( botVerbosity >= 3 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
       if ( botVerbosity >= 3 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
       const botUserIds = Array.from( botUsers.keys() );
@@ -170,28 +186,37 @@ client.on( 'ready', async rdy => {
     } )
     .then( async ( data ) => {
       let { guilds } = data;
-      let { db, add, remove, update } = guilds;
+      let { db, add, remove, update, unchanged } = guilds;
       if ( add.length != 0 ) {
         if ( botVerbosity >= 1 ) { console.log( 'Adding %s guilds to my database...', add.length ); }
-        for ( let guildId of add ) {
+        for ( let guildId of add ) {// createNewGuild
           if ( botVerbosity >= 1 ) { console.log( '\tAdding guild %s to my database...', add.length ); }
           await createNewGuild( await botGuilds.get( guildId ) );
         }
       }
       return data;
     } )
-    .then( async ( data ) => {
+    /*.then( async ( data ) => {
       let { users } = data;
-      let { db, add, remove, update } = users;
+      let { db, add, remove, update, unchanged } = users;
+      if ( remove.length != 0 ) {
+        for ( let userId of remove ) {
+          let dbUser = db.filter( g => g._id === userId );
+          // Go through all the guilds for all the users in this list
+          // If no .Expires Date, add one
+          // If past .Expires Date, remove the guild from the Guilds array
+          // If the user has no more guilds, add Guildless Date
+        }
+      }
       if ( add.length != 0 ) {
         if ( botVerbosity >= 1 ) { console.log( 'Adding %s users to my database...', add.length ); }
-        for ( let userId of add ) {
+        for ( let userId of add ) {// createNewUser
           if ( botVerbosity >= 1 ) { console.log( '\tAdding user %s to my database...', add.length ); }
           await createNewUser( await botUsers.get( userId ) );
         }
       }
       return data;
-    } )
+    } )//*/
     .catch( ( rejected ) => { console.error( rejected.message ); } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
