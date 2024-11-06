@@ -217,8 +217,8 @@ client.on( 'ready', async rdy => {
       let { users } = data;
       let { db, update } = users;
       if ( update.length != 0 ) {
+        let updatedUsers = [];
         for ( let userId of update ) {
-          let updatedUsers = [];
           let updatedUser = db.filter( g => g._id === userId )[ 0 ];
           await userConfig.updateOne( { _id:  userId }, updatedUser, { upsert: true } )
           .then( updateSuccess => {
