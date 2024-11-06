@@ -11,7 +11,7 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const getBotConfig = require( '../functions/getBotDB.js' );
 const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
-const botVerbosity = 4;//( config.verbosity || 1 );
+const botVerbosity = ( config.verbosity || 1 );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
 Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
@@ -71,8 +71,10 @@ client.on( 'ready', async rdy => {
     if ( botVerbosity >= 1 ) { console.log( chalk.bold.magentaBright( `Successfully logged in as: ${client.user.tag}` ) ); }
 
     const dbExpires = new Date( ( new Date() ).setMonth( ( new Date() ).getMonth() + 1 ) );
+    const botGuilds = client.guilds.cache;
+    const botUsers = client.users.cache
     new Promise( async ( resolve, reject ) => {
-      const botGuildIds = Array.from( client.guilds.cache.keys() );
+      const botGuildIds = Array.from( botGuilds.keys() );
       if ( botVerbosity >= 4 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
       if ( !Array.isArray( botGuildIds ) ) { reject( { message: 'Unable to retrieve guilds bot is in.' } ); }
       const storedGuilds = await guildConfig.find();
@@ -113,7 +115,7 @@ client.on( 'ready', async rdy => {
       updateGuildIds = updateGuildIds.getDiff( unchangedGuildIds );
       if ( botVerbosity >= 3 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
-      const botUserIds = Array.from( client.users.cache.keys() );
+      const botUserIds = Array.from( botUsers.keys() );
       if ( botVerbosity >= 4 ) { console.log( 'botUserIds: %o', botUserIds ); }
       if ( !Array.isArray( botUserIds ) ) { reject( { message: 'Unable to retrieve bot\'s mutual users.' } ); }
       const storedUsers = await userConfig.find();
@@ -140,10 +142,10 @@ client.on( 'ready', async rdy => {
         actualEntry = JSON.stringify( actualEntry );
         expectedEntry = JSON.stringify( expectedEntry );
         if ( expectedEntry.valMatch( actualEntry ) ) {
-          if ( botVerbosity >= 5 ) { console.log( 'U:%s: %s %s %s', chalk.bold.greenBright( botUser.displayName ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
+          if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.greenBright( botUser.displayName ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
           unchangedUserIds.push( userId );
         }
-        else if ( botVerbosity >= 5 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
+        else if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
       if ( botVerbosity >= 3 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
       updateUserIds = updateUserIds.getDiff( unchangedUserIds );
@@ -155,19 +157,40 @@ client.on( 'ready', async rdy => {
           add: addedGuildIds,
           remove: removedGuildIds,
           update: updateGuildIds,
-          unchanged: unchangedGuildIds
+          unchanged: unchangedGuildIds.length
         },
         users: {
           db: storedUsers,
           add: addedUserIds,
           remove: removedUserIds,
           update: updateUserIds,
-          unchanged: unchangedUserIds
+          unchanged: unchangedUserIds.length
           }
       } );
     } )
     .then( async ( data ) => {
-      console.log( 'Done...' );
+      let { guilds } = data;
+      let { db, add, remove, update } = guilds;
+      if ( add.length != 0 ) {
+        if ( botVerbosity >= 1 ) { console.log( 'Adding %s guilds to my database...', add.length ); }
+        for ( let guildId of add ) {
+          if ( botVerbosity >= 1 ) { console.log( '\tAdding guild %s to my database...', add.length ); }
+          await createNewGuild( await botGuilds.get( guildId ) );
+        }
+      }
+      return data;
+    } )
+    .then( async ( data ) => {
+      let { users } = data;
+      let { db, add, remove, update } = users;
+      if ( add.length != 0 ) {
+        if ( botVerbosity >= 1 ) { console.log( 'Adding %s users to my database...', add.length ); }
+        for ( let userId of add ) {
+          if ( botVerbosity >= 1 ) { console.log( '\tAdding user %s to my database...', add.length ); }
+          await createNewUser( await botUsers.get( userId ) );
+        }
+      }
+      return data;
     } )
     .catch( ( rejected ) => { console.error( rejected.message ); } );
   }
