@@ -242,7 +242,7 @@ client.on( 'ready', async rdy => {
 
       return data;
     } )
-    .then( ( data ) => { console.log( 'Done...\n%o', data ); } ).catch( ( rejected ) => { console.error( rejected.message ); } );
+    .then( ( data ) => { console.log( 'Done...' ); } ).catch( ( rejected ) => { console.error( rejected.message ); } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
 } );
