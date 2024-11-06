@@ -213,27 +213,29 @@ client.on( 'ready', async rdy => {
           }
       } );
     } )
-    /*.then( async ( data ) => {
+    .then( async ( data ) => {
       let { users } = data;
       let { db, add, remove, update, unchanged } = users;
       if ( add.length != 0 ) {
-        if ( botVerbosity >= 1 ) { console.log( 'Adding %s users to my database...', add.length ); }
+        if ( botVerbosity >= 1 ) { console.log( 'Adding %s users to my database...', chalk.bold.green( add.length ) ); }
         for ( let userId of add ) {// createNewUser
-          if ( botVerbosity >= 1 ) { console.log( '\tAdding user %s to my database...', add.length ); }
-          await createNewUser( await botUsers.get( userId ) );
+          let addUser = await botUsers.get( userId );
+          if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( addUser.displayName ) ); }
+          await createNewUser( addUser );
         }
       }
+
       return data;
-    } )//*/
+    } )
     .then( async ( data ) => {
       let { guilds } = data;
       let { db, add, remove, update, unchanged } = guilds;
       if ( add.length != 0 ) {
         let addedGuilds = [];
-        if ( botVerbosity >= 1 ) { console.log( 'Adding %s guilds to my database...', add.length ); }
+        if ( botVerbosity >= 1 ) { console.log( 'Adding %s guilds to my database...', chalk.bold.green( add.length ) ); }
         for ( let guildId of add ) {// createNewGuild
           let addGuild = await botGuilds.get( guildId );
-          if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', addGuild.name ); }
+          if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', chalk.bold.green( addGuild.name ) ); }
           await createNewGuild( addGuild );
           addedGuilds.push( guildId );
         }
