@@ -213,6 +213,26 @@ client.on( 'ready', async rdy => {
           }
       } );
     } )
+    .then( async ( data ) => {// update users that changed while offline
+      let { users } = data;
+      let { db, update } = users;
+      if ( update.length != 0 ) {
+        for ( let userId of update ) {
+          let updatedUsers = [];
+          let updatedUser = db.filter( g => g._id === userId )[ 0 ];
+          await userConfig.updateOne( { _id === userId }, updatedUser, { upsert: true } )
+          .then( updateSuccess => {
+            console.log( 'Succesfully updated U:%s in my database.', chalk.bold.green( updatedUser.UserName ) );
+            updatedUsers.push( userId );
+          } )
+          .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update user ${updatedUser.UserName} in my database:\n${updateError}` ) ); } );
+        }
+        users.update = update.length;
+        users.updated = updatedUsers.length;
+      }
+
+      return data;
+    } )
     .then( async ( data ) => {// add users missing from db
       let { users } = data;
       let { db, add } = users;
@@ -234,6 +254,26 @@ client.on( 'ready', async rdy => {
         }
         users.add = add.length;
         users.added = addedUsers.length;
+      }
+
+      return data;
+    } )
+    .then( async ( data ) => {// update guilds that changed while offline
+      let { guilds } = data;
+      let { db, update } = guilds;
+      if ( update.length != 0 ) {
+        for ( let guildId of update ) {
+          let updatedGuilds = [];
+          let updatedGuild = db.filter( g => g._id === guildId )[ 0 ];
+          await userConfig.updateOne( { _id === guildId }, updatedGuild, { upsert: true } )
+          .then( updateSuccess => {
+            console.log( 'Succesfully updated G:%s in my database.', chalk.bold.green( updatedGuild.Name ) );
+            updatedGuilds.push( guildId );
+          } )
+          .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update guild ${updatedGuild.Name} in my database:\n${updateError}` ) ); } );
+        }
+        guilds.update = update.length;
+        guilds.updated = updatedGuilds.length;
       }
 
       return data;
@@ -265,20 +305,21 @@ client.on( 'ready', async rdy => {
         for ( let guildId of remove ) {
           let delGuild = db.find( entry => entry.id === guildId );
           let guildName = delGuild.Guild.Name;
+          let guildLink = '[' + guildName + '](<https://discord.com/channels/' + guildId + '>)';
           let guildOwner = ( botUsers.get( delGuild.Guild.OwnerID ) || null );
           let ownerName = ( guildOwner ? '<@' + guildOwner.id + '>' : '`' + delGuild.Guild.OwnerName + '`' );
           await guildConfig.deleteOne( { _id: guildId } )
           .then( delExpired => {
-            if ( botVerbosity >= 1 ) { console.log( 'Succesfully deleted expired id: %s (%s) from my database.', guildId, chalk.bold.red( guildName ) ); }
+            if ( botVerbosity >= 1 ) { console.log( 'Succesfully removed expired G:%s from my database.', chalk.bold.red( guildName ) ); }
             if ( guildOwner ) {
-              guildOwner.send( { content: 'Hello! It has been a month since someone has removed me from [' + guildName + '](<https://discord.com/channels/' + guildId + '>), and I\'ve cleaned out your configuration settings!\n\nYou can still get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.' } )
+              guildOwner.send( { content: 'Hello! It has been a month since someone has removed me from ' + guildLink + ', and I\'ve cleaned out your configuration settings!\n\nYou can still get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.' } )
               .catch( errSendDM => {
                 console.error( 'errSendDM: %s', errSendDM.stack );
-                botOwner.send( { content: 'Failed to DM ' + ownerName + ' to notify them that I cleaned the guild, [' + guildName + '](<https://discord.com/channels/' + guildId + '>), from my database.' } );
+                botOwner.send( { content: 'Failed to DM ' + ownerName + ' to notify them that I cleaned the guild, ' + guildLink + ', from my database.' } );
               } );
             }
             else {
-              botOwner.send( { content: 'Unable to find ' + ownerName + ' to notify them that I cleaned the guild, [' + guildName + '](<https://discord.com/channels/' + guildId + '>), from my database.' } );
+              botOwner.send( { content: 'Unable to find ' + ownerName + ' to notify them that I cleaned the guild, ' + guildLink + ', from my database.' } );
             }
             removedGuilds.push( guildId );
           } )
