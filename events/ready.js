@@ -337,7 +337,8 @@ client.on( 'ready', async rdy => {
       console.log( 'Added users: %s/%s', users.added, users.add );
       console.log( 'Updated guilds: %s/%s', guilds.updated, guilds.update );
       console.log( 'Added guilds: %s/%s', guilds.added, guilds.add );
-      console.log( 'Removed guilds: %s/%s', guilds.remove, guilds.remove );
+      console.log( 'Removed guilds: %s/%s', guilds.removed, guilds.remove );
+      console.log( 'All done catching up!!!' );
     } )
     .catch( ( rejected ) => { console.error( rejected.message ); } );
   }
