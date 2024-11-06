@@ -213,9 +213,9 @@ client.on( 'ready', async rdy => {
           }
       } );
     } )
-    .then( async ( data ) => {
+    .then( async ( data ) => {// add users missing from db
       let { users } = data;
-      let { db, add, remove, update, unchanged } = users;
+      let { db, add } = users;
       if ( add.length != 0 ) {
         let addedUsers = [];
         if ( botVerbosity >= 1 ) { console.log( 'Adding %s users to my database...', chalk.bold.green( add.length ) ); }
@@ -224,7 +224,7 @@ client.on( 'ready', async rdy => {
           if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( addUser.displayName ) ); }
           let newUser = await createNewUser( addUser );
           let addUserGuilds = ( Array.from( botGuilds.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
-          for ( let guildId of addUserGuilds ) {
+          for ( let guildId of addUserGuilds ) {// addUserGuild
             let guild = await botGuilds.get( guildId );
             if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s...', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
             newUser = await addUserGuild( userId, guild );
@@ -232,15 +232,15 @@ client.on( 'ready', async rdy => {
           db.push( newUser );
           addedUsers.push( userId );
         }
-        users.add = add.getDiff( addedUsers );
-        users.added = addedUsers;
+        users.add = add.length;
+        users.added = addedUsers.length;
       }
 
       return data;
     } )
-    .then( async ( data ) => {
+    .then( async ( data ) => {// add guilds missing from db
       let { guilds } = data;
-      let { db, add, remove, update, unchanged } = guilds;
+      let { db, add } = guilds;
       if ( add.length != 0 ) {
         let addedGuilds = [];
         if ( botVerbosity >= 1 ) { console.log( 'Adding %s guilds to my database...', chalk.bold.green( add.length ) ); }
@@ -251,8 +251,41 @@ client.on( 'ready', async rdy => {
           db.push( newGuild );
           addedGuilds.push( guildId );
         }
-        guilds.add = add.getDiff( addedGuilds );
-        guilds.added = addedGuilds;
+        guilds.add = add.length;
+        guilds.added = addedGuilds.length;
+      }
+
+      return data;
+    } )
+    .then( async ( data ) => {// remove guilds from db that have expired
+      let { guilds } = data;
+      let { db, remove } = guilds;
+      if ( remove.length != 0 ) {
+        let removedGuilds = [];
+        for ( let guildId of remove ) {
+          let delGuild = db.find( entry => entry.id === guildId );
+          let guildName = delGuild.Guild.Name;
+          let guildOwner = ( botUsers.get( delGuild.Guild.OwnerID ) || null );
+          let ownerName = ( guildOwner ? '<@' + guildOwner.id + '>' : '`' + delGuild.Guild.OwnerName + '`' );
+          await guildConfig.deleteOne( { _id: guildId } )
+          .then( delExpired => {
+            if ( botVerbosity >= 1 ) { console.log( 'Succesfully deleted expired id: %s (%s) from my database.', guildId, chalk.bold.red( guildName ) ); }
+            if ( guildOwner ) {
+              guildOwner.send( { content: 'Hello! It has been a month since someone has removed me from [' + guildName + '](<https://discord.com/channels/' + guildId + '>), and I\'ve cleaned out your configuration settings!\n\nYou can still get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.' } )
+              .catch( errSendDM => {
+                console.error( 'errSendDM: %s', errSendDM.stack );
+                botOwner.send( { content: 'Failed to DM ' + ownerName + ' to notify them that I cleaned the guild, [' + guildName + '](<https://discord.com/channels/' + guildId + '>), from my database.' } );
+              } );
+            }
+            else {
+              botOwner.send( { content: 'Unable to find ' + ownerName + ' to notify them that I cleaned the guild, [' + guildName + '](<https://discord.com/channels/' + guildId + '>), from my database.' } );
+            }
+            removedGuilds.push( guildId );
+          } )
+          .catch( errDelete => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to delete ${guildName} (id: ${guildId}) from my database:\n${errDelete.stack}` ) ); } );
+        }
+        guilds.remove = remove.length;
+        guilds.removed = removedGuilds.length;
       }
 
       return data;
