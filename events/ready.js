@@ -138,7 +138,7 @@ client.on( 'ready', async rdy => {
       if ( !Array.isArray( storedUserIds ) ) { reject( { message: 'Unable to retrieve userlist from database.' } ); }
       const allUserIds = [].concat( botUserIds, storedUserIds ).getDistinct().sort();
       const addedUserIds = botUserIds.getDiff( storedUserIds );
-      const removedUserIds = storedUserIds.getDiff( botUserIds );/* TRON */console.log( 'removedUserIds: %s', removedUserIds );/* TROFF */
+      const removedUserIds = storedUserIds.getDiff( botUserIds );
       const ioUserIds = [].concat( addedUserIds, removedUserIds ).sort();
       let updateUserIds = allUserIds.getDiff( ioUserIds ).getDistinct();
       const unchangedUserIds = [];
@@ -162,9 +162,9 @@ client.on( 'ready', async rdy => {
       updateUserIds = updateUserIds.getDiff( unchangedUserIds );
       if ( removedUserIds.length != 0 ) {
         for ( let userId of removedUserIds ) {
-          let storedUser = storedUsers.filter( g => g._id === userId )[ 0 ];/* TRON */console.log( 'storedUser: %o', storedUser );/* TROFF */
-          let userGuilds = storedUser.Guilds;/* TRON */console.log( 'userGuilds: %o', userGuilds );/* TROFF */
-          let userGuildIds = Array.from( userGuilds.map( val => val._id ) );/* TRON */console.log( 'userGuildIds: %o', userGuildIds );/* TROFF */
+          let storedUser = storedUsers.filter( g => g._id === userId )[ 0 ];
+          let userGuilds = storedUser.Guilds;
+          let userGuildIds = Array.from( userGuilds.map( val => val._id ) );
           for ( let userGuild of userGuilds ) {
             if ( Object.prototype.toString.call( userGuild.Expires ) != '[object Date]' ) {// If no .Expires Date, add one
               userGuild.Expires = dbExpires;
