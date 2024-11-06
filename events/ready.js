@@ -164,7 +164,7 @@ client.on( 'ready', async rdy => {
         for ( let userId of removedUserIds ) {
           let storedUser = storedUsers.filter( g => g._id === userId );
           let userGuilds = storedUser.Guilds;
-          let userGuildIds = Array.from( userGuilds.map( val => val._id ) );
+          let userGuildIds = ( userGuilds.length === 0 ? [] : Array.from( userGuilds.map( val => val._id ) ) );
           for ( let userGuild of userGuilds ) {
             if ( Object.prototype.toString.call( userGuild.Expires ) != '[object Date]' ) {// If no .Expires Date, add one
               userGuild.Expires = dbExpires;
