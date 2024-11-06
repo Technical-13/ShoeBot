@@ -222,13 +222,14 @@ client.on( 'ready', async rdy => {
         for ( let userId of add ) {// createNewUser
           let addUser = await botUsers.get( userId );
           if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( addUser.displayName ) ); }
-          await createNewUser( addUser );
+          let newUser = await createNewUser( addUser );
           let addUserGuilds = ( Array.from( botGuilds.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
           for ( let guildId of addUserGuilds ) {
             let guild = await botGuilds.get( guildId );
             if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s...', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
-            await addUserGuild( userId, guild );
+            newUser = await addUserGuild( userId, guild );
           }
+          db.push( newUser );
           addedUsers.push( userId );
         }
         users.added = addedUsers;
@@ -246,7 +247,8 @@ client.on( 'ready', async rdy => {
         for ( let guildId of add ) {// createNewGuild
           let addGuild = await botGuilds.get( guildId );
           if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', chalk.bold.green( addGuild.name ) ); }
-          await createNewGuild( addGuild );
+          let newGuild = await createNewGuild( addGuild );
+          db.push( newGuild );
           addedGuilds.push( guildId );
         }
         guilds.added = addedGuilds;
