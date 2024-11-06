@@ -262,8 +262,8 @@ client.on( 'ready', async rdy => {
       let { guilds } = data;
       let { db, update } = guilds;
       if ( update.length != 0 ) {
+        let updatedGuilds = [];
         for ( let guildId of update ) {
-          let updatedGuilds = [];
           let updatedGuild = db.filter( g => g._id === guildId )[ 0 ];
           await userConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
           .then( updateSuccess => {
