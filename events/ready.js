@@ -85,7 +85,8 @@ client.on( 'ready', async rdy => {
       const removedGuildIds = storedGuildIds.getDiff( botGuildIds );
       if ( botVerbosity >= 3 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
       const ioGuildIds = [].concat( addedGuildIds, removedGuildIds ).sort();
-      const updateGuildIds = allGuildIds.getDiff( ioGuildIds ).getDistinct();
+      let updateGuildIds = allGuildIds.getDiff( ioGuildIds ).getDistinct();
+      const unchangedGuildIds = [];
       for ( let guildId of updateGuildIds ) {
         let ndxGuild = updateGuildIds.indexOf( guildId );
         let botGuild = client.guilds.cache.get( guildId );
@@ -103,11 +104,13 @@ client.on( 'ready', async rdy => {
         actualEntry = JSON.stringify( actualEntry );
         expectedEntry = JSON.stringify( expectedEntry );
         if ( expectedEntry.valMatch( actualEntry ) ) {
-          if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s %s %s', chalk.bold.greenBright( botGuild.name ), chalk.bold.greenBright( '===' ), actualEntry, expectedEntry ); }
-          updateGuildIds.splice( ndxGuild, 1 );
+          if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s %s %s', chalk.bold.greenBright( botGuild.name ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
+          unchangedGuildIds.push( guildId );
         }
-        else if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s %s %s', chalk.bold.red( botGuild.name ), chalk.bold.red( '!=' ), actualEntry, expectedEntry ); }
+        else if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s %s %s', chalk.bold.red( botGuild.name ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
+      if ( botVerbosity >= 3 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
+      updateGuildIds = updateGuildIds.getDiff( unchangedGuildIds );
       if ( botVerbosity >= 3 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
       const botUserIds = Array.from( client.users.cache.keys() );
@@ -123,7 +126,8 @@ client.on( 'ready', async rdy => {
       const removedUserIds = storedUserIds.getDiff( botUserIds );
       if ( botVerbosity >= 3 ) { console.log( 'removedUserIds: %o', removedUserIds ); }
       const ioUserIds = [].concat( addedUserIds, removedUserIds ).sort();
-      const updateUserIds = allUserIds.getDiff( ioUserIds ).getDistinct();
+      let updateUserIds = allUserIds.getDiff( ioUserIds ).getDistinct();
+      const unchangedUserIds = [];
       for ( let userId of updateUserIds ) {
         let ndxUser = updateUserIds.indexOf( userId );
         let botUser = client.users.cache.get( userId );
@@ -136,11 +140,13 @@ client.on( 'ready', async rdy => {
         actualEntry = JSON.stringify( actualEntry );
         expectedEntry = JSON.stringify( expectedEntry );
         if ( expectedEntry.valMatch( actualEntry ) ) {
-          if ( botVerbosity >= 5 ) { console.log( 'U:%s: %s %s %s', chalk.bold.greenBright( botUser.displayName ), chalk.bold.greenBright( '===' ), actualEntry, expectedEntry ); }
-          updateUserIds.splice( ndxUser, 1 );
+          if ( botVerbosity >= 5 ) { console.log( 'U:%s: %s %s %s', chalk.bold.greenBright( botUser.displayName ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
+          unchangedUserIds.push( userId );
         }
-        else if ( botVerbosity >= 5 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), chalk.bold.red( '!=' ), actualEntry, expectedEntry ); }
+        else if ( botVerbosity >= 5 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
+      if ( botVerbosity >= 3 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
+      updateUserIds = updateUserIds.getDiff( unchangedUserIds );
       if ( botVerbosity >= 3 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
 
       resolve( {
@@ -148,13 +154,15 @@ client.on( 'ready', async rdy => {
           db: storedGuilds,
           add: addedGuildIds,
           remove: removedGuildIds,
-          update: updateGuildIds
+          update: updateGuildIds,
+          unchanged: unchangedGuildIds
         },
         users: {
           db: storedUsers,
           add: addedUserIds,
           remove: removedUserIds,
-          update: updateUserIds
+          update: updateUserIds,
+          unchanged: unchangedUserIds
           }
       } );
     } )
