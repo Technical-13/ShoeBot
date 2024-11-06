@@ -110,7 +110,7 @@ client.on( 'ready', async rdy => {
       updateGuildIds = updateGuildIds.getDiff( unchangedGuildIds );
       if ( removedGuildIds.length != 0 ) {
         for ( let guildId of removedGuildIds ) {
-          let storedGuild = storedGuilds.filter( g => g._id === guildId );
+          let storedGuild = storedGuilds.filter( g => g._id === guildId )[ 0 ];
           let isExpired = ( !storedGuild.Expires ? false : ( storedGuild.Expires <= ( new Date() ) ? true : false ) );
           if ( !isExpired && !storedGuild.Expires ) {// add Expires Date, push id to update, take id out of removedGuildIds
             if ( botVerbosity >= 4 ) { console.log( 'G:%s now Expires: %s', chalk.bold.greenBright( botGuild.name ), dbExpires ); }
@@ -162,7 +162,7 @@ client.on( 'ready', async rdy => {
       updateUserIds = updateUserIds.getDiff( unchangedUserIds );
       if ( removedUserIds.length != 0 ) {
         for ( let userId of removedUserIds ) {
-          let storedUser = storedUsers.filter( g => g._id === userId );/* TRON */console.log( 'storedUser: %o', storedUser );/* TROFF */
+          let storedUser = storedUsers.filter( g => g._id === userId )[ 0 ];/* TRON */console.log( 'storedUser: %o', storedUser );/* TROFF */
           let userGuilds = storedUser.Guilds;/* TRON */console.log( 'userGuilds: %o', userGuilds );/* TROFF */
           let userGuildIds = Array.from( userGuilds.map( val => val._id ) );/* TRON */console.log( 'userGuildIds: %o', userGuildIds );/* TROFF */
           for ( let userGuild of userGuilds ) {
