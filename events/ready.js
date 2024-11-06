@@ -103,7 +103,7 @@ client.on( 'ready', async rdy => {
         else if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
       updateUserIds = updateUserIds.getDiff( unchangedUserIds );
-/* TRON */console.log( 'removedUserIds 1: %o', removedUserIds );/* TROFF */
+/* TRON */console.log( 'removedUserIds i: %o', removedUserIds );/* TROFF */
       if ( removedUserIds.length != 0 ) {
         for ( let userId of removedUserIds ) {/* TRON */console.log( 'userId: %o', userId );/* TROFF */
           let storedUser = storedUsers.filter( g => g._id === userId )[ 0 ];
@@ -123,9 +123,9 @@ client.on( 'ready', async rdy => {
             storedUser.Guildless = dbExpires;
             updateUserIds.push( userId );
           }
+/* TRON */console.log( 'removedUserIds %s: %o', removedUserIds.indexOf( userId ), removedUserIds );/* TROFF */
           removedUserIds.splice( removedUserIds.indexOf( userId ), 1 );
         }
-/* TRON */console.log( 'removedUserIds n: %o', removedUserIds );/* TROFF */
       }
 
       const botGuildIds = Array.from( botGuilds.keys() );
