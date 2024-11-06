@@ -217,6 +217,7 @@ client.on( 'ready', async rdy => {
       let { users } = data;
       let { db, add, remove, update, unchanged } = users;
       if ( add.length != 0 ) {
+        let addedUsers = [];
         if ( botVerbosity >= 1 ) { console.log( 'Adding %s users to my database...', chalk.bold.green( add.length ) ); }
         for ( let userId of add ) {// createNewUser
           let addUser = await botUsers.get( userId );
@@ -228,7 +229,10 @@ client.on( 'ready', async rdy => {
             if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s...', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
             await addUserGuild( userId, guild );
           }
+          addedUsers.push( userId );
         }
+        users.added = addedUsers;
+        add = add.getDiff( addedUsers );
       }
 
       return data;
@@ -245,12 +249,14 @@ client.on( 'ready', async rdy => {
           await createNewGuild( addGuild );
           addedGuilds.push( guildId );
         }
+        guilds.added = addedGuilds;
         add = add.getDiff( addedGuilds );
       }
 
       return data;
     } )
-    .then( ( data ) => { console.log( 'Done...' ); } ).catch( ( rejected ) => { console.error( rejected.message ); } );
+    .then( ( data ) => { console.log( 'Done...:%o', data ); } )
+    .catch( ( rejected ) => { console.error( rejected.message ); } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
 } );
