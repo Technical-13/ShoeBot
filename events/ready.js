@@ -80,11 +80,11 @@ client.on( 'ready', async rdy => {
       const storedUserIds = Array.from( storedUsers.map( val => val._id ) );
       if ( !Array.isArray( storedUserIds ) ) { reject( { message: 'Unable to retrieve userlist from database.' } ); }
       const allUserIds = [].concat( botUserIds, storedUserIds ).getDistinct().sort();
-      const addedUserIds = botUserIds.getDiff( storedUserIds );
-      const removedUserIds = storedUserIds.getDiff( botUserIds );
-      const ioUserIds = [].concat( addedUserIds, removedUserIds ).sort();
+      let addedUserIds = botUserIds.getDiff( storedUserIds );
+      let removedUserIds = storedUserIds.getDiff( botUserIds );
+      let ioUserIds = [].concat( addedUserIds, removedUserIds ).sort();
       let updateUserIds = allUserIds.getDiff( ioUserIds ).getDistinct();
-      const unchangedUserIds = [];
+      let unchangedUserIds = [];
       for ( let userId of updateUserIds ) {
         let ndxUser = updateUserIds.indexOf( userId );
         let botUser = client.users.cache.get( userId );
@@ -104,7 +104,7 @@ client.on( 'ready', async rdy => {
       }
       updateUserIds = updateUserIds.getDiff( unchangedUserIds );
 /* TRON */console.log( 'removedUserIds i: %o', removedUserIds );/* TROFF */
-      const cleanedUserIds = [];
+      let cleanedUserIds = [];
       if ( removedUserIds.length != 0 ) {
         for ( let userId of removedUserIds ) {/* TRON */console.log( 'userId: %o', userId );/* TROFF */
           let storedUser = storedUsers.filter( g => g._id === userId )[ 0 ];
@@ -137,11 +137,11 @@ client.on( 'ready', async rdy => {
       const storedGuildIds = Array.from( storedGuilds.map( val => val._id ) );
       if ( !Array.isArray( storedGuildIds ) ) { reject( { message: 'Unable to retrieve bot\'s guilds from database.' } ); }
       const allGuildIds = [].concat( botGuildIds, storedGuildIds ).getDistinct().sort();
-      const addedGuildIds = botGuildIds.getDiff( storedGuildIds );
-      const removedGuildIds = storedGuildIds.getDiff( botGuildIds );
-      const ioGuildIds = [].concat( addedGuildIds, removedGuildIds ).sort();
+      let addedGuildIds = botGuildIds.getDiff( storedGuildIds );
+      let removedGuildIds = storedGuildIds.getDiff( botGuildIds );
+      let ioGuildIds = [].concat( addedGuildIds, removedGuildIds ).sort();
       let updateGuildIds = allGuildIds.getDiff( ioGuildIds ).getDistinct();
-      const unchangedGuildIds = [];
+      let unchangedGuildIds = [];
       for ( let guildId of updateGuildIds ) {
         let ndxGuild = updateGuildIds.indexOf( guildId );
         let botGuild = client.guilds.cache.get( guildId );
