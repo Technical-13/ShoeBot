@@ -222,6 +222,10 @@ client.on( 'ready', async rdy => {
           let addUser = await botUsers.get( userId );
           if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( addUser.displayName ) ); }
           await createNewUser( addUser );
+          let addUserGuilds = addUser.guilds.cache;
+          for ( let guild of addUserGuilds ) {
+            await addUserGuild( userId, guild );
+          }
         }
       }
 
