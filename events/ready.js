@@ -104,6 +104,7 @@ client.on( 'ready', async rdy => {
       }
       updateUserIds = updateUserIds.getDiff( unchangedUserIds );
 /* TRON */console.log( 'removedUserIds i: %o', removedUserIds );/* TROFF */
+      const cleanedUserIds = [];
       if ( removedUserIds.length != 0 ) {
         for ( let userId of removedUserIds ) {/* TRON */console.log( 'userId: %o', userId );/* TROFF */
           let storedUser = storedUsers.filter( g => g._id === userId )[ 0 ];
@@ -123,9 +124,11 @@ client.on( 'ready', async rdy => {
             storedUser.Guildless = dbExpires;
             updateUserIds.push( userId );
           }
-/* TRON */console.log( 'removedUserIds %s: %o', removedUserIds.indexOf( userId ), removedUserIds );/* TROFF */
-          removedUserIds.splice( removedUserIds.indexOf( userId ), 1 );
+          if ( updateUserIds.indexOf( userId ) === -1 ) { unchangedUserIds.push( userId ) }
+
+          cleanedUserIds.push( userId );/* TRON */console.log( 'cleanedUserIds: %o', cleanedUserIds );/* TROFF */
         }
+        removedUserIds = removedUserIds.getDiff( cleanedUserIds );/* TRON */console.log( 'removedUserIds f: %o', removedUserIds );/* TROFF */
       }
 
       const botGuildIds = Array.from( botGuilds.keys() );
