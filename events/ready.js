@@ -74,6 +74,60 @@ client.on( 'ready', async rdy => {
     const botGuilds = client.guilds.cache;
     const botUsers = client.users.cache
     new Promise( async ( resolve, reject ) => {
+      const botUserIds = Array.from( botUsers.keys() );
+      if ( !Array.isArray( botUserIds ) ) { reject( { message: 'Unable to retrieve bot\'s mutual users.' } ); }
+      const storedUsers = await userConfig.find();
+      const storedUserIds = Array.from( storedUsers.map( val => val._id ) );
+      if ( !Array.isArray( storedUserIds ) ) { reject( { message: 'Unable to retrieve userlist from database.' } ); }
+      const allUserIds = [].concat( botUserIds, storedUserIds ).getDistinct().sort();
+      const addedUserIds = botUserIds.getDiff( storedUserIds );
+      const removedUserIds = storedUserIds.getDiff( botUserIds );
+      const ioUserIds = [].concat( addedUserIds, removedUserIds ).sort();
+      let updateUserIds = allUserIds.getDiff( ioUserIds ).getDistinct();
+      const unchangedUserIds = [];
+      for ( let userId of updateUserIds ) {
+        let ndxUser = updateUserIds.indexOf( userId );
+        let botUser = client.users.cache.get( userId );
+        let actualEntry = storedUsers.filter( u => u._id === userId );
+        let expectedEntry = actualEntry;
+        expectedEntry._id = botUser.id;
+        expectedEntry.Bot = botUser.bot;
+        expectedEntry.UserName = botUser.displayName;
+        expectedEntry.Version = verUserDB;
+        actualEntry = JSON.stringify( actualEntry );
+        expectedEntry = JSON.stringify( expectedEntry );
+        if ( expectedEntry.valMatch( actualEntry ) ) {
+          if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.greenBright( botUser.displayName ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
+          unchangedUserIds.push( userId );
+        }
+        else if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
+      }
+      updateUserIds = updateUserIds.getDiff( unchangedUserIds );
+/* TRON */console.log( 'removedUserIds 1: %o', removedUserIds );/* TROFF */
+      if ( removedUserIds.length != 0 ) {
+        for ( let userId of removedUserIds ) {/* TRON */console.log( 'userId: %o', userId );/* TROFF */
+          let storedUser = storedUsers.filter( g => g._id === userId )[ 0 ];
+          let userGuilds = storedUser.Guilds;
+          let userGuildIds = Array.from( userGuilds.map( val => val._id ) );
+          for ( let userGuild of userGuilds ) {
+            if ( Object.prototype.toString.call( userGuild.Expires ) != '[object Date]' ) {// If no .Expires Date, add one
+              userGuild.Expires = dbExpires;
+              updateUserIds.push( userId );
+            }
+            else if ( userGuild.Expires <= ( new Date() ) ) {// If past .Expires Date, remove the guild from the Guilds array
+              userGuilds.splice( userGuildIds.indexOf( guildId ), 1 );
+              updateUserIds.push( userId );
+            }
+          }
+          if ( userGuilds.length === 0 ) {// If the user has no more guilds, add Guildless Date
+            storedUser.Guildless = dbExpires;
+            updateUserIds.push( userId );
+          }
+          removedUserIds.splice( removedUserIds.indexOf( userId ), 1 );
+        }
+/* TRON */console.log( 'removedUserIds n: %o', removedUserIds );/* TROFF */
+      }
+
       const botGuildIds = Array.from( botGuilds.keys() );
       if ( !Array.isArray( botGuildIds ) ) { reject( { message: 'Unable to retrieve guilds bot is in.' } ); }
       const storedGuilds = await guildConfig.find();
@@ -124,70 +178,19 @@ client.on( 'ready', async rdy => {
           }
         }
       }
-      if ( botVerbosity >= 4 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
-      if ( botVerbosity >= 4 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
-      if ( botVerbosity >= 4 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
-      const botUserIds = Array.from( botUsers.keys() );
-      if ( !Array.isArray( botUserIds ) ) { reject( { message: 'Unable to retrieve bot\'s mutual users.' } ); }
-      const storedUsers = await userConfig.find();
-      const storedUserIds = Array.from( storedUsers.map( val => val._id ) );
-      if ( !Array.isArray( storedUserIds ) ) { reject( { message: 'Unable to retrieve userlist from database.' } ); }
-      const allUserIds = [].concat( botUserIds, storedUserIds ).getDistinct().sort();
-      const addedUserIds = botUserIds.getDiff( storedUserIds );
-      const removedUserIds = storedUserIds.getDiff( botUserIds );
-      const ioUserIds = [].concat( addedUserIds, removedUserIds ).sort();
-      let updateUserIds = allUserIds.getDiff( ioUserIds ).getDistinct();
-      const unchangedUserIds = [];
-      for ( let userId of updateUserIds ) {
-        let ndxUser = updateUserIds.indexOf( userId );
-        let botUser = client.users.cache.get( userId );
-        let actualEntry = storedUsers.filter( u => u._id === userId );
-        let expectedEntry = actualEntry;
-        expectedEntry._id = botUser.id;
-        expectedEntry.Bot = botUser.bot;
-        expectedEntry.UserName = botUser.displayName;
-        expectedEntry.Version = verUserDB;
-        actualEntry = JSON.stringify( actualEntry );
-        expectedEntry = JSON.stringify( expectedEntry );
-        if ( expectedEntry.valMatch( actualEntry ) ) {
-          if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.greenBright( botUser.displayName ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
-          unchangedUserIds.push( userId );
-        }
-        else if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
-      }
-      updateUserIds = updateUserIds.getDiff( unchangedUserIds );
-      if ( removedUserIds.length != 0 ) {
-        for ( let userId of removedUserIds ) {
-          let storedUser = storedUsers.filter( g => g._id === userId )[ 0 ];
-          let userGuilds = storedUser.Guilds;
-          let userGuildIds = Array.from( userGuilds.map( val => val._id ) );
-          for ( let userGuild of userGuilds ) {
-            if ( Object.prototype.toString.call( userGuild.Expires ) != '[object Date]' ) {// If no .Expires Date, add one
-              userGuild.Expires = dbExpires;
-              updateUserIds.push( userId );
-            }
-            else if ( userGuild.Expires <= ( new Date() ) ) {// If past .Expires Date, remove the guild from the Guilds array
-              userGuilds.splice( userGuildIds.indexOf( guildId ), 1 );
-              updateUserIds.push( userId );
-            }
-          }
-          if ( userGuilds.length === 0 ) {// If the user has no more guilds, add Guildless Date
-            storedUser.Guildless = dbExpires;
-            updateUserIds.push( userId );
-          }
-          removedUserIds.splice( removedUserIds.indexOf( userId ), 1 );
-        }
-      }
       if ( botVerbosity >= 4 ) { console.log( 'botUserIds: %o', botUserIds ); }
       if ( botVerbosity >= 4 ) { console.log( 'storedUserIds: %o', storedUserIds ); }
       if ( botVerbosity >= 3 ) { console.log( 'addedUserIds: %o', addedUserIds ); }
       if ( botVerbosity >= 3 ) { console.log( 'removedUserIds: %o', removedUserIds ); }//Should always be empty by this point -- until I add purging function
       if ( botVerbosity >= 4 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
       if ( botVerbosity >= 3 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
+      if ( botVerbosity >= 3 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
+      if ( botVerbosity >= 3 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
+      if ( botVerbosity >= 3 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
       resolve( {
         guilds: {
@@ -206,18 +209,6 @@ client.on( 'ready', async rdy => {
           }
       } );
     } )
-    .then( async ( data ) => {
-      let { guilds } = data;
-      let { db, add, remove, update, unchanged } = guilds;
-      if ( add.length != 0 ) {
-        if ( botVerbosity >= 1 ) { console.log( 'Adding %s guilds to my database...', add.length ); }
-        for ( let guildId of add ) {// createNewGuild
-          if ( botVerbosity >= 1 ) { console.log( '\tAdding guild %s to my database...', add.length ); }
-          await createNewGuild( await botGuilds.get( guildId ) );
-        }
-      }
-      return data;
-    } )
     /*.then( async ( data ) => {
       let { users } = data;
       let { db, add, remove, update, unchanged } = users;
@@ -230,6 +221,18 @@ client.on( 'ready', async rdy => {
       }
       return data;
     } )//*/
+    .then( async ( data ) => {
+      let { guilds } = data;
+      let { db, add, remove, update, unchanged } = guilds;
+      if ( add.length != 0 ) {
+        if ( botVerbosity >= 1 ) { console.log( 'Adding %s guilds to my database...', add.length ); }
+        for ( let guildId of add ) {// createNewGuild
+          if ( botVerbosity >= 1 ) { console.log( '\tAdding guild %s to my database...', add.length ); }
+          await createNewGuild( await botGuilds.get( guildId ) );
+        }
+      }
+      return data;
+    } )
     .then( ( data ) => { console.log( 'Done...' ); } ).catch( ( rejected ) => { console.error( rejected.message ); } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
