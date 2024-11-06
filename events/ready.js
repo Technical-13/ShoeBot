@@ -103,32 +103,33 @@ client.on( 'ready', async rdy => {
         else if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
       updateUserIds = updateUserIds.getDiff( unchangedUserIds );
-/* TRON */console.log( 'removedUserIds i: %o', removedUserIds );/* TROFF */
       let cleanedUserIds = [];
       if ( removedUserIds.length != 0 ) {
-        for ( let userId of removedUserIds ) {/* TRON */console.log( 'userId: %o', userId );/* TROFF */
+        for ( let userId of removedUserIds ) {
           let storedUser = storedUsers.filter( g => g._id === userId )[ 0 ];
           let userGuilds = storedUser.Guilds;
           let userGuildIds = Array.from( userGuilds.map( val => val._id ) );
           for ( let userGuild of userGuilds ) {
             if ( Object.prototype.toString.call( userGuild.Expires ) != '[object Date]' ) {// If no .Expires Date, add one
+              if ( botVerbosity >= 4 ) { console.log( 'U:%s G:%s Expires: %s', chalk.bold.redBright( storedUser.UserName ), chalk.bold.redBright( userGuild.GuildName ), dbExpires ); }
               userGuild.Expires = dbExpires;
               updateUserIds.push( userId );
             }
             else if ( userGuild.Expires <= ( new Date() ) ) {// If past .Expires Date, remove the guild from the Guilds array
+              if ( botVerbosity >= 4 ) { console.log( 'U:%s G:%s removed.', chalk.bold.redBright( storedUser.UserName ), chalk.bold.redBright( userGuild.GuildName ) ); }
               userGuilds.splice( userGuildIds.indexOf( guildId ), 1 );
               updateUserIds.push( userId );
             }
           }
           if ( userGuilds.length === 0 ) {// If the user has no more guilds, add Guildless Date
+            if ( botVerbosity >= 4 ) { console.log( 'U:%s Guildless: %s', chalk.bold.redBright( storedUser.UserName ), dbExpires ); }
             storedUser.Guildless = dbExpires;
             updateUserIds.push( userId );
           }
           if ( updateUserIds.indexOf( userId ) === -1 ) { unchangedUserIds.push( userId ) }
-
-          cleanedUserIds.push( userId );/* TRON */console.log( 'cleanedUserIds: %o', cleanedUserIds );/* TROFF */
+          cleanedUserIds.push( userId );
         }
-        removedUserIds = removedUserIds.getDiff( cleanedUserIds );/* TRON */console.log( 'removedUserIds f: %o', removedUserIds );/* TROFF */
+        removedUserIds = removedUserIds.getDiff( cleanedUserIds );
       }
 
       const botGuildIds = Array.from( botGuilds.keys() );
@@ -170,7 +171,7 @@ client.on( 'ready', async rdy => {
           let storedGuild = storedGuilds.filter( g => g._id === guildId )[ 0 ];
           let isExpired = ( !storedGuild.Expires ? false : ( storedGuild.Expires <= ( new Date() ) ? true : false ) );
           if ( !isExpired && !storedGuild.Expires ) {// add Expires Date, push id to update, take id out of removedGuildIds
-            if ( botVerbosity >= 4 ) { console.log( 'G:%s now Expires: %s', chalk.bold.greenBright( botGuild.name ), dbExpires ); }
+            if ( botVerbosity >= 4 ) { console.log( 'G:%s now Expires: %s', chalk.bold.redBright( storedGuild.Name ), dbExpires ); }
             storedGuild.Expires = dbExpires;
             updateGuildIds.push( guildId );
             removedGuildIds.splice( removedGuildIds.indexOf( guildId ), 1 );
@@ -228,15 +229,20 @@ client.on( 'ready', async rdy => {
       let { guilds } = data;
       let { db, add, remove, update, unchanged } = guilds;
       if ( add.length != 0 ) {
+        let addedGuilds = [];
         if ( botVerbosity >= 1 ) { console.log( 'Adding %s guilds to my database...', add.length ); }
         for ( let guildId of add ) {// createNewGuild
-          if ( botVerbosity >= 1 ) { console.log( '\tAdding guild %s to my database...', add.length ); }
-          await createNewGuild( await botGuilds.get( guildId ) );
+          let addGuild = await botGuilds.get( guildId );
+          if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', addGuild.name ); }
+          await createNewGuild( addGuild );
+          addedGuilds.push( guildId );
         }
+        add = add.getDiff( addedGuilds );
       }
+
       return data;
     } )
-    .then( ( data ) => { console.log( 'Done...' ); } ).catch( ( rejected ) => { console.error( rejected.message ); } );
+    .then( ( data ) => { console.log( 'Done...\n%o', data ); } ).catch( ( rejected ) => { console.error( rejected.message ); } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
 } );
