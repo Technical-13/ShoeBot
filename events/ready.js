@@ -331,7 +331,14 @@ client.on( 'ready', async rdy => {
 
       return data;
     } )
-    .then( ( data ) => { console.log( 'Done...:%o', data ); } )
+    .then( ( data ) => {
+      let { guilds, users } = data;
+      console.log( 'Updated users: %s/%s', users.updated, users.update );
+      console.log( 'Added users: %s/%s', users.added, users.add );
+      console.log( 'Updated guilds: %s/%s', guilds.updated, guilds.update );
+      console.log( 'Added guilds: %s/%s', guilds.added, guilds.add );
+      console.log( 'Removed guilds: %s/%s', guilds.remove, guilds.remove );
+    } )
     .catch( ( rejected ) => { console.error( rejected.message ); } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
