@@ -334,36 +334,36 @@ client.on( 'ready', async rdy => {
     .then( ( data ) => {
       let { guilds, users } = data;
       let strUserUpdate, strUserAdd, strUserRemove, strGuildUpdate, strGuildAdd, strGuildRemove;
-      
+
       if ( users.updated > users.update ) { strUserUpdate = chalk.bold.red( 'ERROR: Updated more users than there were to update!!!' ); }
       else if ( users.update === 0 ) { strUserUpdate = chalk.bold.green( 'No users to update' ); }
-      else if ( users.updated < users.update ) { strUserUpdate = 'Updated ' + chalk.bold.yellow( users.updated + ' of ' + users.update ) + ' users needing an update.'; }
-      else { strUserUpdate = 'Updated ' + chalk.bold.green( users.update ) + ' users.'; }
-      
+      else if ( users.updated < users.update ) { strUserUpdate = 'Updated ' + chalk.bold.yellow( users.updated + ' of ' + users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + ' needing an update.'; }
+      else { strUserUpdate = 'Updated ' + chalk.bold.green( users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + '.'; }
+
       if ( users.added > users.add ) { strUserAdd = chalk.bold.red( 'ERROR: Added more users than there were to add!!!' ); }
-      else if ( users.add === 0 ) { strUserAdd = chalk.bold.green( 'No users to add' ); }
-      else if ( users.added < users.add ) { strUserAdd = 'added ' + chalk.bold.yellow( users.added + ' of ' + users.add ) + ' users needing to be added.'; }
-      else { strUserAdd = 'Added ' + chalk.bold.green( users.add ) + ' users.'; }
-      
+      else if ( users.add === 0 ) { strUserAdd = chalk.bold.green( 'No users to add.' ); }
+      else if ( users.added < users.add ) { strUserAdd = 'added ' + chalk.bold.yellow( users.added + ' of ' + users.add ) + ' user' + ( users.add === 1 ? '' : 's' ) + ' needing to be added.'; }
+      else { strUserAdd = 'Added ' + chalk.bold.green( users.add ) + ' user' + ( users.add === 1 ? '' : 's' ) + '.'; }
+
       if ( users.removed > users.remove ) { strUserRemove = chalk.bold.red( 'ERROR: Removed more users than there were to remove!!!' ); }
-      else if ( users.remove === 0 ) { strUserRemove = chalk.bold.green( 'No users to remove' ); }
-      else if ( users.removed < users.remove ) { strUserRemove = 'Removed ' + chalk.bold.yellow( users.removed + ' of ' + users.remove ) + ' users needing to be removed.'; }
-      else { strUserRemove = 'Removed ' + chalk.bold.green( users.remove ) + ' users.'; }
-      
+      else if ( users.remove === 0 ) { strUserRemove = chalk.bold.green( 'No users to remove.' ); }
+      else if ( users.removed < users.remove ) { strUserRemove = 'Removed ' + chalk.bold.yellow( users.removed + ' of ' + users.remove ) + ' user' + ( users.remove === 1 ? '' : 's' ) + ' needing to be removed.'; }
+      else { strUserRemove = 'Removed ' + chalk.bold.green( users.remove ) + ' user' + ( users.remove === 1 ? '' : 's' ) + '.'; }
+
       if ( guilds.updated > guilds.update ) { strGuildUpdate = chalk.bold.red( 'ERROR: Updated more guilds than there were to update!!!' ); }
       else if ( guilds.update === 0 ) { strGuildUpdate = chalk.bold.green( 'No guilds to update' ); }
-      else if ( guilds.updated < guilds.update ) { strGuildUpdate = 'Updated ' + chalk.bold.yellow( guilds.updated + ' of ' + guilds.update ) + ' guilds needing an update.'; }
-      else { strGuildUpdate = 'Updated ' + chalk.bold.green( guilds.update ) + ' guilds.'; }
-      
+      else if ( guilds.updated < guilds.update ) { strGuildUpdate = 'Updated ' + chalk.bold.yellow( guilds.updated + ' of ' + guilds.update ) + ' guild' + ( guilds.update === 1 ? '' : 's' ) + ' needing an update.'; }
+      else { strGuildUpdate = 'Updated ' + chalk.bold.green( guilds.update ) + ' guild' + ( guilds.update === 1 ? '' : 's' ) + '.'; }
+
       if ( guilds.added > guilds.add ) { strGuildAdd = chalk.bold.red( 'ERROR: Added more guilds than there were to add!!!' ); }
-      else if ( guilds.add === 0 ) { strGuildAdd = chalk.bold.green( 'No guilds to add' ); }
-      else if ( guilds.added < guilds.add ) { strGuildAdd = 'added ' + chalk.bold.yellow( guilds.added + ' of ' + guilds.add ) + ' guilds needing to be added.'; }
-      else { strGuildAdd = 'Added ' + chalk.bold.green( guilds.add ) + ' guilds.'; }
-      
+      else if ( guilds.add === 0 ) { strGuildAdd = chalk.bold.green( 'No guilds to add.' ); }
+      else if ( guilds.added < guilds.add ) { strGuildAdd = 'added ' + chalk.bold.yellow( guilds.added + ' of ' + guilds.add ) + ' guild' + ( guilds.add === 1 ? '' : 's' ) + ' needing to be added.'; }
+      else { strGuildAdd = 'Added ' + chalk.bold.green( guilds.add ) + ' guild' + ( guilds.add === 1 ? '' : 's' ) + '.'; }
+
       if ( guilds.removed > guilds.remove ) { strGuildRemove = chalk.bold.red( 'ERROR: Removed more guilds than there were to remove!!!' ); }
       else if ( guilds.remove === 0 ) { strGuildRemove = chalk.bold.green( 'No guilds to remove' ); }
-      else if ( guilds.removed < guilds.remove ) { strGuildRemove = 'Removed ' + chalk.bold.yellow( guilds.removed + ' of ' + guilds.remove ) + ' guilds needing to be removed.'; }
-      else { strGuildRemove = 'Removed ' + chalk.bold.green( guilds.remove ) + ' guilds.'; }
+      else if ( guilds.removed < guilds.remove ) { strGuildRemove = 'Removed ' + chalk.bold.yellow( guilds.removed + ' of ' + guilds.remove ) + ' guild' + ( guilds.remove === 1 ? '' : 's' ) + ' needing to be removed.'; }
+      else { strGuildRemove = 'Removed ' + chalk.bold.green( guilds.remove ) + ' guild' + ( guilds.remove === 1 ? '' : 's' ) + '.'; }
       console.log( 'All done catching up! Results:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s', strUserUpdate, strUserAdd, strUserRemove, strGuildUpdate, strGuildAdd, strGuildRemove );
     } )
     .catch( ( rejected ) => { console.error( rejected.message ); } );
