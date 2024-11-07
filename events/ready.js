@@ -339,24 +339,22 @@ client.on( 'ready', async rdy => {
 
         if ( users.updated > users.update ) { strUserUpdate = chalk.bold.red( 'ERROR: Updated more users than there were to update!!!' ); }
         else if ( users.update === 0 ) { strUserUpdate = chalk.bold.green( 'No users to update' ); }
-        else if ( users.updated < users.update ) {
-          strUserUpdate = 'Updated ' + chalk.bold.yellow( users.updated + ' of ' + users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + ' needing an update.';
-          if ( botVerbosity >= 3 ) {
-            let expiringUsers = ( users.db.filter( u => Object.prototype.toString.call( u.Guildless ) === '[object Date]' ) || [] );
-            if ( expiringUsers.length != 0 ) {
-              let expiringUserIds = Array.from( expiringUsers.map( val => val._id ) )
-              for ( let userId of expiringUserIds ) {
-                let expiringUser = expiringUsers.find( u => u._id === userId );
-                strUserUpdate += '\n\t\t' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + await duration( expiringUser.Guildless - ( new Date() ), { getMonths: true, getWeeks: true } ) + ' since: ' + expiringUser.Guildless;
-              }
-            }
-            if ( botVerbosity >= 4 ) {
-              let expiringUserGuilds = ( users.db.filter( u => { u.Guilds.filter( g => Object.prototype.toString.call( g.Expires ) === '[object Date]' ) } ) || [] );
-/* TRON */console.log( 'expiringUserGuilds: %o', expiringUserGuilds );/* TROFF */
+        else if ( users.updated < users.update ) { strUserUpdate = 'Updated ' + chalk.bold.yellow( users.updated + ' of ' + users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + ' needing an update.'; }
+        else { strUserUpdate = 'Updated ' + chalk.bold.green( users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + '.'; }
+        if ( botVerbosity >= 3 ) {
+          let expiringUsers = ( users.db.filter( u => Object.prototype.toString.call( u.Guildless ) === '[object Date]' ) || [] );
+          if ( expiringUsers.length != 0 ) {
+            let expiringUserIds = Array.from( expiringUsers.map( val => val._id ) )
+            for ( let userId of expiringUserIds ) {
+              let expiringUser = expiringUsers.find( u => u._id === userId );
+              strUserUpdate += '\n\t\t' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + await duration( expiringUser.Guildless - ( new Date() ), { getMonths: true, getWeeks: true } ) + ' since: ' + expiringUser.Guildless;
             }
           }
+          if ( botVerbosity >= 4 ) {
+            let expiringUserGuilds = ( users.db.filter( u => { u.Guilds.filter( g => Object.prototype.toString.call( g.Expires ) === '[object Date]' ) } ) || [] );
+/* TRON */console.log( 'expiringUserGuilds: %o', expiringUserGuilds );/* TROFF */
+          }
         }
-        else { strUserUpdate = 'Updated ' + chalk.bold.green( users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + '.'; }
 
         if ( users.added > users.add ) { strUserAdd = chalk.bold.red( 'ERROR: Added more users than there were to add!!!' ); }
         else if ( users.add === 0 ) { strUserAdd = chalk.bold.green( 'No users to add.' ); }
@@ -372,6 +370,16 @@ client.on( 'ready', async rdy => {
         else if ( guilds.update === 0 ) { strGuildUpdate = chalk.bold.green( 'No guilds to update' ); }
         else if ( guilds.updated < guilds.update ) { strGuildUpdate = 'Updated ' + chalk.bold.yellow( guilds.updated + ' of ' + guilds.update ) + ' guild' + ( guilds.update === 1 ? '' : 's' ) + ' needing an update.'; }
         else { strGuildUpdate = 'Updated ' + chalk.bold.green( guilds.update ) + ' guild' + ( guilds.update === 1 ? '' : 's' ) + '.'; }
+        if ( botVerbosity >= 3 ) {
+          let expiringGuilds = ( guilds.db.filter( g => Object.prototype.toString.call( g.Expires ) === '[object Date]' ) || [] );
+          if ( expiringGuilds.length != 0 ) {
+            let expiringGuildIds = Array.from( expiringGuilds.map( val => val._id ) )
+            for ( let guildId of expiringGuildIds ) {
+              let expiringGuild = expiringGuilds.find( g => g._id === guildId );
+              strUserUpdate += '\n\t\t' + chalk.bold.red( expiringGuild.Guild.Name ) + ' Expires in ' + await duration( expiringGuild.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) + ' since: ' + expiringGuild.Expires;
+            }
+          }
+        }
 
         if ( guilds.added > guilds.add ) { strGuildAdd = chalk.bold.red( 'ERROR: Added more guilds than there were to add!!!' ); }
         else if ( guilds.add === 0 ) { strGuildAdd = chalk.bold.green( 'No guilds to add.' ); }
