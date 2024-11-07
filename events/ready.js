@@ -347,11 +347,11 @@ client.on( 'ready', async rdy => {
             let expiringUserIds = Array.from( expiringUsers.map( val => val._id ) )
             for ( let userId of expiringUserIds ) {
               let expiringUser = expiringUsers.find( u => u._id === userId );
-              strUserUpdate += '\n\t\t' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + await duration( expiringUser.Guildless - ( new Date() ), { getMonths: true, getWeeks: true } ) + ' since: ' + expiringUser.Guildless;
+              strUserUpdate += '\n\t\t' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + chalk.bold.red( await duration( expiringUser.Guildless - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ' since: ' + expiringUser.Guildless;
             }
           }
-          if ( botVerbosity >= 4 ) {
-            let expiringUserGuilds = ( users.db.filter( u => { u.Guilds.filter( g => Object.prototype.toString.call( g.Expires ) === '[object Date]' ) } ) || [] );
+          if ( botVerbosity >= 1 ) {
+            let expiringUserGuilds = ( users.db.filter( u => { return u.Guilds.filter( g => Object.prototype.toString.call( g.Expires ) === '[object Date]' ); } ) || [] );
 /* TRON */console.log( 'expiringUserGuilds: %o', expiringUserGuilds );/* TROFF */
           }
         }
