@@ -215,20 +215,23 @@ client.on( 'ready', async rdy => {
     } )
     .then( async ( data ) => {// update users that changed while offline
       let { users } = data;
-      let updatedUsers = [];
-      let { db, update } = users;
-      if ( update.length != 0 ) {
-        if ( botVerbosity >= 1 ) { console.log( 'Updating %s user%s in my database...', chalk.bold.yellow( update.length ), ( update.length === 1 ? '' : 's' ) ); }
-        for ( let userId of update ) {
-          let updatedUser = db.filter( g => g._id === userId )[ 0 ];
-          await userConfig.updateOne( { _id:  userId }, updatedUser, { upsert: true } )
-          .then( updateSuccess => {
-            console.log( 'Succesfully updated U:%s in my database.', chalk.bold.green( updatedUser.UserName ) );
-            updatedUsers.push( userId );
-          } )
-          .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update user ${updatedUser.UserName} in my database:\n${updateError}` ) ); } );
+      let updatedUsers = await new Promise( ( resolve, reject ) => {
+        let u = [];
+        let { db, update } = users;
+        if ( update.length != 0 ) {
+          if ( botVerbosity >= 1 ) { console.log( 'Updating %s user%s in my database...', chalk.bold.yellow( update.length ), ( update.length === 1 ? '' : 's' ) ); }
+          for ( let userId of update ) {
+            let updatedUser = db.filter( g => g._id === userId )[ 0 ];
+            await userConfig.updateOne( { _id:  userId }, updatedUser, { upsert: true } )
+            .then( updateSuccess => {
+              console.log( 'Succesfully updated U:%s in my database.', chalk.bold.green( updatedUser.UserName ) );
+              u.push( userId );
+            } )
+            .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update user ${updatedUser.UserName} in my database:\n${updateError}` ) ); } );
+          }
         }
-      }
+        resolve( u );
+      } );
       data.users.update = update.length;
       data.users.updated = updatedUsers.length;
 
@@ -237,23 +240,19 @@ client.on( 'ready', async rdy => {
     .then( async ( data ) => {// add users missing from db
       let { users } = data;
       let { db, add } = users;
-      let addedUsers = [];
-      if ( add.length != 0 ) {
-        if ( botVerbosity >= 1 ) { console.log( 'Adding %s user%s to my database...', chalk.bold.green( add.length ), ( add.length === 1 ? '' : 's' ) ); }
-        for ( let userId of add ) {// createNewUser
-          let addUser = await botUsers.get( userId );
-          if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( addUser.displayName ) ); }
-          let newUser = await createNewUser( addUser );
-          let addUserGuilds = ( Array.from( botGuilds.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
-          for ( let guildId of addUserGuilds ) {// addUserGuild
-            let guild = await botGuilds.get( guildId );
-            if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s.', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
-            newUser = await addUserGuild( userId, guild );
+      let addedUsers = await new Promise( ( resolve, reject ) => {
+        let a = [];
+        if ( add.length != 0 ) {
+          if ( botVerbosity >= 1 ) { console.log( 'Adding %s user%s to my database...', chalk.bold.green( add.length ), ( add.length === 1 ? '' : 's' ) ); }
+          for ( let userId of add ) {// createNewUser
+            let addUser = await botUsers.get( userId );
+            if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( addUser.displayName ) ); }
+            data.users.db.push( await createNewUser( addUser ) );
+            a.push( userId );
           }
-          data.users.db.push( newUser );
-          addedUsers.push( userId );
         }
-      }
+        resolve( a );
+      } );
       data.users.add = add.length;
       data.users.added = addedUsers.length;
 
@@ -275,19 +274,22 @@ client.on( 'ready', async rdy => {
     .then( async ( data ) => {// update guilds that changed while offline
       let { guilds } = data;
       let { db, update } = guilds;
-      let updatedGuilds = [];
-      if ( update.length != 0 ) {
-        if ( botVerbosity >= 1 ) { console.log( 'Updating %s guild%s in my database...', chalk.bold.yellow( update.length ), ( update.length === 1 ? '' : 's' ) ); }
-        for ( let guildId of update ) {
-          let updatedGuild = db.find( g => g._id === guildId );
-          await userConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
-          .then( updateSuccess => {
-            console.log( 'Succesfully updated G:%s in my database.', chalk.bold.green( updatedGuild.Guild.Name ) );
-            updatedGuilds.push( guildId );
-          } )
-          .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update guild ${updatedGuild.Guild.Name} in my database:\n${updateError}` ) ); } );
+      let updatedGuilds = await new Promise( ( resolve, reject ) => {
+        let u = [];
+        if ( update.length != 0 ) {
+          if ( botVerbosity >= 1 ) { console.log( 'Updating %s guild%s in my database...', chalk.bold.yellow( update.length ), ( update.length === 1 ? '' : 's' ) ); }
+          for ( let guildId of update ) {
+            let updatedGuild = db.find( g => g._id === guildId );
+            await userConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
+            .then( updateSuccess => {
+              console.log( 'Succesfully updated G:%s in my database.', chalk.bold.green( updatedGuild.Guild.Name ) );
+              u.push( guildId );
+            } )
+            .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update guild ${updatedGuild.Guild.Name} in my database:\n${updateError}` ) ); } );
+          }
         }
-      }
+        resolve( u );
+      } );
       data.guilds.update = update.length;
       data.guilds.updated = updatedGuilds.length;
 
@@ -296,17 +298,20 @@ client.on( 'ready', async rdy => {
     .then( async ( data ) => {// add guilds missing from db
       let { guilds } = data;
       let { db, add } = guilds;
-      let addedGuilds = [];
-      if ( add.length != 0 ) {
-        if ( botVerbosity >= 1 ) { console.log( 'Adding %s guild%s to my database...', chalk.bold.green( add.length ), ( add.length === 1 ? '' : 's' ) ); }
-        for ( let guildId of add ) {// createNewGuild
-          let addGuild = await botGuilds.get( guildId );
-          if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', chalk.bold.green( addGuild.name ) ); }
-          let newGuild = await createNewGuild( addGuild );
-          data.guilds.db.push( newGuild );
-          addedGuilds.push( guildId );
+      let addedGuilds = await new Promise( ( resolve, reject ) => {
+        let a = [];
+        if ( add.length != 0 ) {
+          if ( botVerbosity >= 1 ) { console.log( 'Adding %s guild%s to my database...', chalk.bold.green( add.length ), ( add.length === 1 ? '' : 's' ) ); }
+          for ( let guildId of add ) {// createNewGuild
+            let addGuild = await botGuilds.get( guildId );
+            if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', chalk.bold.green( addGuild.name ) ); }
+            let newGuild = await createNewGuild( addGuild );
+            data.guilds.db.push( newGuild );
+            a.push( guildId );
+          }
         }
-      }
+        resolve( a );
+      } );
       data.guilds.add = add.length;
       data.guilds.added = addedGuilds.length;
 
