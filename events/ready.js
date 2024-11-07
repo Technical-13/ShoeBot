@@ -215,7 +215,7 @@ client.on( 'ready', async rdy => {
     } )
     .then( async ( data ) => {// update users that changed while offline
       let { users } = data;
-      let updatedUsers = await new Promise( ( resolve, reject ) => {
+      let updatedUsers = await new Promise( async ( resolve, reject ) => {
         let u = [];
         let { db, update } = users;
         if ( update.length != 0 ) {
@@ -240,7 +240,7 @@ client.on( 'ready', async rdy => {
     .then( async ( data ) => {// add users missing from db
       let { users } = data;
       let { db, add } = users;
-      let addedUsers = await new Promise( ( resolve, reject ) => {
+      let addedUsers = await new Promise( async ( resolve, reject ) => {
         let a = [];
         if ( add.length != 0 ) {
           if ( botVerbosity >= 1 ) { console.log( 'Adding %s user%s to my database...', chalk.bold.green( add.length ), ( add.length === 1 ? '' : 's' ) ); }
@@ -274,7 +274,7 @@ client.on( 'ready', async rdy => {
     .then( async ( data ) => {// update guilds that changed while offline
       let { guilds } = data;
       let { db, update } = guilds;
-      let updatedGuilds = await new Promise( ( resolve, reject ) => {
+      let updatedGuilds = await new Promise( async ( resolve, reject ) => {
         let u = [];
         if ( update.length != 0 ) {
           if ( botVerbosity >= 1 ) { console.log( 'Updating %s guild%s in my database...', chalk.bold.yellow( update.length ), ( update.length === 1 ? '' : 's' ) ); }
@@ -298,7 +298,7 @@ client.on( 'ready', async rdy => {
     .then( async ( data ) => {// add guilds missing from db
       let { guilds } = data;
       let { db, add } = guilds;
-      let addedGuilds = await new Promise( ( resolve, reject ) => {
+      let addedGuilds = await new Promise( async ( resolve, reject ) => {
         let a = [];
         if ( add.length != 0 ) {
           if ( botVerbosity >= 1 ) { console.log( 'Adding %s guild%s to my database...', chalk.bold.green( add.length ), ( add.length === 1 ? '' : 's' ) ); }
