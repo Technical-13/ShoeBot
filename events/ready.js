@@ -228,8 +228,8 @@ client.on( 'ready', async rdy => {
           .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update user ${updatedUser.UserName} in my database:\n${updateError}` ) ); } );
         }
       }
-      data.users.update = update.length;/* TRON */console.log( 'update: %o', update );/* TROFF */
-      data.users.updated = updatedUsers.length;/* TRON */console.log( 'updatedUsers: %o', updatedUsers );/* TROFF */
+      data.users.update = update.length;
+      data.users.updated = updatedUsers.length;
 
       return data;
     } )
@@ -253,8 +253,8 @@ client.on( 'ready', async rdy => {
           addedUsers.push( userId );
         }
       }
-      data.users.add = add.length;/* TRON */console.log( 'add: %o', add );/* TROFF */
-      data.users.added = addedUsers.length;/* TRON */console.log( 'addedUsers: %o', addedUsers );/* TROFF */
+      data.users.add = add.length;
+      data.users.added = addedUsers.length;
 
       return data;
     } )
@@ -273,8 +273,8 @@ client.on( 'ready', async rdy => {
           .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update guild ${updatedGuild.Name} in my database:\n${updateError}` ) ); } );
         }
       }
-      data.guilds.update = update.length;/* TRON */console.log( 'update: %o', update );/* TROFF */
-      data.guilds.updated = updatedGuilds.length;/* TRON */console.log( 'updatedGuilds: %o', updatedGuilds );/* TROFF */
+      data.guilds.update = update.length;
+      data.guilds.updated = updatedGuilds.length;
 
       return data;
     } )
@@ -292,8 +292,8 @@ client.on( 'ready', async rdy => {
           addedGuilds.push( guildId );
         }
       }
-      data.guilds.add = add.length;/* TRON */console.log( 'add: %o', add );/* TROFF */
-      data.guilds.added = addedGuilds.length;/* TRON */console.log( 'addedGuilds: %o', addedGuilds );/* TROFF */
+      data.guilds.add = add.length;
+      data.guilds.added = addedGuilds.length;
 
       return data;
     } )
@@ -326,19 +326,45 @@ client.on( 'ready', async rdy => {
           .catch( errDelete => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to delete ${guildName} (id: ${guildId}) from my database:\n${errDelete.stack}` ) ); } );
         }
       }
-      data.guilds.remove = remove.length;/* TRON */console.log( 'remove: %o', remove );/* TROFF */
-      data.guilds.removed = removedGuilds.length;/* TRON */console.log( 'removedGuilds: %o', removedGuilds );/* TROFF */
+      data.guilds.remove = remove.length;
+      data.guilds.removed = removedGuilds.length;
 
       return data;
     } )
     .then( ( data ) => {
       let { guilds, users } = data;
-      console.log( 'Updated users: %s/%s', users.updated, users.update );
-      console.log( 'Added users: %s/%s', users.added, users.add );
-      console.log( 'Updated guilds: %s/%s', guilds.updated, guilds.update );
-      console.log( 'Added guilds: %s/%s', guilds.added, guilds.add );
-      console.log( 'Removed guilds: %s/%s', guilds.removed, guilds.remove );
-      console.log( 'All done catching up!!!' );
+      let strUserUpdate, strUserAdd, strUserRemove, strGuildUpdate, strGuildAdd, strGuildRemove;
+      
+      if ( users.updated > users.update ) { strUserUpdate = chalk.bold.red( 'ERROR: Updated more users than there were to update!!!' ); }
+      else if ( users.update === 0 ) { strUserUpdate = chalk.bold.green( 'No users to update' ); }
+      else if ( users.updated < users.update ) { strUserUpdate = 'Updated ' + chalk.bold.yellow( users.updated + ' of ' + users.update ) + ' users needing an update.'; }
+      else { strUserUpdate = 'Updated ' + chalk.bold.green( users.update ) + ' users.'; }
+      
+      if ( users.added > users.add ) { strUserAdd = chalk.bold.red( 'ERROR: Added more users than there were to add!!!' ); }
+      else if ( users.add === 0 ) { strUserAdd = chalk.bold.green( 'No users to add' ); }
+      else if ( users.added < users.add ) { strUserAdd = 'added ' + chalk.bold.yellow( users.added + ' of ' + users.add ) + ' users needing to be added.'; }
+      else { strUserAdd = 'Added ' + chalk.bold.green( users.add ) + ' users.'; }
+      
+      if ( users.removed > users.remove ) { strUserRemove = chalk.bold.red( 'ERROR: Removed more users than there were to remove!!!' ); }
+      else if ( users.remove === 0 ) { strUserRemove = chalk.bold.green( 'No users to remove' ); }
+      else if ( users.removed < users.remove ) { strUserRemove = 'Removed ' + chalk.bold.yellow( users.removed + ' of ' + users.remove ) + ' users needing to be removed.'; }
+      else { strUserRemove = 'Removed ' + chalk.bold.green( users.remove ) + ' users.'; }
+      
+      if ( guilds.updated > guilds.update ) { strGuildUpdate = chalk.bold.red( 'ERROR: Updated more guilds than there were to update!!!' ); }
+      else if ( guilds.update === 0 ) { strGuildUpdate = chalk.bold.green( 'No guilds to update' ); }
+      else if ( guilds.updated < guilds.update ) { strGuildUpdate = 'Updated ' + chalk.bold.yellow( guilds.updated + ' of ' + guilds.update ) + ' guilds needing an update.'; }
+      else { strGuildUpdate = 'Updated ' + chalk.bold.green( guilds.update ) + ' guilds.'; }
+      
+      if ( guilds.added > guilds.add ) { strGuildAdd = chalk.bold.red( 'ERROR: Added more guilds than there were to add!!!' ); }
+      else if ( guilds.add === 0 ) { strGuildAdd = chalk.bold.green( 'No guilds to add' ); }
+      else if ( guilds.added < guilds.add ) { strGuildAdd = 'added ' + chalk.bold.yellow( guilds.added + ' of ' + guilds.add ) + ' guilds needing to be added.'; }
+      else { strGuildAdd = 'Added ' + chalk.bold.green( guilds.add ) + ' guilds.'; }
+      
+      if ( guilds.removed > guilds.remove ) { strGuildRemove = chalk.bold.red( 'ERROR: Removed more guilds than there were to remove!!!' ); }
+      else if ( guilds.remove === 0 ) { strGuildRemove = chalk.bold.green( 'No guilds to remove' ); }
+      else if ( guilds.removed < guilds.remove ) { strGuildRemove = 'Removed ' + chalk.bold.yellow( guilds.removed + ' of ' + guilds.remove ) + ' guilds needing to be removed.'; }
+      else { strGuildRemove = 'Removed ' + chalk.bold.green( guilds.remove ) + ' guilds.'; }
+      console.log( 'All done catching up! Results:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s', strUserUpdate, strUserAdd, strUserRemove, strGuildUpdate, strGuildAdd, strGuildRemove );
     } )
     .catch( ( rejected ) => { console.error( rejected.message ); } );
   }
