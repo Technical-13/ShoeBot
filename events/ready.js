@@ -331,7 +331,7 @@ client.on( 'ready', async rdy => {
 
       return data;
     } )
-    .then( ( data ) => {
+    .then( async ( data ) => {
       if ( botVerbosity == 1 ) { console.log( 'All done catching up!' ); }
       else if ( botVerbosity >= 2 ) {
         let { guilds, users } = data;
