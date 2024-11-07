@@ -11,7 +11,7 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const getBotConfig = require( '../functions/getBotDB.js' );
 const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
-const botVerbosity = ( config.verbosity || 1 );
+const botVerbosity = 3;//( config.verbosity || 1 );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
 Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
@@ -183,17 +183,17 @@ client.on( 'ready', async rdy => {
         }
       }
 
-      if ( botVerbosity >= 3 ) { console.log( 'botUserIds: %o', botUserIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'storedUserIds: %o', storedUserIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'botUserIds: %o', botUserIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'storedUserIds: %o', storedUserIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'addedUserIds: %o', addedUserIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'removedUserIds: %o', removedUserIds ); }//Should always be empty by this point -- until I add purging function
-      if ( botVerbosity >= 3 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
       resolve( {
