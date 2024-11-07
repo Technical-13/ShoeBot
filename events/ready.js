@@ -248,13 +248,13 @@ client.on( 'ready', async rdy => {
             let addUser = await botUsers.get( userId );
             if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( addUser.displayName ) ); }
             data.users.db.push( await createNewUser( addUser ) );
-            a.push( userId );/* TRON */console.log( 'a for %s: %o', userId, a );/* TROFF */
+            a.push( userId );/* TRON */console.log( '251:a for %s: %o', userId, a );/* TROFF */
           }
-        }/* TRON */console.log( 'resolve(a): %o', a );/* TROFF */
+        }/* TRON */console.log( '253:resolve(a): %o', a );/* TROFF */
         resolve( a );
       } );
-      data.users.add = add.length;/* TRON */console.log( 'addedUsers: %o', addedUsers );/* TROFF */
-      data.users.added = addedUsers.length;
+      data.users.add = add.length;/* TRON */console.log( '256:addedUsers: %o', addedUsers );/* TROFF */
+      data.users.added = addedUsers.length;/* TRON */console.log( '257:data.users.added: %o', data.users.added );/* TROFF */
 
       return data;
     } )
@@ -355,7 +355,7 @@ client.on( 'ready', async rdy => {
     .then( async ( data ) => {
       if ( botVerbosity == 1 ) { console.log( 'All done catching up!' ); }
       else if ( botVerbosity >= 2 ) {
-        let { guilds, users } = data;
+        let { guilds, users } = data;/* TRON */console.log( '358:users.added: %o', users.added );/* TROFF */
         let strUserUpdate, strUserAdd, strUserRemove, strGuildUpdate, strGuildAdd, strGuildRemove;
 
         if ( !users.update || users.update === 0 ) { strUserUpdate = chalk.bold.green( 'No users to update' ); }
