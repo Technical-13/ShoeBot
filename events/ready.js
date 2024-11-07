@@ -249,7 +249,7 @@ client.on( 'ready', async rdy => {
             if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s...', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
             newUser = await addUserGuild( userId, guild );
           }
-          db.push( newUser );
+          data.users.db.push( newUser );
           addedUsers.push( userId );
         }
       }
@@ -258,7 +258,7 @@ client.on( 'ready', async rdy => {
 
       return data;
     } )
-    .then( async ( data ) => {//Not doing anything to remove users from db are guildless for TBD months
+    .then( async ( data ) => {// Not doing anything to remove users from db are guildless for TBD months
       let { users } = data;
       let { db, remove } = users;
       let removedUsers = [];
@@ -298,7 +298,7 @@ client.on( 'ready', async rdy => {
           let addGuild = await botGuilds.get( guildId );
           if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', chalk.bold.green( addGuild.name ) ); }
           let newGuild = await createNewGuild( addGuild );
-          db.push( newGuild );
+          data.guilds.db.push( newGuild );
           addedGuilds.push( guildId );
         }
       }
