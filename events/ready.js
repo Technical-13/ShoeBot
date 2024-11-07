@@ -351,8 +351,7 @@ client.on( 'ready', async rdy => {
             }
           }
           if ( botVerbosity >= 1 ) {
-            let expiringUserGuilds = ( users.db.filter( u => { return u.Guilds.filter( g => Object.prototype.toString.call( g.Expires ) === '[object Date]' ); } ) || [] );
-/* TRON */console.log( 'expiringUserGuilds: %o', expiringUserGuilds );/* TROFF */
+            // Get an array of all users with a guild that has a .Expires that's a Date
           }
         }
 
