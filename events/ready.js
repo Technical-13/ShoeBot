@@ -97,10 +97,10 @@ client.on( 'ready', async rdy => {
         actualEntry = JSON.stringify( actualEntry );
         expectedEntry = JSON.stringify( expectedEntry );
         if ( expectedEntry.valMatch( actualEntry ) ) {
-          if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.greenBright( botUser.displayName ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
+          if ( botVerbosity >= 1 ) { console.log( 'U:%s: %s %s %s', chalk.bold.greenBright( botUser.displayName ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
           unchangedUserIds.push( userId );
         }
-        else if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
+        else if ( botVerbosity >= 1 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
       updateUserIds = updateUserIds.getDiff( unchangedUserIds );
       let cleanedUserIds = [];
@@ -111,18 +111,18 @@ client.on( 'ready', async rdy => {
           let userGuildIds = Array.from( userGuilds.map( val => val._id ) );
           for ( let userGuild of userGuilds ) {
             if ( Object.prototype.toString.call( userGuild.Expires ) != '[object Date]' ) {// If no .Expires Date, add one
-              if ( botVerbosity >= 4 ) { console.log( 'U:%s G:%s Expires: %s', chalk.bold.redBright( storedUser.UserName ), chalk.bold.redBright( userGuild.GuildName ), dbExpires ); }
+              if ( botVerbosity >= 1 ) { console.log( 'U:%s G:%s Expires: %s', chalk.bold.redBright( storedUser.UserName ), chalk.bold.redBright( userGuild.GuildName ), dbExpires ); }
               userGuild.Expires = dbExpires;
               updateUserIds.push( userId );
             }
             else if ( userGuild.Expires <= ( new Date() ) ) {// If past .Expires Date, remove the guild from the Guilds array
-              if ( botVerbosity >= 4 ) { console.log( 'U:%s G:%s removed.', chalk.bold.redBright( storedUser.UserName ), chalk.bold.redBright( userGuild.GuildName ) ); }
+              if ( botVerbosity >= 1 ) { console.log( 'U:%s G:%s removed.', chalk.bold.redBright( storedUser.UserName ), chalk.bold.redBright( userGuild.GuildName ) ); }
               userGuilds.splice( userGuildIds.indexOf( userGuild._id ), 1 );
               updateUserIds.push( userId );
             }
           }
           if ( userGuilds.length === 0 ) {// If the user has no more guilds, add Guildless Date
-            if ( botVerbosity >= 4 ) { console.log( 'U:%s Guildless: %s', chalk.bold.redBright( storedUser.UserName ), dbExpires ); }
+            if ( botVerbosity >= 1 ) { console.log( 'U:%s Guildless: %s', chalk.bold.redBright( storedUser.UserName ), dbExpires ); }
             storedUser.Guildless = dbExpires;
             updateUserIds.push( userId );
           }
@@ -160,10 +160,10 @@ client.on( 'ready', async rdy => {
         actualEntry = JSON.stringify( actualEntry );
         expectedEntry = JSON.stringify( expectedEntry );
         if ( expectedEntry.valMatch( actualEntry ) ) {// push to unchangedGuildIds
-          if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s %s %s', chalk.bold.greenBright( botGuild.name ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
+          if ( botVerbosity >= 1 ) { console.log( 'G:%s: %s %s %s', chalk.bold.greenBright( botGuild.name ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
           unchangedGuildIds.push( guildId );
         }
-        else if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s %s %s', chalk.bold.red( botGuild.name ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
+        else if ( botVerbosity >= 1 ) { console.log( 'G:%s: %s %s %s', chalk.bold.red( botGuild.name ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
       updateGuildIds = updateGuildIds.getDiff( unchangedGuildIds );
       if ( removedGuildIds.length != 0 ) {
@@ -171,7 +171,7 @@ client.on( 'ready', async rdy => {
           let storedGuild = storedGuilds.filter( g => g._id === guildId )[ 0 ];
           let isExpired = ( !storedGuild.Expires ? false : ( storedGuild.Expires <= ( new Date() ) ? true : false ) );
           if ( !isExpired && !storedGuild.Expires ) {// add Expires Date, push id to update, take id out of removedGuildIds
-            if ( botVerbosity >= 4 ) { console.log( 'G:%s now Expires: %s', chalk.bold.redBright( storedGuild.Name ), dbExpires ); }
+            if ( botVerbosity >= 1 ) { console.log( 'G:%s now Expires: %s', chalk.bold.redBright( storedGuild.Name ), dbExpires ); }
             storedGuild.Expires = dbExpires;
             updateGuildIds.push( guildId );
             removedGuildIds.splice( removedGuildIds.indexOf( guildId ), 1 );
@@ -183,18 +183,18 @@ client.on( 'ready', async rdy => {
         }
       }
 
-      if ( botVerbosity >= 4 ) { console.log( 'botUserIds: %o', botUserIds ); }
-      if ( botVerbosity >= 4 ) { console.log( 'storedUserIds: %o', storedUserIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'addedUserIds: %o', addedUserIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'removedUserIds: %o', removedUserIds ); }//Should always be empty by this point -- until I add purging function
-      if ( botVerbosity >= 4 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
-      if ( botVerbosity >= 4 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
-      if ( botVerbosity >= 4 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
-      if ( botVerbosity >= 4 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
+      if ( botVerbosity >= 1 ) { console.log( 'botUserIds: %o', botUserIds ); }
+      if ( botVerbosity >= 1 ) { console.log( 'storedUserIds: %o', storedUserIds ); }
+      if ( botVerbosity >= 1 ) { console.log( 'addedUserIds: %o', addedUserIds ); }
+      if ( botVerbosity >= 1 ) { console.log( 'removedUserIds: %o', removedUserIds ); }//Should always be empty by this point -- until I add purging function
+      if ( botVerbosity >= 1 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
+      if ( botVerbosity >= 1 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
+      if ( botVerbosity >= 1 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
+      if ( botVerbosity >= 1 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
+      if ( botVerbosity >= 1 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
+      if ( botVerbosity >= 1 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
+      if ( botVerbosity >= 1 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
+      if ( botVerbosity >= 1 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
       resolve( {
         guilds: {
@@ -267,10 +267,10 @@ client.on( 'ready', async rdy => {
           let updatedGuild = db.filter( g => g._id === guildId )[ 0 ];
           await userConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
           .then( updateSuccess => {
-            console.log( 'Succesfully updated G:%s in my database.', chalk.bold.green( updatedGuild.Name ) );
+            console.log( 'Succesfully updated G:%s in my database.', chalk.bold.green( updatedGuild.Guild.Name ) );
             updatedGuilds.push( guildId );
           } )
-          .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update guild ${updatedGuild.Name} in my database:\n${updateError}` ) ); } );
+          .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update guild ${updatedGuild.Guild.Name} in my database:\n${updateError}` ) ); } );
         }
       }
       data.guilds.update = update.length;
