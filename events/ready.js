@@ -215,9 +215,9 @@ client.on( 'ready', async rdy => {
     } )
     .then( async ( data ) => {// update users that changed while offline
       let { users } = data;
+      let updatedUsers = [];
       let { db, update } = users;
       if ( update.length != 0 ) {
-        let updatedUsers = [];
         for ( let userId of update ) {
           let updatedUser = db.filter( g => g._id === userId )[ 0 ];
           await userConfig.updateOne( { _id:  userId }, updatedUser, { upsert: true } )
@@ -227,17 +227,17 @@ client.on( 'ready', async rdy => {
           } )
           .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update user ${updatedUser.UserName} in my database:\n${updateError}` ) ); } );
         }
-        data.users.update = update.length;/* TRON */console.log( 'update: %o', update );/* TROFF */
-        data.users.updated = updatedUsers.length;/* TRON */console.log( 'updatedUsers: %o', updatedUsers );/* TROFF */
       }
+      data.users.update = update.length;/* TRON */console.log( 'update: %o', update );/* TROFF */
+      data.users.updated = updatedUsers.length;/* TRON */console.log( 'updatedUsers: %o', updatedUsers );/* TROFF */
 
       return data;
     } )
     .then( async ( data ) => {// add users missing from db
       let { users } = data;
       let { db, add } = users;
+      let addedUsers = [];
       if ( add.length != 0 ) {
-        let addedUsers = [];
         if ( botVerbosity >= 1 ) { console.log( 'Adding %s users to my database...', chalk.bold.green( add.length ) ); }
         for ( let userId of add ) {// createNewUser
           let addUser = await botUsers.get( userId );
@@ -252,17 +252,17 @@ client.on( 'ready', async rdy => {
           db.push( newUser );
           addedUsers.push( userId );
         }
-        data.users.add = add.length;/* TRON */console.log( 'add: %o', add );/* TROFF */
-        data.users.added = addedUsers.length;/* TRON */console.log( 'addedUsers: %o', addedUsers );/* TROFF */
       }
+      data.users.add = add.length;/* TRON */console.log( 'add: %o', add );/* TROFF */
+      data.users.added = addedUsers.length;/* TRON */console.log( 'addedUsers: %o', addedUsers );/* TROFF */
 
       return data;
     } )
     .then( async ( data ) => {// update guilds that changed while offline
       let { guilds } = data;
       let { db, update } = guilds;
+      let updatedGuilds = [];
       if ( update.length != 0 ) {
-        let updatedGuilds = [];
         for ( let guildId of update ) {
           let updatedGuild = db.filter( g => g._id === guildId )[ 0 ];
           await userConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
@@ -272,17 +272,17 @@ client.on( 'ready', async rdy => {
           } )
           .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update guild ${updatedGuild.Name} in my database:\n${updateError}` ) ); } );
         }
-        data.guilds.update = update.length;/* TRON */console.log( 'update: %o', update );/* TROFF */
-        data.guilds.updated = updatedGuilds.length;/* TRON */console.log( 'updatedGuilds: %o', updatedGuilds );/* TROFF */
       }
+      data.guilds.update = update.length;/* TRON */console.log( 'update: %o', update );/* TROFF */
+      data.guilds.updated = updatedGuilds.length;/* TRON */console.log( 'updatedGuilds: %o', updatedGuilds );/* TROFF */
 
       return data;
     } )
     .then( async ( data ) => {// add guilds missing from db
       let { guilds } = data;
       let { db, add } = guilds;
+      let addedGuilds = [];
       if ( add.length != 0 ) {
-        let addedGuilds = [];
         if ( botVerbosity >= 1 ) { console.log( 'Adding %s guilds to my database...', chalk.bold.green( add.length ) ); }
         for ( let guildId of add ) {// createNewGuild
           let addGuild = await botGuilds.get( guildId );
@@ -291,17 +291,17 @@ client.on( 'ready', async rdy => {
           db.push( newGuild );
           addedGuilds.push( guildId );
         }
-        data.guilds.add = add.length;/* TRON */console.log( 'add: %o', add );/* TROFF */
-        data.guilds.added = addedGuilds.length;/* TRON */console.log( 'addedGuilds: %o', addedGuilds );/* TROFF */
       }
+      data.guilds.add = add.length;/* TRON */console.log( 'add: %o', add );/* TROFF */
+      data.guilds.added = addedGuilds.length;/* TRON */console.log( 'addedGuilds: %o', addedGuilds );/* TROFF */
 
       return data;
     } )
     .then( async ( data ) => {// remove guilds from db that have expired
       let { guilds } = data;
       let { db, remove } = guilds;
+      let removedGuilds = [];
       if ( remove.length != 0 ) {
-        let removedGuilds = [];
         for ( let guildId of remove ) {
           let delGuild = db.find( entry => entry.id === guildId );
           let guildName = delGuild.Guild.Name;
@@ -325,9 +325,9 @@ client.on( 'ready', async rdy => {
           } )
           .catch( errDelete => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to delete ${guildName} (id: ${guildId}) from my database:\n${errDelete.stack}` ) ); } );
         }
-        data.guilds.remove = remove.length;/* TRON */console.log( 'remove: %o', remove );/* TROFF */
-        data.guilds.removed = removedGuilds.length;/* TRON */console.log( 'removedGuilds: %o', removedGuilds );/* TROFF */
       }
+      data.guilds.remove = remove.length;/* TRON */console.log( 'remove: %o', remove );/* TROFF */
+      data.guilds.removed = removedGuilds.length;/* TRON */console.log( 'removedGuilds: %o', removedGuilds );/* TROFF */
 
       return data;
     } )
