@@ -218,6 +218,7 @@ client.on( 'ready', async rdy => {
       let updatedUsers = [];
       let { db, update } = users;
       if ( update.length != 0 ) {
+        if ( botVerbosity >= 1 ) { console.log( 'Updating %s user%s in my database...', chalk.bold.yellow( update.length ), ( update.length === 1 ? '' : 's' ) ); }
         for ( let userId of update ) {
           let updatedUser = db.filter( g => g._id === userId )[ 0 ];
           await userConfig.updateOne( { _id:  userId }, updatedUser, { upsert: true } )
@@ -238,7 +239,7 @@ client.on( 'ready', async rdy => {
       let { db, add } = users;
       let addedUsers = [];
       if ( add.length != 0 ) {
-        if ( botVerbosity >= 1 ) { console.log( 'Adding %s users to my database...', chalk.bold.green( add.length ) ); }
+        if ( botVerbosity >= 1 ) { console.log( 'Adding %s user%s to my database...', chalk.bold.green( add.length ), ( add.length === 1 ? '' : 's' ) ); }
         for ( let userId of add ) {// createNewUser
           let addUser = await botUsers.get( userId );
           if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( addUser.displayName ) ); }
@@ -246,7 +247,7 @@ client.on( 'ready', async rdy => {
           let addUserGuilds = ( Array.from( botGuilds.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
           for ( let guildId of addUserGuilds ) {// addUserGuild
             let guild = await botGuilds.get( guildId );
-            if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s...', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
+            if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s.', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
             newUser = await addUserGuild( userId, guild );
           }
           data.users.db.push( newUser );
@@ -262,7 +263,10 @@ client.on( 'ready', async rdy => {
       let { users } = data;
       let { db, remove } = users;
       let removedUsers = [];
-      if ( remove.length != 0 ) { console.error( 'data.users.remove is not empty: %o', remove ); }
+      if ( remove.length != 0 ) {
+        if ( botVerbosity >= 1 ) { console.log( 'Removing %s user%s from my database...', chalk.bold.red( remove.length ), ( remove.length === 1 ? '' : 's' ) ); }
+        console.error( 'ERROR: data.users.remove is not empty: %o', remove );
+      }
       data.users.remove = remove.length;
       data.users.added = removedUsers.length;
 
@@ -273,6 +277,7 @@ client.on( 'ready', async rdy => {
       let { db, update } = guilds;
       let updatedGuilds = [];
       if ( update.length != 0 ) {
+        if ( botVerbosity >= 1 ) { console.log( 'Updating %s guild%s in my database...', chalk.bold.yellow( update.length ), ( update.length === 1 ? '' : 's' ) ); }
         for ( let guildId of update ) {
           let updatedGuild = db.find( g => g._id === guildId );
           await userConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
@@ -293,7 +298,7 @@ client.on( 'ready', async rdy => {
       let { db, add } = guilds;
       let addedGuilds = [];
       if ( add.length != 0 ) {
-        if ( botVerbosity >= 1 ) { console.log( 'Adding %s guilds to my database...', chalk.bold.green( add.length ) ); }
+        if ( botVerbosity >= 1 ) { console.log( 'Adding %s guild%s to my database...', chalk.bold.green( add.length ), ( add.length === 1 ? '' : 's' ) ); }
         for ( let guildId of add ) {// createNewGuild
           let addGuild = await botGuilds.get( guildId );
           if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', chalk.bold.green( addGuild.name ) ); }
@@ -312,6 +317,7 @@ client.on( 'ready', async rdy => {
       let { db, remove } = guilds;
       let removedGuilds = [];
       if ( remove.length != 0 ) {
+        if ( botVerbosity >= 1 ) { console.log( 'Removing %s guild%s from my database...', chalk.bold.red( remove.length ), ( remove.length === 1 ? '' : 's' ) ); }
         for ( let guildId of remove ) {
           let delGuild = db.find( entry => entry.id === guildId );
           let guildName = delGuild.Guild.Name;
@@ -367,7 +373,7 @@ client.on( 'ready', async rdy => {
 
         if ( !users.add || users.add === 0 ) { strUserAdd = chalk.bold.green( 'No users to add.' ); }
         else if ( users.added > users.add ) { strUserAdd = chalk.bold.red( 'ERROR: Added more users than there were to add!!!' ); }
-        else if ( users.added < users.add ) { strUserAdd = 'added ' + chalk.bold.yellow( users.added + ' of ' + users.add ) + ' user' + ( users.add === 1 ? '' : 's' ) + ' needing to be added.'; }
+        else if ( users.added < users.add ) { strUserAdd = 'Added ' + chalk.bold.yellow( users.added + ' of ' + users.add ) + ' user' + ( users.add === 1 ? '' : 's' ) + ' needing to be added.'; }
         else { strUserAdd = 'Added ' + chalk.bold.green( users.add ) + ' user' + ( users.add === 1 ? '' : 's' ) + '.'; }
 
         if ( !users.remove || users.remove === 0 ) { strUserRemove = chalk.bold.green( 'No users to remove.' ); }
@@ -392,7 +398,7 @@ client.on( 'ready', async rdy => {
 
         if ( !guilds.add || guilds.add === 0 ) { strGuildAdd = chalk.bold.green( 'No guilds to add.' ); }
         else if ( guilds.added > guilds.add ) { strGuildAdd = chalk.bold.red( 'ERROR: Added more guilds than there were to add!!!' ); }
-        else if ( guilds.added < guilds.add ) { strGuildAdd = 'added ' + chalk.bold.yellow( guilds.added + ' of ' + guilds.add ) + ' guild' + ( guilds.add === 1 ? '' : 's' ) + ' needing to be added.'; }
+        else if ( guilds.added < guilds.add ) { strGuildAdd = 'Added ' + chalk.bold.yellow( guilds.added + ' of ' + guilds.add ) + ' guild' + ( guilds.add === 1 ? '' : 's' ) + ' needing to be added.'; }
         else { strGuildAdd = 'Added ' + chalk.bold.green( guilds.add ) + ' guild' + ( guilds.add === 1 ? '' : 's' ) + '.'; }
 
         if ( !guilds.remove || guilds.remove === 0 ) { strGuildRemove = chalk.bold.green( 'No guilds to remove' ); }
