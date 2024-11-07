@@ -97,10 +97,10 @@ client.on( 'ready', async rdy => {
         actualEntry = JSON.stringify( actualEntry );
         expectedEntry = JSON.stringify( expectedEntry );
         if ( expectedEntry.valMatch( actualEntry ) ) {
-          if ( botVerbosity >= 1 ) { console.log( 'U:%s: %s %s %s', chalk.bold.greenBright( botUser.displayName ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
+          if ( botVerbosity >= 5 ) { console.log( 'U:%s: %s %s %s', chalk.bold.greenBright( botUser.displayName ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
           unchangedUserIds.push( userId );
         }
-        else if ( botVerbosity >= 1 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
+        else if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
       updateUserIds = updateUserIds.getDiff( unchangedUserIds );
       let cleanedUserIds = [];
@@ -160,10 +160,10 @@ client.on( 'ready', async rdy => {
         actualEntry = JSON.stringify( actualEntry );
         expectedEntry = JSON.stringify( expectedEntry );
         if ( expectedEntry.valMatch( actualEntry ) ) {// push to unchangedGuildIds
-          if ( botVerbosity >= 1 ) { console.log( 'G:%s: %s %s %s', chalk.bold.greenBright( botGuild.name ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
+          if ( botVerbosity >= 5 ) { console.log( 'G:%s: %s %s %s', chalk.bold.greenBright( botGuild.name ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
           unchangedGuildIds.push( guildId );
         }
-        else if ( botVerbosity >= 1 ) { console.log( 'G:%s: %s %s %s', chalk.bold.red( botGuild.name ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
+        else if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s %s %s', chalk.bold.red( botGuild.name ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
       updateGuildIds = updateGuildIds.getDiff( unchangedGuildIds );
       if ( removedGuildIds.length != 0 ) {
@@ -171,7 +171,7 @@ client.on( 'ready', async rdy => {
           let storedGuild = storedGuilds.filter( g => g._id === guildId )[ 0 ];
           let isExpired = ( !storedGuild.Expires ? false : ( storedGuild.Expires <= ( new Date() ) ? true : false ) );
           if ( !isExpired && !storedGuild.Expires ) {// add Expires Date, push id to update, take id out of removedGuildIds
-            if ( botVerbosity >= 1 ) { console.log( 'G:%s now Expires: %s', chalk.bold.redBright( storedGuild.Name ), dbExpires ); }
+            if ( botVerbosity >= 1 ) { console.log( 'G:%s now Expires: %s', chalk.bold.redBright( storedGuild.Guild.Name ), dbExpires ); }
             storedGuild.Expires = dbExpires;
             updateGuildIds.push( guildId );
             removedGuildIds.splice( removedGuildIds.indexOf( guildId ), 1 );
