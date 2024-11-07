@@ -227,8 +227,8 @@ client.on( 'ready', async rdy => {
           } )
           .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update user ${updatedUser.UserName} in my database:\n${updateError}` ) ); } );
         }
-        users.update = update.length;/* TRON */console.log( 'update: %o', update );/* TROFF */
-        users.updated = updatedUsers.length;/* TRON */console.log( 'updatedUsers: %o', updatedUsers );/* TROFF */
+        data.users.update = update.length;/* TRON */console.log( 'update: %o', update );/* TROFF */
+        data.users.updated = updatedUsers.length;/* TRON */console.log( 'updatedUsers: %o', updatedUsers );/* TROFF */
       }
 
       return data;
@@ -252,8 +252,8 @@ client.on( 'ready', async rdy => {
           db.push( newUser );
           addedUsers.push( userId );
         }
-        users.add = add.length;/* TRON */console.log( 'add: %o', add );/* TROFF */
-        users.added = addedUsers.length;/* TRON */console.log( 'addedUsers: %o', addedUsers );/* TROFF */
+        data.users.add = add.length;/* TRON */console.log( 'add: %o', add );/* TROFF */
+        data.users.added = addedUsers.length;/* TRON */console.log( 'addedUsers: %o', addedUsers );/* TROFF */
       }
 
       return data;
@@ -272,8 +272,8 @@ client.on( 'ready', async rdy => {
           } )
           .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update guild ${updatedGuild.Name} in my database:\n${updateError}` ) ); } );
         }
-        guilds.update = update.length;/* TRON */console.log( 'update: %o', update );/* TROFF */
-        guilds.updated = updatedGuilds.length;/* TRON */console.log( 'updatedGuilds: %o', updatedGuilds );/* TROFF */
+        data.guilds.update = update.length;/* TRON */console.log( 'update: %o', update );/* TROFF */
+        data.guilds.updated = updatedGuilds.length;/* TRON */console.log( 'updatedGuilds: %o', updatedGuilds );/* TROFF */
       }
 
       return data;
@@ -291,8 +291,8 @@ client.on( 'ready', async rdy => {
           db.push( newGuild );
           addedGuilds.push( guildId );
         }
-        guilds.add = add.length;/* TRON */console.log( 'add: %o', add );/* TROFF */
-        guilds.added = addedGuilds.length;/* TRON */console.log( 'addedGuilds: %o', addedGuilds );/* TROFF */
+        data.guilds.add = add.length;/* TRON */console.log( 'add: %o', add );/* TROFF */
+        data.guilds.added = addedGuilds.length;/* TRON */console.log( 'addedGuilds: %o', addedGuilds );/* TROFF */
       }
 
       return data;
@@ -325,8 +325,8 @@ client.on( 'ready', async rdy => {
           } )
           .catch( errDelete => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to delete ${guildName} (id: ${guildId}) from my database:\n${errDelete.stack}` ) ); } );
         }
-        guilds.remove = remove.length;/* TRON */console.log( 'remove: %o', remove );/* TROFF */
-        guilds.removed = removedGuilds.length;/* TRON */console.log( 'removedGuilds: %o', removedGuilds );/* TROFF */
+        data.guilds.remove = remove.length;/* TRON */console.log( 'remove: %o', remove );/* TROFF */
+        data.guilds.removed = removedGuilds.length;/* TRON */console.log( 'removedGuilds: %o', removedGuilds );/* TROFF */
       }
 
       return data;
