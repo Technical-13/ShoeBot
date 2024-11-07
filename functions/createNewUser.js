@@ -18,15 +18,16 @@ module.exports = async ( user ) => {
         Version: verUserDB
       }
       return await userConfig.create( newBotUser )
-      .then( updatedUser => {
+      .then( async ( updatedUser ) => {
         const botGuilds = client.guilds.cache;
         let newUserGuilds = ( Array.from( botGuilds.filter( g => g.members.cache.has( user.id ) ).keys() ).toSorted() || [] );
-        for ( let guildId of newUserGuilds ) {// addUserGuild
-          let guild = await botGuilds.get( guildId );
-          if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s.', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
-          newUser = await addUserGuild( user.id, guild );
-        }
-        return newBotUser;
+        return await new Promise( ( resolve, reject ) => {
+          for ( let guildId of newUserGuilds ) {// addUserGuild
+            let guild = await botGuilds.get( guildId );
+            if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s.', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
+            resolve( await addUserGuild( user.id, guild ) );
+          }
+        } );
       } )
       .catch( initError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to add ${user.displayName} (id: ${user.id}) to my user database in createNewUser.js:\n` ) + initError ); } );
     }
