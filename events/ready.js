@@ -106,12 +106,12 @@ client.on( 'ready', async rdy => {
       let cleanedUserIds = [];
       if ( removedUserIds.length != 0 ) {
         for ( let userId of removedUserIds ) {
-          let storedUser = storedUsers.filter( g => g._id === userId )[ 0 ];
+          let storedUser = storedUsers.find( g => g._id === userId );
           let userGuilds = storedUser.Guilds;
           let userGuildIds = Array.from( userGuilds.map( val => val._id ) );
           for ( let userGuild of userGuilds ) {
             if ( Object.prototype.toString.call( userGuild.Expires ) != '[object Date]' ) {// If no .Expires Date, add one
-              if ( botVerbosity >= 1 ) { console.log( 'U:%s G:%s Expires: %s', chalk.bold.redBright( storedUser.UserName ), chalk.bold.redBright( userGuild.GuildName ), dbExpires ); }
+              if ( botVerbosity >= 1 ) { console.log( 'U:%s G:%s Expires: %o', chalk.bold.redBright( storedUser.UserName ), chalk.bold.redBright( userGuild.GuildName ), dbExpires ); }
               userGuild.Expires = dbExpires;
               updateUserIds.push( userId );
             }
@@ -122,7 +122,7 @@ client.on( 'ready', async rdy => {
             }
           }
           if ( userGuilds.length === 0 ) {// If the user has no more guilds, add Guildless Date
-            if ( botVerbosity >= 1 ) { console.log( 'U:%s Guildless: %s', chalk.bold.redBright( storedUser.UserName ), dbExpires ); }
+            if ( botVerbosity >= 1 ) { console.log( 'U:%s Guildless: %o', chalk.bold.redBright( storedUser.UserName ), dbExpires ); }
             storedUser.Guildless = dbExpires;
             updateUserIds.push( userId );
           }
@@ -168,10 +168,10 @@ client.on( 'ready', async rdy => {
       updateGuildIds = updateGuildIds.getDiff( unchangedGuildIds );
       if ( removedGuildIds.length != 0 ) {
         for ( let guildId of removedGuildIds ) {
-          let storedGuild = storedGuilds.filter( g => g._id === guildId )[ 0 ];
+          let storedGuild = storedGuilds.find( g => g._id === guildId );
           let isExpired = ( !storedGuild.Expires ? false : ( storedGuild.Expires <= ( new Date() ) ? true : false ) );
           if ( !isExpired && !storedGuild.Expires ) {// add Expires Date, push id to update, take id out of removedGuildIds
-            if ( botVerbosity >= 1 ) { console.log( 'G:%s now Expires: %s', chalk.bold.redBright( storedGuild.Guild.Name ), dbExpires ); }
+            if ( botVerbosity >= 1 ) { console.log( 'G:%s now Expires: %o', chalk.bold.redBright( storedGuild.Guild.Name ), dbExpires ); }
             storedGuild.Expires = dbExpires;
             updateGuildIds.push( guildId );
             removedGuildIds.splice( removedGuildIds.indexOf( guildId ), 1 );
@@ -183,18 +183,18 @@ client.on( 'ready', async rdy => {
         }
       }
 
-      if ( botVerbosity >= 1 ) { console.log( 'botUserIds: %o', botUserIds ); }
-      if ( botVerbosity >= 1 ) { console.log( 'storedUserIds: %o', storedUserIds ); }
-      if ( botVerbosity >= 1 ) { console.log( 'addedUserIds: %o', addedUserIds ); }
-      if ( botVerbosity >= 1 ) { console.log( 'removedUserIds: %o', removedUserIds ); }//Should always be empty by this point -- until I add purging function
-      if ( botVerbosity >= 1 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
-      if ( botVerbosity >= 1 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
-      if ( botVerbosity >= 1 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
-      if ( botVerbosity >= 1 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
-      if ( botVerbosity >= 1 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
-      if ( botVerbosity >= 1 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
-      if ( botVerbosity >= 1 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
-      if ( botVerbosity >= 1 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
+      if ( botVerbosity >= 3 ) { console.log( 'botUserIds: %o', botUserIds ); }
+      if ( botVerbosity >= 3 ) { console.log( 'storedUserIds: %o', storedUserIds ); }
+      if ( botVerbosity >= 2 ) { console.log( 'addedUserIds: %o', addedUserIds ); }
+      if ( botVerbosity >= 2 ) { console.log( 'removedUserIds: %o', removedUserIds ); }//Should always be empty by this point -- until I add purging function
+      if ( botVerbosity >= 3 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
+      if ( botVerbosity >= 2 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
+      if ( botVerbosity >= 3 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
+      if ( botVerbosity >= 3 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
+      if ( botVerbosity >= 2 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
+      if ( botVerbosity >= 2 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
+      if ( botVerbosity >= 3 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
+      if ( botVerbosity >= 2 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
       resolve( {
         guilds: {
@@ -264,7 +264,7 @@ client.on( 'ready', async rdy => {
       let updatedGuilds = [];
       if ( update.length != 0 ) {
         for ( let guildId of update ) {
-          let updatedGuild = db.filter( g => g._id === guildId )[ 0 ];
+          let updatedGuild = db.find( g => g._id === guildId );
           await userConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
           .then( updateSuccess => {
             console.log( 'Succesfully updated G:%s in my database.', chalk.bold.green( updatedGuild.Guild.Name ) );
@@ -332,39 +332,58 @@ client.on( 'ready', async rdy => {
       return data;
     } )
     .then( ( data ) => {
-      let { guilds, users } = data;
-      let strUserUpdate, strUserAdd, strUserRemove, strGuildUpdate, strGuildAdd, strGuildRemove;
+      if ( botVerbosity == 1 ) { console.log( 'All done catching up!' ); }
+      else if ( botVerbosity >= 2 ) {
+        let { guilds, users } = data;
+        let strUserUpdate, strUserAdd, strUserRemove, strGuildUpdate, strGuildAdd, strGuildRemove;
 
-      if ( users.updated > users.update ) { strUserUpdate = chalk.bold.red( 'ERROR: Updated more users than there were to update!!!' ); }
-      else if ( users.update === 0 ) { strUserUpdate = chalk.bold.green( 'No users to update' ); }
-      else if ( users.updated < users.update ) { strUserUpdate = 'Updated ' + chalk.bold.yellow( users.updated + ' of ' + users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + ' needing an update.'; }
-      else { strUserUpdate = 'Updated ' + chalk.bold.green( users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + '.'; }
+        if ( users.updated > users.update ) { strUserUpdate = chalk.bold.red( 'ERROR: Updated more users than there were to update!!!' ); }
+        else if ( users.update === 0 ) { strUserUpdate = chalk.bold.green( 'No users to update' ); }
+        else if ( users.updated < users.update ) {
+          strUserUpdate = 'Updated ' + chalk.bold.yellow( users.updated + ' of ' + users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + ' needing an update.';
+          if ( botVerbosity >= 3 ) {
+            let expiringUsers = ( users.db.filter( u => Object.prototype.toString.call( u.Guildless ) === '[object Date]' ) || [] );
+            if ( expiringUsers.length != 0 ) {
+              let expiringUserIds = Array.from( expiringUsers.map( val => val._id ) )
+              for ( let userId of expiringUserIds ) {
+                let expiringUser = expiringUsers.find( u => u._id === userId );
+                strUserUpdate += '\n\t\t' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + await duration( expiringUser.Guildless - ( new Date() ), { getMonths: true, getWeeks: true } ) + ' since: ' + expiringUser.Guildless;
+              }
+            }
+            if ( botVerbosity >= 4 ) {
+              let expiringUserGuilds = ( users.db.filter( u => { u.Guilds.filter( g => Object.prototype.toString.call( g.Expires ) === '[object Date]' ) } ) || [] );
+/* TRON */console.log( 'expiringUserGuilds: %o', expiringUserGuilds );/* TROFF */
+            }
+          }
+        }
+        else { strUserUpdate = 'Updated ' + chalk.bold.green( users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + '.'; }
 
-      if ( users.added > users.add ) { strUserAdd = chalk.bold.red( 'ERROR: Added more users than there were to add!!!' ); }
-      else if ( users.add === 0 ) { strUserAdd = chalk.bold.green( 'No users to add.' ); }
-      else if ( users.added < users.add ) { strUserAdd = 'added ' + chalk.bold.yellow( users.added + ' of ' + users.add ) + ' user' + ( users.add === 1 ? '' : 's' ) + ' needing to be added.'; }
-      else { strUserAdd = 'Added ' + chalk.bold.green( users.add ) + ' user' + ( users.add === 1 ? '' : 's' ) + '.'; }
+        if ( users.added > users.add ) { strUserAdd = chalk.bold.red( 'ERROR: Added more users than there were to add!!!' ); }
+        else if ( users.add === 0 ) { strUserAdd = chalk.bold.green( 'No users to add.' ); }
+        else if ( users.added < users.add ) { strUserAdd = 'added ' + chalk.bold.yellow( users.added + ' of ' + users.add ) + ' user' + ( users.add === 1 ? '' : 's' ) + ' needing to be added.'; }
+        else { strUserAdd = 'Added ' + chalk.bold.green( users.add ) + ' user' + ( users.add === 1 ? '' : 's' ) + '.'; }
 
-      if ( users.removed > users.remove ) { strUserRemove = chalk.bold.red( 'ERROR: Removed more users than there were to remove!!!' ); }
-      else if ( users.remove === 0 ) { strUserRemove = chalk.bold.green( 'No users to remove.' ); }
-      else if ( users.removed < users.remove ) { strUserRemove = 'Removed ' + chalk.bold.yellow( users.removed + ' of ' + users.remove ) + ' user' + ( users.remove === 1 ? '' : 's' ) + ' needing to be removed.'; }
-      else { strUserRemove = 'Removed ' + chalk.bold.green( users.remove ) + ' user' + ( users.remove === 1 ? '' : 's' ) + '.'; }
+        if ( users.removed > users.remove ) { strUserRemove = chalk.bold.red( 'ERROR: Removed more users than there were to remove!!!' ); }
+        else if ( users.remove === 0 ) { strUserRemove = chalk.bold.green( 'No users to remove.' ); }
+        else if ( users.removed < users.remove ) { strUserRemove = 'Removed ' + chalk.bold.yellow( users.removed + ' of ' + users.remove ) + ' user' + ( users.remove === 1 ? '' : 's' ) + ' needing to be removed.'; }
+        else { strUserRemove = 'Removed ' + chalk.bold.green( users.remove ) + ' user' + ( users.remove === 1 ? '' : 's' ) + '.'; }
 
-      if ( guilds.updated > guilds.update ) { strGuildUpdate = chalk.bold.red( 'ERROR: Updated more guilds than there were to update!!!' ); }
-      else if ( guilds.update === 0 ) { strGuildUpdate = chalk.bold.green( 'No guilds to update' ); }
-      else if ( guilds.updated < guilds.update ) { strGuildUpdate = 'Updated ' + chalk.bold.yellow( guilds.updated + ' of ' + guilds.update ) + ' guild' + ( guilds.update === 1 ? '' : 's' ) + ' needing an update.'; }
-      else { strGuildUpdate = 'Updated ' + chalk.bold.green( guilds.update ) + ' guild' + ( guilds.update === 1 ? '' : 's' ) + '.'; }
+        if ( guilds.updated > guilds.update ) { strGuildUpdate = chalk.bold.red( 'ERROR: Updated more guilds than there were to update!!!' ); }
+        else if ( guilds.update === 0 ) { strGuildUpdate = chalk.bold.green( 'No guilds to update' ); }
+        else if ( guilds.updated < guilds.update ) { strGuildUpdate = 'Updated ' + chalk.bold.yellow( guilds.updated + ' of ' + guilds.update ) + ' guild' + ( guilds.update === 1 ? '' : 's' ) + ' needing an update.'; }
+        else { strGuildUpdate = 'Updated ' + chalk.bold.green( guilds.update ) + ' guild' + ( guilds.update === 1 ? '' : 's' ) + '.'; }
 
-      if ( guilds.added > guilds.add ) { strGuildAdd = chalk.bold.red( 'ERROR: Added more guilds than there were to add!!!' ); }
-      else if ( guilds.add === 0 ) { strGuildAdd = chalk.bold.green( 'No guilds to add.' ); }
-      else if ( guilds.added < guilds.add ) { strGuildAdd = 'added ' + chalk.bold.yellow( guilds.added + ' of ' + guilds.add ) + ' guild' + ( guilds.add === 1 ? '' : 's' ) + ' needing to be added.'; }
-      else { strGuildAdd = 'Added ' + chalk.bold.green( guilds.add ) + ' guild' + ( guilds.add === 1 ? '' : 's' ) + '.'; }
+        if ( guilds.added > guilds.add ) { strGuildAdd = chalk.bold.red( 'ERROR: Added more guilds than there were to add!!!' ); }
+        else if ( guilds.add === 0 ) { strGuildAdd = chalk.bold.green( 'No guilds to add.' ); }
+        else if ( guilds.added < guilds.add ) { strGuildAdd = 'added ' + chalk.bold.yellow( guilds.added + ' of ' + guilds.add ) + ' guild' + ( guilds.add === 1 ? '' : 's' ) + ' needing to be added.'; }
+        else { strGuildAdd = 'Added ' + chalk.bold.green( guilds.add ) + ' guild' + ( guilds.add === 1 ? '' : 's' ) + '.'; }
 
-      if ( guilds.removed > guilds.remove ) { strGuildRemove = chalk.bold.red( 'ERROR: Removed more guilds than there were to remove!!!' ); }
-      else if ( guilds.remove === 0 ) { strGuildRemove = chalk.bold.green( 'No guilds to remove' ); }
-      else if ( guilds.removed < guilds.remove ) { strGuildRemove = 'Removed ' + chalk.bold.yellow( guilds.removed + ' of ' + guilds.remove ) + ' guild' + ( guilds.remove === 1 ? '' : 's' ) + ' needing to be removed.'; }
-      else { strGuildRemove = 'Removed ' + chalk.bold.green( guilds.remove ) + ' guild' + ( guilds.remove === 1 ? '' : 's' ) + '.'; }
-      console.log( 'All done catching up! Results:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s', strUserUpdate, strUserAdd, strUserRemove, strGuildUpdate, strGuildAdd, strGuildRemove );
+        if ( guilds.removed > guilds.remove ) { strGuildRemove = chalk.bold.red( 'ERROR: Removed more guilds than there were to remove!!!' ); }
+        else if ( guilds.remove === 0 ) { strGuildRemove = chalk.bold.green( 'No guilds to remove' ); }
+        else if ( guilds.removed < guilds.remove ) { strGuildRemove = 'Removed ' + chalk.bold.yellow( guilds.removed + ' of ' + guilds.remove ) + ' guild' + ( guilds.remove === 1 ? '' : 's' ) + ' needing to be removed.'; }
+        else { strGuildRemove = 'Removed ' + chalk.bold.green( guilds.remove ) + ' guild' + ( guilds.remove === 1 ? '' : 's' ) + '.'; }
+        console.log( 'All done catching up! Results:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s', strUserUpdate, strUserAdd, strUserRemove, strGuildUpdate, strGuildAdd, strGuildRemove );
+      }
     } )
     .catch( ( rejected ) => { console.error( rejected.message ); } );
   }
