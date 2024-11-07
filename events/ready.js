@@ -76,11 +76,11 @@ client.on( 'ready', async rdy => {
     new Promise( async ( resolve, reject ) => {
       const botUserIds = Array.from( botUsers.keys() );
       if ( !Array.isArray( botUserIds ) ) { reject( { message: 'Unable to retrieve bot\'s mutual users.' } ); }
-      const storedUsers = await userConfig.find();/* TRON */console.log( '79:storedUsers.find(): %o', storedUsers.find(g=>g._id==='903674573332045834') );/* TROFF */
+      const storedUsers = await userConfig.find();
       const storedUserIds = Array.from( storedUsers.map( val => val._id ) );
       if ( !Array.isArray( storedUserIds ) ) { reject( { message: 'Unable to retrieve userlist from database.' } ); }
       const allUserIds = [].concat( botUserIds, storedUserIds ).getDistinct().sort();
-      let addedUserIds = botUserIds.getDiff( storedUserIds );/* TRON */console.log( '83:addedUserIds: %o', addedUserIds );/* TROFF */
+      let addedUserIds = botUserIds.getDiff( storedUserIds );
       let removedUserIds = storedUserIds.getDiff( botUserIds );
       let ioUserIds = [].concat( addedUserIds, removedUserIds ).sort();
       let updateUserIds = allUserIds.getDiff( ioUserIds ).getDistinct();
@@ -131,14 +131,14 @@ client.on( 'ready', async rdy => {
         }
         removedUserIds = removedUserIds.getDiff( cleanedUserIds );
       }
-/* TRON */console.log( '134:addedUserIds: %o', addedUserIds );/* TROFF */
+
       const botGuildIds = Array.from( botGuilds.keys() );
       if ( !Array.isArray( botGuildIds ) ) { reject( { message: 'Unable to retrieve guilds bot is in.' } ); }
-      const storedGuilds = await guildConfig.find();/* TRON */console.log( '137:storedGuilds.find(): %o', storedGuilds.find(g=>g._id==='903674573332045834') );/* TROFF */
+      const storedGuilds = await guildConfig.find();
       const storedGuildIds = Array.from( storedGuilds.map( val => val._id ) );
       if ( !Array.isArray( storedGuildIds ) ) { reject( { message: 'Unable to retrieve bot\'s guilds from database.' } ); }
       const allGuildIds = [].concat( botGuildIds, storedGuildIds ).getDistinct().sort();
-      let addedGuildIds = botGuildIds.getDiff( storedGuildIds );/* TRON */console.log( '141:addedGuildIds: %o', addedGuildIds );/* TROFF */
+      let addedGuildIds = botGuildIds.getDiff( storedGuildIds );
       let removedGuildIds = storedGuildIds.getDiff( botGuildIds );
       let ioGuildIds = [].concat( addedGuildIds, removedGuildIds ).sort();
       let updateGuildIds = allGuildIds.getDiff( ioGuildIds ).getDistinct();
@@ -182,16 +182,16 @@ client.on( 'ready', async rdy => {
           }
         }
       }
-/* TRON */console.log( '185:addedGuildIds: %o', addedGuildIds );/* TROFF */
+
       if ( botVerbosity >= 4 ) { console.log( 'botUserIds: %o', botUserIds ); }
       if ( botVerbosity >= 4 ) { console.log( 'storedUserIds: %o', storedUserIds ); }
-      if ( botVerbosity >= 2 ) { console.log( 'addedUserIds: %o', addedUserIds ); }/* TRON */console.log( '188:addedUserIds: %o', addedUserIds );/* TROFF */
+      if ( botVerbosity >= 2 ) { console.log( 'addedUserIds: %o', addedUserIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'removedUserIds: %o', removedUserIds ); }//Should always be empty by this point -- until I add purging function
       if ( botVerbosity >= 4 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
       if ( botVerbosity >= 4 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
       if ( botVerbosity >= 4 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
-      if ( botVerbosity >= 2 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }/* TRON */console.log( '194:addedGuildIds: %o', addedGuildIds );/* TROFF */
+      if ( botVerbosity >= 2 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
       if ( botVerbosity >= 4 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
@@ -239,7 +239,7 @@ client.on( 'ready', async rdy => {
     } )
     .then( async ( data ) => {// add users missing from db
       let { users } = data;
-      let { db, add } = users;
+      let { db, add } = users;/* TRON */console.log( '242: data.users.add: %o',  );/* TROFF */
       let addedUsers = await new Promise( async ( resolve, reject ) => {
         let a = [];
         if ( add.length != 0 ) {
