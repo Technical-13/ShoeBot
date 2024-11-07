@@ -215,9 +215,9 @@ client.on( 'ready', async rdy => {
     } )
     .then( async ( data ) => {// update users that changed while offline
       let { users } = data;
+      let { db, update } = users;
       let updatedUsers = await new Promise( async ( resolve, reject ) => {
         let u = [];
-        let { db, update } = users;
         if ( update.length != 0 ) {
           if ( botVerbosity >= 1 ) { console.log( 'Updating %s user%s in my database...', chalk.bold.yellow( update.length ), ( update.length === 1 ? '' : 's' ) ); }
           for ( let userId of update ) {
