@@ -21,7 +21,7 @@ module.exports = async ( user ) => {
       .then( async ( updatedUser ) => {
         const botGuilds = client.guilds.cache;
         let newUserGuilds = ( Array.from( botGuilds.filter( g => g.members.cache.has( user.id ) ).keys() ).toSorted() || [] );
-        return await new Promise( ( resolve, reject ) => {
+        return await new Promise( async ( resolve, reject ) => {
           for ( let guildId of newUserGuilds ) {// addUserGuild
             let guild = await botGuilds.get( guildId );
             if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s.', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
