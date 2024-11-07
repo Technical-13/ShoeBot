@@ -76,7 +76,7 @@ client.on( 'ready', async rdy => {
     new Promise( async ( resolve, reject ) => {
       const botUserIds = Array.from( botUsers.keys() );
       if ( !Array.isArray( botUserIds ) ) { reject( { message: 'Unable to retrieve bot\'s mutual users.' } ); }
-      const storedUsers = await userConfig.find();
+      const storedUsers = await userConfig.find();/* TRON */console.log( '79:storedUsers.find(): %o', storedUsers.find(g=>g._id==='903674573332045834') );/* TROFF */
       const storedUserIds = Array.from( storedUsers.map( val => val._id ) );
       if ( !Array.isArray( storedUserIds ) ) { reject( { message: 'Unable to retrieve userlist from database.' } ); }
       const allUserIds = [].concat( botUserIds, storedUserIds ).getDistinct().sort();
@@ -134,7 +134,7 @@ client.on( 'ready', async rdy => {
 
       const botGuildIds = Array.from( botGuilds.keys() );
       if ( !Array.isArray( botGuildIds ) ) { reject( { message: 'Unable to retrieve guilds bot is in.' } ); }
-      const storedGuilds = await guildConfig.find();
+      const storedGuilds = await guildConfig.find();/* TRON */console.log( '79:storedUsers.find(): %o', storedUsers.find(g=>g._id==='903674573332045834') );/* TROFF */
       const storedGuildIds = Array.from( storedGuilds.map( val => val._id ) );
       if ( !Array.isArray( storedGuildIds ) ) { reject( { message: 'Unable to retrieve bot\'s guilds from database.' } ); }
       const allGuildIds = [].concat( botGuildIds, storedGuildIds ).getDistinct().sort();
