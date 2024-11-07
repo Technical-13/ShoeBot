@@ -248,12 +248,12 @@ client.on( 'ready', async rdy => {
             let addUser = await botUsers.get( userId );
             if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( addUser.displayName ) ); }
             data.users.db.push( await createNewUser( addUser ) );
-            a.push( userId );
+            a.push( userId );/* TRON */console.log( 'a for %s: %o', userId, a );/* TROFF */
           }
-        }
+        }/* TRON */console.log( 'resolve(a): %o', a );/* TROFF */
         resolve( a );
       } );
-      data.users.add = add.length;
+      data.users.add = add.length;/* TRON */console.log( 'addedUsers: %o', addedUsers );/* TROFF */
       data.users.added = addedUsers.length;
 
       return data;
