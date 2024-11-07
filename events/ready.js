@@ -258,6 +258,16 @@ client.on( 'ready', async rdy => {
 
       return data;
     } )
+    .then( async ( data ) => {//Not doing anything to remove users from db are guildless for TBD months
+      let { users } = data;
+      let { db, remove } = users;
+      let removedUsers = [];
+      if ( remove.length != 0 ) { console.error( 'data.users.remove is not empty: %o', remove ); }
+      data.users.remove = remove.length;
+      data.users.added = removedUsers.length;
+
+      return data;
+    } )
     .then( async ( data ) => {// update guilds that changed while offline
       let { guilds } = data;
       let { db, update } = guilds;
