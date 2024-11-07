@@ -1,7 +1,9 @@
 const client = require( '..' );
 const chalk = require( 'chalk' );
+const config = require( '../config.json' );
 const userConfig = require( '../models/BotUser.js' );
 const createNewUser = require( './createNewUser.js' );
+const botVerbosity = ( config.verbosity || 1 );
 
 module.exports = async ( id, guild ) => {
   try {

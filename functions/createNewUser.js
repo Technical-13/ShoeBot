@@ -3,6 +3,7 @@ const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const userConfig = require( '../models/BotUser.js' );
 const addUserGuild = require( '../functions/addUserGuild.js' );
+const botVerbosity = ( config.verbosity || 1 );
 const verUserDB = config.verUserDB;
 
 module.exports = async ( user ) => {

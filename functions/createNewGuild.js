@@ -2,6 +2,7 @@ const chalk = require( 'chalk' );
 const getBotConfig = require( '../functions/getBotDB.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const config = require( '../config.json' );
+const botVerbosity = ( config.verbosity || 1 );
 const verGuildDB = config.verGuildDB;
 
 module.exports = async ( guild ) => {
