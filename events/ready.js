@@ -371,7 +371,7 @@ client.on( 'ready', async rdy => {
             let expiringUserIds = Array.from( expiringUsers.map( val => val._id ) )
             for ( let userId of expiringUserIds ) {
               let expiringUser = expiringUsers.find( u => u._id === userId );
-              strUserUpdate += '\n\t\t' + userId + ': ' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + chalk.bold.red( await duration( ( new Date() ) - expiringUser.Guildless , { getMonths: true, getWeeks: true } ) ) + ' since: ' + chalk.hex( '#9470B1' ).bold( expiringUser.Guildless.toISOString() );
+              strUserUpdate += '\n\t\t' + userId + ': ' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + chalk.bold.red( await duration( ( new Date() ) - expiringUser.Guildless , { getMonths: true, getWeeks: true } ) ) + ' since: ' + chalk.hex( '#84618E' ).bold( expiringUser.Guildless.toISOString() );
             }
           }
         }
@@ -381,7 +381,7 @@ client.on( 'ready', async rdy => {
               let expiredUser = users.db.find( u => u._id === userId );
               for ( let botGuild of expiredUser.Guilds ) {
                 if ( Object.prototype.toString.call( botGuild.Expires ) === '[object Date]' ) {
-                  strUserUpdate += '\n\t\t' + userId + ': In ' + chalk.bold.red( await duration( botGuild.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ', ' + chalk.underline( botGuild.GuildName ) + ' Expires from ' + chalk.bold.red( expiredUser.UserName ) + ' on: ' + chalk.rgb( 187, 128, 179 )( botGuild.Expires.toISOString() );
+                  strUserUpdate += '\n\t\t' + userId + ': In ' + chalk.bold.red( await duration( botGuild.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ', ' + chalk.underline( botGuild.GuildName ) + ' Expires from ' + chalk.bold.red( expiredUser.UserName ) + ' on: ' + chalk.hex( '#84618E' ).bold( botGuild.Expires.toISOString() );
                 }
               }
             }
