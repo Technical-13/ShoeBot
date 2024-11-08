@@ -20,6 +20,17 @@ Object.prototype.valMatch = function( that ) { return this == that }
 
 client.on( 'ready', async rdy => {
   try {
+    var verbosityColor;
+    switch ( botVerbosity ) {
+      case 5: verbosityColor = '#D61F1F'; break;
+      case 4: verbosityColor = '#E03C32'; break;
+      case 3: verbosityColor = '#FFD301'; break;
+      case 2: verbosityColor = '#7BB662'; break;
+      case 1: verbosityColor = '#639754'; break;
+      case 0: verbosityColor = '#006B3D'; break;
+      default: verbosityColor = '#0000FF'; break;
+    }
+    console.log( 'Verbosity level set to: %s', chalk.hex( verbosityColor ).bold( botVerbosity ) );
     const botOwner = client.users.cache.get( client.ownerId );
     const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };
     const inviteUrl = client.generateInvite( {
