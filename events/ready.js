@@ -381,7 +381,7 @@ client.on( 'ready', async rdy => {
               let expiredUser = users.db.find( u => u._id === userId );
               for ( let botGuild of expiredUser.Guilds ) {
                 if ( Object.prototype.toString.call( botGuild.Expires ) === '[object Date]' ) {
-                  strUserUpdate += '\n\t\t' + chalk.bold.red( expiredUser.UserName ) + ' in ' + chalk.bold.red( await duration( expiredUser.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ' on: ' + chalk.hex( '#BB80B3' ).bold( expiredUser.Expires );
+                  strUserUpdate += '\n\t\t' + chalk.bold.red( expiredUser.UserName ) + ' in ' + chalk.bold.red( await duration( botGuild.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ' on: ' + chalk.hex( '#BB80B3' ).bold( botGuild.Expires );
                 }
               }
             }
