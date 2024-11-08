@@ -11,7 +11,7 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const getBotConfig = require( '../functions/getBotDB.js' );
 const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
-const botVerbosity = 3;//( config.verbosity || 1 );
+const botVerbosity = 4;//( config.verbosity || 1 );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
 Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
@@ -88,7 +88,7 @@ client.on( 'ready', async rdy => {
       for ( let userId of updateUserIds ) {
         let ndxUser = updateUserIds.indexOf( userId );
         let botUser = client.users.cache.get( userId );
-        let actualEntry = storedUsers.filter( u => u._id === userId );
+        let actualEntry = storedUsers.find( u => u._id === userId );
         let expectedEntry = actualEntry;
         expectedEntry._id = botUser.id;
         expectedEntry.Bot = botUser.bot;
@@ -149,7 +149,7 @@ client.on( 'ready', async rdy => {
         let ndxGuild = updateGuildIds.indexOf( guildId );
         let botGuild = botGuilds.get( guildId );
         let guildOwner = botGuild.members.cache.get( botGuild.ownerId );
-        let actualEntry = storedGuilds.filter( g => g._id === guildId );
+        let actualEntry = storedGuilds.find( g => g._id === guildId );
         let expectedEntry = actualEntry;
         expectedEntry._id = botGuild.id;
         expectedEntry.Guild = {
@@ -371,17 +371,15 @@ client.on( 'ready', async rdy => {
             let expiringUserIds = Array.from( expiringUsers.map( val => val._id ) )
             for ( let userId of expiringUserIds ) {
               let expiringUser = expiringUsers.find( u => u._id === userId );
-              strUserUpdate += '\n\t\t' + userId + ': ' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + chalk.bold.red( await duration( ( new Date() ) - expiringUser.Guildless , { getMonths: true, getWeeks: true } ) ) + ' since: ' + chalk.hex( '#84618E' ).bold( expiringUser.Guildless.toISOString() );
+              strUserUpdate += '\n\t\t' + userId + ' - ' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + chalk.bold.red( await duration( ( new Date() ) - expiringUser.Guildless , { getMonths: true, getWeeks: true } ) ) + ' since: ' + chalk.hex( '#84618E' ).bold( expiringUser.Guildless.toISOString() );
             }
           }
-        }
-        if ( botVerbosity >= 3 ) {
           if ( users.expired != 0 ) {
             for ( let userId of users.expired ) {
               let expiredUser = users.db.find( u => u._id === userId );
               for ( let botGuild of expiredUser.Guilds ) {
                 if ( Object.prototype.toString.call( botGuild.Expires ) === '[object Date]' ) {
-                  strUserUpdate += '\n\t\t' + userId + ': In ' + chalk.bold.red( await duration( botGuild.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ', ' + chalk.underline( botGuild.GuildName ) + ' Expires from ' + chalk.bold.red( expiredUser.UserName ) + ' on: ' + chalk.hex( '#84618E' ).bold( botGuild.Expires.toISOString() );
+                  strUserUpdate += '\n\t\t' + userId + ' - In ' + chalk.bold.red( await duration( botGuild.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ', ' + chalk.underline( botGuild.GuildName ) + ' Expires from ' + chalk.bold.red( expiredUser.UserName ) + ' on: ' + chalk.hex( '#84618E' ).bold( botGuild.Expires.toISOString() );
                 }
               }
             }
@@ -408,7 +406,7 @@ client.on( 'ready', async rdy => {
             let expiringGuildIds = Array.from( expiringGuilds.map( val => val._id ) )
             for ( let guildId of expiringGuildIds ) {
               let expiringGuild = expiringGuilds.find( g => g._id === guildId );
-              strUserUpdate += '\n\t\t' + chalk.bold.red( expiringGuild.Guild.Name ) + ' Expires in ' + chalk.bold.red( await duration( expiringGuild.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ' since: ' + chalk.hex( '#BB80B3' ).bold( expiringGuild.Expires );
+              strUserUpdate += '\n\t\t' + guildId + ' - ' + chalk.bold.red( expiringGuild.Guild.Name ) + ' Expires in ' + chalk.bold.red( await duration( expiringGuild.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ' since: ' + chalk.hex( '#84618E' ).bold( expiringGuild.Expires.toISOString() );
             }
           }
         }
