@@ -198,16 +198,16 @@ client.on( 'ready', async rdy => {
 
       if ( botVerbosity >= 4 ) { console.log( 'botUserIds: %o', botUserIds ); }
       if ( botVerbosity >= 4 ) { console.log( 'storedUserIds: %o', storedUserIds ); }
-      if ( botVerbosity >= 2 ) { console.log( 'addedUserIds: %o', addedUserIds ); }
-      if ( botVerbosity >= 2 ) { console.log( 'removedUserIds: %o', removedUserIds ); }//Should always be empty by this point -- until I add purging function
+      if ( botVerbosity >= 2 ) { console.log( 'addedUserIds: %o', addedUserIds.getDistinct() ); }
+      if ( botVerbosity >= 2 ) { console.log( 'removedUserIds: %o', removedUserIds.getDistinct() ); }//Should always be empty by this point -- until I add purging function
       if ( botVerbosity >= 4 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
-      if ( botVerbosity >= 2 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
+      if ( botVerbosity >= 2 ) { console.log( 'updateUserIds: %o', updateUserIds.getDistinct() ); }
       if ( botVerbosity >= 4 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
       if ( botVerbosity >= 4 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
-      if ( botVerbosity >= 2 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
-      if ( botVerbosity >= 2 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
+      if ( botVerbosity >= 2 ) { console.log( 'addedGuildIds: %o', addedGuildIds.getDistinct() ); }
+      if ( botVerbosity >= 2 ) { console.log( 'removedGuildIds: %o', removedGuildIds.getDistinct() ); }
       if ( botVerbosity >= 4 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
-      if ( botVerbosity >= 2 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
+      if ( botVerbosity >= 2 ) { console.log( 'updateGuildIds: %o', updateGuildIds.getDistinct() ); }
 
       resolve( {
         guilds: {
@@ -238,10 +238,10 @@ client.on( 'ready', async rdy => {
             let updatedUser = db.filter( g => g._id === userId )[ 0 ];
             await userConfig.updateOne( { _id:  userId }, updatedUser, { upsert: true } )
             .then( updateSuccess => {
-              console.log( 'Succesfully updated U:%s in my database.', chalk.bold.green( updatedUser.UserName ) );
+              console.log( '\tSuccesfully updated U:%s in my database.', chalk.bold.green( updatedUser.UserName ) );
               u.push( userId );
             } )
-            .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update user ${updatedUser.UserName} in my database:\n${updateError}` ) ); } );
+            .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `\tError attempting to update user ${updatedUser.UserName} in my database:\n${updateError}` ) ); } );
           }
         }
         resolve( u );
@@ -296,10 +296,10 @@ client.on( 'ready', async rdy => {
             let updatedGuild = db.find( g => g._id === guildId );
             await guildConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
             .then( updateSuccess => {
-              console.log( 'Succesfully updated G:%s in my database.', chalk.bold.green( updatedGuild.Guild.Name ) );
+              console.log( '\tSuccesfully updated G:%s in my database.', chalk.bold.green( updatedGuild.Guild.Name ) );
               u.push( guildId );
             } )
-            .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update guild ${updatedGuild.Guild.Name} in my database:\n${updateError}` ) ); } );
+            .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `\tError attempting to update guild ${updatedGuild.Guild.Name} in my database:\n${updateError}` ) ); } );
           }
         }
         resolve( u );
@@ -345,7 +345,7 @@ client.on( 'ready', async rdy => {
           let ownerName = ( guildOwner ? '<@' + guildOwner.id + '>' : '`' + delGuild.Guild.OwnerName + '`' );
           await guildConfig.deleteOne( { _id: guildId } )
           .then( delExpired => {
-            if ( botVerbosity >= 1 ) { console.log( 'Succesfully removed expired G:%s from my database.', chalk.bold.red( guildName ) ); }
+            if ( botVerbosity >= 1 ) { console.log( '\tSuccesfully removed expired G:%s from my database.', chalk.bold.red( guildName ) ); }
             if ( guildOwner ) {
               guildOwner.send( { content: 'Hello! It has been a month since someone has removed me from ' + guildLink + ', and I\'ve cleaned out your configuration settings!\n\nYou can still get me back in your server at any time by [re-adding](<' + inviteUrl + '>) me.' } )
               .catch( errSendDM => {
@@ -358,7 +358,7 @@ client.on( 'ready', async rdy => {
             }
             removedGuilds.push( guildId );
           } )
-          .catch( errDelete => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to delete ${guildName} (id: ${guildId}) from my database:\n${errDelete.stack}` ) ); } );
+          .catch( errDelete => { throw new Error( chalk.bold.black.bgCyan( `\tError attempting to delete ${guildName} (id: ${guildId}) from my database:\n${errDelete.stack}` ) ); } );
         }
       }
       data.guilds.remove = remove.length;
