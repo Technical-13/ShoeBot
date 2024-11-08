@@ -31,7 +31,7 @@ module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, ge
         intMonths = Math.floor( totalSeconds / 2629746 );
         totalSeconds %= 2629746;
       }
-      if ( objUnits.wks && ( intDecades + intYears + intMonths ) === 0 ) {
+      if ( objUnits.wks && ( ( intDecades || 0 ) + ( intYears || 0 ) + ( intMonths || 0 ) ) === 0 ) {
         intWeeks = Math.floor( totalSeconds / 604800 );
         totalSeconds %= 604800;
       }
