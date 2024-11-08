@@ -212,17 +212,17 @@ client.on( 'ready', async rdy => {
       resolve( {
         guilds: {
           db: storedGuilds,
-          add: addedGuildIds,
-          remove: removedGuildIds,
-          update: updateGuildIds,
+          add: addedGuildIds.getDistinct(),
+          remove: removedGuildIds.getDistinct(),
+          update: updateGuildIds.getDistinct(),
           unchanged: unchangedGuildIds.length
         },
         users: {
           db: storedUsers,
-          add: addedUserIds,
-          expired: expiredGuildUserIds,
-          remove: removedUserIds,
-          update: updateUserIds,
+          add: addedUserIds.getDistinct(),
+          expired: expiredGuildUserIds.getDistinct(),
+          remove: removedUserIds.getDistinct(),
+          update: updateUserIds.getDistinct(),
           unchanged: unchangedUserIds.length
           }
       } );
