@@ -123,7 +123,7 @@ client.on( 'ready', async rdy => {
             }
             else { expiredGuildUserIds.push( userId ); }
           }
-          if ( userGuilds.length === 0 ) {// If the user has no more guilds, add Guildless Date
+          if ( userGuilds.length === 0 && Object.prototype.toString.call( storedUser.Guildless ) != '[object Date]' ) {// If the user has no more guilds & no Guildless date, add one
             storedUser.Guildless = ( new Date() );
             if ( botVerbosity >= 1 ) { console.log( 'U:%s Guildless: %o', chalk.bold.redBright( storedUser.UserName ), storedUser.Guildless ); }
             updateUserIds.push( userId );
