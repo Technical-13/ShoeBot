@@ -239,7 +239,7 @@ client.on( 'ready', async rdy => {
     } )
     .then( async ( data ) => {// add users missing from db
       let { users } = data;
-      let { db, add } = users;/* TRON */console.log( '242: data.users.add: %o',  );/* TROFF */
+      let { db, add } = users;
       let addedUsers = await new Promise( async ( resolve, reject ) => {
         let a = [];
         if ( add.length != 0 ) {
