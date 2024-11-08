@@ -283,7 +283,7 @@ client.on( 'ready', async rdy => {
           if ( botVerbosity >= 1 ) { console.log( 'Updating %s guild%s in my database...', chalk.bold.yellow( update.length ), ( update.length === 1 ? '' : 's' ) ); }
           for ( let guildId of update ) {
             let updatedGuild = db.find( g => g._id === guildId );
-            await userConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
+            await guildConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
             .then( updateSuccess => {
               console.log( 'Succesfully updated G:%s in my database.', chalk.bold.green( updatedGuild.Guild.Name ) );
               u.push( guildId );
