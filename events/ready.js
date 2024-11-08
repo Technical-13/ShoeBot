@@ -103,6 +103,7 @@ client.on( 'ready', async rdy => {
         else if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
       updateUserIds = updateUserIds.getDiff( unchangedUserIds );
+      let expiredGuildUserIds = [];
       let cleanedUserIds = [];
       if ( removedUserIds.length != 0 ) {
         for ( let userId of removedUserIds ) {
@@ -120,6 +121,7 @@ client.on( 'ready', async rdy => {
               userGuilds.splice( userGuildIds.indexOf( userGuild._id ), 1 );
               updateUserIds.push( userId );
             }
+            else { expiredGuildUserIds.push( userId ); }
           }
           if ( userGuilds.length === 0 ) {// If the user has no more guilds, add Guildless Date
             if ( botVerbosity >= 1 ) { console.log( 'U:%s Guildless: %o', chalk.bold.redBright( storedUser.UserName ), dbExpires ); }
@@ -207,6 +209,7 @@ client.on( 'ready', async rdy => {
         users: {
           db: storedUsers,
           add: addedUserIds,
+          expired: expiredGuildUserIds,
           remove: removedUserIds,
           update: updateUserIds,
           unchanged: unchangedUserIds.length
@@ -371,8 +374,17 @@ client.on( 'ready', async rdy => {
               strUserUpdate += '\n\t\t' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + chalk.bold.red( await duration( expiringUser.Guildless - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ' since: ' + chalk.hex( '#BB80B3' ).bold( expiringUser.Guildless );
             }
           }
-          if ( botVerbosity >= 1 ) {
-            // Get an array of all users with a guild that has a .Expires that's a Date
+        }
+        if ( botVerbosity >= 1 ) {
+          if ( users.expired != 0 ) {
+            for ( let userId of users.expired ) {
+              let expiredUser = users.expired.find( u => u._id === userId );
+              for ( let botGuild of expiredUser.Guilds ) {
+                if ( Object.prototype.toString.call( botGuild.Expires ) === '[object Date]' ) {
+                  strUserUpdate += '\n\t\t' + chalk.bold.red( expiredUser.UserName ) + ' in ' + chalk.bold.red( await duration( expiredUser.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ' on: ' + chalk.hex( '#BB80B3' ).bold( expiredUser.Expires );
+                }
+              }
+            }
           }
         }
 
