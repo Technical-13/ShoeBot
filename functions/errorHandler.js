@@ -35,7 +35,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
       const prerawReaction = ( !options ? 'NO `options`!' : getDebugString( options.rawReaction ) );
       const preEmoji = ( !options ? 'NO `options`!' : getDebugString( options.emoji ) );
       const preProcessed = { command: '{ typeof: ' + typeof( command ) + ', value: ' + command + ' }', type: '{ typeof: ' + typeof( type ) + ', value: ' + type + ' }', author: preAuthor, channel: preChan, chanType: prechanType, clearLists: preclearLists, guild: preGuild, inviteChanURL: preinviteChanURL, inviteGuild: preinviteGuild, modBlack: premodBlack, modMod: premodMod, modWhite: premodWhite, msgID: premsgID, rawReaction: prerawReaction, reaction: preEmoji };
-      console.warn( 'errorHandler recieved options:%o', preProcessed );
+      console.warn( 'functions/errorHandler.js recieved options:%o', preProcessed );
     }
 
     const cmd = ( typeof( command ) === 'string' ? command : 'undefined' );
@@ -62,7 +62,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
       const prcInviteGuild = getDebugString( inviteGuild );
       const prcEmoji = getDebugString( emoji );
       const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, clearLists: clearLists, guild: prcGuild, inviteChanURL: inviteChanURL, inviteGuild: prcInviteGuild, modBlack: modBlack, modMod: modMod, modType: modType, modWhite: modWhite, msgID: msgID, rawReaction: rawReaction, reaction: prcEmoji };
-      console.warn( 'errorHandler processed options:%o', processed );
+      console.warn( 'functions/errorHandler.js processed options:%o', processed );
     }
 
     const botConfig = await getBotConfig();
@@ -290,5 +290,5 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
         } );
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'errorHandler.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'functions/errorHandler.js' ), errObject.stack ); }
 };

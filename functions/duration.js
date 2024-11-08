@@ -1,8 +1,14 @@
 const client = require( '..' );
 const chalk = require( 'chalk' );
 
-module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, getMonths: false, getWeeks: false, getDays: true, getHours: true, getMinutes: true, getSeconds: false } ) => {
+module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, getMonths: false, getWeeks: false, getDays: true, getHours: true, getMinutes: true, getSeconds: false }, debug = false ) => {
   try {
+
+    if ( debug ) {
+      const preProcessed = { ms: ms, getUnits: getUnits };
+      console.warn( 'functions/duration.js recieved options:%o', preProcessed );
+    }
+
     if ( isNaN( ms ) ) { return '∅ms'; }
     const objUnits = ( !getUnits ? { xs: false, yrs: false, mos: false, wks: false, days: true, hrs: true, min: true, secs: false } : {
       xs: ( typeof getUnits.getDecades != 'boolean' ? false : getUnits.getDecades ),
@@ -14,6 +20,11 @@ module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, ge
       min: ( typeof getUnits.getMinutes != 'boolean' ? true : getUnits.getMinutes ),
       secs: ( typeof getUnits.getSeconds != 'boolean' ? false : getUnits.getSeconds )
     } );
+
+    if ( debug ) {
+      const processed = { ms: ms, objUnits: objUnits };
+      console.warn( 'functions/duration.js processed options:%o', processed );
+    }
 
     if ( objUnits.xs || objUnits.yrs || objUnits.mos || objUnits.wks || objUnits.days || objUnits.hrs || objUnits.min || objUnits.secs ) {
       var intDecades, intYears, intMonths, intWeeks, intDays, intHours, intMinutes, intSeconds;
@@ -59,5 +70,5 @@ module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, ge
     }
     else { return ms + 'ms'; }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'duraction.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'functions/duraction.js' ), errObject.stack ); }
 };
