@@ -11,7 +11,7 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const getBotConfig = require( '../functions/getBotDB.js' );
 const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
-const botVerbosity = ( config.verbosity || 1 );
+const botVerbosity = 3;//( config.verbosity || 1 );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
 Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
@@ -30,7 +30,7 @@ client.on( 'ready', async rdy => {
       case 0: verbosityColor = '#006B3D'; break;
       default: verbosityColor = '#0000FF'; break;
     }
-    console.log( 'Verbosity level set to: %s', chalk.hex( verbosityColor ).bold( botVerbosity ) );
+    console.log( '%s set to: %s', chalk.blue( 'Verbosity level' ), chalk.underline.hex( verbosityColor ).bold( botVerbosity ) );
     const botOwner = client.users.cache.get( client.ownerId );
     const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };
     const inviteUrl = client.generateInvite( {
