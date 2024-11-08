@@ -3,12 +3,7 @@ const chalk = require( 'chalk' );
 
 module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, getMonths: false, getWeeks: false, getDays: true, getHours: true, getMinutes: true, getSeconds: false }, debug = false ) => {
   try {
-
-    if ( debug ) {
-      const preProcessed = { ms: ms, getUnits: getUnits };
-      console.warn( 'functions/duration.js recieved options:%o', preProcessed );
-    }
-
+    if ( debug ) { console.warn( 'functions/duration.js recieved options: %o', { ms: ms, getUnits: getUnits } ); }
     if ( isNaN( ms ) ) { return '∅ms'; }
     const objUnits = ( !getUnits ? { xs: false, yrs: false, mos: false, wks: false, days: true, hrs: true, min: true, secs: false } : {
       xs: ( typeof getUnits.getDecades != 'boolean' ? false : getUnits.getDecades ),
@@ -20,12 +15,7 @@ module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, ge
       min: ( typeof getUnits.getMinutes != 'boolean' ? true : getUnits.getMinutes ),
       secs: ( typeof getUnits.getSeconds != 'boolean' ? false : getUnits.getSeconds )
     } );
-
-    if ( debug ) {
-      const processed = { ms: ms, objUnits: objUnits };
-      console.warn( 'functions/duration.js processed options:%o', processed );
-    }
-
+    if ( debug ) { console.warn( 'functions/duration.js processed options: %o', { ms: ms, objUnits: objUnits } ); }
     if ( objUnits.xs || objUnits.yrs || objUnits.mos || objUnits.wks || objUnits.days || objUnits.hrs || objUnits.min || objUnits.secs ) {
       var intDecades, intYears, intMonths, intWeeks, intDays, intHours, intMinutes, intSeconds;
       var totalSeconds = ( ms / 1000 );
@@ -55,6 +45,13 @@ module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, ge
       }
       if ( objUnits.min ) { intMinutes = Math.floor( totalSeconds / 60 ); }
       if ( objUnits.secs ) { intSeconds = Math.floor( totalSeconds % 60 ); }
+      if ( debug ) {
+        const objIntegers = {
+          intDecades: intDecades, intYears: intYears,
+          intMonths: intMonths, intWeeks: intWeeks, intDays: intDays,
+          intHours: intHours, intMinutes: intMinutes, intSeconds: intSeconds };
+        console.warn( 'functions/duration.js integers: %o', objIntegers );
+      }
 
       const result = [];
       if ( objUnits.xs && intDecades != 0 ) { result.push( intDecades + ' decade' + ( intDecades === 1 ? '' : 's' ) ); }
@@ -66,6 +63,7 @@ module.exports = async ( ms, getUnits = { getDecades: false, getYears: false, ge
       if ( objUnits.min && intMinutes != 0 ) { result.push( intMinutes + ' minute' + ( intMinutes === 1 ? '' : 's' ) ); }
       if ( objUnits.secs && intSeconds != 0 ) { result.push( intSeconds + ' second' + ( intSeconds === 1 ? '' : 's' ) ); }
 
+      if ( debug ) { console.warn( 'functions/duration.js result array: %o', result ); }
       return ( result.join() ? result.join( ', ' ) : ms + 'ms' );
     }
     else { return ms + 'ms'; }
