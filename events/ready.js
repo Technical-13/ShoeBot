@@ -378,7 +378,7 @@ client.on( 'ready', async rdy => {
         if ( botVerbosity >= 1 ) {
           if ( users.expired != 0 ) {
             for ( let userId of users.expired ) {
-              let expiredUser = users.expired.find( u => u._id === userId );
+              let expiredUser = users.db.find( u => u._id === userId );
               for ( let botGuild of expiredUser.Guilds ) {
                 if ( Object.prototype.toString.call( botGuild.Expires ) === '[object Date]' ) {
                   strUserUpdate += '\n\t\t' + chalk.bold.red( expiredUser.UserName ) + ' in ' + chalk.bold.red( await duration( expiredUser.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ' on: ' + chalk.hex( '#BB80B3' ).bold( expiredUser.Expires );
