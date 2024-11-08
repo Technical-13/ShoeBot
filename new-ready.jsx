@@ -88,7 +88,7 @@ client.on( 'ready', async rdy => {
       for ( let userId of updateUserIds ) {
         let ndxUser = updateUserIds.indexOf( userId );
         let botUser = client.users.cache.get( userId );
-        let actualEntry = storedUsers.filter( u => u._id === userId );
+        let actualEntry = storedUsers.find( u => u._id === userId );
         let expectedEntry = actualEntry;
         expectedEntry._id = botUser.id;
         expectedEntry.Bot = botUser.bot;
@@ -103,6 +103,7 @@ client.on( 'ready', async rdy => {
         else if ( botVerbosity >= 4 ) { console.log( 'U:%s: %s %s %s', chalk.bold.red( botUser.displayName ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
       updateUserIds = updateUserIds.getDiff( unchangedUserIds );
+      let expiredGuildUserIds = [];
       let cleanedUserIds = [];
       if ( removedUserIds.length != 0 ) {
         for ( let userId of removedUserIds ) {
@@ -120,10 +121,11 @@ client.on( 'ready', async rdy => {
               userGuilds.splice( userGuildIds.indexOf( userGuild._id ), 1 );
               updateUserIds.push( userId );
             }
+            else { expiredGuildUserIds.push( userId ); }
           }
-          if ( userGuilds.length === 0 ) {// If the user has no more guilds, add Guildless Date
-            if ( botVerbosity >= 1 ) { console.log( 'U:%s Guildless: %o', chalk.bold.redBright( storedUser.UserName ), dbExpires ); }
-            storedUser.Guildless = dbExpires;
+          if ( userGuilds.length === 0 && Object.prototype.toString.call( storedUser.Guildless ) != '[object Date]' ) {// If the user has no more guilds & no Guildless date, add one
+            storedUser.Guildless = ( new Date() );
+            if ( botVerbosity >= 1 ) { console.log( 'U:%s Guildless: %o', chalk.bold.redBright( storedUser.UserName ), storedUser.Guildless ); }
             updateUserIds.push( userId );
           }
           if ( updateUserIds.indexOf( userId ) === -1 ) { unchangedUserIds.push( userId ) }
@@ -147,7 +149,7 @@ client.on( 'ready', async rdy => {
         let ndxGuild = updateGuildIds.indexOf( guildId );
         let botGuild = botGuilds.get( guildId );
         let guildOwner = botGuild.members.cache.get( botGuild.ownerId );
-        let actualEntry = storedGuilds.filter( g => g._id === guildId );
+        let actualEntry = storedGuilds.find( g => g._id === guildId );
         let expectedEntry = actualEntry;
         expectedEntry._id = botGuild.id;
         expectedEntry.Guild = {
@@ -183,17 +185,17 @@ client.on( 'ready', async rdy => {
         }
       }
 
-      if ( botVerbosity >= 3 ) { console.log( 'botUserIds: %o', botUserIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'storedUserIds: %o', storedUserIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'botUserIds: %o', botUserIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'storedUserIds: %o', storedUserIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'addedUserIds: %o', addedUserIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'removedUserIds: %o', removedUserIds ); }//Should always be empty by this point -- until I add purging function
-      if ( botVerbosity >= 3 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'unchangedUserIds: %o', unchangedUserIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'updateUserIds: %o', updateUserIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'botGuildIds: %o', botGuildIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'storedGuildIds: %o', storedGuildIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'addedGuildIds: %o', addedGuildIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'removedGuildIds: %o', removedGuildIds ); }
-      if ( botVerbosity >= 3 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
+      if ( botVerbosity >= 4 ) { console.log( 'unchangedGuildIds: %o', unchangedGuildIds ); }
       if ( botVerbosity >= 2 ) { console.log( 'updateGuildIds: %o', updateGuildIds ); }
 
       resolve( {
@@ -207,6 +209,7 @@ client.on( 'ready', async rdy => {
         users: {
           db: storedUsers,
           add: addedUserIds,
+          expired: expiredGuildUserIds,
           remove: removedUserIds,
           update: updateUserIds,
           unchanged: unchangedUserIds.length
@@ -215,19 +218,23 @@ client.on( 'ready', async rdy => {
     } )
     .then( async ( data ) => {// update users that changed while offline
       let { users } = data;
-      let updatedUsers = [];
       let { db, update } = users;
-      if ( update.length != 0 ) {
-        for ( let userId of update ) {
-          let updatedUser = db.filter( g => g._id === userId )[ 0 ];
-          await userConfig.updateOne( { _id:  userId }, updatedUser, { upsert: true } )
-          .then( updateSuccess => {
-            console.log( 'Succesfully updated U:%s in my database.', chalk.bold.green( updatedUser.UserName ) );
-            updatedUsers.push( userId );
-          } )
-          .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update user ${updatedUser.UserName} in my database:\n${updateError}` ) ); } );
+      let updatedUsers = await new Promise( async ( resolve, reject ) => {
+        let u = [];
+        if ( update.length != 0 ) {
+          if ( botVerbosity >= 1 ) { console.log( 'Updating %s user%s in my database...', chalk.bold.yellow( update.length ), ( update.length === 1 ? '' : 's' ) ); }
+          for ( let userId of update ) {
+            let updatedUser = db.filter( g => g._id === userId )[ 0 ];
+            await userConfig.updateOne( { _id:  userId }, updatedUser, { upsert: true } )
+            .then( updateSuccess => {
+              console.log( 'Succesfully updated U:%s in my database.', chalk.bold.green( updatedUser.UserName ) );
+              u.push( userId );
+            } )
+            .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update user ${updatedUser.UserName} in my database:\n${updateError}` ) ); } );
+          }
         }
-      }
+        resolve( u );
+      } );
       data.users.update = update.length;
       data.users.updated = updatedUsers.length;
 
@@ -236,53 +243,56 @@ client.on( 'ready', async rdy => {
     .then( async ( data ) => {// add users missing from db
       let { users } = data;
       let { db, add } = users;
-      let addedUsers = [];
-      if ( add.length != 0 ) {
-        if ( botVerbosity >= 1 ) { console.log( 'Adding %s users to my database...', chalk.bold.green( add.length ) ); }
-        for ( let userId of add ) {// createNewUser
-          let addUser = await botUsers.get( userId );
-          if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( addUser.displayName ) ); }
-          let newUser = await createNewUser( addUser );
-          let addUserGuilds = ( Array.from( botGuilds.filter( g => g.members.cache.has( userId ) ).keys() ).toSorted() || [] );
-          for ( let guildId of addUserGuilds ) {// addUserGuild
-            let guild = await botGuilds.get( guildId );
-            if ( botVerbosity >= 1 ) { console.log( '\t\tAdding G:%s to U:%s...', chalk.bold.green( guild.name ), chalk.bold.green( addUser.displayName ) ); }
-            newUser = await addUserGuild( userId, guild );
+      let addedUsers = await new Promise( async ( resolve, reject ) => {
+        let a = [];
+        if ( add.length != 0 ) {
+          if ( botVerbosity >= 1 ) { console.log( 'Adding %s user%s to my database...', chalk.bold.green( add.length ), ( add.length === 1 ? '' : 's' ) ); }
+          for ( let userId of add ) {// createNewUser
+            let addUser = await botUsers.get( userId );
+            if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( addUser.displayName ) ); }
+            data.users.db.push( await createNewUser( addUser ) );
+            a.push( userId );
           }
-          db.push( newUser );
-          addedUsers.push( userId );
         }
-      }
+        resolve( a );
+      } );
       data.users.add = add.length;
       data.users.added = addedUsers.length;
 
       return data;
     } )
-    .then( async ( data ) => {//Not doing anything to remove users from db are guildless for TBD months
+    .then( async ( data ) => {// Not doing anything to remove users from db are guildless for TBD months
       let { users } = data;
       let { db, remove } = users;
       let removedUsers = [];
-      if ( remove.length != 0 ) { console.error( 'data.users.remove is not empty: %o', remove ); }
+      if ( remove.length != 0 ) {
+        if ( botVerbosity >= 1 ) { console.log( 'Removing %s user%s from my database...', chalk.bold.red( remove.length ), ( remove.length === 1 ? '' : 's' ) ); }
+        console.error( 'ERROR: data.users.remove is not empty: %o', remove );
+      }
       data.users.remove = remove.length;
-      data.users.added = removedUsers.length;
+      data.users.removed = removedUsers.length;
 
       return data;
     } )
     .then( async ( data ) => {// update guilds that changed while offline
       let { guilds } = data;
       let { db, update } = guilds;
-      let updatedGuilds = [];
-      if ( update.length != 0 ) {
-        for ( let guildId of update ) {
-          let updatedGuild = db.find( g => g._id === guildId );
-          await userConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
-          .then( updateSuccess => {
-            console.log( 'Succesfully updated G:%s in my database.', chalk.bold.green( updatedGuild.Guild.Name ) );
-            updatedGuilds.push( guildId );
-          } )
-          .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update guild ${updatedGuild.Guild.Name} in my database:\n${updateError}` ) ); } );
+      let updatedGuilds = await new Promise( async ( resolve, reject ) => {
+        let u = [];
+        if ( update.length != 0 ) {
+          if ( botVerbosity >= 1 ) { console.log( 'Updating %s guild%s in my database...', chalk.bold.yellow( update.length ), ( update.length === 1 ? '' : 's' ) ); }
+          for ( let guildId of update ) {
+            let updatedGuild = db.find( g => g._id === guildId );
+            await guildConfig.updateOne( { _id:  guildId }, updatedGuild, { upsert: true } )
+            .then( updateSuccess => {
+              console.log( 'Succesfully updated G:%s in my database.', chalk.bold.green( updatedGuild.Guild.Name ) );
+              u.push( guildId );
+            } )
+            .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `Error attempting to update guild ${updatedGuild.Guild.Name} in my database:\n${updateError}` ) ); } );
+          }
         }
-      }
+        resolve( u );
+      } );
       data.guilds.update = update.length;
       data.guilds.updated = updatedGuilds.length;
 
@@ -291,17 +301,20 @@ client.on( 'ready', async rdy => {
     .then( async ( data ) => {// add guilds missing from db
       let { guilds } = data;
       let { db, add } = guilds;
-      let addedGuilds = [];
-      if ( add.length != 0 ) {
-        if ( botVerbosity >= 1 ) { console.log( 'Adding %s guilds to my database...', chalk.bold.green( add.length ) ); }
-        for ( let guildId of add ) {// createNewGuild
-          let addGuild = await botGuilds.get( guildId );
-          if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', chalk.bold.green( addGuild.name ) ); }
-          let newGuild = await createNewGuild( addGuild );
-          db.push( newGuild );
-          addedGuilds.push( guildId );
+      let addedGuilds = await new Promise( async ( resolve, reject ) => {
+        let a = [];
+        if ( add.length != 0 ) {
+          if ( botVerbosity >= 1 ) { console.log( 'Adding %s guild%s to my database...', chalk.bold.green( add.length ), ( add.length === 1 ? '' : 's' ) ); }
+          for ( let guildId of add ) {// createNewGuild
+            let addGuild = await botGuilds.get( guildId );
+            if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', chalk.bold.green( addGuild.name ) ); }
+            let newGuild = await createNewGuild( addGuild );
+            data.guilds.db.push( newGuild );
+            a.push( guildId );
+          }
         }
-      }
+        resolve( a );
+      } );
       data.guilds.add = add.length;
       data.guilds.added = addedGuilds.length;
 
@@ -312,6 +325,7 @@ client.on( 'ready', async rdy => {
       let { db, remove } = guilds;
       let removedGuilds = [];
       if ( remove.length != 0 ) {
+        if ( botVerbosity >= 1 ) { console.log( 'Removing %s guild%s from my database...', chalk.bold.red( remove.length ), ( remove.length === 1 ? '' : 's' ) ); }
         for ( let guildId of remove ) {
           let delGuild = db.find( entry => entry.id === guildId );
           let guildName = delGuild.Guild.Name;
@@ -351,23 +365,30 @@ client.on( 'ready', async rdy => {
         else if ( users.updated > users.update ) { strUserUpdate = chalk.bold.red( 'ERROR: Updated more users than there were to update!!!' ); }
         else if ( users.updated < users.update ) { strUserUpdate = 'Updated ' + chalk.bold.yellow( users.updated + ' of ' + users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + ' needing an update.'; }
         else { strUserUpdate = 'Updated ' + chalk.bold.green( users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + '.'; }
-        if ( botVerbosity >= 3 ) {
+        if ( botVerbosity >= 3 ) {// List Guildless users
           let expiringUsers = ( users.db.filter( u => Object.prototype.toString.call( u.Guildless ) === '[object Date]' ) || [] );
           if ( expiringUsers.length != 0 ) {
-            let expiringUserIds = Array.from( expiringUsers.map( val => val._id ) )
+            let expiringUserIds = Array.from( expiringUsers.map( val => val._id ) );
             for ( let userId of expiringUserIds ) {
               let expiringUser = expiringUsers.find( u => u._id === userId );
-              strUserUpdate += '\n\t\t' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + chalk.bold.red( await duration( expiringUser.Guildless - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ' since: ' + expiringUser.Guildless;
+              strUserUpdate += '\n\t\t' + userId + ' - ' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + chalk.bold.red( await duration( ( new Date() ) - expiringUser.Guildless , { getMonths: true, getWeeks: true } ) ) + ' since: ' + chalk.hex( '#84618E' ).bold( expiringUser.Guildless.toISOString() );
             }
           }
-          if ( botVerbosity >= 1 ) {
-            // Get an array of all users with a guild that has a .Expires that's a Date
+        }
+        if ( botVerbosity >= 4 && users.expired != 0 ) {// List users with Guilds that Expires
+          for ( let userId of users.expired ) {
+            let expiredUser = users.db.find( u => u._id === userId );
+            for ( let botGuild of expiredUser.Guilds ) {
+              if ( Object.prototype.toString.call( botGuild.Expires ) === '[object Date]' ) {
+                strUserUpdate += '\n\t\t' + userId + ' - In ' + chalk.bold.red( await duration( botGuild.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ', ' + chalk.underline( botGuild.GuildName ) + ' Expires from ' + chalk.bold.red( expiredUser.UserName ) + ' on: ' + chalk.hex( '#84618E' ).bold( botGuild.Expires.toISOString() );
+              }
+            }
           }
         }
 
         if ( !users.add || users.add === 0 ) { strUserAdd = chalk.bold.green( 'No users to add.' ); }
         else if ( users.added > users.add ) { strUserAdd = chalk.bold.red( 'ERROR: Added more users than there were to add!!!' ); }
-        else if ( users.added < users.add ) { strUserAdd = 'added ' + chalk.bold.yellow( users.added + ' of ' + users.add ) + ' user' + ( users.add === 1 ? '' : 's' ) + ' needing to be added.'; }
+        else if ( users.added < users.add ) { strUserAdd = 'Added ' + chalk.bold.yellow( users.added + ' of ' + users.add ) + ' user' + ( users.add === 1 ? '' : 's' ) + ' needing to be added.'; }
         else { strUserAdd = 'Added ' + chalk.bold.green( users.add ) + ' user' + ( users.add === 1 ? '' : 's' ) + '.'; }
 
         if ( !users.remove || users.remove === 0 ) { strUserRemove = chalk.bold.green( 'No users to remove.' ); }
@@ -379,20 +400,20 @@ client.on( 'ready', async rdy => {
         else if ( guilds.updated > guilds.update ) { strGuildUpdate = chalk.bold.red( 'ERROR: Updated more guilds than there were to update!!!' ); }
         else if ( guilds.updated < guilds.update ) { strGuildUpdate = 'Updated ' + chalk.bold.yellow( guilds.updated + ' of ' + guilds.update ) + ' guild' + ( guilds.update === 1 ? '' : 's' ) + ' needing an update.'; }
         else { strGuildUpdate = 'Updated ' + chalk.bold.green( guilds.update ) + ' guild' + ( guilds.update === 1 ? '' : 's' ) + '.'; }
-        if ( botVerbosity >= 3 ) {
+        if ( botVerbosity >= 3 ) {// List Guilds that Expires
           let expiringGuilds = ( guilds.db.filter( g => Object.prototype.toString.call( g.Expires ) === '[object Date]' ) || [] );
           if ( expiringGuilds.length != 0 ) {
-            let expiringGuildIds = Array.from( expiringGuilds.map( val => val._id ) )
+            let expiringGuildIds = Array.from( expiringGuilds.map( val => val._id ) );
             for ( let guildId of expiringGuildIds ) {
               let expiringGuild = expiringGuilds.find( g => g._id === guildId );
-              strUserUpdate += '\n\t\t' + chalk.bold.red( expiringGuild.Guild.Name ) + ' Expires in ' + await duration( expiringGuild.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) + ' since: ' + expiringGuild.Expires;
+              strUserUpdate += '\n\t\t' + guildId + ' - ' + chalk.bold.red( expiringGuild.Guild.Name ) + ' Expires in ' + chalk.bold.red( await duration( expiringGuild.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ' on: ' + chalk.hex( '#84618E' ).bold( expiringGuild.Expires.toISOString() );
             }
           }
         }
 
         if ( !guilds.add || guilds.add === 0 ) { strGuildAdd = chalk.bold.green( 'No guilds to add.' ); }
         else if ( guilds.added > guilds.add ) { strGuildAdd = chalk.bold.red( 'ERROR: Added more guilds than there were to add!!!' ); }
-        else if ( guilds.added < guilds.add ) { strGuildAdd = 'added ' + chalk.bold.yellow( guilds.added + ' of ' + guilds.add ) + ' guild' + ( guilds.add === 1 ? '' : 's' ) + ' needing to be added.'; }
+        else if ( guilds.added < guilds.add ) { strGuildAdd = 'Added ' + chalk.bold.yellow( guilds.added + ' of ' + guilds.add ) + ' guild' + ( guilds.add === 1 ? '' : 's' ) + ' needing to be added.'; }
         else { strGuildAdd = 'Added ' + chalk.bold.green( guilds.add ) + ' guild' + ( guilds.add === 1 ? '' : 's' ) + '.'; }
 
         if ( !guilds.remove || guilds.remove === 0 ) { strGuildRemove = chalk.bold.green( 'No guilds to remove' ); }
