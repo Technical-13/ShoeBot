@@ -10,6 +10,7 @@ const errHandler = require( '../functions/errorHandler.js' );
 const parse = require( '../functions/parser.js' );
 const botVerbosity = 3;//( config.verbosity || 1 );
 const verUserDB = config.verUserDB;
+const strScript = chalk.hex( '#FFA500' ).bold( './events/guildMemberAdd.js' );
 
 client.on( 'guildMemberAdd', async ( member ) => {
   try {
@@ -61,5 +62,5 @@ client.on( 'guildMemberAdd', async ( member ) => {
       } );
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( './events/guildMemberAdd.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack ); }
 } );

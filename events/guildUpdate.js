@@ -5,6 +5,7 @@ const errHandler = require( '../functions/errorHandler.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const botVerbosity = 3;//( config.verbosity || 1 );
+const strScript = chalk.hex( '#FFA500' ).bold( './events/guildUpdate.js' );
 
 client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {
   try {
@@ -31,5 +32,5 @@ client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {
       .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( 'Error attempting to update %s (id: %s) to my database:\n%o' ), newGuild.name, guildId, updateError ); } );
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( './events/guildUpdate.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack ); }
 } );
