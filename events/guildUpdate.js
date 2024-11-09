@@ -3,6 +3,7 @@ const chalk = require( 'chalk' );
 const errHandler = require( '../functions/errorHandler.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
+const botVerbosity = 3;//( config.verbosity || 1 );
 
 client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {
   try {

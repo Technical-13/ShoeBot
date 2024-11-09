@@ -7,6 +7,7 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const duration = require( '../functions/duration.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
+const botVerbosity = 3;//( config.verbosity || 1 );
 const objTimeString = require( '../jsonObjects/time.json' );
 
 client.on( 'guildDelete', async ( guild ) => {

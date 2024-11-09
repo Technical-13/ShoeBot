@@ -9,6 +9,7 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const errHandler = require( '../functions/errorHandler.js' );
 const parse = require( '../functions/parser.js' );
 const duration = require( '../functions/duration.js' );
+const botVerbosity = 3;//( config.verbosity || 1 );
 const verUserDB = config.verUserDB;
 
 client.on( 'guildMemberRemove', async ( member ) => {

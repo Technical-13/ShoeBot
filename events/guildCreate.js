@@ -8,16 +8,21 @@ const createNewUser = require( '../functions/createNewUser.js' );
 const addUserGuild = require( '../functions/addUserGuild.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
+const botVerbosity = 3;//( config.verbosity || 1 );
 const verUserDB = config.verUserDB;
 
 client.on( 'guildCreate', async ( guild ) => {
   try {
     const botOwner = client.users.cache.get( client.ownerId );
     const guildOwner = guild.members.cache.get( guild.ownerId );
-    if ( await guildConfig.countDocuments( { _id: guild.id } ) === 0 ) { await createNewGuild( guild ); }
+    if ( await guildConfig.countDocuments( { _id: guild.id } ) === 0 ) {
+      if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', chalk.bold.green( guild.name ) ); }
+      await createNewGuild( guild );
+    }
     const newGuildConfig = await getGuildConfig( guild )
     .then( async gotGuild => {
       if ( gotGuild.Expires ) {
+        if ( botVerbosity >= 2 ) { console.log( '\tClearing Expires Date for G:%s in my database...', chalk.bold.green( guild.name ) ); }
         gotGuild.Expires = null;
         await guildConfig.updateOne( { _id: guild.id }, gotGuild, { upsert: true } )
         .then( updateSuccess => { console.log( 'Cleared expriation of DB entry for %s (id: %s) upon re-joining guild.', chalk.bold.green( guild.name ), guild.id ); } )
@@ -52,7 +57,7 @@ client.on( 'guildCreate', async ( guild ) => {
       } )
     } )
     .catch( errGetGuild => {
-      console.error( 'Failed to create %s (id: %s) in guildDB on join.', guild.name, guild.id );
+      console.error( 'Failed to create %s (id: %s) in guildDB on join: %o', guild.name, guild.id, errGetGuild );
       botOwner.send( { content: 'Error adding [' + guild.name + '](<https://discord.com/channels/' + guild.id + '>) to the database.' } );
     } );
 
@@ -60,11 +65,17 @@ client.on( 'guildCreate', async ( guild ) => {
     guildMembers.forEach( async memberId => {
       let member = guild.members.cache.get( memberId );
       let { user } = member;
-      if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) { await createNewUser( user ); }
+      if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) {
+        if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( user.displayName ) ); }
+        await createNewUser( user );
+      }
       const currUser = await userConfig.findOne( { _id: memberId } );
       const storedUserGuilds = [];
       currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
-      if ( storedUserGuilds.indexOf( guild.id ) === -1 ) { await addUserGuild( memberId, guild ); }
+      if ( storedUserGuilds.indexOf( guild.id ) === -1 ) {
+        if ( botVerbosity >= 2 ) { console.log( '\t\tAdding G:%s to U:%s.', chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
+        await addUserGuild( memberId, guild );
+      }
     } );
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( './events/guildCreate.js' ), errObject.stack ); }

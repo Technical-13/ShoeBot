@@ -8,6 +8,7 @@ const createNewUser = require( '../functions/createNewUser.js' );
 const addUserGuild = require( '../functions/addUserGuild.js' );
 const errHandler = require( '../functions/errorHandler.js' );
 const parse = require( '../functions/parser.js' );
+const botVerbosity = 3;//( config.verbosity || 1 );
 const verUserDB = config.verUserDB;
 
 client.on( 'guildMemberAdd', async ( member ) => {

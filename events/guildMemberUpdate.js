@@ -7,6 +7,7 @@ const userPerms = require( '../functions/getPerms.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const createNewUser = require( '../functions/createNewUser.js' );
 const addUserGuild = require( '../functions/addUserGuild.js' );
+const botVerbosity = 3;//( config.verbosity || 1 );
 const verUserDB = config.verUserDB;
 
 client.on( 'guildMemberUpdate', async ( oldMember, newMember ) => {
