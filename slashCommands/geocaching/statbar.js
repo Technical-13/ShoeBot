@@ -68,6 +68,8 @@ module.exports = {
       const objInputUser = ( options.getUser( 'discord-user' ) || null );
       const strInputUserDisplayName = ( objInputUser ? objInputUser.displayName : strInputUser );
       const strUseName = ( strInputUserDisplayName ? strInputUserDisplayName : strAuthorDisplayName );
+      const encName = encodeURI( strUseName ).replace( '&', '%26' );
+      const strLabcaches = ( options.getBoolean( 'labcaches' ) ? '&includeLabcaches' : '' );
 
       const logChans = await getGuildConfig( guild );
       const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = logChans.Logs;
