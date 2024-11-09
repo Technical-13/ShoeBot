@@ -76,10 +76,10 @@ module.exports = {
         'StatBar for: ' + ( objInputUser == null ? strUseName : '<@' +  objInputUser.id + '>' ) + '\nhttps://cdn2.project-gc.com/statbar.php?quote=https://discord.me/Geocaching%20-%20' + intYear + '-' + intMonth + '-' + intDay + strLabcaches + '&user=' + encName
       } )
       .then( sentMsg => {
-        if ( doLogs && objInputUser.id != author.id && strInputString != members.get( author.id ).displayName ) {
+        if ( doLogs && ( objInputUser ? objInputUser.id : null ) != author.id && strInputString != members.get( author.id ).displayName ) {
           chanDefault.send( { content:
             'I shared the `/statbar` for ' + ( objInputUser ? '<@' +  objInputUser.id + '>' : strUseName ) + ' in <#' + channel.id + '>' +
-            ( objInputUser.id != author.id && strInputString != members.get( author.id ).displayName ? ' as requested by <@' + author.id + '>' : '' ) + strClosing } )
+            ( ( objInputUser ? objInputUser.id : null ) != author.id && strInputString != members.get( author.id ).displayName ? ' as requested by <@' + author.id + '>' : '' ) + strClosing } )
           .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'statbar', guild: guild, type: 'logLogs' } ); } );
         }
         interaction.deleteReply();

@@ -70,10 +70,10 @@ module.exports = {
         'ProfileStats link for: ' + ( objInputUser == null ? strUseName : '<@' +  objInputUser.id + '>' ) + '\n<https://project-gc.com/Profile/ProfileStats?profile_name=' + encName + '>'
       } )
       .then( sentMsg => {
-        if ( doLogs && objInputUser.id != author.id && strInputString != members.get( author.id ).displayName ) {
+        if ( doLogs && ( objInputUser ? objInputUser.id : null ) != author.id && strInputString != members.get( author.id ).displayName ) {
           chanDefault.send( { content:
             'I shared the `/profilestats` for ' + ( objInputUser ? '<@' +  objInputUser.id + '>' : strUseName ) + ' in <#' + channel.id + '>' +
-          ( objInputUser.id != author.id && strInputString != members.get( author.id ).displayName ? ' as requested by <@' + author.id + '>' : '' ) + strClosing } )
+          ( ( objInputUser ? objInputUser.id : null ) != author.id && strInputString != members.get( author.id ).displayName ? ' as requested by <@' + author.id + '>' : '' ) + strClosing } )
           .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'profilestats', guild: guild, type: 'logLogs' } ); } );
         }
         interaction.deleteReply();
