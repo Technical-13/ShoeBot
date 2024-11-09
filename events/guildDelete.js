@@ -35,7 +35,7 @@ client.on( 'guildDelete', async ( guild ) => {
         OAuth2Scopes.ApplicationsCommands
       ],
     } );
-    const newGuildConfig = await getGuildConfig( guild );
+    const newGuildConfig = await getGuildConfig( guild, true );
     const roleEveryone = guild.roles.cache.find( role => role.name === '@everyone' );
     const chanWidget = ( guild.widgetEnabled ? guild.widgetChannelId : null );
     const chanRules = guild.rulesChannelId;
