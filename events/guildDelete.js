@@ -1,4 +1,5 @@
 const client = require( '..' );
+const config = require( '../config.json' );
 const chalk = require( 'chalk' );
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
@@ -9,6 +10,7 @@ const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
 const botVerbosity = ( config.verbosity || 1 );
 const objTimeString = require( '../jsonObjects/time.json' );
+const strScript = chalk.hex( '#FFA500' ).bold( './events/guildDelete.js' );
 
 client.on( 'guildDelete', async ( guild ) => {
   try {
@@ -85,5 +87,5 @@ client.on( 'guildDelete', async ( guild ) => {
       }
     } );
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( './events/guildDelete.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack ); }
 } );
