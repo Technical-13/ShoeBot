@@ -67,8 +67,8 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
 
     const botConfig = await getBotConfig();
     const guildConfig = await getGuildConfig( guild );
-    const { Active: doLogs, Error: chanError, strClosing } = guildConfig.Logs;
-    const { Active: doInviteLogs,Error: chanInviteError,  strClosing: strInviteClosing } = ( inviteGuild ? await guildConfig( inviteGuild ).Logs : { Active: doLogs, Error: chanError, strClosing: strClosing } );
+    const { Active: doLogs, chanError, strClosing } = guildConfig.Logs;
+    const { Active: doInviteLogs, chanError: chanInviteError, strClosing: strInviteClosing } = ( inviteGuild ? await guildConfig( inviteGuild ) : { Active: doLogs, Error: chanError, strClosing: strClosing } );
 
     const botUsers = client.users.cache;
     const ownerId = ( botConfig.Owner || client.ownerId || config.botOwnerId || process.env.OWNER_ID );
