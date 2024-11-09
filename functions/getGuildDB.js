@@ -23,9 +23,9 @@ module.exports = async ( guild ) => {
 
     if ( await guildConfig.countDocuments( { _id: guild.id } ) === 0 ) { await createNewGuild( guild ); }
     const currConfig = await guildConfig.findOne( { _id: guild.id } );
-    currConfig.chanDefault = ( !currConfig.Logs.Default ? guildOwner : guildChannels.get( Default ) );
-    currConfig.chanError = ( !currConfig.Logs.Error ? guildOwner : guildChannels.get( Error ) );
-    currConfig.chanChat = ( !currConfig.Logs.Chat ? guildOwner : guildChannels.get( Chat ) );
+    currConfig.chanDefault = ( !currConfig.Logs.Default ? guildOwner : guildChannels.get( currConfig.Logs.Default ) );
+    currConfig.chanError = ( !currConfig.Logs.Error ? guildOwner : guildChannels.get( currConfig.Logs.Error ) );
+    currConfig.chanChat = ( !currConfig.Logs.Chat ? guildOwner : guildChannels.get( currConfig.Logs.Chat ) );
     currConfig.strClosing = await logClosing( currConfig.Logs.Default );
     return currConfig;
   }
