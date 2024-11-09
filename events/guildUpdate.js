@@ -4,7 +4,7 @@ const chalk = require( 'chalk' );
 const errHandler = require( '../functions/errorHandler.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
-const botVerbosity = 3;//( config.verbosity || 1 );
+const botVerbosity = ( config.verbosity || 1 );
 const strScript = chalk.hex( '#FFA500' ).bold( './events/guildUpdate.js' );
 
 client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {
@@ -17,19 +17,22 @@ client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {
     const newOwner = ( newGuild.ownerId !== oldGuild.ownerId ? true : false );
     var doGuildUpdate = false;
     if ( newName ) {// Guild name changed
+      if ( botVerbosity >= 2 ) { console.log( '\tChanging G:%s in my database to G:%s...', chalk.bold.red( oldGuild.name ), chalk.bold.green( newGuild.name ) ); }
       currGuildConfig.Guild.Name = newGuild.name;
       doGuildUpdate = true;
     }
     if ( newOwner ) {// Guild owner id changed
+      if ( botVerbosity >= 2 ) { console.log( '\tG:%s changed ownership from U:%s to U:%s...', chalk.bold.green( newGuild.name ), chalk.bold.red( currGuildConfig.Guild.OwnerName ), chalk.bold.green( newGuild.members.cache.get( newGuild.ownerId ).displayName ) ); }
       currGuildConfig.Guild.OwnerID = newGuild.ownerId;
-      currGuildConfig.Guild.OwnerName = newGuild.displayName;
+      currGuildConfig.Guild.OwnerName = newGuild.members.cache.get( newGuild.ownerId ).displayName;
       doGuildUpdate = true;
     }
     if ( doGuildUpdate ) {
+      if ( botVerbosity >= 2 ) { console.log( '\tUpdating G:%s in my database...', chalk.bold.yellow( newGuild.name ) ); }
       currGuildConfig.Guild.Members = newGuild.members.cache.size;
       await guildConfig.updateOne( { _id: guildId }, currGuildConfig, { upsert: true } )
-      .then( updateSuccess => { console.log( 'Succesfully updated %s (id: %s) in my database.', chalk.bold.yellow( newGuild.name ), guildId ); } )
-      .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( 'Error attempting to update %s (id: %s) to my database:\n%o' ), newGuild.name, guildId, updateError ); } );
+      .then( updateSuccess => { console.log( 'Succesfully updated G:%s in my database.', chalk.bold.yellow( newGuild.name ), guildId ); } )
+      .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( 'Error attempting to update G:%s in my database:\n%o' ), newGuild.name, updateError ); } );
     }
   }
   catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack ); }
