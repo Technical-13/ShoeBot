@@ -42,16 +42,13 @@ module.exports = {
       const mentionsEveryone = /@(everyone|here)/g.test( mySaying );
       const strEveryoneHere = ( mentionsEveryone ? '`@' + ( /@everyone/g.test( mySaying ) ? 'everyone' : 'here' ) + '`' : null );
 
-      const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Chat, strClosing } = logChans.Logs;
-      const chanChat = guild.channels.cache.get( Chat );
-
+      const { Active: doLogs, chanChat, strClosing } = await getGuildConfig( guild );
       if ( mySaying ) {
         const parsedSaying = await parse( mySaying, { member: guildMember } );
         if ( canSpeak && ( !mentionsEveryone || checkPermission( 'MentionEveryone' ) ) ) {
           chanSpeak.send( { content: parsedSaying } ).then( async spoke => {
             if ( doLogs ) {
-              chanChat.send( { content: 'I spoke in https://discord.com/channels/' + spoke.guild.id + '/' + spoke.channel.id + '/' + spoke.id + ' at <@' + author.id + '>\'s request:\n```' + parsedSaying + '\n```' + strClosing } )
+              chanChat.send( { content: 'I spoke in https://discord.com/channels/' + spoke.guild.id + '/' + spoke.channel.id + '/' + spoke.id + ' at <@' + author.id + '>\'s request:\n```' + mySaying + '\n```' + strClosing } )
               .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'say', channel: channel, type: 'logLogs' } ) ); } );
             }
             return interaction.editReply( { content: 'I said the thing!' } );

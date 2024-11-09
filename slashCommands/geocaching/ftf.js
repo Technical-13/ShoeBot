@@ -101,11 +101,7 @@ module.exports = {
         'sv-SE': 'Det gick inte att hitta ett specifikt meddelande att svara på.'
       };
 
-      const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Default, Error, strClosing } = logChans.Logs;
-      const chanDefault = guild.channels.cache.get( Default );
-      const chanError = guild.channels.cache.get( Error );
-
+      const { Active: doLogs, chanDefault, chanError, strClosing } = await getGuildConfig( guild );
       if ( msgID && !( /[\d]{18,19}/.test( msgID ) ) ) { return interaction.editReply( { content: '`' + msgID + '` ' + i18InvalidMsgId[ locale ] } ); }
       else if ( msgID ) {
         channel.messages.fetch( msgID )

@@ -29,10 +29,7 @@ module.exports = {
       const { content } = await userPerms( author, guild );
       if ( content ) { return interaction.editReply( { content: content } ); }
 
-      const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Chat, strClosing } = logChans.Logs;
-      const chanChat = guild.channels.cache.get( Chat );
-
+      const { Active: doLogs, chanChat, strClosing } = await getGuildConfig( guild );
       const cmdInputUser = options.getUser( 'target' );
       const mentionUserID = ( cmdInputUser ? cmdInputUser.id : author.id );
       const mentionUser = '<@' + mentionUserID + '>';

@@ -39,10 +39,7 @@ module.exports = {
       const theReaction = options.getString( 'reaction' );
       const strAuthorTag = author.tag;
 
-      const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Chat, strClosing } = logChans.Logs;
-      const chanChat = guild.channels.cache.get( Chat );
-
+      const { Active: doLogs, chanChat, strClosing } = await getGuildConfig( guild );
       var myReaction = theReaction;
       var rxp = /<:(.*)?:([\d]*)>/;
       if ( rxp.test( myReaction ) ) { myReaction = myReaction.match( rxp )[ 2 ]; }

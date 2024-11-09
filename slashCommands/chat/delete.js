@@ -21,10 +21,7 @@ module.exports = {
       const canDelete = ( isBotMod || checkPermission( 'ManageGuild' ) || isWhitelisted ? true : false );
       const msgID = options.getString( 'message-id' );
       if ( !( /[\d]{18,19}/.test( msgID ) ) ) { return interaction.editReply( { content: '`' + msgID + '` is not a valid `message-id`. Please try again.' } ); }
-      const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Chat, strClosing } = logChans.Logs;
-      const chanChat = guild.channels.cache.get( Chat );
-
+      const { Active: doLogs, chanChat, strClosing } = await getGuildConfig( guild );
       if ( !canDelete ) {
         if ( doLogs ) {
           chanChat.send( { content: '<@' + author.id + '> tried to get me to delete a message and doesn\'t have permission to do that.' } )
