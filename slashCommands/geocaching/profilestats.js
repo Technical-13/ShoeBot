@@ -58,8 +58,9 @@ module.exports = {
       const intDayNow = today.getDate();
       const intDay = ( intDayNow <= 9 ? '0' + intDayNow.toString() : intDayNow.toString() );
 
-      const objInputUser = ( !options.getUser( 'discord-user' ) ? null : options.getUser( 'discord-user' ) );
-      const strUseName = ( options.getString( 'gc-name' ) || members.get( objInputUser ? objInputUser.id : author.id ).displayName );
+      const strInputString = options.getString( 'gc-name' );
+      const objInputUser = options.getUser( 'discord-user' );
+      const strUseName = ( strInputString || members.get( objInputUser ? objInputUser.id : author.id ).displayName );
       const encName = encodeURI( strUseName ).replace( '&', '%26' );
 
       const logChans = await getGuildConfig( guild );
@@ -69,10 +70,10 @@ module.exports = {
         'ProfileStats link for: ' + ( objInputUser == null ? strUseName : '<@' +  objInputUser.id + '>' ) + '\n<https://project-gc.com/Profile/ProfileStats?profile_name=' + encName + '>'
       } )
       .then( sentMsg => {
-        if ( doLogs && strInputUserDisplayName && strInputUserDisplayName !== strAuthorDisplayName ) {
+        if ( doLogs && objInputUser.id != author.id && strInputString != members.get( author.id ).displayName ) {
           chanDefault.send( { content:
             'I shared the `/profilestats` for ' + ( objInputUser ? '<@' +  objInputUser.id + '>' : strUseName ) + ' in <#' + channel.id + '>' +
-          ( strInputUserDisplayName !== strAuthorDisplayName ? ' as requested by <@' + author.id + '>' : '' ) + strClosing } )
+          ( objInputUser.id != author.id && strInputString != members.get( author.id ).displayName ? ' as requested by <@' + author.id + '>' : '' ) + strClosing } )
           .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'profilestats', guild: guild, type: 'logLogs' } ); } );
         }
         interaction.deleteReply();
