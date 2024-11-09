@@ -45,6 +45,7 @@ client.on( 'guildMemberUpdate', async ( oldMember, newMember ) => {
     if ( doUserUpdate ) {
       if ( botVerbosity >= 2 ) { console.log( '\tUpdating U:%s in my database...', chalk.bold.yellow( user.displayName ) ); }
       userConfig.updateOne( { _id: user.id }, currUser, { upsert: true } )
+      .then( updateSuccess => { console.log( '\t\tSuccesfully updated U:%s in my database.', chalk.bold.yellow( user.displayName ) ); } )
       .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( '\t\tError attempting to update guild %s (id: %s) for user %s (id: %s) in my database in getPerms.js:\n%o' ), guild.name, guild.id, user.displayName, user.id, updateError ); } );
     }
 

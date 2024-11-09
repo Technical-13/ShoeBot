@@ -30,7 +30,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
       if ( botVerbosity >= 2 ) { console.log( 'Clearing %s Date from G:%s for U:%s.', chalk.bold.red( 'Expires' ), chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
       let currUserGuild = currUser.Guilds[ ndxUserGuild ];
       currUserGuild.Expires = null;
-      userConfig.updateOne( { _id: memberId }, currUser, { upsert: true } )
+      userConfig.updateOne( { _id: user.id }, currUser, { upsert: true } )
       .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( '\tError attempting to update G:%s for U:%s to expire %o in my database in %s:\n%o' ), guild.name, currUser.UserName, dbExpires, strScript, updateError ); } );
     }
 
