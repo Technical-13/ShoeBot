@@ -33,7 +33,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
       if ( currGuildConfig.Part.SaveRoles && currUserGuild.Roles.length != 0 ) {
         member.roles.add( currUserGuild.Roles, 'Restoring user roles on rejoin.' )
         .then( rolesAdded => {
-          if ( botVerbosity >=2 ) { console.log( '\tRestored roles in G:%s for U:%s', chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
+          if ( botVerbosity >=2 ) { console.log( '\tRestored %s roles in G:%s for U:%s', chalk.bold.green( currUserGuild.Roles.length ), chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
         } )
         .catch( async errRoles => {
           if ( doLog && chanError ) { chanError.send( await errHandler( errRoles, { command: strScript, member: member, type: 'errRole', debug: true } ) ); }
