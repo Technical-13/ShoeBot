@@ -36,7 +36,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
           if ( botVerbosity >=2 ) { console.log( '\tRestored roles in G:%s for U:%s', chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
         } )
         .catch( async errRoles => {
-          if ( doLog && chanError ) { chanError.send( await errHandler( errRoles, { command: 'guildMemberAdd', type: 'errRole' } ) ); }
+          if ( doLog && chanError ) { chanError.send( await errHandler( errRoles, { command: strScript, member: member, type: 'errRole', debug: true } ) ); }
           throw new Error( chalk.bold.cyan.inverse( `\tError attempting to restore roles in G:${guild.name} for U:${currUser.UserName} from my database in ${strScript}:\n${errRoles}` ) );
         } );
       }
@@ -65,7 +65,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
             }
           } )
           .catch( async errRole => {
-            if ( doLog && chanError ) { chanError.send( await errHandler( errRole, { command: 'guildMemberAdd', type: 'errRole' } ) ); }
+            if ( doLog && chanError ) { chanError.send( await errHandler( errRole, { command: strScript, member: member, type: 'errRole', debug: true } ) ); }
           } );
         }
         if ( !welcomeRole && doLog && chanDefault ) {
