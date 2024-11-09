@@ -19,7 +19,7 @@ client.on( 'guildCreate', async ( guild ) => {
       if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', chalk.bold.green( guild.name ) ); }
       await createNewGuild( guild );
     }
-    const newGuildConfig = await getGuildConfig( guild )
+    const newGuildConfig = await getGuildConfig( guild, true )
     .then( async gotGuild => {
       if ( gotGuild.Expires ) {
         if ( botVerbosity >= 2 ) { console.log( '\tClearing Expires Date for G:%s in my database...', chalk.bold.green( guild.name ) ); }
