@@ -45,7 +45,8 @@ module.exports = {
       const strAuthorTag = author.tag;
 
       const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Chat: chanChat, strClosing } = logChans.Logs;
+      const { Active: doLogs, Chat, strClosing } = logChans.Logs;
+      const chanChat = guild.channels.cache.get( Chat );
 
       if ( myResponse ) {
         if ( canSpeak && ( !mentionsEveryone || checkPermission( 'MentionEveryone' ) ) ) {

@@ -72,7 +72,9 @@ module.exports = {
       const strLabcaches = ( options.getBoolean( 'labcaches' ) ? '&includeLabcaches' : '' );
 
       const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = logChans.Logs;
+      const { Active: doLogs, Default, Error, strClosing } = logChans.Logs;
+      const chanDefault = guild.channels.cache.get( Default );
+      const chanError = guild.channels.cache.get( Error );
 
       channel.send( { content:
         'StatBar for: ' + ( objInputUser == null ? strUseName : '<@' +  objInputUser.id + '>' ) + '\nhttps://cdn2.project-gc.com/statbar.php?quote=https://discord.me/Geocaching%20-%20' + intYear + '-' + intMonth + '-' + intDay + strLabcaches + '&user=' + encName

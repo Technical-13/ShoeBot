@@ -66,7 +66,9 @@ module.exports = {
       const encName = encodeURI( strUseName ).replace( '&', '%26' );
 
       const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = logChans.Logs;
+      const { Active: doLogs, Default, Error, strClosing } = logChans.Logs;
+      const chanDefault = guild.channels.cache.get( Default );
+      const chanError = guild.channels.cache.get( Error );
 
       channel.send( { content:
         'BadgeBar for ' + ( objInputUser ? '<@' +  objInputUser.id + '>' : strUseName ) +

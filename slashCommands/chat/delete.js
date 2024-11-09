@@ -22,7 +22,8 @@ module.exports = {
       const msgID = options.getString( 'message-id' );
       if ( !( /[\d]{18,19}/.test( msgID ) ) ) { return interaction.editReply( { content: '`' + msgID + '` is not a valid `message-id`. Please try again.' } ); }
       const logChans = await getGuildConfig( guild );
-      const { Active: doLogs, Chat: chanChat, strClosing } = logChans.Logs;
+      const { Active: doLogs, Chat, strClosing } = logChans.Logs;
+      const chanChat = guild.channels.cache.get( Chat );
 
       if ( !canDelete ) {
         if ( doLogs ) {
