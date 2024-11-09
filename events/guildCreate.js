@@ -8,8 +8,9 @@ const createNewUser = require( '../functions/createNewUser.js' );
 const addUserGuild = require( '../functions/addUserGuild.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
-const botVerbosity = 3;//( config.verbosity || 1 );
+const botVerbosity = ( config.verbosity || 1 );
 const verUserDB = config.verUserDB;
+const strScript = chalk.hex( '#FFA500' ).bold( './events/guildCreate.js' );
 
 client.on( 'guildCreate', async ( guild ) => {
   try {
@@ -25,8 +26,8 @@ client.on( 'guildCreate', async ( guild ) => {
         if ( botVerbosity >= 2 ) { console.log( 'Clearing %s Date for G:%s in my database...', chalk.bold.red( 'Expires' ), chalk.bold.green( guild.name ) ); }
         gotGuild.Expires = null;
         await guildConfig.updateOne( { _id: guild.id }, gotGuild, { upsert: true } )
-        .then( updateSuccess => { console.log( '\tCleared expriation of DB entry for %s (id: %s) upon re-joining guild.', chalk.bold.green( guild.name ), guild.id ); } )
-        .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( '\tError attempting to update %s (id: %s) to clear expiration in DB:\n%o' ), guild.name, guild.id, updateError ); } );
+        .then( updateSuccess => { console.log( '\tCleared expriation of DB entry for %s in %s.', chalk.bold.green( guild.name ), strScript ); } )
+        .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( '\tError attempting to update %s (id: %s) to clear expiration in %s:\n%o' ), guild.name, guild.id, strScript, updateError ); } );
       }
       const roleEveryone = guild.roles.cache.find( role => role.name === '@everyone' );
       const chanWidget = ( guild.widgetEnabled ? guild.widgetChannelId : null );
@@ -57,7 +58,7 @@ client.on( 'guildCreate', async ( guild ) => {
       } )
     } )
     .catch( errGetGuild => {
-      console.error( 'Failed to create %s (id: %s) in guildDB on join: %o', guild.name, guild.id, errGetGuild );
+      console.error( 'Failed to create %s (id: %s) in %s: %o', guild.name, guild.id, strScript, errGetGuild );
       botOwner.send( { content: 'Error adding [' + guild.name + '](<https://discord.com/channels/' + guild.id + '>) to the database.' } );
     } );
 
@@ -72,11 +73,19 @@ client.on( 'guildCreate', async ( guild ) => {
       const currUser = await userConfig.findOne( { _id: memberId } );
       const storedUserGuilds = [];
       currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
-      if ( storedUserGuilds.indexOf( guild.id ) === -1 ) {
+      let ndxUserGuild = storedUserGuilds.indexOf( guild.id );
+      if ( ndxUserGuild === -1 ) {
         if ( botVerbosity >= 2 ) { console.log( '\t\tAdding G:%s to U:%s.', chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
         await addUserGuild( memberId, guild );
       }
+      else {
+        if ( botVerbosity >= 2 ) { console.log( '\t\tClearing %s Date from G:%s for U:%s.', chalk.bold.red( 'Expires' ), chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
+        let currUserGuild = currUser.Guilds[ ndxUserGuild ];
+        currUserGuild.Expires = null;
+        userConfig.updateOne( { _id: memberId }, currUser, { upsert: true } )
+        .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( 'Error attempting to update G:%s for U:%s to expire %o in my database in %s:\n%o' ), guild.name, currUser.UserName, dbExpires, strScript, updateError ); } );
+      }
     } );
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( './events/guildCreate.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack ); }
 } );
