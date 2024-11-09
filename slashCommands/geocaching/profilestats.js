@@ -61,7 +61,7 @@ module.exports = {
       const strAuthorDisplayName = members.get( author.id ).displayName;
       const strInputUser = ( options.getString( 'gc-name' ) || null );
       const objInputUser = ( options.getUser( 'discord-user' ) || null );
-      const strInputUserDisplayName = ( objInputUser ? objInputUser.displayName : strInputUser );
+      const strInputUserDisplayName = ( objInputUser ? members.get( objInputUser.id ).displayName : strInputUser );
       const strUseName = ( strInputUserDisplayName ? strInputUserDisplayName : strAuthorDisplayName );
       const encName = encodeURI( strUseName ).replace( '&', '%26' );
 
