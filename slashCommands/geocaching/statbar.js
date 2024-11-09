@@ -62,7 +62,7 @@ module.exports = {
       const intMonth = ( intMonthNow < 9 ? '0' : '' ) + ( intMonthNow + 1 ).toString();
       const intDayNow = today.getDate();
       const intDay = ( intDayNow <= 9 ? '0' : '' ) + intDayNow.toString();
-/* TRON */console.log( 'options.getUser( 'discord-user' ).id: %s\nauthor.id:%s', options.getUser( 'discord-user' ).id, author.id );/* TROFF */
+/* TRON */console.log( 'options.getUser( \'discord-user\' ).id: %s\nauthor.id:%s', options.getUser( 'discord-user' ).id, author.id );/* TROFF */
       const strUseName = ( options.getString( 'gc-name' ) || members.get( options.getUser( 'discord-user' ).id || author.id ).displayName );
       const encName = encodeURI( strUseName ).replace( '&', '%26' );
       const strLabcaches = ( options.getBoolean( 'labcaches' ) ? '&includeLabcaches' : '' );
