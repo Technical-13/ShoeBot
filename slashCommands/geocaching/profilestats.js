@@ -58,14 +58,15 @@ module.exports = {
       const intDayNow = today.getDate();
       const intDay = ( intDayNow <= 9 ? '0' + intDayNow.toString() : intDayNow.toString() );
 
-      const strUseName = ( options.getString( 'gc-name' ) || members.get( options.getUser( 'discord-user' ) ? options.getUser( 'discord-user' ).id : author.id ).displayName );
+      const objInputUser = ( !options.getUser( 'discord-user' ) ? null : options.getUser( 'discord-user' ) );
+      const strUseName = ( options.getString( 'gc-name' ) || members.get( objInputUser ? objInputUser.id : author.id ).displayName );
       const encName = encodeURI( strUseName ).replace( '&', '%26' );
 
       const logChans = await getGuildConfig( guild );
       const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = logChans.Logs;
 
       channel.send( { content:
-        'ProfileStats link for: ' + ( objInputUser == null ? strUseName : '<@' +  objInputUser + '>' ) + '\n<https://project-gc.com/Profile/ProfileStats?profile_name=' + encName + '>'
+        'ProfileStats link for: ' + ( objInputUser == null ? strUseName : '<@' +  objInputUser.id + '>' ) + '\n<https://project-gc.com/Profile/ProfileStats?profile_name=' + encName + '>'
       } )
       .then( sentMsg => {
         if ( doLogs && strInputUserDisplayName && strInputUserDisplayName !== strAuthorDisplayName ) {
