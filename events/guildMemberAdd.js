@@ -23,21 +23,21 @@ client.on( 'guildMemberAdd', async ( member ) => {
     currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
     let ndxUserGuild = storedUserGuilds.indexOf( guild.id );
     if ( ndxUserGuild === -1 ) {
-      if ( botVerbosity >= 2 ) { console.log( '\t\tAdding G:%s to U:%s.', chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
+      if ( botVerbosity >= 2 ) { console.log( 'Adding G:%s to U:%s.', chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
       await addUserGuild( user.id, guild );
     }
     else {
-      if ( botVerbosity >= 2 ) { console.log( '\t\tClearing %s Date from G:%s for U:%s.', chalk.bold.red( 'Expires' ), chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
+      if ( botVerbosity >= 2 ) { console.log( 'Clearing %s Date from G:%s for U:%s.', chalk.bold.red( 'Expires' ), chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
       let currUserGuild = currUser.Guilds[ ndxUserGuild ];
       currUserGuild.Expires = null;
       userConfig.updateOne( { _id: memberId }, currUser, { upsert: true } )
-      .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( 'Error attempting to update G:%s for U:%s to expire %o in my database in %s:\n%o' ), guild.name, currUser.UserName, dbExpires, strScript, updateError ); } );
+      .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( '\tError attempting to update G:%s for U:%s to expire %o in my database in %s:\n%o' ), guild.name, currUser.UserName, dbExpires, strScript, updateError ); } );
     }
 
-    const currGuildConfig = await getGuildConfig( guild );
+    const currGuildConfig = await getGuildConfig( guild, true );
     currGuildConfig.Guild.Members = guild.members.cache.size;
     await guildConfig.updateOne( { _id: guild.id }, currGuildConfig, { upsert: true } )
-    .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( 'Error attempting to update %s (id: %s) to my database:\n%o' ), guild.name, guild.id, updateError ); } );
+    .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( '\tError attempting to update G:%s in my database:\n%o' ), guild.name, updateError ); } );
 
     const { Active: doLog, chanDefault, chanError } = currGuildConfig;
     const doWelcome = ( !currGuildConfig ? false : ( !currGuildConfig.Welcome ? false : ( currGuildConfig.Welcome.Active || false ) ) );

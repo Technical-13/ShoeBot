@@ -7,6 +7,7 @@ const userPerms = require( '../functions/getPerms.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const createNewUser = require( '../functions/createNewUser.js' );
 const addUserGuild = require( '../functions/addUserGuild.js' );
+Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
 const botVerbosity = 3;//( config.verbosity || 1 );
 const verUserDB = config.verUserDB;
 const strScript = chalk.hex( '#FFA500' ).bold( './events/guildMemberUpdate.js' );
@@ -27,16 +28,24 @@ client.on( 'guildMemberUpdate', async ( oldMember, newMember ) => {
     const newRoles = ( oldMember.roles != newMember.roles ? true : false );
     var doUserUpdate = false;
     if ( newName ) {// Changed nickname
-      currUser.UserName = newUser.displayName;
+      if ( botVerbosity >= 2 ) { console.log( 'Changing U:%s to U:%s in my database...', chalk.bold.red( oldMember.displayName ), chalk.bold.green( newMember.displayName ) ); }
+      currUserGuild.UserName = newMember.displayName;
       doUserUpdate = true;
     }
     if ( newRoles ) {// Added or Removed roles
-      currUserGuild.Roles = Array.from( newMember.roles.cache.keys() );
+      let newRoleIds = Array.from( newMember.roles.cache.keys() );
+      let oldRoleIds = Array.from( oldMember.roles.cache.keys() );
+      let addedRoleIds = newRoleIds.getDiff( oldRoleIds );
+      if ( botVerbosity >= 2 && addedRoleIds.length >= 1 ) { console.log( 'Added %s role%s to U:%s in my database...', chalk.bold.green( addedRoleIds.length ), ( addedRoleIds.length == 1 ? '' : 's' ), chalk.bold.green( user.displayName ) ); }
+      let removedRoleIds = oldRoleIds.getDiff( newRoleIds );
+      if ( botVerbosity >= 2 && removedRoleIds.length >= 1 ) { console.log( 'Removed %s role%s from U:%s in my database...', chalk.bold.red( removedRoleIds.length ), ( removedRoleIds.length == 1 ? '' : 's' ), chalk.bold.red( user.displayName ) ); }
+      currUserGuild.Roles = newRoleIds;
       doUserUpdate = true;
     }
     if ( doUserUpdate ) {
+      if ( botVerbosity >= 2 ) { console.log( '\tUpdating U:%s in my database...', chalk.bold.yellow( user.displayName ) ); }
       userConfig.updateOne( { _id: user.id }, currUser, { upsert: true } )
-      .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( 'Error attempting to update guild %s (id: %s) for user %s (id: %s) in my database in getPerms.js:\n%o' ), guild.name, guild.id, user.displayName, user.id, updateError ); } );
+      .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( '\t\tError attempting to update guild %s (id: %s) for user %s (id: %s) in my database in getPerms.js:\n%o' ), guild.name, guild.id, user.displayName, user.id, updateError ); } );
     }
 
     if ( isGuildOwner ) {
