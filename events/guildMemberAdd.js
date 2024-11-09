@@ -16,6 +16,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
   try {
     const botOwner = client.users.cache.get( client.ownerId );
     const { guild, user } = member;
+    const currGuildConfig = await getGuildConfig( guild, true );
 
     if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) { await createNewUser( user ); }
     const currUser = await userConfig.findOne( { _id: user.id } );
@@ -29,12 +30,21 @@ client.on( 'guildMemberAdd', async ( member ) => {
     else {
       if ( botVerbosity >= 2 ) { console.log( 'Clearing %s Date from G:%s for U:%s.', chalk.bold.red( 'Expires' ), chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
       let currUserGuild = currUser.Guilds[ ndxUserGuild ];
+      if ( currGuildConfig.Part.SaveRoles && currUserGuild.Roles.length != 0 ) {
+        member.roles.add( currUserGuild.Roles, 'Restoring user roles on rejoin.' )
+        .then( rolesAdded => {
+          if ( botVerbosity >=2 ) { console.log( '\tRestored roles in G:%s for U:%s', chalk.bold.green( guild.name ), chalk.bold.green( user.displayName ) ); }
+        } )
+        .catch( async errRoles => {
+          if ( doLog && chanError ) { chanError.send( await errHandler( errRoles, { command: 'guildMemberAdd', type: 'errRole' } ) ); }
+          throw new Error( chalk.bold.cyan.inverse( '\tError attempting to restore roles in G:%s for U:%s from my database in %s:\n%o' ), guild.name, currUser.UserName, strScript, errRoles );
+        } );
+      }
       currUserGuild.Expires = null;
       userConfig.updateOne( { _id: user.id }, currUser, { upsert: true } )
       .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( '\tError attempting to update G:%s for U:%s to expire %o in my database in %s:\n%o' ), guild.name, currUser.UserName, dbExpires, strScript, updateError ); } );
     }
 
-    const currGuildConfig = await getGuildConfig( guild, true );
     currGuildConfig.Guild.Members = guild.members.cache.size;
     await guildConfig.updateOne( { _id: guild.id }, currGuildConfig, { upsert: true } )
     .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( '\tError attempting to update G:%s in my database:\n%o' ), guild.name, updateError ); } );
@@ -55,9 +65,7 @@ client.on( 'guildMemberAdd', async ( member ) => {
             }
           } )
           .catch( async errRole => {
-            if ( doLog && chanError ) {
-              chanError.send( await errHandler( errRole, { command: 'guildMemberAdd', type: 'errRole' } ) );
-            }
+            if ( doLog && chanError ) { chanError.send( await errHandler( errRole, { command: 'guildMemberAdd', type: 'errRole' } ) ); }
           } );
         }
         if ( !welcomeRole && doLog && chanDefault ) {
