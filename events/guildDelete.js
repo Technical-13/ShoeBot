@@ -78,10 +78,10 @@ client.on( 'guildDelete', async ( guild ) => {
       let ndxUserGuild = storedUserGuilds.indexOf( guild.id );
       if ( ndxUserGuild != -1 ) {
         let currUserGuild = currUser.Guilds[ ndxUserGuild ];
+        console.log( 'U:%s G:%s Expires: %o', chalk.bold.redBright( currUser.UserName ), chalk.bold.redBright( currUserGuild.GuildName ), dbExpires );
         currUserGuild.Expires = dbExpires;
-        console.log( 'Guild %s (%s) expires from %s (%s) in %s on: %o', guild.id, chalk.red( currUserGuild.GuildName ), currUser._id, chalk.red( currUser.UserName ), chalk.bold.redBright( await duration( dbExpires - ( new Date() ), { getWeeks: true } ) ), dbExpires );
         userConfig.updateOne( { _id: memberId }, currUser, { upsert: true } )
-        .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( 'Error attempting to update guild %s (id: %s) for user %s (id: %s) to expire %o in my database in guildDelete.js:\n%o' ), guild.name, guild.id, currUser.UserName, memberId, dbExpires, updateError ); } );
+        .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( 'Error attempting to update G:%s for U:%s to expire %o in my database in ./events/guildDelete.js:\n%o' ), guild.name, currUser.UserName, dbExpires, updateError ); } );
       }
     } );
   }
