@@ -51,7 +51,7 @@ client.on( 'guildDelete', async ( guild ) => {
     newGuildConfig.Expires = dbExpires;
     await guildConfig.updateOne( { _id: guild.id }, newGuildConfig, { upsert: true } )
     .then( updateSuccess => {
-      console.log( 'Set expriation of DB entry for %s (id: %s) upon leaving guild to: %o', chalk.bold.red( guild.name ), guild.id, dbExpires );
+      if ( botVerbosity >=2 ) { console.log( 'Set expriation of DB entry for G:%s in %s to: %o', chalk.bold.red( guild.name ), strScript, dbExpires ); }
       guildOwner.send( { content: 'Hello! You or someone has removed me from https://discord.com/channels/' + guild.id + '/' + chanInvite + '!  You can get me back at any time by [re-adding](<' + inviteUrl + '>) me.\nI think this might have been an error, so I\'ll save your server\'s configuration settings for a month until `' + dbExpires.toLocaleTimeString( 'en-US', objTimeString ) + '` in case you want me back.' } )
       .catch( errSendDM => {
         if ( doChanError ) {
@@ -80,7 +80,7 @@ client.on( 'guildDelete', async ( guild ) => {
       let ndxUserGuild = storedUserGuilds.indexOf( guild.id );
       if ( ndxUserGuild != -1 ) {
         let currUserGuild = currUser.Guilds[ ndxUserGuild ];
-        console.log( 'U:%s G:%s Expires: %o', chalk.bold.redBright( currUser.UserName ), chalk.bold.redBright( currUserGuild.GuildName ), dbExpires );
+        if ( botVerbosity >=2 ) { console.log( 'U:%s G:%s Expires: %o', chalk.bold.redBright( currUser.UserName ), chalk.bold.redBright( currUserGuild.GuildName ), dbExpires ); }
         currUserGuild.Expires = dbExpires;
         userConfig.updateOne( { _id: memberId }, currUser, { upsert: true } )
         .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( 'Error attempting to update G:%s for U:%s to expire %o in my database in ./events/guildDelete.js:\n%o' ), guild.name, currUser.UserName, dbExpires, updateError ); } );

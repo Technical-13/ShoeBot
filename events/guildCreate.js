@@ -17,7 +17,7 @@ client.on( 'guildCreate', async ( guild ) => {
     const botOwner = client.users.cache.get( client.ownerId );
     const guildOwner = guild.members.cache.get( guild.ownerId );
     if ( await guildConfig.countDocuments( { _id: guild.id } ) === 0 ) {
-      if ( botVerbosity >= 1 ) { console.log( '\tAdding G:%s to my database...', chalk.bold.green( guild.name ) ); }
+      if ( botVerbosity >= 1 ) { console.log( 'Adding G:%s to my database...', chalk.bold.green( guild.name ) ); }
       await createNewGuild( guild );
     }
     const newGuildConfig = await getGuildConfig( guild, true )
@@ -58,7 +58,7 @@ client.on( 'guildCreate', async ( guild ) => {
       } )
     } )
     .catch( errGetGuild => {
-      console.error( 'Failed to create %s (id: %s) in %s: %o', guild.name, guild.id, strScript, errGetGuild );
+      console.error( '\tFailed to create %s (id: %s) in %s: %o', guild.name, guild.id, strScript, errGetGuild );
       botOwner.send( { content: 'Error adding [' + guild.name + '](<https://discord.com/channels/' + guild.id + '>) to the database.' } );
     } );
 
