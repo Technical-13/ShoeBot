@@ -22,7 +22,7 @@ client.on( 'guildCreate', async ( guild ) => {
     const newGuildConfig = await getGuildConfig( guild, true )
     .then( async gotGuild => {
       if ( gotGuild.Expires ) {
-        if ( botVerbosity >= 2 ) { console.log( '\tClearing Expires Date for G:%s in my database...', chalk.bold.green( guild.name ) ); }
+        if ( botVerbosity >= 2 ) { console.log( '\tClearing %s Date for G:%s in my database...', chalk.bold.red( 'Expires' ), chalk.bold.green( guild.name ) ); }
         gotGuild.Expires = null;
         await guildConfig.updateOne( { _id: guild.id }, gotGuild, { upsert: true } )
         .then( updateSuccess => { console.log( 'Cleared expriation of DB entry for %s (id: %s) upon re-joining guild.', chalk.bold.green( guild.name ), guild.id ); } )
@@ -65,7 +65,7 @@ client.on( 'guildCreate', async ( guild ) => {
     guildMembers.forEach( async memberId => {
       let member = guild.members.cache.get( memberId );
       let { user } = member;
-      if ( await userConfig.countDocuments( { _id: userId } ) === 0 ) {
+      if ( await userConfig.countDocuments( { _id: memberId } ) === 0 ) {
         if ( botVerbosity >= 1 ) { console.log( '\tAdding U:%s to my database...', chalk.bold.green( user.displayName ) ); }
         await createNewUser( user );
       }
