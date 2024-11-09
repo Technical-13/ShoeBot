@@ -242,7 +242,7 @@ client.on( 'ready', async rdy => {
               console.log( '\tSuccesfully updated U:%s in my database%s.', chalk.bold.green( updatedUser.UserName ), ( update.length === 1 ? '' : ' ( ' + uUserIndex + ' of ' + update.length + ' )' ) );
               u.push( userId );
             } )
-            .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `\tError attempting to update user ${updatedUser.UserName} in my database:\n${updateError}` ) ); } );
+            .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( `\tError attempting to update user ${updatedUser.UserName} in my database:\n${updateError}` ) ); } );
           }
         }
         resolve( u );
@@ -302,7 +302,7 @@ client.on( 'ready', async rdy => {
               console.log( '\tSuccesfully updated G:%s in my database%s.', chalk.bold.green( updatedGuild.Guild.Name ), ( update.length === 1 ? '' : ' ( ' + uGuildIndex + ' of ' + update.length + ' )' ) );
               u.push( guildId );
             } )
-            .catch( updateError => { throw new Error( chalk.bold.black.bgCyan( `\tError attempting to update guild ${updatedGuild.Guild.Name} in my database${update.length === 1 ? '' : ' ( ' + uGuildIndex + ' of ' + update.length + ' )'}:\n${updateError}` ) ); } );
+            .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( `\tError attempting to update guild ${updatedGuild.Guild.Name} in my database${update.length === 1 ? '' : ' ( ' + uGuildIndex + ' of ' + update.length + ' )'}:\n${updateError}` ) ); } );
           }
         }
         resolve( u );
@@ -363,7 +363,7 @@ client.on( 'ready', async rdy => {
             }
             removedGuilds.push( guildId );
           } )
-          .catch( errDelete => { throw new Error( chalk.bold.black.bgCyan( `\tError attempting to delete ${guildName} (id: ${guildId}) from my database${remove.length === 1 ? '' : ' ( ' + uGuildIndex + ' of ' + remove.length + ' )'}:\n${errDelete.stack}` ) ); } );
+          .catch( errDelete => { throw new Error( chalk.bold.cyan.inverse( `\tError attempting to delete ${guildName} (id: ${guildId}) from my database${remove.length === 1 ? '' : ' ( ' + uGuildIndex + ' of ' + remove.length + ' )'}:\n${errDelete.stack}` ) ); } );
         }
       }
       data.guilds.remove = remove.length;
@@ -441,5 +441,5 @@ client.on( 'ready', async rdy => {
     } )
     .catch( ( rejected ) => { console.error( rejected.message ); } );
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( 'ready.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( './events/ready.js' ), errObject.stack ); }
 } );
