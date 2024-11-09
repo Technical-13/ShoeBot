@@ -58,7 +58,7 @@ module.exports = {
       const intDayNow = today.getDate();
       const intDay = ( intDayNow <= 9 ? '0' + intDayNow.toString() : intDayNow.toString() );
 
-      const strUseName = ( options.getString( 'gc-name' ) || members.get( options.getUser( 'discord-user' ).id || author.id ).displayName );
+      const strUseName = ( options.getString( 'gc-name' ) || members.get( options.getUser( 'discord-user' ) ? options.getUser( 'discord-user' ).id : author.id ).displayName );
       const encName = encodeURI( strUseName ).replace( '&', '%26' );
 
       const logChans = await getGuildConfig( guild );
