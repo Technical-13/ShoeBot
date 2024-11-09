@@ -22,11 +22,11 @@ client.on( 'guildCreate', async ( guild ) => {
     const newGuildConfig = await getGuildConfig( guild, true )
     .then( async gotGuild => {
       if ( gotGuild.Expires ) {
-        if ( botVerbosity >= 2 ) { console.log( '\tClearing %s Date for G:%s in my database...', chalk.bold.red( 'Expires' ), chalk.bold.green( guild.name ) ); }
+        if ( botVerbosity >= 2 ) { console.log( 'Clearing %s Date for G:%s in my database...', chalk.bold.red( 'Expires' ), chalk.bold.green( guild.name ) ); }
         gotGuild.Expires = null;
         await guildConfig.updateOne( { _id: guild.id }, gotGuild, { upsert: true } )
-        .then( updateSuccess => { console.log( 'Cleared expriation of DB entry for %s (id: %s) upon re-joining guild.', chalk.bold.green( guild.name ), guild.id ); } )
-        .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( 'Error attempting to update %s (id: %s) to clear expiration in DB:\n%o' ), guild.name, guild.id, updateError ); } );
+        .then( updateSuccess => { console.log( '\tCleared expriation of DB entry for %s (id: %s) upon re-joining guild.', chalk.bold.green( guild.name ), guild.id ); } )
+        .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( '\tError attempting to update %s (id: %s) to clear expiration in DB:\n%o' ), guild.name, guild.id, updateError ); } );
       }
       const roleEveryone = guild.roles.cache.find( role => role.name === '@everyone' );
       const chanWidget = ( guild.widgetEnabled ? guild.widgetChannelId : null );
