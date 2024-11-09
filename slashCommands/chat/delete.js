@@ -28,7 +28,7 @@ module.exports = {
       if ( !canDelete ) {
         if ( doLogs ) {
           chanChat.send( { content: '<@' + author.id + '> tried to get me to delete a message and doesn\'t have permission to do that.' } )
-          .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'delete', guild: guild, type: 'logLogs' } ) ); } );
+          .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'delete', channel: channel, type: 'logLogs' } ) ); } );
         }
         return interaction.editReply( { content: 'You don\'t have permission to have me delete my messages.' } );
       }
@@ -38,7 +38,7 @@ module.exports = {
           if ( message.author.id != client.user.id ) {
             if ( doLogs ) {
               chanChat.send( { content: '<@' + author.id + '> tried to get me to delete https://discord.com/channels/' + guildId + '/' + channelId + '/' + msgID + ' that belongs to <@' + message.author.id + '>.  I am only allowed to delete my own messages.' } )
-              .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'delete', guild: guild, type: 'logLogs' } ) ); } );
+              .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'delete', channel: channel, type: 'logLogs' } ) ); } );
             }
             return interaction.editReply( { content: 'That message belongs to <@' + message.author.id + '>.  I am only allowed to delete my own messages.' } );
           }

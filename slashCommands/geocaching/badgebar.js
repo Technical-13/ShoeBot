@@ -80,7 +80,7 @@ module.exports = {
           chanDefault.send( { content:
             'I shared the `/badgebar` for ' + ( objInputUser ? '<@' +  objInputUser.id + '>' : strUseName ) + ' in <#' + channel.id + '>' +
             ( strInputUserDisplayName !== strAuthorDisplayName ? ' as requested by <@' + author.id + '>' : '' ) + strClosing } )
-          .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'badgebar', guild: guild, type: 'logLogs' } ); } );
+          .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'badgebar', channel: channel, type: 'logLogs' } ); } );
         }
         interaction.deleteReply();
       } )
@@ -88,7 +88,7 @@ module.exports = {
         console.error( 'Error sending /badgebar result to %s#%s:\n%o', guild.name, channel.name, errSend );
         if ( doLogs ) {
           chanError.send( { content: 'Error sending `/badgebar` result to <#' + channel.id + '>' + strClosing } )
-          .catch( async errLog => { await errHandler( errLog, { chanType: 'error', command: 'badgebar', guild: guild, type: 'logLogs' } ); } );
+          .catch( async errLog => { await errHandler( errLog, { chanType: 'error', command: 'badgebar', channel: channel, type: 'logLogs' } ); } );
         }
       } );
     }

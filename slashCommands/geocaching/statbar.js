@@ -84,7 +84,7 @@ module.exports = {
           chanDefault.send( { content:
             'I shared the `/statbar` for ' + ( objInputUser ? '<@' +  objInputUser.id + '>' : strUseName ) + ' in <#' + channel.id + '>' +
             ( strInputUserDisplayName !== strAuthorDisplayName ? ' as requested by <@' + author.id + '>' : '' ) + strClosing } )
-          .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'statbar', guild: guild, type: 'logLogs' } ); } );
+          .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'statbar', channel: channel, type: 'logLogs' } ); } );
         }
         interaction.deleteReply();
       } )
@@ -92,7 +92,7 @@ module.exports = {
         console.error( 'Error sending /statbar result to %s#%s:\n%o', guild.name, channel.name, errSend );
         if ( doLogs ) {
           chanError.send( { content: 'Error sending `/statbar` result to <#' + channel.id + '>' + strClosing } )
-          .catch( async errLog => { await errHandler( errLog, { chanType: 'error', command: 'statbar', guild: guild, type: 'logLogs' } ); } );
+          .catch( async errLog => { await errHandler( errLog, { chanType: 'error', command: 'statbar', channel: channel, type: 'logLogs' } ); } );
         }
       } );
     }

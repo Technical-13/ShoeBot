@@ -43,7 +43,7 @@ module.exports = {
 
       if ( doLogs && mentionUserID != author.id ) {
         chanChat.send( { content: '<@' + author.id + '> sent ' + mentionUser + ' a `/lmgtfy` for [`' + strInputQuery + '`](<https://' + service + '?q=' + q + '>) in <#' + channel.id + '>, and they were ' + ( beNice ? '' : '**__not__** ' ) + 'nice.' } )
-        .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'lmgtfy', guild: guild, type: 'logLogs' } ) ); } );
+        .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'lmgtfy', channel: channel, type: 'logLogs' } ) ); } );
       }
 
       return interaction.reply( { content: mentionUser + ': <https://' + service + '?q=' + q + '>' } );

@@ -117,7 +117,7 @@ module.exports = {
               chanDefault.send( { content:
                 'I told <@' + msgAuthor.id + '> about FTFs ' + strLocale + ' in <#' + channel.id + '> at <@' + author.id +
                 '>\'s `/ftf` request in response to:\n```\n' + content + '\n```' + strClosing } )
-              .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
+              .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', channel: channel, type: 'logLogs' } ); } );
             }
           } )
           .catch( async errSend => { await errHandler( errSend, { command: 'ftf', doLog: doLogs, guild: guild, msgID: msgID, type: 'errSend' } ); } );
@@ -128,7 +128,7 @@ module.exports = {
         interaction.editReply( { content: '<@' + cmdInputUser.id + '>, ' + i18FTFinfo[ locale ] } ).then( replied => {
           if ( doLogs && cmdInputUser.id != author.id ) {
             chanDefault.send( { content: 'I told <@' + cmdInputUser.id + '> about FTFs at <@' + author.id +'>\'s `/ftf` request.' + strClosing } )
-            .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
+            .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'ftf', channel: channel, type: 'logLogs' } ); } );
           }
         } );
       }
@@ -136,7 +136,7 @@ module.exports = {
         interaction.editReply( { content: i18FTFinfo[ locale ] } ).catch( noReply => {
           if ( doLogs ) {
             chanError.send( { content: 'Error telling <@' + author.id + '> about FTFs via `/ftf` request.' + strClosing } )
-            .catch( async errLog => { await errHandler( errLog, { chanType: 'error', command: 'ftf', guild: guild, type: 'logLogs' } ); } );
+            .catch( async errLog => { await errHandler( errLog, { chanType: 'error', command: 'ftf', channel: channel, type: 'logLogs' } ); } );
           }
         } );
       }

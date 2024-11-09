@@ -208,7 +208,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
             } );
         }
         break;
-      case 'logLogs':// .catch( async errLog => { await errHandler( errLog, { command: '', chanType: 'chat|default|error', guild: guild, type: 'logLogs' } ); } );
+      case 'logLogs':// .catch( async errLog => { await errHandler( errLog, { command: '', chanType: 'chat|default|error', channel: channel, type: 'logLogs' } ); } );
         let logChan = ( chanType === 'chat' ? chanChat : ( chanType === 'error' ? chanError : chanDefault ) );
         console.error( 'Unable to log to %s channel: %s#%s\n%s', chanType, guild.name, logChan.name, errObject.stack );
         botOwner.send( { content: 'Unable to log to ' + chanType + ' channel <#' + logChan.id + '>.' + strConsole } )

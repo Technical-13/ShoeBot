@@ -52,7 +52,7 @@ module.exports = {
           chanSpeak.send( { content: parsedSaying } ).then( async spoke => {
             if ( doLogs ) {
               chanChat.send( { content: 'I spoke in https://discord.com/channels/' + spoke.guild.id + '/' + spoke.channel.id + '/' + spoke.id + ' at <@' + author.id + '>\'s request:\n```' + parsedSaying + '\n```' + strClosing } )
-              .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'say', guild: guild, type: 'logLogs' } ) ); } );
+              .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'say', channel: channel, type: 'logLogs' } ) ); } );
             }
             return interaction.editReply( { content: 'I said the thing!' } );
           } )
@@ -61,14 +61,14 @@ module.exports = {
         else if ( mentionsEveryone && !checkPermission( 'MentionEveryone' ) ) {
           if ( doLogs ) {
             chanChat.send( { content: '<@' + author.id + '> has no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>. They tried to get me to say:\n```\n' + mySaying + '\n```' + strClosing } )
-            .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'say', guild: guild, type: 'logLogs' } ) ); } );
+            .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'say', channel: channel, type: 'logLogs' } ) ); } );
           }
           return interaction.editReply( { content: 'You have no permission to get me to ' + strEveryoneHere + ' in <#' + channel.id + '>!' } );
         }
         else {
           if ( doLogs ) {
             chanChat.send( { content: '<@' + author.id + '> has no permission to use my `/say` command from <#' + channel.id + '>. They tried to get me to say:\n```\n' + mySaying + '\n```' + strClosing } )
-            .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'say', guild: guild, type: 'logLogs' } ) ); } );
+            .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'say', channel: channel, type: 'logLogs' } ) ); } );
           }
           return interaction.editReply( { content: 'You have no permission to use my `/say` command in <#' + channel.id + '>!' } );
         }
