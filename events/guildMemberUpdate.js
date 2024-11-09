@@ -18,7 +18,10 @@ client.on( 'guildMemberUpdate', async ( oldMember, newMember ) => {
     const { isGuildOwner } = await userPerms( user, guild );
 
     if ( await userConfig.countDocuments( { _id: user.id } ) === 0 ) { await createNewUser( user ); }
-    await addUserGuild( user.id, guild );
+    var findCurrUser = await userConfig.findOne( { _id: user.id } );
+    const findThisGuild = [];
+    findCurrUser.Guilds.forEach( ( entry, i ) => { findThisGuild.push( entry._id ); } );
+    if ( findThisGuild.indexOf( guild.id ) === -1 ) { await addUserGuild( user.id, guild ); }
     const currUser = await userConfig.findOne( { _id: user.id } );
     const storedUserGuilds = [];
     currUser.Guilds.forEach( ( entry, i ) => { storedUserGuilds.push( entry._id ); } );
