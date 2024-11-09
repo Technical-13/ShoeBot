@@ -37,17 +37,17 @@ client.on( 'guildMemberAdd', async ( member ) => {
         } )
         .catch( async errRoles => {
           if ( doLog && chanError ) { chanError.send( await errHandler( errRoles, { command: 'guildMemberAdd', type: 'errRole' } ) ); }
-          throw new Error( chalk.bold.cyan.inverse( '\tError attempting to restore roles in G:%s for U:%s from my database in %s:\n%o' ), guild.name, currUser.UserName, strScript, errRoles );
+          throw new Error( chalk.bold.cyan.inverse( `\tError attempting to restore roles in G:${guild.name} for U:${currUser.UserName} from my database in ${strScript}:\n${errRoles}` ) );
         } );
       }
       currUserGuild.Expires = null;
       userConfig.updateOne( { _id: user.id }, currUser, { upsert: true } )
-      .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( '\tError attempting to update G:%s for U:%s to expire %o in my database in %s:\n%o' ), guild.name, currUser.UserName, dbExpires, strScript, updateError ); } );
+      .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( `\tError attempting to update G:${guild.name} for U:${currUser.UserName} to expire ${dbExpires} in my database in ${strScript}:\n${updateError}` ) ); } );
     }
 
     currGuildConfig.Guild.Members = guild.members.cache.size;
     await guildConfig.updateOne( { _id: guild.id }, currGuildConfig, { upsert: true } )
-    .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( '\tError attempting to update G:%s in my database:\n%o' ), guild.name, updateError ); } );
+    .catch( updateError => { throw new Error( chalk.bold.cyan.inverse( `\tError attempting to update G:${guild.name} in my database:\n${updateError}` ) ); } );
 
     const { Active: doLog, chanDefault, chanError } = currGuildConfig;
     const doWelcome = ( !currGuildConfig ? false : ( !currGuildConfig.Welcome ? false : ( currGuildConfig.Welcome.Active || false ) ) );
