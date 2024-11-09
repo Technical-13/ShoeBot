@@ -12,7 +12,7 @@ client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {
     const botOwner = client.users.cache.get( client.ownerId );
     const guildId = oldGuild.id;
     const guildOwner = newGuild.members.cache.get( newGuild.ownerId );
-    const currGuildConfig = await getGuildConfig( oldGuild );
+    const currGuildConfig = await getGuildConfig( oldGuild, true );
     const newName = ( newGuild.name !== oldGuild.name ? true : false );
     const newOwner = ( newGuild.ownerId !== oldGuild.ownerId ? true : false );
     var doGuildUpdate = false;
