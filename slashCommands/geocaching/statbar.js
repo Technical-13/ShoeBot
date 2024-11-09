@@ -63,11 +63,11 @@ module.exports = {
       const intDayNow = today.getDate();
       const intDay = ( intDayNow <= 9 ? '0' : '' ) + intDayNow.toString();
 
-      const strInputString = options.getString( 'gc-name' );
-      const objInputUser = options.getUser( 'discord-user' );
-      const strUseName = ( strInputString || members.get( objInputUser ? objInputUser.id : author.id ).displayName );
-      const encName = encodeURI( strUseName ).replace( '&', '%26' );
-      const strLabcaches = ( options.getBoolean( 'labcaches' ) ? '&includeLabcaches' : '' );
+      const strAuthorDisplayName = members.get( author.id ).displayName;
+      const strInputUser = ( options.getString( 'gc-name' ) || null );
+      const objInputUser = ( options.getUser( 'discord-user' ) || null );
+      const strInputUserDisplayName = ( objInputUser ? objInputUser.displayName : strInputUser );
+      const strUseName = ( strInputUserDisplayName ? strInputUserDisplayName : strAuthorDisplayName );
 
       const logChans = await getGuildConfig( guild );
       const { Active: doLogs, Default: chanDefault, Error: chanError, strClosing } = logChans.Logs;
@@ -76,10 +76,10 @@ module.exports = {
         'StatBar for: ' + ( objInputUser == null ? strUseName : '<@' +  objInputUser.id + '>' ) + '\nhttps://cdn2.project-gc.com/statbar.php?quote=https://discord.me/Geocaching%20-%20' + intYear + '-' + intMonth + '-' + intDay + strLabcaches + '&user=' + encName
       } )
       .then( sentMsg => {
-        if ( doLogs && ( objInputUser ? objInputUser.id : null ) != author.id && strInputString != members.get( author.id ).displayName ) {
+        if ( doLogs && strInputUserDisplayName && strInputUserDisplayName !== strAuthorDisplayName ) {
           chanDefault.send( { content:
             'I shared the `/statbar` for ' + ( objInputUser ? '<@' +  objInputUser.id + '>' : strUseName ) + ' in <#' + channel.id + '>' +
-            ( ( objInputUser ? objInputUser.id : null ) != author.id && strInputString != members.get( author.id ).displayName ? ' as requested by <@' + author.id + '>' : '' ) + strClosing } )
+            ( strInputUserDisplayName !== strAuthorDisplayName ? ' as requested by <@' + author.id + '>' : '' ) + strClosing } )
           .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'statbar', guild: guild, type: 'logLogs' } ); } );
         }
         interaction.deleteReply();
