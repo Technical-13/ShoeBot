@@ -4,17 +4,6 @@ const errHandler = require( '../../functions/errorHandler.js' );
 const userPerms = require( '../../functions/getPerms.js' );
 const getGuildConfig = require( '../../functions/getGuildDB.js' );
 const strScript = chalk.hex( '#FFA500' ).bold( './slashCommands/geocaching/statbar.js' );
-const getDebugString = ( thing ) => {
-    if ( Array.isArray( thing ) ) { return '{ object-Array: { length: ' + thing.length + ' } }'; }
-    else if ( Object.prototype.toString.call( thing ) === '[object Date]' ) { return '{ object-Date: { ISOstring: ' + thing.toISOString() + ', value: ' + thing.valueOf() + ' } }'; }
-    else if ( typeof( thing ) != 'object' ) { return thing; }
-    else {
-        let objType = ( thing ? 'object-' + thing.constructor.name : typeof( thing ) );
-        let objId = ( thing ? thing.id : 'no.id' );
-        let objName = ( thing ? ( thing.displayName || thing.globalName || thing.name ) : 'no.name' );
-        return '{ ' + objType + ': { id: ' + objId + ', name: ' + objName + ' } }';
-    }
-};
 
 module.exports = {
   name: 'statbar',
@@ -84,12 +73,10 @@ module.exports = {
       const strUseName = ( strInputUserDisplayName ? strInputUserDisplayName : strAuthorDisplayName );
       const encName = encodeURI( strUseName ).replace( '&', '%26' );
       const strLabcaches = ( options.getBoolean( 'labcaches' ) ? '&includeLabcaches' : '' );
-
       const { doLogs, chanDefault, chanError, strClosing } = await getGuildConfig( guild );
-      /* TRON */console.log( 'doLogs: %s\nchanDefault: %s\n chanError: %s\n strClosing: %s', doLogs, getDebugString( chanDefault ), getDebugString( chanError ), getDebugString( strClosing ) );/* TROFF */
 
       channel.send( { content:
-        'StatBar for: ' + ( !objInputUser ? ( !objInputString ? '`' + strUseName + '`' : '<@' + objInputString.id + '>' ) : '<@' + objInputUser.id + '>' ) +
+        'StatBar for: ' + ( !objInputUser ? ( !objInputString ? ( !isAuthor ? '`' + strUseName + '`' : '<@' + author.id + '>' ) : '<@' + objInputString.id + '>' ) : '<@' + objInputUser.id + '>' ) +
         ( isAuthor ? '' : ' as requested by <@' + author.id + '>' ) +
         '\nhttps://cdn2.project-gc.com/statbar.php?quote=https://discord.me/Geocaching%20-%20' + intYear + '-' + intMonth + '-' + intDay + strLabcaches + '&user=' + encName
       } )
@@ -101,6 +88,7 @@ module.exports = {
           .then( sentLog => { interaction.deleteReply(); } )
           .catch( async errLog => { await errHandler( errLog, { chanType: 'default', command: 'statbar', channel: channel, type: 'logLogs' } ); } );
         }
+        else { interaction.deleteReply(); }
       } )
       .catch( async errSend => { interaction.editReply( await errHandler( errSend, { command: 'statbar', channel: channel, type: 'errSend' } ) ); } );
     }
