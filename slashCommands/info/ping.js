@@ -1,11 +1,12 @@
 const { ApplicationCommandType } = require( 'discord.js' );
 const chalk = require( 'chalk' );
-const strScript = chalk.hex( '#FFA500' ).bold( './events/guildMemberAdd.js' );
+const strScript = chalk.hex( '#FFA500' ).bold( './slashCommands/info/ping.js' );
 
 module.exports = {
-  name: 'ping',
-//  description: 'Check bot\'s ping.',
+  name: 'Ping!',
+//  description: 'Check bot\'s ping.',// No description for ApplicationCommandType.User commands
   type: ApplicationCommandType.User,
+  contexts: [ InteractionContextType.Guild, InteractionContextType.BotDM ],
   cooldown: 1000,
   run: async ( client, interaction ) => {
     try {
