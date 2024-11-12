@@ -3,7 +3,18 @@ const chalk = require( 'chalk' );
 const errHandler = require( '../../functions/errorHandler.js' );
 const userPerms = require( '../../functions/getPerms.js' );
 const getGuildConfig = require( '../../functions/getGuildDB.js' );
-const strScript = chalk.hex( '#FFA500' ).bold( './slashCommands/geocaching/statbar.js' )
+const strScript = chalk.hex( '#FFA500' ).bold( './slashCommands/geocaching/statbar.js' );
+const getDebugString = ( thing ) => {
+    if ( Array.isArray( thing ) ) { return '{ object-Array: { length: ' + thing.length + ' } }'; }
+    else if ( Object.prototype.toString.call( thing ) === '[object Date]' ) { return '{ object-Date: { ISOstring: ' + thing.toISOString() + ', value: ' + thing.valueOf() + ' } }'; }
+    else if ( typeof( thing ) != 'object' ) { return thing; }
+    else {
+        let objType = ( thing ? 'object-' + thing.constructor.name : typeof( thing ) );
+        let objId = ( thing ? thing.id : 'no.id' );
+        let objName = ( thing ? ( thing.displayName || thing.globalName || thing.name ) : 'no.name' );
+        return '{ ' + objType + ': { id: ' + objId + ', name: ' + objName + ' } }';
+    }
+};
 
 module.exports = {
   name: 'statbar',
@@ -69,12 +80,13 @@ module.exports = {
       const objInputString = ( members.find( mbr => mbr.displayName === strInputString ) || null );
       const objInputUser = ( options.getUser( 'discord-user' ) || null );
       const strInputUserDisplayName = ( objInputUser ? members.get( objInputUser.id ).displayName : strInputString );
-      const isAuthor = ( author.id === objInputString?.id || strInputUserDisplayName === strAuthorDisplayName ? true : false );
+      const isAuthor = ( ( !strInputString && !objInputUser ) || author.id === objInputString?.id || strInputUserDisplayName === strAuthorDisplayName ? true : false );
       const strUseName = ( strInputUserDisplayName ? strInputUserDisplayName : strAuthorDisplayName );
       const encName = encodeURI( strUseName ).replace( '&', '%26' );
       const strLabcaches = ( options.getBoolean( 'labcaches' ) ? '&includeLabcaches' : '' );
 
       const { Active: doLogs, chanDefault, chanError, strClosing } = await getGuildConfig( guild );
+      /* TRON */console.log( 'doLogs: %s\nchanDefault: %s\n, chanError: %s\n, strClosing: %s', doLogs, getDebugString( chanDefault ), getDebugString( chanError ), getDebugString( strClosing ) );/* TROFF */
 
       channel.send( { content:
         'StatBar for: ' + ( !objInputUser ? ( !objInputString ? '`' + strUseName + '`' : '<@' + objInputString.id + '>' ) : '<@' + objInputUser.id + '>' ) +
