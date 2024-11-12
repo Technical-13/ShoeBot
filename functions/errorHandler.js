@@ -1,9 +1,10 @@
 const client = require( '..' );
 require( 'dotenv' ).config();
-const chalk = require( 'chalk' );
 const config = require( '../config.json' );
+const chalk = require( 'chalk' );
 const getBotConfig = require( './getBotDB.js' );
 const getGuildConfig = require( './getGuildDB.js' );
+const strScript = chalk.hex( '#FFA500' ).bold( './functions/errorHandler.js' );
 const getDebugString = ( thing ) => {
   if ( typeof( thing ) != 'object' ) { return thing; }
   else {
@@ -83,7 +84,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
     const strLogged = '  Error has been logged and my owner, <@' + botOwner.id + '>, couldn\'t be notified.';
 
     switch ( myTask ) {
-      case 'errDelete':// .catch( async errDelete => { await errHandler( errDelete, { command: '', channel: channel, type: 'errDelete' } ); } );
+      case 'errDelete':// .catch( async errDelete => { interaction.editReply( await errHandler( errDelete, { command: '', channel: channel, type: 'errDelete' } ) ); } );
         switch ( errObject.code ) {
           case 50001 :// No MANAGE_MESSAGES permission in channel
             if ( doLogs ) { chanError.send( 'Please give me permission to `MANAGE_MESSAGES` in <#' + channel.id + '>.' + strClosing ); }
@@ -103,8 +104,8 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
             } );
         }
         break;
-      case 'errEdit':// .catch( async errEdit => { await errHandler( errEdit, { command: '', channel: channel, type: 'errEdit' } ); } );
-      case 'errSend':// .catch( async errSend => { await errHandler( errSend, { command: '', channel: channel, type: 'errSend' } ); } );
+      case 'errEdit':// .catch( async errEdit => { interaction.editReply( await errHandler( errEdit, { command: '', channel: channel, type: 'errEdit' } ) ); } );
+      case 'errSend':// .catch( async errSend => { interaction.editReply( await errHandler( errSend, { command: '', channel: channel, type: 'errSend' } ) ); } );
         switch ( errObject.code ) {
           case 50001 :// No SEND_MESSAGE permission in channel
             if ( debug ) { console.error( 'I do not have permission to send messages to %s for /%s request: %s\n\t%s', chanName, cmd, chanLink, errObject.stack ); }
@@ -133,7 +134,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
             } );
         }
         break;
-      case 'errFetch':// .catch( async errFetch => { await errHandler( errFetch, { command: '', msgID: msgID, type: 'errFetch' } ); } );
+      case 'errFetch':// .catch( async errFetch => { interaction.editReply( await errHandler( errFetch, { command: '', msgID: msgID, type: 'errFetch' } ) ); } );
         switch( errObject.code ) {
           case 10008://Unknown Message
             return { content: 'Unable to find message.' };
@@ -155,7 +156,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
             } );
         }
         break;
-      case 'errInvite':// .catch( async errInvite => { await errHandler( errInvite, { command: '', inviteGuild: inviteGuild, inviteChanURL: inviteChanURL, type: 'errInvite' } ); } );
+      case 'errInvite':// .catch( async errInvite => { interaction.editReply( await errHandler( errInvite, { command: '', inviteGuild: inviteGuild, inviteChanURL: inviteChanURL, type: 'errInvite' } ) ); } );
         switch ( errObject.code ) {
           case 10003://Unknown Channel
             console.log( 'Unknown channel to create invite for %s:\n\tLink: %s', inviteGuild.name, inviteChanURL );
@@ -193,7 +194,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
             } );
         }
         break;
-      case 'errReact':// .catch( async errFetch => { await errHandler( errFetch, { command: '', channel: channel, emoji: emoji, msgID: msgID, type: 'errFetch', rawReaction: rawReaction } ); } );
+      case 'errReact':// .catch( async errFetch => { interaction.editReply( await errHandler( errFetch, { command: '', channel: channel, emoji: emoji, msgID: msgID, type: 'errFetch', rawReaction: rawReaction } ) ); } );
         switch ( errObject.code ) {
           case 10014://Reaction invalid
             if ( doLogs ) { chanError.send( 'Failed to react to message ' + chanLink + '/' + msgID + ' with `' + rawReaction + '`.' + strClosing ); }
@@ -211,7 +212,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
             } );
         }
         break;
-      case 'errRole':// .catch( async errRole => { await errHandler( errRole, { command: '', member: member, type: 'errRole' } )
+      case 'errRole':// .catch( async errRole => { interaction.editReply( await errHandler( errRole, { command: '', member: member, type: 'errRole' } ) ); } );
         switch ( errObject.code ) {
           case 50013://Missing Permissions
             if ( debug ) { console.error( 'I do not have permission to change roles to %s in %s at %s request:\n\t%s', member.displayName, guild.name, cmd, errObject.stack ); }
@@ -230,7 +231,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
             } );
         }
         break;
-      case 'logLogs':// .catch( async errLog => { await errHandler( errLog, { command: '', chanType: 'chat|default|error', channel: channel, type: 'logLogs' } ); } );
+      case 'logLogs':// .catch( async errLog => { interaction.editReply( await errHandler( errLog, { command: '', chanType: 'chat|default|error', channel: channel, type: 'logLogs' } ) ); } );
         let logChan = ( chanType === 'chat' ? chanChat : ( chanType === 'error' ? chanError : chanDefault ) );
         console.error( 'Unable to log to %s channel: %s#%s\n%s', chanType, guild.name, logChan.name, errObject.stack );
         botOwner.send( { content: 'Unable to log to ' + chanType + ' channel <#' + logChan.id + '>.' + strConsole } )
@@ -241,7 +242,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
           return { content: 'Encounted an error with your `/' + cmd + '` request.' + strLogged };
         } );
         break;
-      case 'modifyDB':// .catch( async modifyDB => { await errHandler( modifyDB, { author: author, clearLists: clearLists, command: '', modType: '', type: 'modifyDB' } ); } );
+      case 'modifyDB':// .catch( async modifyDB => { interaction.editReply( await errHandler( modifyDB, { author: author, clearLists: clearLists, command: '', modType: '', type: 'modifyDB' } ) ); } );
         switch ( modType ) {
           case 'clear':
             console.error( 'Error attempting to clear my %s for %s: %s', clearLists, author.displayName, guild.name, errObject.stack );
@@ -292,7 +293,7 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
             return { content: 'Unknown error attempting to modify ' + ( cmd === 'config' ? 'guild' : 'bot' ) + ' configuration in my database.' + strConsole };
         }
         break;
-      case 'setPresence':// .catch( async setPresence => { await errHandler( setPresence, { command: '', type: 'setPresence' } ); } );
+      case 'setPresence':// .catch( async setPresence => { interaction.editReply( await errHandler( setPresence, { command: '', type: 'setPresence' } ) ); } );
         console.error( 'Error in %s.js: %s', cmd, errObject.stack );
         break;
       case 'tryFunction':
@@ -312,5 +313,5 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
         } );
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( './functions/errorHandler.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack ); }
 };

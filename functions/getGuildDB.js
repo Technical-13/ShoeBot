@@ -1,13 +1,14 @@
 const client = require( '..' );
-const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 require( 'dotenv' ).config();
+const ENV = process.env;
 const config = require( '../config.json' );
+const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
+const chalk = require( 'chalk' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const getBotConfig = require( './getBotDB.js' );
 const createNewGuild = require( './createNewGuild.js' );
-const ENV = process.env;
-const chalk = require( 'chalk' );
 const verGuildDB = config.verGuildDB;
+const strScript = chalk.hex( '#FFA500' ).bold( './functions/getGuildDB.js' );
 
 module.exports = async ( guild, raw = false ) => {
   try {
@@ -32,5 +33,5 @@ module.exports = async ( guild, raw = false ) => {
     }
     return currConfig;
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( './functions/getGuildDB.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack ); }
 };

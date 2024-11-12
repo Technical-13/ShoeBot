@@ -1,9 +1,10 @@
 const { ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
+const chalk = require( 'chalk' );
+const errHandler = require( '../../functions/errorHandler.js' );
 const userPerms = require( '../../functions/getPerms.js' );
 const getGuildConfig = require( '../../functions/getGuildDB.js' );
-const errHandler = require( '../../functions/errorHandler.js' );
 const parse = require( '../../functions/parser.js' );
-const chalk = require( 'chalk' );
+const strScript = chalk.hex( '#FFA500' ).bold( './slashCommands/chat/edit.js' );
 
 module.exports = {
   name: 'edit',
@@ -80,6 +81,6 @@ module.exports = {
       }
       else { interaction.editReply( { content: 'I don\'t know what to say.' } ); }
     }
-    catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( './slashCommands/chat/edit.js' ), errObject.stack ); }
+    catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack ); }
   }
 };

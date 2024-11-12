@@ -3,7 +3,7 @@ const chalk = require( 'chalk' );
 const errHandler = require( '../../functions/errorHandler.js' );
 const userPerms = require( '../../functions/getPerms.js' );
 const getBotConfig = require( '../../functions/getBotDB.js' );
-const strScript = chalk.hex( '#FFA500' ).bold( './slashCommands/info/bot.js' )
+const strScript = chalk.hex( '#FFA500' ).bold( './slashCommands/info/bot.js' );
 
 module.exports = {
   name: 'bot',
