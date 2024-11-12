@@ -32,6 +32,7 @@ module.exports = {
       } );
       const embed = new EmbedBuilder()
       .setTitle( 'Invite me' )
+      .setURL( inviteUrl )
       .setDescription( 'Invite ' + ( client.user.displayName || config.botName || ENV.BOT_USERNAME || 'the bot' ) + ' to your server. [Click here](' + inviteUrl + ')\nThis message self-destructs in three minutes!' )
       .setColor( '#FF00FF' )
       .setTimestamp()
@@ -40,21 +41,21 @@ module.exports = {
 
       const actionRow = new ActionRowBuilder().addComponents( [ new ButtonBuilder().setLabel( 'Invite' ).setURL( inviteUrl ).setStyle( 5 ) ] );
       const msgInvite = await message.reply( { embeds: [ embed ], components: [ actionRow ] } );
-      setTimeout( () => {
-        embed.setDescription( embed.description.replace( 'three minutes!', 'two minutes!' ) );
+      setTimeout( () => {// two minutes!
+        embed.setDescription( embed.data.description.replace( 'three minutes!', 'two minutes!' ) );
         msgInvite.edit( { embeds: [ embed ], components: [ actionRow ] } );
       }, 60000 );
-      setTimeout( () => {
-        embed.setDescription( embed.description.replace( 'two minutes!', 'one minute!' ) );
+      setTimeout( () => {// one minute!
+        embed.setDescription( embed.data.description.replace( 'two minutes!', 'one minute!' ) );
         msgInvite.edit( { embeds: [ embed ], components: [ actionRow ] } );
       }, 120000 );
-      setTimeout( () => {
-        embed.setDescription( embed.description.replace( 'one minute!', '30 seconds!' ) );
+      setTimeout( () => {// 30 seconds!
+        embed.setDescription( embed.data.description.replace( 'one minute!', '30 seconds!' ) );
         msgInvite.edit( { embeds: [ embed ], components: [ actionRow ] } );
       }, 150000 );
-      for ( let countDown = 1; countDown < 10; countDown++ ) {
-        setTimeout( () => {
-          embed.setDescription( embed.description.replace( /[\d]{1,2} seconds?!/, ( 10 - countDown ) + ' second' + ( ( 10 - countDown ) === 1 ? '' : 's' ) + '!' ) );
+      for ( let countDown = 1; countDown < 10; countDown++ ) {// #?# seconds?!
+        setTimeout( () => {// #?# seconds?!
+          embed.setDescription( embed.data.description.replace( /[\d]{1,2} seconds?!/, ( 10 - countDown ) + ' second' + ( ( 10 - countDown ) === 1 ? '' : 's' ) + '!' ) );
           msgInvite.edit( { embeds: [ embed ], components: [ actionRow ] } );
         }, ( 170000 + ( countDown * 1000 ) ) );
       }
