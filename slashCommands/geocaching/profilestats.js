@@ -65,7 +65,7 @@ module.exports = {
       const strUseName = ( strInputUserDisplayName ? strInputUserDisplayName : strAuthorDisplayName );
       const encName = encodeURI( strUseName ).replace( '&', '%26' );
 
-      const { Active: doLogs, chanDefault, chanError, strClosing } = await getGuildConfig( guild );
+      const { doLogs, chanDefault, chanError, strClosing } = await getGuildConfig( guild );
       channel.send( { content:
         'ProfileStats link for: ' + ( objInputUser == null ? strUseName : '<@' +  objInputUser.id + '>' ) + '\n<https://project-gc.com/Profile/ProfileStats?profile_name=' + encName + '>'
       } )

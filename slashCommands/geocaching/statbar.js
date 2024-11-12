@@ -85,8 +85,8 @@ module.exports = {
       const encName = encodeURI( strUseName ).replace( '&', '%26' );
       const strLabcaches = ( options.getBoolean( 'labcaches' ) ? '&includeLabcaches' : '' );
 
-      const { Active: doLogs, chanDefault, chanError, strClosing } = await getGuildConfig( guild );
-      /* TRON */console.log( 'doLogs: %s\nchanDefault: %s\n, chanError: %s\n, strClosing: %s', doLogs, getDebugString( chanDefault ), getDebugString( chanError ), getDebugString( strClosing ) );/* TROFF */
+      const { doLogs, chanDefault, chanError, strClosing } = await getGuildConfig( guild );
+      /* TRON */console.log( 'doLogs: %s\nchanDefault: %s\n chanError: %s\n strClosing: %s', doLogs, getDebugString( chanDefault ), getDebugString( chanError ), getDebugString( strClosing ) );/* TROFF */
 
       channel.send( { content:
         'StatBar for: ' + ( !objInputUser ? ( !objInputString ? '`' + strUseName + '`' : '<@' + objInputString.id + '>' ) : '<@' + objInputUser.id + '>' ) +

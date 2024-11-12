@@ -101,7 +101,7 @@ module.exports = {
         'sv-SE': 'Det gick inte att hitta ett specifikt meddelande att svara på.'
       };
 
-      const { Active: doLogs, chanDefault, chanError, strClosing } = await getGuildConfig( guild );
+      const { doLogs, chanDefault, chanError, strClosing } = await getGuildConfig( guild );
       if ( msgID && !( /[\d]{18,19}/.test( msgID ) ) ) { return interaction.editReply( { content: '`' + msgID + '` ' + i18InvalidMsgId[ locale ] } ); }
       else if ( msgID ) {
         channel.messages.fetch( msgID )

@@ -42,7 +42,7 @@ module.exports = {
       const mentionsEveryone = /@(everyone|here)/g.test( mySaying );
       const strEveryoneHere = ( mentionsEveryone ? '`@' + ( /@everyone/g.test( mySaying ) ? 'everyone' : 'here' ) + '`' : null );
 
-      const { Active: doLogs, chanChat, strClosing } = await getGuildConfig( guild );
+      const { doLogs, chanChat, strClosing } = await getGuildConfig( guild );
       if ( mySaying ) {
         const parsedSaying = await parse( mySaying, { member: guildMember } );
         if ( canSpeak && ( !mentionsEveryone || checkPermission( 'MentionEveryone' ) ) ) {

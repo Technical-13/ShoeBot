@@ -44,7 +44,7 @@ module.exports = {
       const strEveryoneHere = ( mentionsEveryone ? '`@' + ( /@everyone/g.test( myResponse ) ? 'everyone' : 'here' ) + '`' : null );
       const strAuthorTag = author.tag;
 
-      const { Active: doLogs, chanChat, strClosing } = await getGuildConfig( guild );
+      const { doLogs, chanChat, strClosing } = await getGuildConfig( guild );
       if ( myResponse ) {
         if ( canSpeak && ( !mentionsEveryone || checkPermission( 'MentionEveryone' ) ) ) {
           channel.messages.fetch( msgID ).then( async message => {
