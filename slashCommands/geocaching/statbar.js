@@ -53,7 +53,7 @@ module.exports = {
     try {
       await interaction.deferReply( { ephemeral: true } );
       const { channel, guild, options, user: author } = interaction;
-      const { cache: members } = guild.members;
+      const members = guild.members.cache;
       const { content } = await userPerms( author, guild );
       if ( content ) { return interaction.editReply( { content: content } ); }
 
@@ -69,7 +69,7 @@ module.exports = {
       const objInputString = ( members.find( mbr => mbr.displayName === strInputString ) || null );
       const objInputUser = ( options.getUser( 'discord-user' ) || null );
       const strInputUserDisplayName = ( objInputUser ? members.get( objInputUser.id ).displayName : strInputString );
-      const isAuthor = ( author.id === objInputString.id || strInputUserDisplayName === strAuthorDisplayName ? true : false );
+      const isAuthor = ( author.id === objInputString?.id || strInputUserDisplayName === strAuthorDisplayName ? true : false );
       const strUseName = ( strInputUserDisplayName ? strInputUserDisplayName : strAuthorDisplayName );
       const encName = encodeURI( strUseName ).replace( '&', '%26' );
       const strLabcaches = ( options.getBoolean( 'labcaches' ) ? '&includeLabcaches' : '' );
