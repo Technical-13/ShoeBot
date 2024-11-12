@@ -6,12 +6,13 @@ const getBotConfig = require( './getBotDB.js' );
 const getGuildConfig = require( './getGuildDB.js' );
 const strScript = chalk.hex( '#FFA500' ).bold( './functions/errorHandler.js' );
 const getDebugString = ( thing ) => {
-  if ( typeof( thing ) != 'object' ) { return thing; }
+  if ( Array.isArray( thing ) ) { return '{ object-Array: { length: ' + thing.length + ' } }'; }
+  else if ( Object.prototype.toString.call( thing ) === '[object Date]' ) { return '{ object-Date: { ISOstring: ' + thing.toISOString() + ', value: ' + thing.valueOf() + ' } }'; }
+  else if ( typeof( thing ) != 'object' ) { return thing; }
   else {
-    let resultObj = thing;
-    let objType = ( resultObj ? 'object-' + resultObj.constructor.name : typeof( thing ) );
-    let objId = ( resultObj ? resultObj.id : 'no.id' );
-    let objName = ( resultObj ? ( resultObj.displayName || resultObj.globalName || resultObj.name ) : 'no.name' );
+    let objType = ( thing ? 'object-' + thing.constructor.name : typeof( thing ) );
+    let objId = ( thing ? thing.id : 'no.id' );
+    let objName = ( thing ? ( thing.displayName || thing.globalName || thing.name ) : 'no.name' );
     return '{ ' + objType + ': { id: ' + objId + ', name: ' + objName + ' } }';
   }
 };
@@ -19,7 +20,6 @@ const getDebugString = ( thing ) => {
 module.exports = async ( errObject, options = { command: 'undefined', debug: false, type: 'undefined' } ) => {
   try {
     const { command, debug, type } = options;
-
     if ( debug ) {
       const preAuthor = ( !options ? 'NO `options`!' : getDebugString( options.author ) );
       const preChan = ( !options ? 'NO `options`!' : getDebugString( options.channel ) );
@@ -39,7 +39,6 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
       const preProcessed = { command: '{ typeof: ' + typeof( command ) + ', value: ' + command + ' }', type: '{ typeof: ' + typeof( type ) + ', value: ' + type + ' }', author: preAuthor, channel: preChan, chanType: prechanType, clearLists: preclearLists, guild: preGuild, inviteChanURL: preinviteChanURL, inviteGuild: preinviteGuild, member: premember, modBlack: premodBlack, modMod: premodMod, modWhite: premodWhite, msgID: premsgID, rawReaction: prerawReaction, reaction: preEmoji };
       console.warn( 'functions/errorHandler.js recieved options:%o', preProcessed );
     }
-
     const cmd = ( typeof( command ) === 'string' ? command : 'undefined' );
     const myTask = ( typeof( type ) === 'string' ? type : 'undefined' );
     const author = ( options.author ? options.author : null );
@@ -57,7 +56,6 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
     const rawReaction = ( options.rawReaction ? options.rawReaction : null );
     const emoji = ( options.reaction ? options.reaction : null );
     const guild = ( options.guild ? options.guild : ( channel ? channel.guild : ( member ? member.guild : ( author ? author.guild : null ) ) ) );
-
     if ( debug ) {
       const prcAuthor = getDebugString( author );
       const prcChan = getDebugString( channel );
@@ -68,7 +66,6 @@ module.exports = async ( errObject, options = { command: 'undefined', debug: fal
       const processed = { cmd: cmd, myTask: myTask, author: prcAuthor, channel: prcChan, chanType: chanType, clearLists: clearLists, guild: prcGuild, inviteChanURL: inviteChanURL, inviteGuild: prcInviteGuild, member: prcMember, modBlack: modBlack, modMod: modMod, modType: modType, modWhite: modWhite, msgID: msgID, rawReaction: rawReaction, reaction: prcEmoji };
       console.warn( 'functions/errorHandler.js processed options:%o', processed );
     }
-
     const botConfig = await getBotConfig();
     const guildConfig = await getGuildConfig( guild );
     const { doLogs, chanError, strClosing } = guildConfig.Logs;
