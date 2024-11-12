@@ -1,4 +1,4 @@
-const { ApplicationCommandType, EmbedBuilder } = require( 'discord.js' );
+const { ApplicationCommandType, EmbedBuilder, InteractionContextType } = require( 'discord.js' );
 const chalk = require( 'chalk' );
 const guildConfigDB = require( '../../models/GuildConfig.js' );
 const errHandler = require( '../../functions/errorHandler.js' );

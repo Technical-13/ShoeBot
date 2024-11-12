@@ -1,4 +1,4 @@
-const { ApplicationCommandType } = require( 'discord.js' );
+const { ApplicationCommandType, InteractionContextType } = require( 'discord.js' );
 const chalk = require( 'chalk' );
 const strScript = chalk.hex( '#FFA500' ).bold( './slashCommands/info/ping.js' );
 
