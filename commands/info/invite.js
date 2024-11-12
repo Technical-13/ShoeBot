@@ -53,9 +53,13 @@ module.exports = {
         embed.setDescription( embed.data.description.replace( 'one minute!', '30 seconds!' ) );
         msgInvite.edit( { embeds: [ embed ], components: [ actionRow ] } );
       }, 150000 );
-      for ( let countDown = 1; countDown < 10; countDown++ ) {// #?# seconds?!
+      setTimeout( () => {// 15 seconds!
+        embed.setDescription( embed.data.description.replace( '30 seconds!', '15 seconds!' ) );
+        msgInvite.edit( { embeds: [ embed ], components: [ actionRow ] } );
+      }, 165000 );
+      for ( let countDown = 1; countDown <= 10; countDown++ ) {// 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 seconds?!
         setTimeout( () => {// #?# seconds?!
-          embed.setDescription( embed.data.description.replace( /[\d]{1,2} seconds?!/, ( 10 - countDown ) + ' second' + ( ( 10 - countDown ) === 1 ? '' : 's' ) + '!' ) );
+          embed.setDescription( embed.data.description.replace( /[\d]{1,2} seconds?!/, ( 11 - countDown ) + ' second' + ( ( 11 - countDown ) === 1 ? '' : 's' ) + '!' ) );
           msgInvite.edit( { embeds: [ embed ], components: [ actionRow ] } );
         }, ( 170000 + ( countDown * 1000 ) ) );
       }
