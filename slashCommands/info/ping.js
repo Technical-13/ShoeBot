@@ -4,7 +4,7 @@ const strScript = chalk.hex( '#FFA500' ).bold( './events/guildMemberAdd.js' );
 
 module.exports = {
   name: 'ping',
-  description: 'Check bot\'s ping.',
+//  description: 'Check bot\'s ping.',
   type: ApplicationCommandType.User,
   cooldown: 1000,
   run: async ( client, interaction ) => {
