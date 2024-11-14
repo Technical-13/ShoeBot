@@ -1,4 +1,6 @@
 const client = require( '..' );
+require( 'dotenv' ).config();
+const ENV = process.env;
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
@@ -11,7 +13,7 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const getBotConfig = require( '../functions/getBotDB.js' );
 const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
-const botVerbosity = ( config.verbosity || 1 );
+const botVerbosity = ( ENV.verbosity || config.verbosity || 1 );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
 Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
@@ -173,10 +175,10 @@ client.on( 'ready', async rdy => {
         actualEntry = JSON.stringify( actualEntry );
         expectedEntry = JSON.stringify( expectedEntry );
         if ( expectedEntry.valMatch( actualEntry ) ) {// push to unchangedGuildIds
-          if ( botVerbosity >= 1 ) { console.log( 'G:%s: %s %s %s', chalk.bold.greenBright( botGuild.name ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
+          if ( botVerbosity >= 5 ) { console.log( 'G:%s: %s %s %s', chalk.bold.greenBright( botGuild.name ), actualEntry, chalk.bold.greenBright( '===' ), expectedEntry ); }
           unchangedGuildIds.push( guildId );
         }
-        else if ( botVerbosity >= 1 ) { console.log( 'G:%s: %s %s %s', chalk.bold.red( botGuild.name ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
+        else if ( botVerbosity >= 4 ) { console.log( 'G:%s: %s %s %s', chalk.bold.red( botGuild.name ), actualEntry, chalk.bold.red( '!=' ), expectedEntry ); }
       }
       updateGuildIds = updateGuildIds.getDiff( unchangedGuildIds );
       if ( removedGuildIds.length != 0 ) {

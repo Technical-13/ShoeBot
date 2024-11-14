@@ -1,10 +1,12 @@
 const client = require( '..' );
+require( 'dotenv' ).config();
+const ENV = process.env;
 const config = require( '../config.json' );
 const chalk = require( 'chalk' );
 const errHandler = require( '../functions/errorHandler.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
-const botVerbosity = ( config.verbosity || 1 );
+const botVerbosity = ( ENV.verbosity || config.verbosity || 1 );
 const strScript = chalk.hex( '#FFA500' ).bold( './events/guildUpdate.js' );
 
 client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {

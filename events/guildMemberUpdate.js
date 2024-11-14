@@ -1,4 +1,6 @@
 const client = require( '..' );
+require( 'dotenv' ).config();
+const ENV = process.env;
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const userConfig = require( '../models/BotUser.js' );
@@ -8,7 +10,7 @@ const getGuildConfig = require( '../functions/getGuildDB.js' );
 const createNewUser = require( '../functions/createNewUser.js' );
 const addUserGuild = require( '../functions/addUserGuild.js' );
 Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
-const botVerbosity = 3;//( config.verbosity || 1 );
+const botVerbosity = ( ENV.verbosity || config.verbosity || 1 );
 const verUserDB = config.verUserDB;
 const strScript = chalk.hex( '#FFA500' ).bold( './events/guildMemberUpdate.js' );
 
