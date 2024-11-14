@@ -383,6 +383,23 @@ client.on( 'ready', async rdy => {
         else if ( users.updated > users.update ) { strUserUpdate = chalk.bold.red( 'ERROR: Updated more users than there were to update!!!' ); }
         else if ( users.updated < users.update ) { strUserUpdate = 'Updated ' + chalk.bold.yellow( users.updated + ' of ' + users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + ' needing an update.'; }
         else { strUserUpdate = 'Updated ' + chalk.bold.green( users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + '.'; }
+        if ( botVerbosity >= 4 && users.expired != 0 ) {// List users with Guilds that Expires
+          let expiredUserList = [];
+          for ( let userId of users.expired ) {
+            let expiredUser = users.db.find( u => u._id === userId );
+            for ( let botGuild of expiredUser.Guilds ) {
+              if ( Object.prototype.toString.call( botGuild.Expires ) === '[object Date]' ) {
+                expiredUserList.push( [ botGuild.Expires.valueOf(), { _id: expiredUser._id, GuildName: botGuild.GuildName, Expires: botGuild.Expires, UserName: expiredUser.UserName } ] );
+              }
+            }
+          }
+          if ( expiredUserList.length >= 1 ) {
+            expiredUserList = expiredUserList.sort().reverse().map( u => u[ 1 ] );
+            for ( let userExpires of expiredUserList ) {
+              strUserUpdate += '\n\t\tIn ' + chalk.bold.red( await duration( userExpires.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ', G:' + chalk.underline( userExpires.GuildName ) + ' Expires from U:' + chalk.bold.red( userExpires.UserName ) + ' on: ' + chalk.hex( '#84618E' ).bold( userExpires.Expires.toISOString() );
+            }
+          }
+        }
         if ( botVerbosity >= 3 ) {// List Guildless users
           let expiringUsers = ( users.db.filter( u => Object.prototype.toString.call( u.Guildless ) === '[object Date]' )
           .map( u => { return [ u.Guildless.valueOf(), { _id: u._id, Guildless: u.Guildless, UserName: u.UserName } ]; } )
@@ -393,23 +410,6 @@ client.on( 'ready', async rdy => {
             for ( let guildlessUser of expiringUserIds ) {
               let expiringUser = expiringUsers.find( u => u._id === guildlessUser );
               strUserUpdate += '\n\t\tU:' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + chalk.bold.red( await duration( ( new Date() ) - expiringUser.Guildless , { getMonths: true, getWeeks: true } ) ) + ' since: ' + chalk.hex( '#84618E' ).bold( expiringUser.Guildless.toISOString() );
-            }
-          }
-        }
-        if ( botVerbosity >= 4 && users.expired != 0 ) {// List users with Guilds that Expires
-          let expiredUserList = [];
-          for ( let userId of users.expired ) {
-            let expiredUser = users.db.find( u => u._id === userId );
-            for ( let botGuild of expiredUser.Guilds ) {
-              if ( Object.prototype.toString.call( botGuild.Expires ) === '[object Date]' ) {
-                expiredUserList.push( [ botGuild.Expires.valueOf(), { _id: expiredUser._id, Expires: botGuild.Expires, GuildName: botGuild.GuildName } ] );
-              }
-            }
-          }
-          if ( expiredUserList.length >= 1 ) {
-            expiredUserList = expiredUserList.sort().map( u => u[ 1 ] );
-            for ( let userExpires of expiredUserList ) {
-              strUserUpdate += '\n\t\tIn ' + chalk.bold.red( await duration( userExpires.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ', G:' + chalk.underline( userExpires.GuildName ) + ' Expires from U:' + chalk.bold.red( userExpires.UserName ) + ' on: ' + chalk.hex( '#84618E' ).bold( userExpires.Expires.toISOString() );
             }
           }
         }
