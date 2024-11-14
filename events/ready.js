@@ -26,7 +26,7 @@ client.on( 'ready', async rdy => {
     const botConfig = await getBotConfig();
     if ( ENV.VERBOSITY != botConfig.Verbosity ) {
       var verbosityColor = vebosityColors[ ( ( isNaN( ENV.VERBOSITY ) || ENV.VERBOSITY < 0 || ENV.VERBOSITY > 5 ) ? 6 : ENV.VERBOSITY ) ];
-      console.warn( '%s %s', chalk.bold.red( 'Bot verbosity being reset on restart to process.env value of:' ), chalk.underline.hex( verbosityColor ).bold( '_ ' + ENV.VERBOSITY + ' _' ) );
+      console.warn( '%s %s', chalk.bold.red( 'Bot verbosity being reset on restart to process.env value of:' ), chalk.underline.hex( verbosityColor ).bold( ENV.VERBOSITY ) );
     }
     var botVerbosity = ( ENV.VERBOSITY || botConfig.Verbosity || -1 );
     if ( isNaN( botVerbosity ) || botVerbosity < 0 || botVerbosity > 5 ) {
@@ -46,7 +46,7 @@ client.on( 'ready', async rdy => {
     }
     client.verbosity = botVerbosity;
     verbosityColor = vebosityColors[ botVerbosity ];
-    console.log( '%s set to: %s', chalk.blue( 'Verbosity level' ), chalk.underline.hex( verbosityColor ).bold( '_ ' + botVerbosity + ' _' ) );
+    console.log( '%s set to: %s', chalk.blue( 'Verbosity level' ), chalk.underline.hex( verbosityColor ).bold( botVerbosity ) );
     const botOwner = client.users.cache.get( client.ownerId );
     const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };
     const inviteUrl = client.generateInvite( {
