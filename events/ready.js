@@ -26,12 +26,11 @@ client.on( 'ready', async rdy => {
     const botConfig = await getBotConfig();
     if ( ENV.VERBOSITY != botConfig.Verbosity ) {
       var verbosityColor = vebosityColors[ ( ( isNaN( ENV.VERBOSITY ) || ENV.VERBOSITY < 0 || ENV.VERBOSITY > 5 ) ? 6 : ENV.VERBOSITY ) ];
-      console.warn( '%s %s', chalk.bold.red( 'Bot verbosity being reset on restart to process.env value of:' ), chalk.underline.hex( verbosityColor ).bold( ENV.VERBOSITY ) );
+      console.warn( '%s %s', chalk.bold.red( 'Bot verbosity being reset on restart to process.env value of:' ), chalk.underline.hex( verbosityColor ).bold( '_ ' + ENV.VERBOSITY + ' _' ) );
     }
-    var botVerbosity = ( ENV.VERBOSITY || botConfig.Verbosity || -1 );
+    var botVerbosity = parseInt( ENV.VERBOSITY || botConfig.Verbosity || -1 );
     if ( isNaN( botVerbosity ) || botVerbosity < 0 || botVerbosity > 5 ) {
-      console.log(
-        'Bot Verbosity level not valid, defaulting to max verbosity level 5!\n\t' +
+      console.log( 'Bot Verbosity level not valid, defaulting to max verbosity level 5!\n\t' +
         'To fix this, please add %s to your %s file.\n\t' +
         'Valid values are:\n\t\t%s\n\t\t%s\n\t\t%s\n\t\t%s\n\t\t%s\n\t\t%s',
         chalk.green.bold( 'VERBOSITY=#' ), chalk.green.bold( '.env' ),
@@ -44,9 +43,11 @@ client.on( 'ready', async rdy => {
       );
       botVerbosity = 5;
     }
+    botConfig.Verbosity = botVerbosity;
+    await guildConfig.updateOne( { _id: client.id }, botConfig, { upsert: true } );
     client.verbosity = botVerbosity;
     verbosityColor = vebosityColors[ botVerbosity ];
-    console.log( '%s set to: %s', chalk.blue( 'Verbosity level' ), chalk.underline.hex( verbosityColor ).bold( botVerbosity ) );
+    console.log( '%s set to: %s', chalk.blue( 'Verbosity level' ), chalk.underline.hex( verbosityColor ).bold( '_ ' + botVerbosity + ' _' ) );
     const botOwner = client.users.cache.get( client.ownerId );
     const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };
     const inviteUrl = client.generateInvite( {
