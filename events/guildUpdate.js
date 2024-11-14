@@ -13,8 +13,8 @@ client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {
     const guildId = oldGuild.id;
     const guildOwner = newGuild.members.cache.get( newGuild.ownerId );
     const currGuildConfig = await getGuildConfig( oldGuild, true );
-    const newName = ( newGuild.name !== oldGuild.name ? true : false );
-    const newOwner = ( newGuild.ownerId !== oldGuild.ownerId ? true : false );
+    const newName = ( newGuild.name !== oldGuild.name ? true : false );/* TRON */console.log( 'newName: %o\noldName: %o', newGuild.name, oldGuild.name );/* TROFF */
+    const newOwner = ( newGuild.ownerId !== oldGuild.ownerId ? true : false );/* TRON */console.log( 'newOwnerId: %o\noldOwnerId: %o', newGuild.ownerId, oldGuild.ownerId );/* TROFF */
     var doGuildUpdate = false;
     if ( newName ) {// Guild name changed
       if ( botVerbosity >= 2 ) { console.log( 'Changing G:%s to G:%s in my database...', chalk.bold.red( oldGuild.name ), chalk.bold.green( newGuild.name ) ); }
