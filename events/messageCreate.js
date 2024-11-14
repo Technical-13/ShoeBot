@@ -16,6 +16,13 @@ client.on( 'messageCreate', async message => {
     const bot = client.user;
     const objGuildMembers = guild.members.cache;
 
+    if ( Array.from( objGuildMembers.keys() ).indexOf( '302050872383242240' ) != -1 ){//DISBOARD [APP]
+      if ( message.author.id === '302050872383242240' && message.embeds[ 0 ].data.image.url === 'https://disboard.org/images/bot-command-image-bump.png' ) {
+        const bumperId = message.interactionMetadata.user.id;
+        channel.send( { content: '<@' + bumperId + '>, thanks for the `/bump` on [' + guild.name + ' | DISBOARD: Discord Server List](<https://disboard.org/server/' + guild.id + '>)!' } );
+      }
+    }
+
     const gcWhitelist = [ 'GCD' ];
     var hasCodes = {
       GC: false,// Geocache
