@@ -49,7 +49,7 @@ client.on( 'ready', async rdy => {
     botConfig.Verbosity = botVerbosity;
     await botConfigDB.updateOne( { _id: clientId }, botConfig, { upsert: true } );
     client.verbosity = botVerbosity;
-    verbosityColor = vColors[ botVerbosity ];/* TRON */console.log( 'verbosityColor: %o', verbosityColor );/* TROFF */
+    verbosityColor = vColors[ botVerbosity ];
     console.log( '%s set to: %s', chalk.blue( 'Verbosity level' ), chalk.underline.hex( verbosityColor ).bold( '_ ' + botVerbosity + ' _' ) );
     const botOwner = client.users.cache.get( client.ownerId );
     const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };
