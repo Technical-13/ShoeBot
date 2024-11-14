@@ -15,10 +15,12 @@ client.on( 'messageCreate', async message => {
     const { clientId, botOwner, isDevGuild, prefix, isBotOwner, isBotMod, isGlobalWhitelisted, isBlacklisted, isGuildBlacklisted } = await userPerms( author, guild );
     const bot = client.user;
     const objGuildMembers = guild.members.cache;
-
+/* TRON */console.log( 'Array.from( objGuildMembers.keys() ).indexOf( \'302050872383242240\' ): %o', Array.from( objGuildMembers.keys() ).indexOf( '302050872383242240' ) );/* TROFF */
     if ( Array.from( objGuildMembers.keys() ).indexOf( '302050872383242240' ) != -1 ){//DISBOARD [APP]
+    /* TRON */console.log( 'message.author.id: %o', message.author.id );/* TROFF */
+    /* TRON */console.log( 'message.embeds[ 0 ].data.image.url: %o', message.embeds[ 0 ]?.data.image?.url );/* TROFF */
       if ( message.author.id === '302050872383242240' && message.embeds[ 0 ]?.data.image?.url === 'https://disboard.org/images/bot-command-image-bump.png' ) {// Someone bumpped the server!
-        const bumperId = message.interactionMetadata.user.id;
+        const bumperId = message.interactionMetadata.user.id;/* TRON */console.log( 'bumperId: %o', bumperId );/* TROFF */
         channel.send( { content: '<@' + bumperId + '>, thanks for the `/bump` on [' + guild.name + ' | DISBOARD: Discord Server List](<https://disboard.org/server/' + guild.id + '>)!' } );
       }
     }
