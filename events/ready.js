@@ -409,7 +409,7 @@ client.on( 'ready', async rdy => {
           if ( expiredUserList.length >= 1 ) {
             expiredUserList = expiredUserList.sort().map( u => u[ 1 ] );
             for ( let userExpires of expiredUserList ) {
-              strUserUpdate += '\n\t\tIn ' + chalk.bold.red( await duration( userExpires.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ', G:' + chalk.underline( userExpires.GuildName ) + ' Expires from U:' + chalk.bold.red( expiredUser.UserName ) + ' on: ' + chalk.hex( '#84618E' ).bold( userExpires.Expires.toISOString() );
+              strUserUpdate += '\n\t\tIn ' + chalk.bold.red( await duration( userExpires.Expires - ( new Date() ), { getMonths: true, getWeeks: true } ) ) + ', G:' + chalk.underline( userExpires.GuildName ) + ' Expires from U:' + chalk.bold.red( userExpires.UserName ) + ' on: ' + chalk.hex( '#84618E' ).bold( userExpires.Expires.toISOString() );
             }
           }
         }
