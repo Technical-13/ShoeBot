@@ -4,7 +4,7 @@ const ENV = process.env;
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
-const vebosityColors = require( '../jsonObjects/verbosityColors.json' );
+const verbosityColors = require( '../jsonObjects/verbosityColors.json' );
 const botConfigDB = require( '../models/BotConfig.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
@@ -24,10 +24,11 @@ Object.prototype.valMatch = function( that ) { return this == that };
 
 client.on( 'ready', async rdy => {
   try {
+    const vColors = verbosityColors.verbosityScale;
     const clientId = ( config.clientID || ENV.CLIENT_ID || client.id || null );
     const botConfig = await getBotConfig();
     if ( ENV.VERBOSITY != botConfig.Verbosity ) {
-      var verbosityColor = vebosityColors[ ( ( isNaN( ENV.VERBOSITY ) || ENV.VERBOSITY < 0 || ENV.VERBOSITY > 5 ) ? 6 : ENV.VERBOSITY ) ];
+      var verbosityColor = vColors[ ( ( isNaN( ENV.VERBOSITY ) || ENV.VERBOSITY < 0 || ENV.VERBOSITY > 5 ) ? 6 : ENV.VERBOSITY ) ];
       console.warn( '%s %s', chalk.bold.red( 'Bot verbosity being reset on restart to process.env value of:' ), chalk.underline.hex( verbosityColor ).bold( '_ ' + ENV.VERBOSITY + ' _' ) );
     }
     var botVerbosity = parseInt( ENV.VERBOSITY || botConfig.Verbosity || -1 );
@@ -48,7 +49,7 @@ client.on( 'ready', async rdy => {
     botConfig.Verbosity = botVerbosity;
     await botConfigDB.updateOne( { _id: clientId }, botConfig, { upsert: true } );
     client.verbosity = botVerbosity;
-    verbosityColor = vebosityColors[ botVerbosity ];/* TRON */console.log( 'verbosityColor: %o', verbosityColor );/* TROFF */
+    verbosityColor = vColors[ botVerbosity ];/* TRON */console.log( 'verbosityColor: %o', verbosityColor );/* TROFF */
     console.log( '%s set to: %s', chalk.blue( 'Verbosity level' ), chalk.underline.hex( verbosityColor ).bold( '_ ' + botVerbosity + ' _' ) );
     const botOwner = client.users.cache.get( client.ownerId );
     const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };
