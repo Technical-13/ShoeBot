@@ -10,7 +10,7 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const duration = require( '../functions/duration.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
-const botVerbosity = ( ENV.verbosity || config.verbosity || 1 );
+const botVerbosity = ( ENV.VERBOSITY || config.verbosity || 1 );
 const objTimeString = require( '../jsonObjects/time.json' );
 const strScript = chalk.hex( '#FFA500' ).bold( './events/guildDelete.js' );
 

@@ -11,7 +11,7 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const errHandler = require( '../functions/errorHandler.js' );
 const parse = require( '../functions/parser.js' );
 const duration = require( '../functions/duration.js' );
-const botVerbosity = ( ENV.verbosity || config.verbosity || 1 );
+const botVerbosity = ( ENV.VERBOSITY || config.verbosity || 1 );
 const verUserDB = config.verUserDB;
 const strScript = chalk.hex( '#FFA500' ).bold( './events/guildMemberRemove.js' );
 

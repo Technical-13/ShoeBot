@@ -10,7 +10,7 @@ const createNewUser = require( '../functions/createNewUser.js' );
 const addUserGuild = require( '../functions/addUserGuild.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
-const botVerbosity = ( ENV.verbosity || config.verbosity || 1 );
+const botVerbosity = ( ENV.VERBOSITY || config.verbosity || 1 );
 const verUserDB = config.verUserDB;
 const strScript = chalk.hex( '#FFA500' ).bold( './events/guildCreate.js' );
 

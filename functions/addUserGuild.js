@@ -3,7 +3,7 @@ const config = require( '../config.json' );
 const chalk = require( 'chalk' );
 const userConfig = require( '../models/BotUser.js' );
 const createNewUser = require( './createNewUser.js' );
-const botVerbosity = ( config.verbosity || 1 );
+const botVerbosity = ( ENV.VERBOSITY || config.verbosity || 1 );
 const strScript = chalk.hex( '#FFA500' ).bold( './functions/addUserGuild.js' );
 
 module.exports = async ( id, guild ) => {

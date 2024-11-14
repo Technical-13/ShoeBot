@@ -13,7 +13,7 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const getBotConfig = require( '../functions/getBotDB.js' );
 const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
-const botVerbosity = ( ENV.verbosity || config.verbosity || 1 );
+const botVerbosity = ( ENV.VERBOSITY || config.verbosity || 1 );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
 Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };

@@ -6,7 +6,7 @@ const chalk = require( 'chalk' );
 const errHandler = require( '../functions/errorHandler.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
-const botVerbosity = ( ENV.verbosity || config.verbosity || 1 );
+const botVerbosity = ( ENV.VERBOSITY || config.verbosity || 1 );
 const strScript = chalk.hex( '#FFA500' ).bold( './events/guildUpdate.js' );
 
 client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {
