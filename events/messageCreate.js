@@ -3,9 +3,11 @@ const { EmbedBuilder, Collection, PermissionsBitField } = require( 'discord.js' 
 const ms = require( 'ms' );
 const chalk = require( 'chalk' );
 const cooldown = new Collection();
-const cacheinfo = require( '../functions/cacheinfo.js' );
 const gcCacheTypeIcons = require( '../jsonObjects/eventTypes.json' );
+const cacheinfo = require( '../functions/cacheinfo.js' );
 const userPerms = require( '../functions/getPerms.js' );
+const botVerbosity = client.verbosity;
+const strScript = chalk.hex( '#FFA500' ).bold( './events/messageCreate.js' );
 
 client.on( 'messageCreate', async message => {
   try {
@@ -177,5 +179,5 @@ client.on( 'messageCreate', async message => {
       codesResponse.edit( strCodes );
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( './events/messageCreate.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack ); }
 } );

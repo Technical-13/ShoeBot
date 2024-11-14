@@ -1,6 +1,7 @@
 const axios = require( 'axios' );
 const cheerio = require( 'cheerio' );
 const chalk = require( 'chalk' );
+const botVerbosity = client.verbosity;
 const strScript = chalk.hex( '#FFA500' ).bold( './functions/cacheinfo.js' );
 
 module.exports = async ( gcCode ) => {

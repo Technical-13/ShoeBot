@@ -1,6 +1,4 @@
 const client = require( '..' );
-require( 'dotenv' ).config();
-const ENV = process.env;
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const guildConfig = require( '../models/GuildConfig.js' );
@@ -10,7 +8,7 @@ const createNewUser = require( '../functions/createNewUser.js' );
 const addUserGuild = require( '../functions/addUserGuild.js' );
 const errHandler = require( '../functions/errorHandler.js' );
 const parse = require( '../functions/parser.js' );
-const botVerbosity = ( ENV.VERBOSITY || config.verbosity || 1 );
+const botVerbosity = client.verbosity;
 const verUserDB = config.verUserDB;
 const strScript = chalk.hex( '#FFA500' ).bold( './events/guildMemberAdd.js' );
 

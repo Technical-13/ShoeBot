@@ -1,6 +1,4 @@
 const client = require( '..' );
-require( 'dotenv' ).config();
-const ENV = process.env;
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const userConfig = require( '../models/BotUser.js' );
@@ -9,10 +7,10 @@ const userPerms = require( '../functions/getPerms.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const createNewUser = require( '../functions/createNewUser.js' );
 const addUserGuild = require( '../functions/addUserGuild.js' );
-Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
-const botVerbosity = ( ENV.VERBOSITY || config.verbosity || 1 );
+const botVerbosity = client.verbosity;
 const verUserDB = config.verUserDB;
 const strScript = chalk.hex( '#FFA500' ).bold( './events/guildMemberUpdate.js' );
+Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
 
 client.on( 'guildMemberUpdate', async ( oldMember, newMember ) => {
   try {

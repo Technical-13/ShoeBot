@@ -1,12 +1,10 @@
 const client = require( '..' );
-require( 'dotenv' ).config();
-const ENV = process.env;
 const config = require( '../config.json' );
 const chalk = require( 'chalk' );
 const errHandler = require( '../functions/errorHandler.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
-const botVerbosity = ( ENV.VERBOSITY || config.verbosity || 1 );
+const botVerbosity = client.verbosity;
 const strScript = chalk.hex( '#FFA500' ).bold( './events/guildUpdate.js' );
 
 client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {
@@ -15,8 +13,8 @@ client.on( 'guildUpdate', async ( oldGuild, newGuild ) => {
     const guildId = oldGuild.id;
     const guildOwner = newGuild.members.cache.get( newGuild.ownerId );
     const currGuildConfig = await getGuildConfig( oldGuild, true );
-    const newName = ( newGuild.name !== oldGuild.name ? true : false );/* TRON */console.log( 'newName: %o\noldName: %o', newGuild.name, oldGuild.name );/* TROFF */
-    const newOwner = ( newGuild.ownerId !== oldGuild.ownerId ? true : false );/* TRON */console.log( 'newOwnerId: %o\noldOwnerId: %o', newGuild.ownerId, oldGuild.ownerId );/* TROFF */
+    const newName = ( newGuild.name != '' && newGuild.name != oldGuild.name ? true : false );
+    const newOwner = ( newGuild.ownerId != '' && newGuild.ownerId != oldGuild.ownerId ? true : false );
     var doGuildUpdate = false;
     if ( newName ) {// Guild name changed
       if ( botVerbosity >= 2 ) { console.log( 'Changing G:%s to G:%s in my database...', chalk.bold.red( oldGuild.name ), chalk.bold.green( newGuild.name ) ); }

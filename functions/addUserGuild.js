@@ -1,11 +1,9 @@
 const client = require( '..' );
-require( 'dotenv' ).config();
-const ENV = process.env;
 const config = require( '../config.json' );
 const chalk = require( 'chalk' );
 const userConfig = require( '../models/BotUser.js' );
 const createNewUser = require( './createNewUser.js' );
-const botVerbosity = ( ENV.VERBOSITY || config.verbosity || 1 );
+const botVerbosity = client.verbosity;
 const strScript = chalk.hex( '#FFA500' ).bold( './functions/addUserGuild.js' );
 
 module.exports = async ( id, guild ) => {

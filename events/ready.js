@@ -1,6 +1,4 @@
 const client = require( '..' );
-require( 'dotenv' ).config();
-const ENV = process.env;
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
@@ -13,12 +11,13 @@ const addUserGuild = require( '../functions/addUserGuild.js' );
 const getBotConfig = require( '../functions/getBotDB.js' );
 const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
-const botVerbosity = ( ENV.VERBOSITY || config.verbosity || 1 );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
+const botVerbosity = client.verbosity;
+const strScript = chalk.hex( '#FFA500' ).bold( './events/ready.js' );
 Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
-Array.prototype.getDistinct = function() { return this.filter( ( val, i, arr ) => i == arr.indexOf( val ) ) }
-Object.prototype.valMatch = function( that ) { return this == that }
+Array.prototype.getDistinct = function() { return this.filter( ( val, i, arr ) => i == arr.indexOf( val ) ) };
+Object.prototype.valMatch = function( that ) { return this == that };
 
 client.on( 'ready', async rdy => {
   try {
@@ -32,7 +31,7 @@ client.on( 'ready', async rdy => {
       case 0: verbosityColor = '#006B3D'; break;
       default: verbosityColor = '#0000FF'; break;
     }
-    console.log( '%s set to: %s', chalk.blue( 'Verbosity level' ), chalk.underline.hex( verbosityColor ).bold( botVerbosity ) );
+    console.log( '%s set to: %s', chalk.blue( 'Verbosity level' ), chalk.underline.hex( verbosityColor ).bold( '_ ' + botVerbosity + ' _' ) );
     const botOwner = client.users.cache.get( client.ownerId );
     const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };
     const inviteUrl = client.generateInvite( {
@@ -453,5 +452,5 @@ client.on( 'ready', async rdy => {
     } )
     .catch( ( rejected ) => { console.error( rejected.message ); } );
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( './events/ready.js' ), errObject.stack ); }
+  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack ); }
 } );
