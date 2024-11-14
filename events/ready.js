@@ -1,4 +1,6 @@
 const client = require( '..' );
+require( 'dotenv' ).config();
+const ENV = process.env;
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
