@@ -55,7 +55,7 @@ client.on( 'guildMemberUpdate', async ( oldMember, newMember ) => {
     }
 
     if ( isGuildOwner ) {
-      const currGuildConfig = await getGuildConfig( guild );
+      const currGuildConfig = await getGuildConfig( guild, true );
       const newOwnerName = ( newMember.displayName !== currGuildConfig.Guild.OwnerName ? true : false );
       var doGuildUpdate = false;
       if ( newOwnerName ) {
