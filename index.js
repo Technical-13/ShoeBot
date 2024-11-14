@@ -6,7 +6,6 @@ const config = require( './config.json' );
 const keepAlive = require( './functions/server.js' );
 const initDatabase = require( './functions/database.js' );
 
-initDatabase();
 
 const client = new Client( {
   intents: [
@@ -43,8 +42,11 @@ fs.readdirSync( './handlers' ).forEach( ( handler ) => {
   require( `./handlers/${handler}` )( client );
 } );
 
-client.login( ENV.token )
-.then( async loggedIn => { console.log( 'Successfully connected!' ); } )
-.catch( errLogin => { console.error( 'There was an error logging in:\n%s', errLogin.stack ); } );
+new Promise ( async () => { resolve( await initDatabase( client ) ); } )
+.then( () => {
+  client.login( ENV.token )
+  .then( async loggedIn => { console.log( 'Successfully connected!' ); } )
+  .catch( errLogin => { console.error( 'There was an error logging in:\n%s', errLogin.stack ); } );
+} );
 
 keepAlive();

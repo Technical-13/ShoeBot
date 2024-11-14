@@ -1,4 +1,3 @@
-const client = require( '..' );
 require( 'dotenv' ).config();
 const ENV = process.env;
 const config = require( '../config.json' );
@@ -9,7 +8,7 @@ const strConnectDB = ( ENV.mongodb || '' );
 mongoose.set( 'strictQuery', false );
 const strScript = chalk.hex( '#FFA500' ).bold( './functions/database.js' );
 
-module.exports = async () => {
+module.exports = async ( client ) => {
   try {
     await mongoose.disconnect().then( dbDisconnected => console.log( chalk.yellow( 'MongoDB closed.' ) ) );
     await mongoose.connect( strConnectDB )

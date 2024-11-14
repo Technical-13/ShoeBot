@@ -1,4 +1,3 @@
-
 require( 'dotenv' ).config();
 const ENV = process.env;
 const express = require( 'express' );
@@ -13,7 +12,6 @@ function keepAlive() {
   var server = expressServer.listen( 3000, () => {
     const port = server.address().port;
     console.log( '%s is ready on port %s.', bot, port );
-    console.log( '%s', server.address() );
   } );
 }
 
