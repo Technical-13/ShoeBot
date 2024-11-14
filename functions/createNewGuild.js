@@ -1,4 +1,6 @@
 const chalk = require( 'chalk' );
+require( 'dotenv' ).config();
+const ENV = process.env;
 const config = require( '../config.json' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const getBotConfig = require( '../functions/getBotDB.js' );
