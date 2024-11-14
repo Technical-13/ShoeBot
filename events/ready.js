@@ -2,6 +2,7 @@ const client = require( '..' );
 const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
+const vebosityColors = require( '../jsonObjects/vebosityColors.json' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
@@ -13,7 +14,6 @@ const duration = require( '../functions/duration.js' );
 const parse = require( '../functions/parser.js' );
 const verGuildDB = config.verGuildDB;
 const verUserDB = config.verUserDB;
-const botVerbosity = client.verbosity;
 const strScript = chalk.hex( '#FFA500' ).bold( './events/ready.js' );
 Array.prototype.getDiff = function( arrOld ) { return this.filter( o => !arrOld.includes( o ) ) };
 Array.prototype.getDistinct = function() { return this.filter( ( val, i, arr ) => i == arr.indexOf( val ) ) };
@@ -21,16 +21,29 @@ Object.prototype.valMatch = function( that ) { return this == that };
 
 client.on( 'ready', async rdy => {
   try {
-    var verbosityColor;
-    switch ( botVerbosity ) {
-      case 5: verbosityColor = '#D61F1F'; break;
-      case 4: verbosityColor = '#E03C32'; break;
-      case 3: verbosityColor = '#FFD301'; break;
-      case 2: verbosityColor = '#7BB662'; break;
-      case 1: verbosityColor = '#639754'; break;
-      case 0: verbosityColor = '#006B3D'; break;
-      default: verbosityColor = '#0000FF'; break;
+    const botConfig = await getBotConfig();
+    if ( ENV.VERBOSITY != botConfig.Verbosity ) {
+      var verbosityColor = vebosityColors[ ( ( isNaN( ENV.VERBOSITY ) || ENV.VERBOSITY < 0 || ENV.VERBOSITY > 5 ) ? 6 : ENV.VERBOSITY ) ];
+      console.warn( '%s %s', chalk.bold.red( 'Bot verbosity being reset on restart to process.env value of:' ), chalk.underline.hex( verbosityColor ).bold( '_ ' + ENV.VERBOSITY + ' _' ) );
     }
+    var botVerbosity = ( ENV.VERBOSITY || botConfig.Verbosity || -1 );
+    if ( isNaN( botVerbosity ) || botVerbosity < 0 || botVerbosity > 5 ) {
+      console.log(
+        'Bot Verbosity level not valid, defaulting to max verbosity level 5!\n\t' +
+        'To fix this, please add %s to your %s file.\n\t' +
+        'Valid values are:\n\t\t%s\n\t\t%s\n\t\t%s\n\t\t%s\n\t\t%s\n\t\t%s',
+        chalk.green.bold( 'VERBOSITY=#' ), chalk.green.bold( '.env' ),
+        chalk.hex( '#D61F1F' ).bold( '5 - All messages' ),
+        chalk.hex( '#E03C32' ).bold( '4 - Major debugging messages' ),
+        chalk.hex( '#FFD301' ).bold( '3 - Moderate debugging messages' ),
+        chalk.hex( '#7BB662' ).bold( '2 - Minor debugging messages' ),
+        chalk.hex( '#639754' ).bold( '1 - Basic system messages' ),
+        chalk.hex( '#006B3D' ).bold( '0 - Required system messages' )
+      );
+      botVerbosity = 5;
+    }
+    client.verbosity = botVerbosity;
+    verbosityColor = vebosityColors[ botVerbosity ];
     console.log( '%s set to: %s', chalk.blue( 'Verbosity level' ), chalk.underline.hex( verbosityColor ).bold( '_ ' + botVerbosity + ' _' ) );
     const botOwner = client.users.cache.get( client.ownerId );
     const activityTypes = { 'Playing': 0, 'Streaming': 1, 'Listening': 2, 'Watching': 3, 'Custom': 4, 'Competing': 5 };

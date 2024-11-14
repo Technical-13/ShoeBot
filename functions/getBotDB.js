@@ -66,6 +66,7 @@ module.exports = async () => {
         Name: ( config.botName || ENV.BOT_USERNAME ),
         Owner: botOwnerID,
         Prefix: ( config.prefix || '!' ),
+        Verbosity: ( ENV.VERBOSITY || -1 ),
         Version: verBotDB,
         Whitelist: []
       };
