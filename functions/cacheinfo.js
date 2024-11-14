@@ -1,3 +1,4 @@
+const client = require( '..' );
 const axios = require( 'axios' );
 const cheerio = require( 'cheerio' );
 const chalk = require( 'chalk' );
