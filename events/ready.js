@@ -5,6 +5,7 @@ const { OAuth2Scopes, PermissionFlagsBits } = require( 'discord.js' );
 const chalk = require( 'chalk' );
 const config = require( '../config.json' );
 const vebosityColors = require( '../jsonObjects/verbosityColors.json' );
+const botConfigDB = require( '../models/BotConfig.js' );
 const guildConfig = require( '../models/GuildConfig.js' );
 const userConfig = require( '../models/BotUser.js' );
 const getGuildConfig = require( '../functions/getGuildDB.js' );
@@ -23,6 +24,7 @@ Object.prototype.valMatch = function( that ) { return this == that };
 
 client.on( 'ready', async rdy => {
   try {
+    const clientId = ( config.clientID || ENV.CLIENT_ID || client.id || null );
     const botConfig = await getBotConfig();
     if ( ENV.VERBOSITY != botConfig.Verbosity ) {
       var verbosityColor = vebosityColors[ ( ( isNaN( ENV.VERBOSITY ) || ENV.VERBOSITY < 0 || ENV.VERBOSITY > 5 ) ? 6 : ENV.VERBOSITY ) ];
@@ -44,7 +46,7 @@ client.on( 'ready', async rdy => {
       botVerbosity = 5;
     }
     botConfig.Verbosity = botVerbosity;
-    await guildConfig.updateOne( { _id: client.id }, botConfig, { upsert: true } );
+    await botConfigDB.updateOne( { _id: clientId }, botConfig, { upsert: true } );
     client.verbosity = botVerbosity;
     verbosityColor = vebosityColors[ botVerbosity ];
     console.log( '%s set to: %s', chalk.blue( 'Verbosity level' ), chalk.underline.hex( verbosityColor ).bold( '_ ' + botVerbosity + ' _' ) );
