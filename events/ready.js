@@ -385,13 +385,13 @@ client.on( 'ready', async rdy => {
         else { strUserUpdate = 'Updated ' + chalk.bold.green( users.update ) + ' user' + ( users.update === 1 ? '' : 's' ) + '.'; }
         if ( botVerbosity >= 3 ) {// List Guildless users
           let expiringUsers = ( users.db.filter( u => Object.prototype.toString.call( u.Guildless ) === '[object Date]' )
-          .map( u => { return [ u.Guildless.valueOf(), u._id ]; } )
+          .map( u => { return [ u.Guildless.valueOf(), { _id: u._id, Guildless: u.Guildless, UserName: u.UserName } ]; } )
           .sort()
           .map( u => u[ 1 ] ) || [] );
           if ( expiringUsers.length != 0 ) {
             let expiringUserIds = Array.from( expiringUsers.map( val => val._id ) );
-            for ( let userId of expiringUserIds ) {
-              let expiringUser = expiringUsers.find( u => u._id === userId );
+            for ( let guildlessUser of expiringUserIds ) {
+              let expiringUser = expiringUsers.find( u => u._id === guildlessUser );
               strUserUpdate += '\n\t\tU:' + chalk.bold.red( expiringUser.UserName ) + ' has been Guildless for ' + chalk.bold.red( await duration( ( new Date() ) - expiringUser.Guildless , { getMonths: true, getWeeks: true } ) ) + ' since: ' + chalk.hex( '#84618E' ).bold( expiringUser.Guildless.toISOString() );
             }
           }
