@@ -36,7 +36,7 @@ client.on( 'messageCreate', async ( message ) => {
         setTimeout( () => {// Send a reminder to bump in two hours.
           channel.send( { content: 'Hey <@302050872383242240> bump buddies!  It has been two hours since the server was last bumped by <@' + bumperId + '> for [' + guild.name + ' | DISBOARD: Discord Server List](<https://disboard.org/server/' + guild.id + '>)!' } )
           .catch( async errSend => { interaction.editReply( await errHandler( errSend, { command: 'messageCreate/bbDISBOARD', channel: channel, type: 'errSend' } ) ); } );
-        }, 7200000 ) );
+        }, 7200000 );
       }
     } else if ( author.bot ) { return; }
 
