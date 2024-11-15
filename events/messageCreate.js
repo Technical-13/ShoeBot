@@ -22,9 +22,10 @@ const getDebugString = ( thing ) => {
 
 client.on( 'messageCreate', async ( message ) => {
   try {
-    const { author, channel, content, guild, mentions } = message;
-    if ( !message.applicationId && message.webhookId === message.authorId ) return;//It's a webhook
+    const { applicationId, authorId, webhookId } = message.toJSON();
+    if ( !applicationId && webhookId === authorId ) return;//It's a webhook
     if ( channel.type !== 0 ) return;//Not a text channel within a guild
+    const { author, channel, content, guild, mentions } = message;
     const { clientId, botOwner, isDevGuild, prefix, isBotOwner, isBotMod, isGlobalWhitelisted, isBlacklisted, isGuildBlacklisted } = await userPerms( author, guild );
     const bot = client.user;
     const objGuildMembers = guild.members.cache;
