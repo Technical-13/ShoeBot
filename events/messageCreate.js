@@ -8,6 +8,17 @@ const cacheinfo = require( '../functions/cacheinfo.js' );
 const userPerms = require( '../functions/getPerms.js' );
 const botVerbosity = client.verbosity;
 const strScript = chalk.hex( '#FFA500' ).bold( './events/messageCreate.js' );
+const getDebugString = ( thing ) => {
+  if ( Array.isArray( thing ) ) { return '{ object-Array: { length: ' + thing.length + ' } }'; }
+  else if ( Object.prototype.toString.call( thing ) === '[object Date]' ) { return '{ object-Date: { ISOstring: ' + thing.toISOString() + ', value: ' + thing.valueOf() + ' } }'; }
+  else if ( typeof( thing ) != 'object' ) { return thing; }
+  else {
+    let objType = ( thing ? 'object-' + thing.constructor.name : typeof( thing ) );
+    let objId = ( thing ? thing.id : 'no.id' );
+    let objName = ( thing ? ( thing.displayName || thing.globalName || thing.name ) : 'no.name' );
+    return '{ ' + objType + ': { id: ' + objId + ', name: ' + objName + ' } }';
+  }
+};
 
 client.on( 'messageCreate', async message => {
   try {
@@ -179,5 +190,8 @@ client.on( 'messageCreate', async message => {
       codesResponse.edit( strCodes );
     }
   }
-  catch ( errObject ) { console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack ); }
+  catch ( errObject ) {
+    console.error( 'Uncaught error in %s:\n\t%s\n\tI was processing a message from %s in https://discord.com/channels/%s/%s\n%s\n-----',
+    strScript, errObject.stack, getDebugString( author ), guild.id, channel.id, message.content );
+  }
 } );
