@@ -12,6 +12,9 @@ module.exports = {
       const arrToDo = [
         'Move `§help` to `/help` so response can be ephemeral',
         'Move `§invite` to `/invite` and make User cmd so response can be ephemeral',
+        'Add "*bump buddy*" thing for DISBOARD bumps.',
+        'Build [`bot`.magentarv.info](<https://ShoeBot.MagentaRV.info>) stuff.',
+        'Build `returnurl` stuff for APIs to send stuff back to the bot.',
         'Update `/config` and `/system` for DB changes',
         'Do whatever is defined for guildConfig.Part in guildMemberKick.js and guildMemberBan.js',
         'Finish guildCreate.js event telling guild owner how to config bot.',
