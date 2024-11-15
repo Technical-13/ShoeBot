@@ -20,7 +20,7 @@ const getDebugString = ( thing ) => {
   }
 };
 
-client.on( 'messageCreate', async message => {
+client.on( 'messageCreate', async ( message ) => {
   try {
     const { author, channel, content, guild, mentions } = message;
     if ( channel.type !== 0 ) return;
@@ -191,7 +191,8 @@ client.on( 'messageCreate', async message => {
     }
   }
   catch ( errObject ) {
+    const { author, channel, content, guild } = message;
     console.error( 'Uncaught error in %s:\n\t%s\n\tI was processing a message from %s in https://discord.com/channels/%s/%s\n%s\n-----',
-    strScript, errObject.stack, getDebugString( author ), guild.id, channel.id, message.content );
+    strScript, errObject.stack, getDebugString( author ), guild.id, channel.id, content );
   }
 } );
