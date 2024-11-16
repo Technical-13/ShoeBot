@@ -11,9 +11,7 @@ const cors = require( 'cors' );
 const app = express();
 const bot = ( ENV.BOT_USERNAME || 'Server' );
 const botPort = ( ENV.PORT || 3000 );
-const objTimeString = require( '../jsonObjects/time.json' );
 const strScript = chalk.hex( '#FFA500' ).bold( './functions/server.js' );
-var strNow = () => { return ( new Date() ).toLocaleDateString( 'en-us', objTimeString ) };
 
 app.use( cors( { credentials: true, origin: 'https://node4.lunes.host:' + botPort } ) );
 app.use( cookieParser() );
