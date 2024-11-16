@@ -25,7 +25,7 @@ async function keepAlive() {
     await mongoose.connect( strConnectDB )
     .then( async dbConnected => {
       console.log( chalk.greenBright( 'Connected dashboard to MongoDB.' ) );
-      app.listen( botPort, () => {
+      var server = app.listen( botPort, () => {
         const port = server.address().port;
         console.log( '%s is ready on port %s.\n\thttps://%s.MagentaRV.info', bot, port, bot );
       } );
