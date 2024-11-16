@@ -8,9 +8,15 @@ const objTimeString = require( '../jsonObjects/time.json' );
 var strNow = () => { return ( new Date() ).toLocaleDateString( 'en-us', objTimeString ) };
 
 app.get( '/', ( req, res ) => {
-  if ( req ) {
-    console.log( 'req: %o', req );
-  } else { res.send( bot + ' was last restarted: ' + strNow() ); }
+  res.send( bot + ' was last restarted: ' + strNow() );
+} );
+
+app.get( '/users/:userId(\d{17,19})', ( req, res ) => {
+  console.log( 'req.params: %o', req.params );
+} );
+
+app.get( '/guilds/:guildId(\d{17,19})', ( req, res ) => {
+  console.log( 'req.params: %o', req.params );
 } );
 
 function keepAlive() {
