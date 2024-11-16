@@ -14,7 +14,7 @@ app.set( 'views', path.join( __dirname, 'views' ) );
 
 // Define a route for the home page
 app.get( '/', ( req, res ) => {
-  res.render( 'index', { bot: bot, restartedAt: bot + ' last restarted at ' + strNow() + '.' );
+  res.render( 'index', { bot: bot, restartedAt: bot + ' last restarted at ' + strNow() + '.' } );
 } );
 
 function keepAlive() {
