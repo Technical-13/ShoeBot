@@ -14,13 +14,13 @@ app.set( 'views', path.join( __dirname, 'views' ) );
 
 // Define a route for the home page
 app.get( '/', ( req, res ) => {
-  res.render( 'index', { bot: bot, restartedAt: strNow() } );
+  res.render( 'index', { bot: bot, restartedAt: bot + ' last restarted at ' + strNow() + '.' );
 } );
 
 function keepAlive() {
   var server = app.listen( botPort, () => {
     const port = server.address().port;
-    console.log( '%s is ready on port %s.\n\thttps://%s.MagentaRV.info', bot, port );
+    console.log( '%s is ready on port %s.\n\thttps://%s.MagentaRV.info', bot, port, bot );
   } );
 }
 
