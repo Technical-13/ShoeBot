@@ -1,12 +1,12 @@
 const express = require( 'express' );
 const router = express.Router();
 
-router.get( '/users', ( req, res ) => {
+router.get( '/', ( req, res ) => {
   console.log( req.user );
   res.send( 'Looking for a user?' );
 } );
 
-router.get( '/user/:userId', ( req, res ) => {
+router.get( '/:userId', ( req, res ) => {
   const { userId } = req.params;
 
   res.send(`Getting settings for user id ${userId}`);
