@@ -9,7 +9,7 @@ var strNow = () => { return ( new Date() ).toLocaleDateString( 'en-us', objTimeS
 
 app.get( '/', ( req, res ) => {
   if ( req ) {
-    res.json( { request: req } );
+    console.log( 'req: %o', req );
   } else { res.send( bot + ' was last restarted: ' + strNow() ); }
 } );
 
