@@ -5,7 +5,7 @@ const express = require( 'express' );
 const mongoose = require( 'mongoose' );
 const strConnectDB = ( ENV.mongodb || null );
 const rootRouter = require( '../routes/rootRouter.js' );
-//const baseMiddleware = require( '../routes/middlewares/base-middleware' );
+const baseMiddleware = require( '../routes/middlewares/base-middleware' );
 const cookieParser = require( 'cookie-parser' );
 const cors = require( 'cors' );
 const app = express();
@@ -17,7 +17,7 @@ var strNow = () => { return ( new Date() ).toLocaleDateString( 'en-us', objTimeS
 
 app.use( cors( { credentials: true, origin: 'https://node4.lunes.host:' + botPort } ) );
 app.use( cookieParser() );
-//app.use( '/', baseMiddleware );
+app.use( '/', baseMiddleware );
 app.use( '/', baseRouter );
 
 if ( !strConnectDB ) { throw new Error( chalk.bold.red( `Failed to get process.env.mongodb in ${strScript}.` ) ); }
