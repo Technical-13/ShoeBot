@@ -20,7 +20,7 @@ app.get( '/', ( req, res ) => {
 function keepAlive() {
   var server = app.listen( botPort, () => {
     const port = server.address().port;
-    console.log( '%s is ready on port %s.', bot, port );
+    console.log( '%s is ready on port %s.\n\thttps://%s.MagentaRV.info', bot, port );
   } );
 }
 
