@@ -16,7 +16,7 @@ const strScript = chalk.hex( '#FFA500' ).bold( './functions/server.js' );
 app.use( cors( { credentials: true, origin: 'https://node4.lunes.host:' + botPort } ) );
 app.use( cookieParser() );
 app.use( '/', baseMiddleware );
-app.use( '/', baseRouter );
+app.use( '/', rootRouter );
 
 if ( !strConnectDB ) { throw new Error( chalk.bold.red( `Failed to get process.env.mongodb in ${strScript}.` ) ); }
 
