@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.get( '/guilds', ( req, res ) => {
   console.log( req.guild );
-  res.send( 'received!' );
+  res.send( 'Looking for a guild?' );
 } );
 
 router.get( '/guild/:guildId', ( req, res ) => {

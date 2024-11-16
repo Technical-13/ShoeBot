@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.get( '/users', ( req, res ) => {
   console.log( req.user );
-  res.send( 'received!' );
+  res.send( 'Looking for a user?' );
 } );
 
 router.get( '/user/:userId', ( req, res ) => {
