@@ -1,10 +1,15 @@
 const express = require( 'express' );
 const router = express.Router();
 
-router.get( '/guilds', ( req, res ) => {
-  console.log( req.guild );
+router.get( '/', ( req, res ) => {
+  console.log( req.user );
   res.send( 'Looking for a guild?' );
 } );
+
+/*router.get( '/guilds', ( req, res ) => {
+  console.log( req.user );
+  res.send( 'Looking for a guild?' );
+} );//*/
 
 router.get( '/guild/:guildId', ( req, res ) => {
   const { guildId } = req.params;
