@@ -6,7 +6,7 @@ router.get( '/users', ( req, res ) => {
   res.send( 'received!' );
 } );
 
-router.get( '/users/:userId', ( req, res ) => {
+router.get( '/user/:userId', ( req, res ) => {
   const { userId } = req.params;
 
   res.send(`Getting settings for user id ${userId}`);

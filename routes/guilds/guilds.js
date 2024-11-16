@@ -2,7 +2,7 @@ const express = require( 'express' );
 const router = express.Router();
 
 router.get( '/guilds', ( req, res ) => {
-  console.log( req.user );
+  console.log( req.guild );
   res.send( 'received!' );
 } );
 
