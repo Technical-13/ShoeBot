@@ -7,7 +7,11 @@ const botPort = ( ENV.PORT || 3000 );
 const objTimeString = require( '../jsonObjects/time.json' );
 var strNow = () => { return ( new Date() ).toLocaleDateString( 'en-us', objTimeString ) };
 
-app.all( '/', ( req, res ) => { res.send( bot + ' was last restarted: ' + strNow() ); } );
+app.get( '/', ( req, res ) => {
+  if ( req ) {
+    res.json( { request: req } );
+  } else { res.send( bot + ' was last restarted: ' + strNow() ); }
+} );
 
 function keepAlive() {
   var server = app.listen( botPort, () => {
