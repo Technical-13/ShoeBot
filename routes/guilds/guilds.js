@@ -9,7 +9,12 @@ router.get( '/', ( req, res ) => {
 router.get( '/:guildId', async ( req, res ) => {
   const { guildId } = req.params;
   const reqGuild = await Guilds.findOne( { _id: guildId } );
-  res.send(`Are you looking for ${reqGuild.Guild.Name} with ${new Intl.NumberFormat().format( reqGuild.Guild.Members )} members?`);
+  if ( reqGuild ) {
+    res.send(`Are you looking for ${reqGuild.Guild.Name} with ${new Intl.NumberFormat().format( reqGuild.Guild.Members )} members?`);
+  }
+  else {
+    res.send(`Guild id ${guildId} doesn't seem to be in my database.`);
+  }
 } );
 
 router.post( '/', ( req, res ) => {

@@ -9,7 +9,12 @@ router.get( '/', ( req, res ) => {
 router.get( '/:userId', async ( req, res ) => {
   const { userId } = req.params;
   const reqUser = await Users.findOne( { _id: userId } );
-  res.send(`Are you looking for ${reqUser.UserName}?`);
+  if ( reqUser ) {
+    res.send(`Are you looking for ${reqUser.UserName}?`);
+  }
+  else {
+    res.send(`User id ${userId} doesn't seem to be in my database.`);
+  }
 } );
 
 router.post( '/', ( req, res ) => {
