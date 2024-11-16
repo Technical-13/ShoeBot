@@ -1,14 +1,15 @@
 const express = require( 'express' );
 const router = express.Router();
+const Users = require( '../../models/BotUser.js' );
 
 router.get( '/', ( req, res ) => {
   res.send( 'Looking for a user?' );
 } );
 
-router.get( '/:userId', ( req, res ) => {
+router.get( '/:userId', async ( req, res ) => {
   const { userId } = req.params;
-
-  res.send(`Getting settings for user id ${userId}`);
+  const reqUser = await Users.findOne( { _id: userId } );
+  res.send(`Are you looking for ${reqUser.UserName}?`);
 } );
 
 router.post( '/', ( req, res ) => {
