@@ -1,4 +1,4 @@
-const Guild = require( '../models/BotGuild' );
+const Guild = require( '../../models/GuildConfig.js' );
 const jwt = require( 'jsonwebtoken' );
 
 module.exports = async ( req, res, next ) => {

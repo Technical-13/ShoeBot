@@ -6,8 +6,8 @@ router.get( '/users', ( req, res ) => {
   res.send( 'received!' );
 } );
 
-router.get( '/guild/:id', ( req, res ) => {
-  const { id: userId } = req.params;
+router.get( '/users/:userId', ( req, res ) => {
+  const { userId } = req.params;
 
   res.send(`Getting settings for user id ${userId}`);
 } );
