@@ -1,7 +1,7 @@
 const { model, Schema } = require( 'mongoose' );
 
 let userSchema = new Schema( {
-  _id: String,
+  _id: { type: String, unique: true },
   Bot: Boolean,
   Guilds: [ {
     _id: String,
@@ -21,7 +21,7 @@ let userSchema = new Schema( {
   Guildless: Date,
   Score: Number,
   UserName: String,
-  Version: Number
-} );
+  Version: Number//,WikiAuthentication: { String }
+}, { timestamps: true } );
 
 module.exports = model( 'BotUser', userSchema );
