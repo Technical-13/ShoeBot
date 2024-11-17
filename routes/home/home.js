@@ -14,7 +14,7 @@ router.get( '/', ( req, res ) => {
     const pageHome = cheerio.loadBuffer( htmlHome );
     pageHome( 'title' ).text( bot );
     pageHome( '#last-start' ).text( bot + ' was last restarted at: ' + strNow() );
-    resolve( pageGuilds.html() );
+    resolve( pageHome.html() );
   } )
   .then( ( pageHTML ) => { res.send( pageHTML ); } );
 } );
