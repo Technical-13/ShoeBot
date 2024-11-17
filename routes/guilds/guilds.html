@@ -13,7 +13,7 @@
       clearButton.addEventListener( 'click', handleClear );
       clearButton.addEventListener( 'touchstart', handleClear );
 
-      guildSelector.addEventListener( 'change', () => {
+      guildSelector.addEventListener( 'input', () => {
         if ( !guildSelector.value ) {
           clearButton.disabled = true;
           goButton.disabled = true;
