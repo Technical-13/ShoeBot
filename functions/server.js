@@ -3,6 +3,7 @@ const ENV = process.env;
 const chalk = require( 'chalk' );
 const express = require( 'express' );
 const mongoose = require( 'mongoose' );
+mongoose.set( 'strictQuery', false );
 const strConnectDB = ( ENV.mongodb || null );
 const rootRouter = require( '../routes/rootRouter.js' );
 const baseMiddleware = require( '../routes/middleware/base-middleware' );
