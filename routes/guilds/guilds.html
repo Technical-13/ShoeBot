@@ -6,7 +6,7 @@
       function handleClear() {
         guildSelector.value = '';
       }
-      const guildSelector = document.getElementById( 'guild-selector' );
+      const guildSelector = document.getElementById( 'guild-selector-input' );
       const clearButton = document.getElementById( 'clear-button' );
       const goButton = document.getElementById( 'go-button' );
 
@@ -30,7 +30,7 @@
   <body>
     <h1>Looking for a server I am in?</h1>
     <label for="guild-selector">Choose a server:</label>
-    <input list="guild-selector" placeholder="Start typing...">
+    <input id="guild-selector-input" list="guild-selector" placeholder="Start typing...">
     <datalist name="guilds" id="guild-selector">
     </datalist>
     <button id="go-button" type="button" disabled>Go!</button>
