@@ -10,13 +10,14 @@ const htmlGuild = fs.readFileSync( './routes/guilds/guild.html' );
 const htmlGuilds = fs.readFileSync( './routes/guilds/guilds.html' );
 
 router.get( '/', async ( req, res ) => {
-  const pageGuilds = cheerio.fromBuffer( htmlGuilds );
+  const pageGuilds = cheerio.loadBuffer( htmlGuilds );
   pageGuilds( 'title' ).text( 'Guilds | ' + bot );
   const allGuilds = await Guilds.find();
   for ( let dbGuild of allGuilds ) {
     pageGuilds( '#guild-select' ).append( '<option value="' + dbGuild._id + '">' + dbGuild.Guild.Name + '</option>' );
   }
-  res.send( pageGuilds );
+  console.log(pageGuilds);
+  // res.send( pageGuilds );
 } );
 
 router.get( '/:guildId', async ( req, res ) => {
