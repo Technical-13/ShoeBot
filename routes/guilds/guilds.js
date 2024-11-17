@@ -16,8 +16,7 @@ router.get( '/', async ( req, res ) => {
   for ( let dbGuild of allGuilds ) {
     pageGuilds( '#guild-select' ).append( '<option value="' + dbGuild._id + '">' + dbGuild.Guild.Name + '</option>' );
   }
-  console.log(pageGuilds.html());
-  // res.send( pageGuilds );
+  res.send( pageGuilds.html() );
 } );
 
 router.get( '/:guildId', async ( req, res ) => {
