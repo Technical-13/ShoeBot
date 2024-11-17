@@ -1,9 +1,25 @@
+require( 'dotenv' ).config();
+const ENV = process.env;
+const bot = ( ENV.BOT_USERNAME || 'Server' );
+const fs = require( 'fs' );
+const cheerio = require( 'cheerio' );
 const express = require( 'express' );
 const router = express.Router();
 const Users = require( '../../models/BotUser.js' );
+const htmlUser = fs.readFileSync( './web/user.html' );
+const htmlUsers = fs.readFileSync( './web/users.html' );
 
 router.get( '/', ( req, res ) => {
-  res.send( 'Looking for a user?' );
+  new Promise( async ( resolve, reject ) => {
+    const pageUsers = cheerio.loadBuffer( htmlUsers );
+    pageUsers( 'title' ).text( 'Users | ' + bot );
+    const allUsers = await Users.find();
+    for ( let dbUser of allUsers ) {
+      pageUsers( '#user-selector' ).append( '<option data="' + dbUser._id + '">' + dbUser.UserName + '</option>' );
+    }
+    resolve( pageUsers.html() );
+  } )
+  .then( ( pageHTML ) => { res.send( pageHTML ); } );
 } );
 
 router.get( '/:userId', async ( req, res ) => {
@@ -15,10 +31,6 @@ router.get( '/:userId', async ( req, res ) => {
   else {
     res.send(`User id ${userId} doesn't seem to be in my database.`);
   }
-} );
-
-router.post( '/', ( req, res ) => {
-  res.send( 'POST: users route' );
 } );
 
 module.exports = router;
