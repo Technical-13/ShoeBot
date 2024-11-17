@@ -16,7 +16,7 @@ const strScript = chalk.hex( '#FFA500' ).bold( './functions/server.js' );
 
 app.use( cors( { credentials: true, origin: 'https://node4.lunes.host:' + botPort } ) );
 app.use( cookieParser() );
-app.use( express.static( __dirname + '/web' ) );
+app.use( express.static( __dirname + '/web/' ) );
 app.use( '/', baseMiddleware );
 app.use( '/', rootRouter );
 
