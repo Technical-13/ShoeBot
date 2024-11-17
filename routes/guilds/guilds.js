@@ -19,10 +19,7 @@ router.get( '/', async ( req, res ) => {
     }
     resolve( pageGuilds.html() );
   } )
-  .then( ( pageHTML ) => {
-    console.log( pageHTML );
-    res.send( pageHTML );
-  } );
+  .then( ( pageHTML ) => { res.send( pageHTML ); } );
 } );
 
 router.get( '/:guildId', async ( req, res ) => {
@@ -34,10 +31,6 @@ router.get( '/:guildId', async ( req, res ) => {
   else {
     res.send(`Guild id ${guildId} doesn't seem to be in my database.`);
   }
-} );
-
-router.post( '/', ( req, res ) => {
-  res.send( 'POST: guilds route' );
 } );
 
 module.exports = router;
