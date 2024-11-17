@@ -1,6 +1,7 @@
 require( 'dotenv' ).config();
 const ENV = process.env;
 const chalk = require( 'chalk' );
+const path = require( 'path' );
 const express = require( 'express' );
 const mongoose = require( 'mongoose' );
 mongoose.set( 'strictQuery', false );
@@ -16,9 +17,9 @@ const strScript = chalk.hex( '#FFA500' ).bold( './functions/server.js' );
 
 app.use( cors( { credentials: true, origin: 'https://node4.lunes.host:' + botPort } ) );
 app.use( cookieParser() );
-app.use( express.static( __dirname + '/web/' ) );
 app.use( '/', baseMiddleware );
 app.use( '/', rootRouter );
+app.use( express.static( path.join( __dirname + 'web' ) ) );
 
 if ( !strConnectDB ) { throw new Error( chalk.bold.red( `Failed to get process.env.mongodb in ${strScript}.` ) ); }
 
