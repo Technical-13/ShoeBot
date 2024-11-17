@@ -6,8 +6,8 @@ const cheerio = require( 'cheerio' );
 const express = require( 'express' );
 const router = express.Router();
 const Guilds = require( '../../models/GuildConfig.js' );
-const htmlGuild = fs.readFileSync( './routes/guilds/guild.html' );
-const htmlGuilds = fs.readFileSync( './routes/guilds/guilds.html' );
+const htmlGuild = fs.readFileSync( './web/guild.html' );
+const htmlGuilds = fs.readFileSync( './web/guilds.html' );
 
 router.get( '/', async ( req, res ) => {
   new Promise( async ( resolve, reject ) => {
