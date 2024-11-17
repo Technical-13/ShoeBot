@@ -10,7 +10,7 @@ const htmlGuild = fs.readFileSync( './routes/guilds/guild.html' );
 const htmlGuilds = fs.readFileSync( './routes/guilds/guilds.html' );
 
 router.get( '/', async ( req, res ) => {
-  const pageGuilds = cheerio.loadBuffer( htmlGuilds );
+  const pageGuilds = cheerio.fromBuffer( htmlGuilds );
   pageGuilds( 'title' ).text( 'Guilds | ' + bot );
   const allGuilds = await Guilds.find();
   for ( let dbGuild of allGuilds ) {
