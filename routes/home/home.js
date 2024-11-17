@@ -13,6 +13,7 @@ router.get( '/', ( req, res ) => {
   new Promise( async ( resolve, reject ) => {
     const pageHome = cheerio.loadBuffer( htmlHome );
     pageHome( 'title' ).text( bot );
+    pageHome( 'h1' ).text( bot );
     pageHome( '#last-start' ).text( bot + ' was last restarted at: ' + strNow() );
     resolve( pageHome.html() );
   } )
