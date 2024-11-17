@@ -19,7 +19,9 @@
       }
 
       function handleGo() {
-        location.href += '/' + guildSelector.data;
+        let addSlash = ( location.href.charAt( location.href.length - 1 ) != '/' ? '/' : '' );
+        let guildId = Array.from( document.querySelectorAll( 'option' ) ).find( opt => opt.value === guildSelector.value ).attributes.data.value;
+        location.href += addSlash + guildId;
       }
 
       function handleClear() {
