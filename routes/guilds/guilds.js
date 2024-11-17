@@ -17,10 +17,10 @@ router.get( '/', async ( req, res ) => {
     for ( let dbGuild of allGuilds ) {
       pageGuilds( '#guild-selector' ).append( '<option data="' + dbGuild._id + '">' + dbGuild.Guild.Name + '</option>' );
     }
-/* TRON */console.log( 'pageGuilds.html(: %o', pageGuilds.html() );/* TROFF */
+/* TRON */console.log( 'resolving pageGuilds.html(): %s', pageGuilds.html() );/* TROFF */
     resolve( pageGuilds.html() );
   } )
-  .then( ( pageHTML ) => { res.send( pageHTML ); } );
+  .then( ( pageHTML ) => {/* TRON */console.log( 'responding pageHTML: %s', pageHTML );/* TROFF */ res.send( pageHTML ); } );
 } );
 
 router.get( '/:guildId', async ( req, res ) => {
