@@ -8,11 +8,11 @@
 
       guildSelector.addEventListener( 'change', () => {
         if ( !guildSelector.value ) {
-          goButton.prop( 'disabled', true );
+          goButton.disabled = true;
           goButton.onclick = '/* --Please choose an option-- */';
         }
         else {
-          goButton.prop( 'disabled', false );
+          goButton.disabled = false;
           goButton.onclick = () => { location.href += '/' + guildSelector.value };
         }
       } );
