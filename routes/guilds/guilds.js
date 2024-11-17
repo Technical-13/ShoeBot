@@ -19,10 +19,7 @@ router.get( '/', async ( req, res ) => {
     }
     resolve( pageGuilds.html() );
   } )
-  .then( ( pageHTML ) => {
-/* TRON */console.log( 'responding pageHTML: %s', pageHTML );/* TROFF */
-    res.send( pageHTML );
-  } );
+  .then( ( pageHTML ) => { res.send( pageHTML ); } );
 } );
 
 router.get( '/:guildId', async ( req, res ) => {
