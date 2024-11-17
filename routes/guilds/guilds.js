@@ -17,6 +17,7 @@ router.get( '/', async ( req, res ) => {
     for ( let dbGuild of allGuilds ) {
       pageGuilds( '#guild-selector' ).append( '<option data="' + dbGuild._id + '">' + dbGuild.Guild.Name + '</option>' );
     }
+/* TRON */console.log( 'pageGuilds.html(: %o', pageGuilds.html() );/* TROFF */
     resolve( pageGuilds.html() );
   } )
   .then( ( pageHTML ) => { res.send( pageHTML ); } );
