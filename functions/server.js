@@ -15,7 +15,7 @@ const bot = ( ENV.BOT_USERNAME || 'Server' );
 const botPort = ( ENV.PORT || 3000 );
 const strScript = chalk.hex( '#FFA500' ).bold( './functions/server.js' );
 
-app.use( cors( { credentials: true, origin: 'https://node4.lunes.host:' + botPort } ) );
+app.use( cors( { credentials: true, origin: 'http://node4.lunes.host:' + botPort } ) );
 app.use( cookieParser() );
 app.use( express.static( path.join( __dirname, 'web' ) ) );
 app.use( '/', baseMiddleware );
