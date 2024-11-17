@@ -15,7 +15,7 @@ router.get( '/', async ( req, res ) => {
     pageGuilds( 'title' ).text( 'Guilds | ' + bot );
     const allGuilds = await Guilds.find();
     for ( let dbGuild of allGuilds ) {
-      pageGuilds( '#guild-selector' ).append( '<option value="' + dbGuild._id + '">' + dbGuild.Guild.Name + '</option>' );
+      pageGuilds( '#guild-selector' ).append( '<option data="' + dbGuild._id + '">' + dbGuild.Guild.Name + '</option>' );
     }
     resolve( pageGuilds.html() );
   } )

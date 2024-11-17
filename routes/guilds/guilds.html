@@ -3,15 +3,24 @@
   <head>
     <title>Guilds | &lt;bot&gt;</title>
     <script type="module">
+      function handleClear() {
+        guildSelector.value = '';
+      }
       const guildSelector = document.getElementById( 'guild-selector' );
+      const clearButton = document.getElementById( 'clear-button' );
       const goButton = document.getElementById( 'go-button' );
+
+      clearButton.addEventListener( 'click', handleClear );
+      clearButton.addEventListener( 'touchstart', handleClear );
 
       guildSelector.addEventListener( 'change', () => {
         if ( !guildSelector.value ) {
+          clearButton.disabled = true;
           goButton.disabled = true;
           goButton.onclick = null;
         }
         else {
+          clearButton.disabled = false;
           goButton.disabled = false;
           goButton.onclick = () => { location.href += '/' + guildSelector.value };
         }
@@ -25,5 +34,6 @@
     <datalist name="guilds" id="guild-selector">
     </datalist>
     <button id="go-button" type="button" disabled>Go!</button>
+    <button id="clear-button" type="button" disabled>Clear!</button>
   </body>
 </html>
