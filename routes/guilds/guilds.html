@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Guilds | <bot></title>
+    <script>
+      const guildSelector = document.getElementById( 'guild-selector' );
+      const goButton = document.getElementById( 'go-button' );
+
+      guildSelector.addEventListener( 'change', () => {
+        if ( !guildSelector.value ) {
+          goButton.prop( 'disabled', true );
+          goButton.onclick = '/* --Please choose an option-- */';
+        }
+        else {
+          goButton.prop( 'disabled', false );
+          goButton.onclick = () => { location.href =+ '/' + guildSelector.value };
+        }
+      } );
+    </script>
+  </head>
+  <body>
+    <h1>Looking for a guild?</h1>
+    <label for="guild-selector">Choose a server:</label>
+    <select name="guilds" id="guild-selector">
+      <option value="">--Please choose an option--</option>
+    </select> <button id="go-button" type="button" disabled>Go!</button>
+  </body>
+</html>
