@@ -20,8 +20,8 @@ async function handleInput() {
     const searchGroup = page.substr( 0, page.length - 1 );
     const qType = ( searchGroup === 'guild' ? 'g' : 'u' );
     const newOptions = await fetchOptions( qType, optionSelector.value );
-    for ( let dbOption of newOptions ) {
-      pageUsers( '#' + searchGroup + '-selector' ).append( '<option data="' + dbUser._id + '">' + dbUser.UserName + '</option>' );
+    for ( let dbOptionKey in newOptions ) {
+    pageUsers( '#' + searchGroup + '-selector' ).append( '<option data="' + dbOptionKey + '">' + newOptions[ dbOptionKey ] + '</option>' );
     }
   }
   else {
