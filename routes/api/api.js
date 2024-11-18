@@ -18,7 +18,11 @@ router.get( '/u/:userName', async ( req, res ) => {
   const { userName } = req.params;
   const regexName = new RegExp( userName, 'i' );
   const reqUsers = await Users.find( { UserName: regexName }, '_id UserName', { limit: 10 } );
-  console.log( 'reqUsers: %o', reqUsers );
+  const data = {};
+  for ( let match of reqUsers ) {
+    data[ match.UserName ] = match._id;
+  }
+  console.log( 'data: %o', data );
   //res.json( data );
 } );
 
