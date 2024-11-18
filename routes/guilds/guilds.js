@@ -14,7 +14,7 @@ router.get( '/', async ( req, res ) => {
     const pageGuilds = cheerio.loadBuffer( htmlGuilds );
     pageGuilds( 'title' ).text( 'Guilds | ' + bot );
     const intGuilds = await Guilds.estimatedDocumentCount();
-    pageGuilds( '#guild-selector' ).setAttribute( 'est-guilds', intGuilds );
+    pageGuilds( '#guild-selector' ).attr( 'est-guilds', intGuilds );
     const allGuilds = await Guilds.find( {}, '_id Guild', { limit: 10 } );
     for ( let dbGuild of allGuilds ) {
       pageGuilds( '#guild-selector' ).append( '<option data="' + dbGuild._id + '">' + dbGuild.Guild.Name + '</option>' );
