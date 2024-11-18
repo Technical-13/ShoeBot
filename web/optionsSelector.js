@@ -12,10 +12,10 @@ function fetchOptions( type, query ) {
   .catch( ( error ) => { console.error( 'Error: %o', error ); } );
 }
 
-async function handleInput() {
-  if ( !optionSelector.value ) {
-    clearButton.disabled = true;
-    goButton.disabled = true;
+async function handleInput()
+  if ( optionSelector.value ) {
+    clearButton.disabled = false;
+    goButton.disabled = false;
     const page = location.pathname.toLocaleLowerCase().split( '/' ).filter( x => x ).pop();
     const searchGroup = page.substr( 0, page.length - 1 );
     const qType = ( searchGroup === 'guild' ? 'g' : 'u' );
@@ -23,10 +23,10 @@ async function handleInput() {
     for ( let dbOption of newOptions ) {
       pageUsers( '#' + searchGroup + '-selector' ).append( '<option data="' + dbUser._id + '">' + dbUser.UserName + '</option>' );
     }
-  }
+  }{
   else {
-    clearButton.disabled = false;
-    goButton.disabled = false;
+    clearButton.disabled = true;
+    goButton.disabled = true;
   }
 }
 
