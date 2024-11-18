@@ -22,7 +22,10 @@ async function handleInput() {
     const newOptions = await fetchOptions( qType, optionSelector.value );
     const newOptionDOM = [];
     for ( let dbOptionKey in newOptions ) {
-      newOptionDOM.push( document.createElement( 'option', { data: dbOptionKey, innerText: newOptions[ dbOptionKey ] } ) );
+      let newOption = document.createElement( 'option' );
+      newOption.data = dbOptionKey;
+      newOption.innerText = newOptions[ dbOptionKey ];
+      newOptionDOM.push( newOption );
     }
     document.getElementById( searchGroup + '-selector' ).replaceChildren( ...newOptionDOM );
   }
