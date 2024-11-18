@@ -37,7 +37,7 @@ async function handleInput() {
 
 function handleGo() {
   let addSlash = ( location.href.charAt( location.href.length - 1 ) != '/' ? '/' : '' );
-  let optionId = Array.from( document.querySelectorAll( 'option' ) ).find( opt => opt.value === optionSelector.value ).attributes.data.value;
+  let optionId = Array.from( document.querySelectorAll( 'option' ) ).find( opt => opt.value === optionSelector.value ).data;
   location.href += addSlash + optionId;
 }
 
