@@ -12,7 +12,7 @@ function fetchOptions( type, query ) {
   .catch( ( error ) => { console.error( 'Error: %o', error ); } );
 }
 
-async function handleInput()
+async function handleInput() {
   if ( optionSelector.value ) {
     clearButton.disabled = false;
     goButton.disabled = false;
@@ -23,7 +23,7 @@ async function handleInput()
     for ( let dbOption of newOptions ) {
       pageUsers( '#' + searchGroup + '-selector' ).append( '<option data="' + dbUser._id + '">' + dbUser.UserName + '</option>' );
     }
-  }{
+  }
   else {
     clearButton.disabled = true;
     goButton.disabled = true;
