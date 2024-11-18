@@ -2,7 +2,6 @@ require( 'dotenv' ).config();
 const ENV = process.env;
 const bot = ( ENV.BOT_USERNAME || 'Server' );
 const fs = require( 'fs' );
-const cheerio = require( 'cheerio' );
 const express = require( 'express' );
 const router = express.Router();
 const Users = require( '../../models/BotUser.js' );
@@ -19,3 +18,5 @@ router.get( '/u/:userName', async ( req, res ) => {
   const reqUsers = await Users.find( { UserName: userName }, '_id UserName', { limit: 10 } );
   console.log( 'reqUsers: %o', reqUsers );
 } );
+
+module.exports = router;
