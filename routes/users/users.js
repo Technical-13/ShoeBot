@@ -13,7 +13,9 @@ router.get( '/', ( req, res ) => {
   new Promise( async ( resolve, reject ) => {
     const pageUsers = cheerio.loadBuffer( htmlUsers );
     pageUsers( 'title' ).text( 'Users | ' + bot );
-    const allUsers = await Users.find();
+    const intUsers = await Users.estimatedDocumentCount();
+    pageUsers( '#user-selector' ).setAttribute( 'est-users', intGuilds );
+    const allUsers = await Users.find( {}, '_id UserName', { limit: 10 } );
     for ( let dbUser of allUsers ) {
       pageUsers( '#user-selector' ).append( '<option data="' + dbUser._id + '">' + dbUser.UserName + '</option>' );
     }

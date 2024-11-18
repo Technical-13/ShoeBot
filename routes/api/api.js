@@ -9,9 +9,12 @@ const Guilds = require( '../../models/GuildConfig.js' );
 
 router.get( '/g/:guildName', async ( req, res ) => {
   const { guildName } = req.params;
-  const reqGuilds = await Guilds.find( { Name: guildName }, '_id Guild:Name', { limit: 10 } );
-  console.log( 'reqGuilds: %o', reqGuilds );
-  //res.json( data );
+  const reqGuilds = await Guilds.find( { Name: guildName }, '_id Guild', { limit: 10 } );
+  const data = {};
+  for ( let match of reqGuilds ) {
+    data[ match._id ] = match.Guild.Name;
+  }
+  res.json( data );
 } );
 
 router.get( '/u/:userName', async ( req, res ) => {
