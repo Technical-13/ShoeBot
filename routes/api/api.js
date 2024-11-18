@@ -20,10 +20,9 @@ router.get( '/u/:userName', async ( req, res ) => {
   const reqUsers = await Users.find( { UserName: regexName }, '_id UserName', { limit: 10 } );
   const data = {};
   for ( let match of reqUsers ) {
-    data[ match.UserName ] = match._id;
+    data[ match._id ] = match.UserName;
   }
-  console.log( 'data: %o', data );
-  //res.json( data );
+  res.json( data );
 } );
 
 module.exports = router;
