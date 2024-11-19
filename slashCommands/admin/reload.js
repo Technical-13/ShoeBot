@@ -1,7 +1,7 @@
 const { ApplicationCommandType, InteractionContextType, SlashCommandBuilder } = require('discord.js');
 const chalk = require( 'chalk' );
 const userPerms = require( '../../functions/getPerms.js' );
-const strScript = chalk.hex( '#FFA500' ).bold( './slashCommands/admin/config.js' );
+const strScript = chalk.hex( '#FFA500' ).bold( './slashCommands/admin/reload.js' );
 
 module.exports = {
   name: 'reload',
@@ -24,16 +24,16 @@ module.exports = {
 
         if ( !command ) { return interaction.editReply( 'I have no slashCommand named `' + commandName + '`!' ); }
 
-        delete require.cache[ require.resolve( '../slashCommands/' + command.group + '/' + command.name + '.js' ) ];
+        delete require.cache[ require.resolve( '../' + command.group + '/' + command.name + '.js' ) ];
 
-        const newCommand = require( '../slashCommands/' + command.group + '/' + command.name + '.js' );
+        const newCommand = require( '../' + command.group + '/' + command.name + '.js' );
         client.slashCommands.set( newCommand.name, newCommand );
-        await interaction.editReply( 'Command `' + newCommand.name + '` was reloaded!' );
+        interaction.editReply( 'Command `' + newCommand.name + '` was reloaded!' );
       }
 		}
     catch ( errObject ) {
+      interaction.editReply( 'There was an error while reloading slashCommand `' + command.name + '`:\n`' + errObject.message + '`' );
       console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack );
-      await interaction.editReply( 'There was an error while reloading slashCommand `' + command.name + '`:\n`' + errObject.message + '`' );
 		}
 	},
 };
