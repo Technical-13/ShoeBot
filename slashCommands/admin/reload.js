@@ -14,11 +14,12 @@ module.exports = {
   run: async ( client, interaction ) => {
     await interaction.deferReply( { ephemeral: true } );
 		try {
+      const { guild, options, user: author } = interaction;
       const { botOwner, isBotOwner, isBotMod } = await userPerms( author, guild );
       if ( isBotMod && !isBotOwner ) { return interaction.editReply( 'This is currently an **owner only** command.  Please talk to <@' + botOwner.id + '> if you need assistance.' ); }
       else if ( !isBotOwner ) { return interaction.editReply( 'This is an **owner only** command.  Please talk to <@' + botOwner.id + '> if you need assistance.' ); }
       else {
-        const commandName = interaction.options.getString( 'command', true ).toLowerCase();
+        const commandName = options.getString( 'command', true ).toLowerCase();
         const command = client.commands.get( commandName );
 
         if ( !command ) { return interaction.editReply( 'I have no command named `' + commandName + '`!' ); }
