@@ -9,7 +9,7 @@ module.exports = {
   description: 'Reloads a command.',
   type: ApplicationCommandType.ChatInput,
   contexts: [ InteractionContextType.Guild, InteractionContextType.BotDM ],
-  options: [ { type: 3, name: 'command', description: 'The command to reload.', required: true } ]
+  options: [ { type: 3, name: 'command', description: 'The command to reload.', required: true } ],
   cooldown: 1000,
   run: async ( client, interaction ) => {
     await interaction.deferReply( { ephemeral: true } );
