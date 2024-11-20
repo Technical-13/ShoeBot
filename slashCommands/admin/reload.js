@@ -49,7 +49,7 @@ module.exports = {
       interaction.editReply( 'Command `' + newCommand.name + '` was reloaded!' );
 		}
     catch ( errObject ) {
-      interaction.editReply( 'There was an error while reloading command `' + command.name + '`:\n`' + errObject.message + '`' );
+      interaction.editReply( 'There was an error while reloading command `' + commandName + '`:\n`' + errObject.message + '`' );
       console.error( 'Uncaught error in %s:\n\t%s', strScript, errObject.stack );
 		}
 	},
