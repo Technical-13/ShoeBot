@@ -5,6 +5,7 @@ const strScript = chalk.hex( '#FFA500' ).bold( './commands/admin/roadmap.js' );
 module.exports = {
   name: 'roadmap',
   aliases: [ 'todo' ],
+  group: 'admin',
   description: 'Development ToDo list for me!',
   cooldown: 600000,
   run: async ( client, message, args ) => {
