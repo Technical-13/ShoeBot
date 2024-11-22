@@ -5,7 +5,7 @@ const fs = require( 'fs' );
 const express = require( 'express' );
 const router = express.Router();
 
-router.get( '/signin', ( req, res ) => { res.redirect( 'https://discord.com/oauth2/authorize?client_id=' + ENV.CLIENT_ID + '&response_type=code&redirect_uri=' + uriEncodeComponent( 'http://node4.lunes.host:' + ( ENV.PORT || 3000 ) ) + '&scope=guilds+identify' ); } );
+router.get( '/signin', ( req, res ) => { res.redirect( 'https://discord.com/oauth2/authorize?client_id=' + ENV.CLIENT_ID + '&response_type=code&redirect_uri=' + encodeURIComponent( 'http://node4.lunes.host:' + ( ENV.PORT || 3000 ) ) + '&scope=guilds+identify' ); } );
 
 router.get( '/callback',  ( req, res ) => {
   const { code } = req.query;
