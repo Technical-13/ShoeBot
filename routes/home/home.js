@@ -1,3 +1,4 @@
+const client = require( '../..' );
 require( 'dotenv' ).config();
 const ENV = process.env;
 const bot = ( ENV.BOT_USERNAME || 'Server' );
@@ -14,6 +15,7 @@ router.get( '/', ( req, res ) => {
     const pageHome = cheerio.loadBuffer( htmlHome );
     pageHome( 'title' ).text( bot );
     pageHome( 'h1' ).text( bot );
+    pageHome( 'about' ).append( '<p>Status: ' + client.status + '</p>' );
     pageHome( '#last-start' ).text( bot + ' was last restarted at: ' + strNow() );
     resolve( pageHome.html() );
   } )
