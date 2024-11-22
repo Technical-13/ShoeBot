@@ -21,9 +21,10 @@ module.exports = {
     await interaction.deferReply( { ephemeral: true } );
 		try {
       const { guild, options, user: author } = interaction;
-      const { botOwner, isBotOwner, isBotMod } = await userPerms( author, guild );
-      const cmdType = options.getString( 'type' ).toLowerCase() ?? 'slash';
-      const commandName = options.getString( 'command', true ).toLowerCase();
+      const { botOwner, isBotMod, isBotOwner } = await userPerms( author, guild );
+      const commandName = options.getString( 'command', true )?.toLowerCase();
+      if ( !commandName ) { return interaction.editReply( { content: 'You forgot to supply a command name to reload.' } ); }
+      const cmdType = options.getString( 'type' )?.toLowerCase() || 'slash';
       var command, newCommand;
 
       if ( isBotMod && !isBotOwner ) { return interaction.editReply( 'This is currently an **owner only** command.  Please talk to <@' + botOwner.id + '> if you need assistance.' ); }
