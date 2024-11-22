@@ -10,6 +10,7 @@ router.get( '/signin', ( req, res ) => { res.redirect( 'https://discord.com/oaut
 router.get( '/callback',  ( req, res ) => {
   const { code } = req.query;
   if ( !code ) { return res.status( 400 ).json( { error: 'Authentication "code" not found in URL parameters.' } ); }
+  res.json( req.query );
 } );
 
 module.exports = router;
