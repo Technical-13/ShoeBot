@@ -15,7 +15,7 @@ router.get( '/', ( req, res ) => {
     pageHome( 'title' ).text( bot );
     pageHome( 'h1' ).text( bot );
     pageHome( '#about' ).append( '<p>Status: ' + ENV.clientStatus + '</p>' );
-    pageHome( '#about' ).style( { display: 'inherit' } );
+    pageHome( '#about' ).toggleClass( 'hidden' );
     pageHome( '#last-start' ).text( bot + ' was last restarted at: ' + strNow() );
     resolve( pageHome.html() );
   } )
