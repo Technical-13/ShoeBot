@@ -21,7 +21,7 @@ const client = new Client( {
   partials: [ Partials.Channel, Partials.Message, Partials.User, Partials.GuildMember, Partials.Reaction ]
 } );
 
-client.status = 'starting';
+ENV.clientStatus = 'starting';
 
 /* -------------------- COLLECTIONS -------------------- */
 client.aliases = new Collection();
@@ -47,7 +47,7 @@ fs.readdirSync( './handlers' ).forEach( ( handler ) => {
 
 client.login( ENV.token )
 .then( async loggedIn => {
-  client.status = 'connected';
+  ENV.clientStatus = 'connected';
   console.log( 'Successfully connected!' );
 } )
 .catch( errLogin => { console.error( 'There was an error logging in:\n%s', errLogin.stack ); } );

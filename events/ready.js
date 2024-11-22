@@ -468,7 +468,7 @@ client.on( 'ready', async rdy => {
         else { strGuildRemove = 'Removed ' + chalk.bold.green( guilds.remove ) + ' guild' + ( guilds.remove === 1 ? '' : 's' ) + '.'; }
         console.log( 'All done catching up! Results:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s', strUserUpdate, strUserAdd, strUserRemove, strGuildUpdate, strGuildAdd, strGuildRemove );
       }
-      client.status = 'ready';
+      ENV.clientStatus = 'ready';
     } )
     .catch( ( rejected ) => { console.error( rejected.message ); } );
   }
