@@ -1,6 +1,8 @@
 #about {
-  width: 30%;
+  border: 1px solid;
   float: right;
+  padding: 0px 10px;
+  width: 30%;
 }
 
 .hidden {

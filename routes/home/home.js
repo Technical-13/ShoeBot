@@ -14,7 +14,15 @@ router.get( '/', ( req, res ) => {
     const pageHome = cheerio.loadBuffer( htmlHome );
     pageHome( 'title' ).text( bot );
     pageHome( 'h1' ).text( bot );
-    pageHome( '#about' ).append( '<p>Status: ' + ENV.clientStatus + '</p>' );
+    let status = '';
+    switch ( ENV.clientStatus ) {
+      case 'starting': status='Initializing'; break;
+      case 'connected': status='Connected'; break;
+      case 'ready': status='Ready'; break;
+      case 'crashed': status='Crashed'; break;
+      default: status='Unknown';
+    }
+    pageHome( '#about' ).append( '<p>Status: ' + status + '</p>' );
     pageHome( '#about' ).append( '<p>Last restart: ' + strNow() + '</p>' );
     pageHome( '#about' ).toggleClass( 'hidden' );
     resolve( pageHome.html() );
