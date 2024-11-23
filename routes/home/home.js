@@ -36,12 +36,12 @@ router.get( '/', async ( req, res ) => {
       case 'crashed': status='Crashed'; break;
       default: status='Unknown';
     }
-    pageHome( '#about' ).append( '<p>Status: ' + status + '</p>' );
-    pageHome( '#about' ).append( '<p>Uptime: ' + upServer + '</p>' );
-    pageHome( '#about' ).append( '<p>Memory Usage: ' + memPercent + '%</p>' );
-    pageHome( '#about' ).append( '<p>Verbosity Level: ' + ENV.VERBOSITY + '</p>' );
-    pageHome( '#about' ).append( '<p>Package Versions: <ul>\n\t<li>' + botVers.join( '</li>\n\t<li>' ) + '</li>\n</ul></p>' );
-    pageHome( '#about' ).append( '<p>Last restart: ' + strNow() + '</p>' );
+    pageHome( '#alist' ).append( '<li>Status: ' + status + '</li>' );
+    pageHome( '#alist' ).append( '<li>Uptime: ' + upServer + '</li>' );
+    pageHome( '#alist' ).append( '<li>Memory Usage: ' + memPercent + '%</li>' );
+    pageHome( '#alist' ).append( '<li>Verbosity Level: ' + ENV.VERBOSITY + '</li>' );
+    pageHome( '#alist' ).append( '<li>Package Versions: <ul>\n\t<li>' + botVers.join( '</li>\n\t<li>' ) + '</li>\n</ul></li>' );
+    pageHome( '#alist' ).append( '<li>Last restart: ' + strNow() + '</li>' );
     pageHome( '#about' ).toggleClass( 'hidden' );
     resolve( pageHome.html() );
   } )
