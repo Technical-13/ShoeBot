@@ -14,14 +14,19 @@ const clientID = ( ENV.CLIENT_ID || config.clientId );
 const CLIENT_TOKEN = ENV.token;
 const verUserDB = config.verUserDB;
 const strScript = chalk.hex( '#FFA500' ).bold( './routes/auth/discord/index.js' );
-const REDIRECT_URI = encodeURIComponent( 'http://node4.lunes.host:' + ( ENV.PORT || 3000 ) + '/auth/discord/callback' );
+const REDIRECT_URI = 'http://node4.lunes.host:' + ( ENV.PORT || 3000 ) + '/auth/discord/callback';
 
-router.get( '/login', ( req, res ) => { res.redirect( 'https://discord.com/oauth2/authorize?client_id=' + clientID + '&response_type=code&redirect_uri=' + REDIRECT_URI + '&scope=guilds+identify' ); } );router.get( '/signin', ( req, res ) => { res.redirect( 'https://discord.com/oauth2/authorize?client_id=' + clientID + '&response_type=code&redirect_uri=' + REDIRECT_URI + '&scope=guilds+identify' ); } );
+router.get( '/login', ( req, res ) => {
+  res.redirect( 'https://discord.com/oauth2/authorize?client_id=' + clientID + '&response_type=code&redirect_uri=' + encodeURIComponent( REDIRECT_URI ) + '&scope=guilds+identify' );
+} );
+router.get( '/signin', ( req, res ) => {
+  res.redirect( 'https://discord.com/oauth2/authorize?client_id=' + clientID + '&response_type=code&redirect_uri=' + encodeURIComponent( REDIRECT_URI ) + '&scope=guilds+identify' );
+} );
 
 router.get( '/callback', async ( req, res ) => {
   const { code } = req.query;
   if ( !code ) { return res.status( 400 ).json( { error: 'Authentication "code" not found in URL parameters.' } ); }
-/* TRON */console.log( 'Requesting: %o', new URLSearchParams( { client_id: clientID, client_secret: CLIENT_TOKEN, code, grant_type: 'authorization_code', redirect_uri: REDIRECT_URI, scope: 'guilds+identify' } ).toString() );/* TROFF */
+
   const oauthRes = await fetch( endpoint + '/oauth2/token', {
     method: 'POST',
     body: new URLSearchParams( {
@@ -30,7 +35,7 @@ router.get( '/callback', async ( req, res ) => {
       code,
       grant_type: 'authorization_code',
       redirect_uri: REDIRECT_URI,
-      scope: 'guilds+identify'
+      scope: 'guilds identify'
     } ).toString(),
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   } );
