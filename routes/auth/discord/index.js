@@ -1,7 +1,7 @@
 require( 'dotenv' ).config();
 const config = require( '../../../config.json' );
 const fs = require( 'fs' );
-const Users = require( '../../models/BotUser.js' );
+const Users = require( '../../../models/BotUser.js' );
 const express = require( 'express' );
 const router = express.Router();
 const jwt = require( 'jsonwebtoken' );
