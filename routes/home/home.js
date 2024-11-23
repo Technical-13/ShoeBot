@@ -7,7 +7,7 @@ const router = express.Router();
 const htmlHome = fs.readFileSync( './web/home.html' );
 const packages = require( '../../package-lock.json' );
 const objTimeString = require( '../../jsonObjects/time.json' );
-const duration = require( '../../functions/duration.js' ); );
+const duration = require( '../../functions/duration.js' );
 var strNow = () => { return ( new Date() ).toLocaleDateString( 'en-us', objTimeString ) };
 
 router.get( '/', async ( req, res ) => {
