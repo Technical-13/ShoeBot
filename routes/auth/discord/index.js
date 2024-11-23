@@ -43,7 +43,7 @@ router.get( '/callback', async ( req, res ) => {
         break;
       case 429:// Too Many Requests
         let nextTry = await duration( ( ( new Date() ) - ( oauthRes.headers[ 'retry-after' ] * 1000 ) ), { getSeconds: true } );
-        console.error( '%s: "%s"\n\tPlease try again in %s', oauthRes.status, oauthRes.statusText, nextTry );
+        console.error( '%s: "%s"\n\tPlease try again in (%s seconds) %s', oauthRes.status, oauthRes.statusText, oauthRes.headers[ 'retry-after' ], nextTry );
         return res.send( 'Too many requests, please try again in ' + nextTry );
         break;
       default:
