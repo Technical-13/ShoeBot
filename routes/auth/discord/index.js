@@ -16,12 +16,12 @@ const verUserDB = config.verUserDB;
 const strScript = chalk.hex( '#FFA500' ).bold( './routes/auth/discord/index.js' );
 const REDIRECT_URI = encodeURIComponent( 'http://node4.lunes.host:' + ( ENV.PORT || 3000 ) + '/auth/discord/callback' );
 
-router.get( '/signin', ( req, res ) => { res.redirect( 'https://discord.com/oauth2/authorize?client_id=' + clientID + '&response_type=code&redirect_uri=' + REDIRECT_URI + '&scope=guilds+identify' ); } );
+router.get( '/login', ( req, res ) => { res.redirect( 'https://discord.com/oauth2/authorize?client_id=' + clientID + '&response_type=code&redirect_uri=' + REDIRECT_URI + '&scope=guilds+identify' ); } );router.get( '/signin', ( req, res ) => { res.redirect( 'https://discord.com/oauth2/authorize?client_id=' + clientID + '&response_type=code&redirect_uri=' + REDIRECT_URI + '&scope=guilds+identify' ); } );
 
 router.get( '/callback', async ( req, res ) => {
   const { code } = req.query;
   if ( !code ) { return res.status( 400 ).json( { error: 'Authentication "code" not found in URL parameters.' } ); }
-
+/* TRON */console.log( 'Requesting: %o', { client_id: clientID, client_secret: CLIENT_TOKEN, grant_type: 'authorization_code', redirect_uri: REDIRECT_URI, code: code  } );/* TROFF */
   const oauthRes = await fetch( endpoint + '/oauth2/token', {
     method: 'POST',
     body: new URLSearchParams( {
@@ -29,7 +29,7 @@ router.get( '/callback', async ( req, res ) => {
       client_secret: CLIENT_TOKEN,
       grant_type: 'authorization_code',
       redirect_uri: REDIRECT_URI,
-      code: code,
+      code: code
     } ).toString(),
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   } );
@@ -40,7 +40,7 @@ router.get( '/callback', async ( req, res ) => {
       case 401:// Unauthorized
       case 405:// Method Not Allowed
         console.error( '(%i) %s: Fatal error - please check code in %s:\n\toauthRes: %o', oauthRes.status, oauthRes.statusText, strScript, oauthRes );
-        return res.send( '(' + oauthRes.status + ')' + oauthRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
+        return res.send( '(' + oauthRes.status + ') ' + oauthRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
         break;
       case 403:// Forbidden
         console.error( '(%i) %s: Fatal error:\n\toauthRes: %o', oauthRes.status, oauthRes.statusText, oauthRes );
@@ -57,8 +57,8 @@ router.get( '/callback', async ( req, res ) => {
         return res.send( 'Unable to connect to Discord servers, please try again later...' );
         break;
       default:
-        console.error( 'Failed to fetch token: %o', oauthRes );
-        return res.send( 'Failed to fetch token.' );
+        console.error( 'Failed to fetch tokens: %o', oauthRes );
+        return res.send( 'Failed to fetch tokens.' );
     }
   }
 
@@ -68,7 +68,7 @@ router.get( '/callback', async ( req, res ) => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: 'Bearer ' + oauthResJson.access_token
+      Authorization: oauthResJson.token_type + ' ' + oauthResJson.access_token
     },
   } );
 
@@ -78,7 +78,7 @@ router.get( '/callback', async ( req, res ) => {
       case 401:// Unauthorized
       case 405:// Method Not Allowed
         console.error( '(%i) %s: Fatal error - please check code in %s:\n\tuserRes: %o', userRes.status, userRes.statusText, strScript, userRes );
-        return res.send( userRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
+        return res.send( '(' + userRes.status + ') ' + userRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
         break;
       case 403:// Forbidden
         console.error( '(%i) %s: Fatal error:\n\tuserRes: %o', userRes.status, userRes.statusText, userRes );
@@ -128,6 +128,7 @@ router.get( '/callback', async ( req, res ) => {
 
 } );
 
+router.get( '/logout', ( req, res ) => { res/*.clearCookie( 'token' )*/.sendStatus( 200 ); } );
 router.get( '/signout', ( req, res ) => { res/*.clearCookie( 'token' )*/.sendStatus( 200 ); } );
 
 module.exports = router;
