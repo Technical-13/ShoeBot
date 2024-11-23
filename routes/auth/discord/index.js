@@ -32,7 +32,7 @@ router.get( '/callback', async ( req, res ) => {
     body: new URLSearchParams( {
       client_id: clientID,
       client_secret: CLIENT_SECRET,
-      code: code,
+      code,
       grant_type: 'authorization_code',
       redirect_uri: REDIRECT_URI
     } ).toString(),
