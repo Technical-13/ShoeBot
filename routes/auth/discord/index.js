@@ -34,6 +34,9 @@ router.get( '/callback', async ( req, res ) => {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   } );
 
+/* TRON */console.log( 'oauthRes.headers[ 'retry-after' ]: %o', oauthRes.headers[ 'retry-after' ] );/* TROFF */
+/* TRON */console.log( 'oauthRes.headers: %o', oauthRes.headers );/* TROFF */
+/* TRON */console.log( 'oauthRes: %o', oauthRes );/* TROFF */
   if ( !oauthRes.ok ) {
     switch ( oauthRes.status ) {
       case 400:// Bad Request
