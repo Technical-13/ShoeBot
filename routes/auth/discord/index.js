@@ -12,6 +12,7 @@ const endpoint = 'https://discord.com/api/v10';
 const clientID = ( ENV.CLIENT_ID || config.clientId );
 const CLIENT_TOKEN = ENV.token;
 const verUserDB = config.verUserDB;
+const strScript = chalk.hex( '#FFA500' ).bold( './routes/auth/discord/index.js' );
 const REDIRECT_URI = encodeURIComponent( 'http://node4.lunes.host:' + ( ENV.PORT || 3000 ) + '/auth/discord/callback' );
 
 router.get( '/signin', ( req, res ) => { res.redirect( 'https://discord.com/oauth2/authorize?client_id=' + clientID + '&response_type=code&redirect_uri=' + REDIRECT_URI + '&scope=guilds+identify' ); } );
@@ -27,14 +28,19 @@ router.get( '/callback', async ( req, res ) => {
       client_secret: CLIENT_TOKEN,
       grant_type: 'authorization_code',
       redirect_uri: REDIRECT_URI,
-      code,
+      code: code,
     } ).toString(),
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   } );
 
   if ( !oauthRes.ok ) {
     switch ( oauthRes.status ) {
-      case 429: //Too Many Requests
+      case 400:// Bad Request
+      case 405:// Method Not Allowed
+        console.error( '%s: "%s": Fatal error - please check code in %s', oauthRes.status, oauthRes.statusText, strScript );
+        return res.send( oauthRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
+        break;
+      case 429:// Too Many Requests
         let nextTry = await duration( ( ( new Date() ) - ( oauthRes.headers[ 'retry-after' ] * 1000 ) ), { getSeconds } );
         console.error( '%s: "%s"\n\tPlease try again in %s', oauthRes.status, oauthRes.statusText, nextTry );
         return res.send( 'Too many requests, please try again in ' + nextTry );
