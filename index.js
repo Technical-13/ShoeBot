@@ -50,6 +50,6 @@ client.login( ENV.token )
   ENV.clientStatus = 'connected';
   console.log( 'Successfully connected!' );
 } )
-.catch( errLogin => { console.error( 'There was an error logging in:\n%s', errLogin.stack ); } );
+.catch( errLogin => { throw new Error( `There was an error logging in:\n${errLogin.stack}` ); } );
 
 keepAlive();
