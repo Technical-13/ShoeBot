@@ -8,16 +8,15 @@ const htmlHome = fs.readFileSync( './web/home.html' );
 const { packages } = require( '../../package-lock.json' );
 const objTimeString = require( '../../jsonObjects/time.json' );
 const duration = require( '../../functions/duration.js' );
-var strNow = () => { return ( new Date() ).toLocaleDateString( 'en-us', objTimeString ) };
 
 router.get( '/', async ( req, res ) => {
   const botVers = [
-    'axios: ' + packages[ "node_modules/axios" ].version,
-    'cheerio: ' + packages[ "node_modules/cheerio" ].version,
-    'djs: ' + packages[ "node_modules/discord.js" ].version,
-    'express: ' + packages[ "node_modules/express" ].version,
     'node: ' + version,
-    'mongoose: ' + packages[ "node_modules/mongoose" ].version
+    'djs: ' + packages[ "node_modules/discord.js" ].version,
+    'mongoose: ' + packages[ "node_modules/mongoose" ].version,
+    'express: ' + packages[ "node_modules/express" ].version,
+    'axios: ' + packages[ "node_modules/axios" ].version,
+    'cheerio: ' + packages[ "node_modules/cheerio" ].version
   ];
   const bot = ( ENV.BOT_USERNAME || 'Server' );
   const usedMemory = constrainedMemory() - availableMemory();
@@ -41,7 +40,7 @@ router.get( '/', async ( req, res ) => {
     pageHome( '#alist' ).append( '<li>Memory Usage: ' + memPercent + '%</li>' );
     pageHome( '#alist' ).append( '<li>Verbosity Level: ' + ENV.VERBOSITY + '</li>' );
     pageHome( '#alist' ).append( '<li>Package Versions: <ul>\n\t<li>' + botVers.join( '</li>\n\t<li>' ) + '</li>\n</ul></li>' );
-    pageHome( '#alist' ).append( '<li>Last restart: ' + strNow() + '</li>' );
+    pageHome( '#alist' ).append( '<li>Last restart: ' + ( new Date( ( new Date() ) - Math.floor( uptime() * 1000 ) ) ).toLocaleDateString( 'en-us', objTimeString ) + '</li>' );
     pageHome( '#about' ).toggleClass( 'hidden' );
     resolve( pageHome.html() );
   } )
