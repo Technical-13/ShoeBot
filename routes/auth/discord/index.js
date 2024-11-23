@@ -1,6 +1,7 @@
 require( 'dotenv' ).config();
 const config = require( '../../../config.json' );
 const fs = require( 'fs' );
+const chalk = require( 'chalk' );
 const Users = require( '../../../models/BotUser.js' );
 const duration = require( '../../../functions/duration.js' );
 const express = require( 'express' );
@@ -41,7 +42,7 @@ router.get( '/callback', async ( req, res ) => {
         return res.send( oauthRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
         break;
       case 429:// Too Many Requests
-        let nextTry = await duration( ( ( new Date() ) - ( oauthRes.headers[ 'retry-after' ] * 1000 ) ), { getSeconds } );
+        let nextTry = await duration( ( ( new Date() ) - ( oauthRes.headers[ 'retry-after' ] * 1000 ) ), { getSeconds: true } );
         console.error( '%s: "%s"\n\tPlease try again in %s', oauthRes.status, oauthRes.statusText, nextTry );
         return res.send( 'Too many requests, please try again in ' + nextTry );
         break;
