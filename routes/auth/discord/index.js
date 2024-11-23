@@ -45,7 +45,7 @@ router.get( '/callback', async ( req, res ) => {
       case 400:// Bad Request
       case 401:// Unauthorized
       case 405:// Method Not Allowed
-        const jsonErr = await fetch( endpoint + '/oauth2/token' +
+        const jsonErr = await fetch( endpoint + '/oauth2/token?' +
           new URLSearchParams( {
             client_id: clientID,
             client_secret: CLIENT_TOKEN,
