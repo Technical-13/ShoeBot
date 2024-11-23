@@ -34,8 +34,7 @@ router.get( '/callback', async ( req, res ) => {
       client_secret: CLIENT_SECRET,
       code: code,
       grant_type: 'authorization_code',
-      redirect_uri: REDIRECT_URI,
-      scope: 'guilds identify'
+      redirect_uri: REDIRECT_URI
     } ).toString(),
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   } );
