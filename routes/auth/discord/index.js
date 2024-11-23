@@ -41,11 +41,14 @@ router.get( '/callback', async ( req, res ) => {
   } );
 
   if ( !oauthRes.ok ) {
+    var errAuth;
     switch ( oauthRes.status ) {
       case 400:// Bad Request
       case 401:// Unauthorized
+        errAuth = oauthRes.headers.get( 'www-authenticate' );
       case 405:// Method Not Allowed
         console.error( '(%i) %s: Fatal error - please check code in %s:\n\toauthRes: %o', oauthRes.status, oauthRes.statusText, strScript, oauthRes );
+        if ( errAuth ) { console.error( 'errAuth: %o', errAuth ); }
         return res.send( '(' + oauthRes.status + ') ' + oauthRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
         break;
       case 403:// Forbidden
