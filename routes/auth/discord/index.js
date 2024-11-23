@@ -36,6 +36,8 @@ router.get( '/callback', async ( req, res ) => {
 
 /* TRON */console.log( 'oauthRes.headers[ \'retry-after\' ]: %o', oauthRes.headers[ 'retry-after' ] );/* TROFF */
 /* TRON */console.log( 'oauthRes.headers[ \'Retry-After\' ]: %o', oauthRes.headers[ 'Retry-After' ] );/* TROFF */
+/* TRON */console.log( 'oauthRes.headers.get( \'retry-after\' ): %o', oauthRes.headers.get( 'retry-after' ) );/* TROFF */
+/* TRON */console.log( 'oauthRes.headers.get( \'Retry-After\' ): %o', oauthRes.headers.get( 'Retry-After' ) );/* TROFF */
 /* TRON */console.log( 'oauthRes.headers: %o', oauthRes.headers );/* TROFF */
   if ( !oauthRes.ok ) {
     switch ( oauthRes.status ) {
