@@ -11,7 +11,7 @@ const ENV = process.env;
 const bot = ( ENV.BOT_USERNAME || 'Server' );
 const endpoint = 'https://discord.com/api/v10';
 const clientID = ( ENV.CLIENT_ID || config.clientId );
-const CLIENT_TOKEN = ENV.token;
+const CLIENT_SECRET = ENV.secret;
 const verUserDB = config.verUserDB;
 const strScript = chalk.hex( '#FFA500' ).bold( './routes/auth/discord/index.js' );
 const REDIRECT_URI = 'http://node4.lunes.host:' + ( ENV.PORT || 3000 ) + '/auth/discord/callback';
@@ -31,7 +31,7 @@ router.get( '/callback', async ( req, res ) => {
     method: 'POST',
     body: new URLSearchParams( {
       client_id: clientID,
-      client_secret: CLIENT_TOKEN,
+      client_secret: CLIENT_SECRET,
       code: code,
       grant_type: 'authorization_code',
       redirect_uri: REDIRECT_URI,
