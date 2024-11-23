@@ -2,6 +2,7 @@ require( 'dotenv' ).config();
 const config = require( '../../../config.json' );
 const fs = require( 'fs' );
 const Users = require( '../../../models/BotUser.js' );
+const duration = require( '../../../functions/duration.js' );
 const express = require( 'express' );
 const router = express.Router();
 const jwt = require( 'jsonwebtoken' );
@@ -32,9 +33,16 @@ router.get( '/callback', async ( req, res ) => {
   } );
 
   if ( !oauthRes.ok ) {
-    console.log( 'error', oauthRes );
-    res.send( 'error' );
-    return;
+    switch ( oauthRes.status ) {
+      case 429: //Too Many Requests
+        let nextTry = await duration( ( ( new Date() ) - ( oauthRes.headers[ 'retry-after' ] * 1000 ) ), { getSeconds } );
+        console.error( '%s: "%s"\n\tPlease try again in %s', oauthRes.status, oauthRes.statusText, nextTry );
+        return res.send( 'Too many requests, please try again in ' + nextTry );
+        break;
+      default:
+        console.error( 'Failed to fetch token: %o', oauthRes );
+        return res.send( 'Failed to fetch token.' );
+    }
   }
 
   const oauthResJson = await oauthRes.json();
@@ -47,7 +55,13 @@ router.get( '/callback', async ( req, res ) => {
     },
   } );
 
-  if ( !userRes.ok ) { return res.send( 'error' ); }
+  if ( !userRes.ok ) {
+    switch ( userRes.status ) {
+      default:
+        console.error( 'Failed to fetch user: %o', userRes );
+        return res.send( 'Failed to fetch user.' );
+    }
+  }
 
   const userResJson = await userRes.json();
 
@@ -77,10 +91,11 @@ router.get( '/callback', async ( req, res ) => {
     user.Auths.Discord.tokenType = oauthResJson.token_type;
   }
 
-  await Users.findOneAndUpdate( { _id: userResJson.id }, user, { upsert: true } );
+  await Users.findOneAndUpdate( { _id: userResJson.id }, user, { upsert: true } )
+  .catch( errUpdate => { console.error( 'Failed to add/update user to/in database: %s', errUpdate.stack ); } );
 
 } );
 
-router.get( '/signout', ( req, res ) => { res.clearCookie( 'token' ).sendStatus( 200 ); } );
+router.get( '/signout', ( req, res ) => { res/*.clearCookie( 'token' )*/.sendStatus( 200 ); } );
 
 module.exports = router;
