@@ -38,7 +38,7 @@ router.get( '/callback', async ( req, res ) => {
     switch ( oauthRes.status ) {
       case 400:// Bad Request
       case 405:// Method Not Allowed
-        console.error( '(%i) %s: Fatal error - please check code in %s', oauthRes.status, oauthRes.statusText, strScript );
+        console.error( '(%i) %s: Fatal error - please check code in %s: %o', oauthRes.status, oauthRes.statusText, strScript, oauthRes );
         return res.send( oauthRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
         break;
       case 429:// Too Many Requests
@@ -64,6 +64,11 @@ router.get( '/callback', async ( req, res ) => {
 
   if ( !userRes.ok ) {
     switch ( userRes.status ) {
+      case 400:// Bad Request
+      case 405:// Method Not Allowed
+        console.error( '(%i) %s: Fatal error - please check code in %s: %o', userRes.status, userRes.statusText, strScript, userRes );
+        return res.send( userRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
+        break;
       default:
         console.error( 'Failed to fetch user: %o', userRes );
         return res.send( 'Failed to fetch user.' );
