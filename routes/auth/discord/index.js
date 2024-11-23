@@ -35,8 +35,8 @@ router.get( '/callback', async ( req, res ) => {
   } );
 
 /* TRON */console.log( 'oauthRes.headers[ \'retry-after\' ]: %o', oauthRes.headers[ 'retry-after' ] );/* TROFF */
+/* TRON */console.log( 'oauthRes.headers[ \'Retry-After\' ]: %o', oauthRes.headers[ 'Retry-After' ] );/* TROFF */
 /* TRON */console.log( 'oauthRes.headers: %o', oauthRes.headers );/* TROFF */
-/* TRON */console.log( 'oauthRes: %o', oauthRes );/* TROFF */
   if ( !oauthRes.ok ) {
     switch ( oauthRes.status ) {
       case 400:// Bad Request
@@ -45,7 +45,7 @@ router.get( '/callback', async ( req, res ) => {
         return res.send( oauthRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
         break;
       case 429:// Too Many Requests
-        let nextTry = await duration( ( ( new Date() ) - ( oauthRes.headers[ 'retry-after' ] * 1000 ) ), { getSeconds: true } );
+        let nextTry = await duration( ( ( new Date() ) - ( parseInt( oauthRes.headers[ 'retry-after' ] ) * 1000 ) ), { getSeconds: true } );
         console.error( '%s: "%s"\n\tPlease try again in (%s seconds) %s', oauthRes.status, oauthRes.statusText, oauthRes.headers[ 'retry-after' ], nextTry );
         return res.send( 'Too many requests, please try again in ' + nextTry );
         break;
