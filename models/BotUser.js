@@ -9,7 +9,7 @@ let userSchema = new Schema( {
       refreshToken: String,
       tokenType: String,
       scopes: [ String ]
-    } )
+    }
   },
   Avatar: {
     hash: String,
