@@ -37,14 +37,24 @@ router.get( '/callback', async ( req, res ) => {
   if ( !oauthRes.ok ) {
     switch ( oauthRes.status ) {
       case 400:// Bad Request
+      case 401:// Unauthorized
       case 405:// Method Not Allowed
-        console.error( '(%i) %s: Fatal error - please check code in %s: %o', oauthRes.status, oauthRes.statusText, strScript, oauthRes );
-        return res.send( oauthRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
+        console.error( '(%i) %s: Fatal error - please check code in %s:\n\toauthRes: %o', oauthRes.status, oauthRes.statusText, strScript, oauthRes );
+        return res.send( '(' + oauthRes.status + ')' + oauthRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
         break;
-      case 429:// Too Many Requests
+      case 403:// Forbidden
+        console.error( '(%i) %s: Fatal error:\n\toauthRes: %o', oauthRes.status, oauthRes.statusText, oauthRes );
+        return res.send( 'Unable to connect to Discord servers.' );
+        break;
+      case 429:// Too Many Requests // Rate Limited
         let msNextTry = ( parseInt( oauthRes.headers.get( 'retry-after' ) ) * 1000 );
-        console.error( '(%i) %s: Please try again in  %s', oauthRes.status, oauthRes.statusText, await duration( msNextTry, { getDays: false, getSeconds: true, getMs: true }, true ) );
+        console.error( '(%i) %s: Please try again in %s', oauthRes.status, oauthRes.statusText, await duration( msNextTry, { getDays: false, getSeconds: true, getMs: true }, true ) );
         return res.send( 'Too many requests, please try again in ' + await duration( msNextTry, { getDays: false, getSeconds: true } ) );
+        break;
+      case 404:// Not Found
+      case 502:// Gateway Unavailable
+        console.error( '(%i) %s: Please try again later:\n\toauthRes: %o', oauthRes.status, oauthRes.statusText, oauthRes );
+        return res.send( 'Unable to connect to Discord servers, please try again later...' );
         break;
       default:
         console.error( 'Failed to fetch token: %o', oauthRes );
@@ -65,9 +75,19 @@ router.get( '/callback', async ( req, res ) => {
   if ( !userRes.ok ) {
     switch ( userRes.status ) {
       case 400:// Bad Request
+      case 401:// Unauthorized
       case 405:// Method Not Allowed
-        console.error( '(%i) %s: Fatal error - please check code in %s: %o', userRes.status, userRes.statusText, strScript, userRes );
+        console.error( '(%i) %s: Fatal error - please check code in %s:\n\tuserRes: %o', userRes.status, userRes.statusText, strScript, userRes );
         return res.send( userRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
+        break;
+      case 403:// Forbidden
+        console.error( '(%i) %s: Fatal error:\n\tuserRes: %o', userRes.status, userRes.statusText, userRes );
+        return res.send( 'Unable to connect to Discord servers.' );
+        break;
+      case 404:// Not Found
+      case 502:// Gateway Unavailable
+        console.error( '(%i) %s: Please try again later:\n\tuserRes: %o', userRes.status, userRes.statusText, userRes );
+        return res.send( 'Unable to connect to Discord servers, please try again later...' );
         break;
       default:
         console.error( 'Failed to fetch user: %o', userRes );
