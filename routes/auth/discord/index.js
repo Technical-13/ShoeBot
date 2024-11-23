@@ -42,9 +42,9 @@ router.get( '/callback', async ( req, res ) => {
         return res.send( oauthRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
         break;
       case 429:// Too Many Requests
-        let nextTry = await duration( ( ( new Date() ) - ( parseInt( oauthRes.headers.get( 'retry-after' ) ) * 1000 ) ), { getSeconds: true } );
-        console.error( '%s: "%s"\n\tPlease try again in (%s seconds) %s', oauthRes.status, oauthRes.statusText, oauthRes.headers[ 'retry-after' ], nextTry );
-        return res.send( 'Too many requests, please try again in ' + nextTry );
+        let msNextTry = ( parseInt( oauthRes.headers.get( 'retry-after' ) ) * 1000 );
+        console.error( '%s: "%s"\n\tPlease try again in  %s', oauthRes.status, oauthRes.statusText, await duration( msNextTry, { getDays: false, getSeconds: true, getMs: true } ) );
+        return res.send( 'Too many requests, please try again in ' + await duration( msNextTry, { getDays: false, getSeconds: true } ) );
         break;
       default:
         console.error( 'Failed to fetch token: %o', oauthRes );
