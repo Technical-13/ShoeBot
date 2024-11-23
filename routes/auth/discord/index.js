@@ -27,24 +27,27 @@ router.get( '/callback', async ( req, res ) => {
   const { code } = req.query;
   if ( !code ) { return res.status( 400 ).json( { error: 'Authentication "code" not found in URL parameters.' } ); }
 
-  const oauthRes = await fetch( endpoint + '/oauth2/token', {
-    method: 'POST',
-    body: new URLSearchParams( {
-      client_id: clientID,
-      client_secret: CLIENT_TOKEN,
-      code,
-      grant_type: 'authorization_code',
-      redirect_uri: REDIRECT_URI,
-      scope: 'guilds identify'
-    } ).toString(),
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-  } );
+  const oauthRes =
 
   if ( !oauthRes.ok ) {
     switch ( oauthRes.status ) {
       case 400:// Bad Request
       case 401:// Unauthorized
       case 405:// Method Not Allowed
+        const jsonErr = await fetch( endpoint + '/oauth2/token' +
+          new URLSearchParams( {
+            client_id: clientID,
+            client_secret: CLIENT_TOKEN,
+            code,
+            grant_type: 'authorization_code',
+            redirect_uri: REDIRECT_URI,
+            scope: 'guilds identify'
+          } ).toString(),
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        } );
+        console.error( 'jsonErr: %o', jsonErr );
         console.error( '(%i) %s: Fatal error - please check code in %s:\n\toauthRes: %o', oauthRes.status, oauthRes.statusText, strScript, oauthRes );
         return res.send( '(' + oauthRes.status + ') ' + oauthRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
         break;
