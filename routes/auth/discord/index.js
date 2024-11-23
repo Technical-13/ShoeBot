@@ -38,12 +38,12 @@ router.get( '/callback', async ( req, res ) => {
     switch ( oauthRes.status ) {
       case 400:// Bad Request
       case 405:// Method Not Allowed
-        console.error( '%s: "%s": Fatal error - please check code in %s', oauthRes.status, oauthRes.statusText, strScript );
+        console.error( '(%i) %s: Fatal error - please check code in %s', oauthRes.status, oauthRes.statusText, strScript );
         return res.send( oauthRes.statusText + ': Something is wrong with my code, my developer has been notified.' );
         break;
       case 429:// Too Many Requests
         let msNextTry = ( parseInt( oauthRes.headers.get( 'retry-after' ) ) * 1000 );
-        console.error( '%s: "%s"\n\tPlease try again in  %s', oauthRes.status, oauthRes.statusText, await duration( msNextTry, { getDays: false, getSeconds: true, getMs: true } ) );
+        console.error( '(%i) %s: Please try again in  %s', oauthRes.status, oauthRes.statusText, await duration( msNextTry, { getDays: false, getSeconds: true, getMs: true }, true ) );
         return res.send( 'Too many requests, please try again in ' + await duration( msNextTry, { getDays: false, getSeconds: true } ) );
         break;
       default:
