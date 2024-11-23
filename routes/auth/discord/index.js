@@ -16,7 +16,7 @@ router.get( '/callback',  ( req, res ) => {
 
   const { code } = req.query;
   if ( !code ) { return res.status( 400 ).json( { error: 'Authentication "code" not found in URL parameters.' } ); }
-  fetch( endpoint + '/oauth2/token' +  )
+  //fetch( endpoint + '/oauth2/token' +  )
 } );
 
 module.exports = router;
