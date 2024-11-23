@@ -40,7 +40,7 @@ router.get( '/', async ( req, res ) => {
     pageHome( '#about' ).append( '<p>Uptime: ' + upServer + '</p>' );
     pageHome( '#about' ).append( '<p>Memory Usage: ' + memPercent + '%</p>' );
     pageHome( '#about' ).append( '<p>Verbosity Level: ' + ENV.VERBOSITY + '</p>' );
-    pageHome( '#about' ).append( '<p>Package Versions: <ul>\n\t<li>' + botVers.join( '</li>\n\t<li>' ) + '</li>\n</ul></p>' );
+    pageHome( '#about' ).append( '<p>Package Versions: <ul>' + Object.entries( botVers ).map( ( p, v ) => '\n\t<li>' + p + ': ' + v + '</li>' ) + '\n</ul></p>' );
     pageHome( '#about' ).append( '<p>Last restart: ' + strNow() + '</p>' );
     pageHome( '#about' ).toggleClass( 'hidden' );
     resolve( pageHome.html() );
