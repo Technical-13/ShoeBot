@@ -1,28 +1,29 @@
 require( 'dotenv' ).config();
 const { availableMemory, constrainedMemory, ENV: env, uptime, version } = process;
-const packages = require( 'package-lock.json' );
-const botVers = {
-  axios: packages[ "node_modules/axios" ].version,
-  cheerio: packages[ "node_modules/cheerio" ].version,
-  djs: packages[ "node_modules/discord.js" ].version,
-  express: packages[ "node_modules/express" ].version,
-  node: version,
-  mongoose: packages[ "node_modules/mongoose" ].version
-};
-const bot = ( ENV.BOT_USERNAME || 'Server' );
-const usedMemory = constrainedMemory() - availableMemory();
-const memPercent = Math.floor( usedMemory / constrainedMemory() * 1000 ) / 10;
-const msServer = ( new Date() ) - ( ( new Date() ) - Math.floor( uptime() * 1000 ) );
-const upServer = await duration( msServer, { getMonths: true, getWeeks: true, getSeconds: true } );
 const fs = require( 'fs' );
 const cheerio = require( 'cheerio' );
 const express = require( 'express' );
 const router = express.Router();
 const htmlHome = fs.readFileSync( './web/home.html' );
+const packages = require( '../../package-lock.json' );
 const objTimeString = require( '../../jsonObjects/time.json' );
+const duration = require( '../../functions/duration.js' ); );
 var strNow = () => { return ( new Date() ).toLocaleDateString( 'en-us', objTimeString ) };
 
-router.get( '/', ( req, res ) => {
+router.get( '/', async ( req, res ) => {
+  const botVers = {
+    axios: packages[ "node_modules/axios" ].version,
+    cheerio: packages[ "node_modules/cheerio" ].version,
+    djs: packages[ "node_modules/discord.js" ].version,
+    express: packages[ "node_modules/express" ].version,
+    node: version,
+    mongoose: packages[ "node_modules/mongoose" ].version
+  };
+  const bot = ( ENV.BOT_USERNAME || 'Server' );
+  const usedMemory = constrainedMemory() - availableMemory();
+  const memPercent = Math.floor( usedMemory / constrainedMemory() * 1000 ) / 10;
+  const msServer = ( new Date() ) - ( ( new Date() ) - Math.floor( uptime() * 1000 ) );
+  const upServer = await duration( msServer, { getMonths: true, getWeeks: true, getSeconds: true } );
   new Promise( async ( resolve, reject ) => {
     const pageHome = cheerio.loadBuffer( htmlHome );
     pageHome( 'title' ).text( bot );
