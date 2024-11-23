@@ -1,5 +1,5 @@
 require( 'dotenv' ).config();
-const { availableMemory, constrainedMemory, ENV: env, uptime, version } = process;
+const { availableMemory, constrainedMemory, env: ENV, uptime, version } = process;
 const fs = require( 'fs' );
 const cheerio = require( 'cheerio' );
 const express = require( 'express' );
