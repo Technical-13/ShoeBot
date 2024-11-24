@@ -3,7 +3,7 @@ const clearButton = document.getElementById( 'clear-button' );
 const goButton = document.getElementById( 'go-button' );
 
 function fetchOptions( type, query ) {
-  const request = new Request( 'http://node4.lunes.host:2287/api/' + type + '/' + query );
+  const request = new Request( location.origin + '/api/' + type + '/' + query );
   return fetch( request ).then( ( response ) => {
     if ( response.status === 200 ) { return response.json(); }
     else { throw new Error( 'Something went wrong on API server: ' + response.status ); }
