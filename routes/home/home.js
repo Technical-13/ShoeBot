@@ -1,5 +1,5 @@
 require( 'dotenv' ).config();
-const { availableMemory, constrainedMemory, env: ENV, uptime, version } = process;
+const { env: ENV, uptime, version } = process;
 const fs = require( 'fs' );
 const cheerio = require( 'cheerio' );
 const express = require( 'express' );
@@ -17,8 +17,8 @@ router.get( '/', async ( req, res ) => {
     'express: v' + packages[ "node_modules/express" ].version
   ];
   const bot = ( ENV.BOT_USERNAME || 'Server' );
-  const usedMemory = constrainedMemory() - availableMemory();
-  const memPercent = Math.floor( usedMemory / constrainedMemory() * 1000 ) / 10;
+  // const usedMemory = constrainedMemory() - availableMemory();
+  // const memPercent = Math.floor( usedMemory / constrainedMemory() * 1000 ) / 10;
   const msServer = ( new Date() ) - ( ( new Date() ) - Math.floor( uptime() * 1000 ) );
   const upServer = await duration( msServer, { getMonths: true, getWeeks: true, getSeconds: true } );
   new Promise( async ( resolve, reject ) => {
@@ -35,7 +35,7 @@ router.get( '/', async ( req, res ) => {
     }
     pageHome( '#alist' ).append( '<li>Status: ' + status + '</li>' );
     pageHome( '#alist' ).append( '<li>Uptime: ' + upServer + '</li>' );
-    pageHome( '#alist' ).append( '<li>Memory Usage: ' + memPercent + '%</li>' );
+    // pageHome( '#alist' ).append( '<li>Memory Usage: ' + memPercent + '%</li>' );
     pageHome( '#alist' ).append( '<li>Verbosity Level: ' + ENV.VERBOSITY + '</li>' );
     pageHome( '#alist' ).append( '<li>Package Versions: <ul>\n\t<li>' + botVers.join( '</li>\n\t<li>' ) + '</li>\n</ul></li>' );
     pageHome( '#alist' ).append( '<li>Last restart: ' + ( new Date( ( new Date() ) - Math.floor( uptime() * 1000 ) ) ).toLocaleDateString( 'en-us', objTimeString ) + '</li>' );
