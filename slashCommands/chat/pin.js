@@ -42,7 +42,7 @@ module.exports = {
             return interaction.editReply( { content: 'That message belongs to <@' + message.author.id + '>.  I am only allowed to pin my own messages and your messages for you.' } );
           }
           else {
-            message.pin( { reason: 'Pinning ' + ( message.author.id === client.user.id ? 'my' : message.author.displayName + '\'s' ) + ' message for ' + author.displayName + '.' } )
+            message.pin( 'Pinning ' + ( message.author.id === client.user.id ? 'my' : message.author.displayName + '\'s' ) + ' message for ' + author.displayName + '.' )
             .then( msgPinned => { return interaction.editReply( { content: 'I pinned that message for you.' } ); } )
             .catch( async errPin => { return interaction.editReply( await errHandler( errPin, { command: 'pin', type: 'errPin' } ) ); } );
           }
