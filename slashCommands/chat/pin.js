@@ -34,7 +34,7 @@ module.exports = {
       else {
         channel.messages.fetch( msgID ).then( async message => {
           const { guildId, channelId } = message;
-          if ( message.author.id != client.user.id && message.author.id != author.id ) {
+          if ( message.author.id != client.user.id && message.author.id != author.id && !( isBotMod || checkPermission( 'ManageGuild' ) ) ) {
             if ( doLogs ) {
               chanChat.send( { content: '<@' + author.id + '> tried to get me to pin https://discord.com/channels/' + guildId + '/' + channelId + '/' + msgID + ' that belongs to <@' + message.author.id + '>.  I am only allowed to pin my own messages and messages from the author.' } )
               .catch( async noLogChan => { return interaction.editReply( await errHandler( noLogChan, { chanType: 'chat', command: 'pin', channel: channel, type: 'logLogs' } ) ); } );
