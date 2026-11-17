@@ -1,55 +1,77 @@
-const fs = require( 'fs' );
-const { Client, GatewayIntentBits, Partials, Collection } = require( 'discord.js' );
+/**
+ * @file index.js
+ * @description Core entry point and initialization engine for DDObot "error-of-demogorgon" (v3).
+ * Responsible for loading environment configurations, initializing the MongoDB persistence layer,
+ * instantiating the Discord client with necessary intents/partials, and booting modular handlers.
+ *
+ * @project DDObot "error-of-demogorgon" (v3)
+ * @see {@link  https://github.com/Technical-13/DDObot/tree/error-of-demogorgon | GitHub Repository Branch}
+ *
+ * @author Technical-13
+ * @see {@link https://github.com/Technical-13 | Technical-13 (GitHub)}
+ * @see {@link https://discord.com/users/440752068509040660/ | MagentaRV (Discord)}
+ * @see {@link https://ddowiki.com/page/User:Technical_13 | Technical_13 (DDOwiki)}
+ * @see {@link https://forums.ddo.com/index.php?members/shoemaker.2824/ | ShoeMaker (DDO Forums)}
+ *
+ * @license GNU-3
+ *
+ * @requires dotenv
+ * @requires discord.js
+ * @requires chalk
+ * @requires fs
+ */
 require( 'dotenv' ).config();
-const ENV = process.env;
-const config = require( './config.json' );
-const keepAlive = require( './functions/server.js' );
-const initDatabase = require( './functions/database.js' );
+const { EventEmitter } = require( 'events' );
+const utils = require( './functions/utils.js' );
+const { buildPath } = utils;
+const modData = buildPath( { name: 'index' } );
+const corePath = {
+  bbeg: buildPath( { name: 'errorHandler', type: 'functions' } ).path,
+  config: buildPath( { ext: 'json', name: 'config' } ).path,
+  db: buildPath( { name: 'initialize', platform: 'mongodb' } ).path,
+  discord: buildPath( { name: 'clientDiscord', type: 'functions' } ).path,
+  Err: buildPath( { name: 'Err', type: 'functions' } ).path,
+  timeFormat: buildPath( { ext: 'json', name: 'time', type: 'jsonObjects' } ).path,
+  webDash: buildPath( { name: 'server', platform: 'webDashboard' } ).path
+};
+const dClient = require( corePath.discord );
+const bot = {
+  ascii: require( 'ascii-table' ),
+  bbeg: require( corePath.bbeg ),
+  buildPath: buildPath,
+  chalk: require( 'chalk' ),
+  config: require( corePath.config ),
+  djs: require( 'discord.js' ),
+  env: process.env,
+  Err: require( corePath.Err ),
+  events: new EventEmitter(),
+  fs: require( 'fs' ),
+  mongoose: require( 'mongoose' ),
+  timeFormat: require( corePath.timeFormat ),
+  utils: utils
+};
+bot.events.setMaxListeners( 100 );
+module.exports = bot;
+const { chalk, config, env, fs } = bot;
+const iDiscoBots = [];
+const { personas } = config.discord;
+personas.forEach( ego => { if ( ego.enabled ) { iDiscoBots.push( ego.idn ); } } );
 
-initDatabase();
+require( corePath.db )().then( async () => {
+  console.log( 'Database initialization sequence completed successfully.' );
 
-const client = new Client( {
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.GuildPresences,
-    GatewayIntentBits.GuildMessageReactions,
-    GatewayIntentBits.DirectMessages,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.MessageContent,
-  ],
-  partials: [ Partials.Channel, Partials.Message, Partials.User, Partials.GuildMember, Partials.Reaction ]
+  const discord = {};
+  for ( const sEgo of iDiscoBots ) {
+    const persona = personas.find( p => p.idn === sEgo );
+    discord[ sEgo ] = await dClient( persona );
+    if ( !discord[ sEgo ] ) {
+      console.error( 'Failed to initialize Discord client: %s', persona.botName );
+    }
+  }
+  bot.discord = discord;
+
+//  require( corePath.webDash )();
+} ).catch( errDB => {
+  console.error( 'Failed to initialize database in %s: %o', chalk.hex( '#FFA500' ).bold( buildPath( modData ).path ), errDB );
+  throw new Error( 'Start aborted.' );
 } );
-
-ENV.clientStatus = 'starting';
-
-/* -------------------- COLLECTIONS -------------------- */
-client.aliases = new Collection();
-client.commands = new Collection();
-client.groups = new Collection();
-client.events = new Collection();
-client.prefix = config.prefix;
-client.slashCommands = new Collection();
-
-/* ------------------ STATIC COMMANDS ------------------ */
-var staticCmds = [];
-if ( config.staticCmds ) { staticCmds.concat( config.staticCmds ); }
-staticCmds.push( 'admin' );
-client.groups.set( 'staticCmds', staticCmds );
-
-client.ownerId = ( config.botOwnerId || ENV.OWNER_ID );
-
-module.exports = client;
-
-fs.readdirSync( './handlers' ).forEach( ( handler ) => {
-  require( `./handlers/${handler}` )( client );
-} );
-
-client.login( ENV.token )
-.then( async loggedIn => {
-  ENV.clientStatus = 'connected';
-  console.log( 'Successfully connected!' );
-} )
-.catch( errLogin => { throw new Error( `There was an error logging in:\n${errLogin.stack}` ); } );
-
-keepAlive();
