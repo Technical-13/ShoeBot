@@ -1,5 +1,5 @@
-const bot = require( '..' );
-const { buildPath, chalk } = bot;
+const buildPath = require( './buildPath.js' );
+const chalk = require( 'chalk' );
 const modData = buildPath( { name: 'errorHandler', type: 'functions' } );
 
 module.exports = async ( modData, objError, options ) => {

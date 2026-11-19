@@ -1,27 +1,28 @@
-const modData = { name: 'Snowflake', platform: 'mongodb', type: 'types' };
-const bot = require( '..' );
-const { chalk, mongoose } = bot;
-const PF = {
-  ddoWiki: { epoch: 1136073600000n },
-  discord: { epoch: 1420070400000n, min: 21154535154122752n },
-  twitterX: { epoch: 1288834974657n }
-};
+const modData = { ext: 'js', name: 'Snowflake', platform: 'mongodb', type: 'types' };
+const mongoose = require( 'mongoose' );
+const path = require( 'path' );
+const bot = require( '../..' );
+const { chalk, z } = bot;
+const PF = require( z.json + '/snowflakeEpochs.json' );
+const isPlainObject = obj => obj !== null && typeof obj === 'object' && Object.getPrototypeOf( obj ) === Object.prototype;
 
 class Snowflake extends mongoose.SchemaType {
-  constructor( key, options ) {
-    if ( !options ) { options = { platform: 'ddoWiki' }; }
-    if ( !options.platform ) { options.platform = 'ddoWiki'; }
+  constructor( key, options = {} ) {
+    options = { ...options, platform: options.platform || 'default' };
     super( key, options, 'Snowflake' );
   }
-
   cast( val ) {
-    const platform = this.options.platform;
+    let platform = this.options.platform;
+    if ( isPlainObject( val ) ) {
+      platform = val.platform || platform;
+      val = val.value;
+    }
     try {
       if ( !/^\d{1,25}$/.test( val ) ) { throw new Error( 'Snowflake: "' + chalk.bold( val ) + '" is not a numeric ID string.' ); }
       const P = PF[ platform ];
       if ( !P ) { throw new Error( 'Snowflake: Unknown platform configuration "' + chalk.bold( platform ) + '".' ); }
-      const max = ( ( ( BigInt( Date.now() ) - P.epoch ) << 22n ) | 0x3FFFFFn );
-      const min = ( P.min || 0n );
+      const max = ( ( ( BigInt( Date.now() ) - BigInt( P.epoch ) ) << 22n ) | 0x3FFFFFn );
+      const min = BigInt( P.min || '0' );
       const bintSF = BigInt( val );
       if ( min <= bintSF && bintSF <= max ) { return val; }
       throw new Error( 'Snowflake: "' + val + '" is not a valid ' + chalk.bold( platform ) + ' snowflake.' );

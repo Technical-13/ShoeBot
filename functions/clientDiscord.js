@@ -1,6 +1,7 @@
-const bot = require( '..' );
-const { buildPath, chalk, config, djs, env, fs } = bot;
-const modData = buildPath( { name: 'clientDiscord', type: 'functions' } );
+const modData = { ext: 'js', name: 'clientDiscord', type: 'functions' };
+const path = require( 'path' );
+const bot = require( path.resolve( __dirname, '..' ) );
+const { chalk, config, djs, env, fs } = bot;
 const { discord } = config;
 const { Client, Collection, GatewayIntentBits, Partials } = djs;
 const { token } = env;

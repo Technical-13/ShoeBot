@@ -1,11 +1,11 @@
 /**
  * @file index.js
- * @description Core entry point and initialization engine for DDObot "error-of-demogorgon" (v3).
+ * @description Core entry point and initialization engine for ShoeBot "error-of-demogorgon" (v3).
  * Responsible for loading environment configurations, initializing the MongoDB persistence layer,
  * instantiating the Discord client with necessary intents/partials, and booting modular handlers.
  *
- * @project DDObot "error-of-demogorgon" (v3)
- * @see {@link  https://github.com/Technical-13/DDObot/tree/error-of-demogorgon | GitHub Repository Branch}
+ * @project ShoeBot "error-of-demogorgon" (v3)
+ * @see {@link  https://github.com/Technical-13/ShoeBot/tree/error-of-demogorgon | GitHub Repository Branch}
  *
  * @author Technical-13
  * @see {@link https://github.com/Technical-13 | Technical-13 (GitHub)}
@@ -21,57 +21,61 @@
  * @requires fs
  */
 require( 'dotenv' ).config();
-const { EventEmitter } = require( 'events' );
-const utils = require( './functions/utils.js' );
+const path = require( 'path' );
+const root = path.resolve( __dirname );
+const utils = require( './functions/utils.js' )();
 const { buildPath } = utils;
-const modData = buildPath( { name: 'index' } );
-const corePath = {
-  bbeg: buildPath( { name: 'errorHandler', type: 'functions' } ).path,
+const modData = buildPath( { ext: 'js', name: 'index' } );
+const zettel = {
+  bbeg: buildPath( { ext: 'js', name: 'errorHandler', type: 'functions' } ).path,
   config: buildPath( { ext: 'json', name: 'config' } ).path,
-  db: buildPath( { name: 'initialize', platform: 'mongodb' } ).path,
-  discord: buildPath( { name: 'clientDiscord', type: 'functions' } ).path,
-  Err: buildPath( { name: 'Err', type: 'functions' } ).path,
+  db: path.resolve( root, 'mongodb' ),
+  discord: buildPath( { ext: 'js', name: 'clientDiscord', type: 'functions' } ).path,
+  Err: buildPath( { ext: 'js', name: 'Err', type: 'functions' } ).path,
+  initDB: buildPath( { ext: 'js', name: 'initialize', platform: 'mongodb' } ).path,
+  json: path.resolve( root, 'jsonObjects' ),
   timeFormat: buildPath( { ext: 'json', name: 'time', type: 'jsonObjects' } ).path,
-  webDash: buildPath( { name: 'server', platform: 'webDashboard' } ).path
+  webDash: buildPath( { ext: 'js', name: 'server', platform: 'webDashboard' } ).path
 };
-const dClient = require( corePath.discord );
+const { EventEmitter } = require( 'events' );
 const bot = {
   ascii: require( 'ascii-table' ),
-  bbeg: require( corePath.bbeg ),
+  bbeg: require( zettel.bbeg ),
   buildPath: buildPath,
   chalk: require( 'chalk' ),
-  config: require( corePath.config ),
+  config: require( zettel.config ),
   djs: require( 'discord.js' ),
   env: process.env,
-  Err: require( corePath.Err ),
+  Err: require( zettel.Err ),
   events: new EventEmitter(),
   fs: require( 'fs' ),
-  mongoose: require( 'mongoose' ),
-  timeFormat: require( corePath.timeFormat ),
-  utils: utils
+  timeFormat: require( zettel.timeFormat ),
+  utils: utils,
+  z: zettel
 };
 bot.events.setMaxListeners( 100 );
 module.exports = bot;
-const { chalk, config, env, fs } = bot;
+const { chalk, config, env, fs, z } = bot;
+const dClient = require( z.discord );
 const iDiscoBots = [];
 const { personas } = config.discord;
 personas.forEach( ego => { if ( ego.enabled ) { iDiscoBots.push( ego.idn ); } } );
 
-require( corePath.db )().then( async () => {
-  console.log( 'Database initialization sequence completed successfully.' );
+require( z.initDB )().then( async () => {
+  console.log( '%s', chalk.hex( '#00DD00' ).bold( 'Database initialization sequence completed successfully.' ) );
 
   const discord = {};
   for ( const sEgo of iDiscoBots ) {
     const persona = personas.find( p => p.idn === sEgo );
     discord[ sEgo ] = await dClient( persona );
     if ( !discord[ sEgo ] ) {
-      console.error( 'Failed to initialize Discord client: %s', persona.botName );
+      console.error( '%s %s', chalk.hex( '#CC0000' )( 'Failed to initialize Discord client:' ), chalk.hex( '#FF5555' ).bold( persona.botName ) );
     }
   }
   bot.discord = discord;
 
-//  require( corePath.webDash )();
+//  require( z.webDash )();
 } ).catch( errDB => {
-  console.error( 'Failed to initialize database in %s: %o', chalk.hex( '#FFA500' ).bold( buildPath( modData ).path ), errDB );
+  console.error( 'Failed to initialize database in %s: %o', chalk.hex( '#FFA500' ).bold( modData.path ), errDB );
   throw new Error( 'Start aborted.' );
 } );
