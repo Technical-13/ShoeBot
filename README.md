@@ -1,6 +1,6 @@
-# DDObot - `Error of Demogorgon`
+# ShoeBot - `Error of Demogorgon`
 
-New branch for the next rewrite of DDObot.  I'm planning on doing a major version upgrade once every year or so corresponding to the release of new SSG DDO Expansions.
+New branch for the next rewrite of ShoeBot.  I'm planning on doing a major version upgrade once every year or so.
 
 ## Planned upgrades for this revision
 - [ ] Full update to Node.js LTS v24
