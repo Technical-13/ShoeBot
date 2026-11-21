@@ -1,6 +1,6 @@
 const mongoose = require( 'mongoose' );
 mongoose.set( 'strictQuery', false );
-const bot = require( '..' );
+const bot = require( process.cwd() );
 const { buildPath, chalk, env, Err } = bot;
 const modData = buildPath( { ext: 'js', name: 'initialize', type: 'mongodb' } );
 const z = {

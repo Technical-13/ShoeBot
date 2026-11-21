@@ -29,13 +29,16 @@ const modData = buildPath( { ext: 'js', name: 'index' } );
 const zettel = {
   bbeg: buildPath( { ext: 'js', name: 'errorHandler', type: 'functions' } ).path,
   config: buildPath( { ext: 'json', name: 'config' } ).path,
-  db: path.resolve( root, 'mongodb' ),
+  db: buildPath( type: 'mongodb' ).path,
   discord: buildPath( { ext: 'js', name: 'clientDiscord', type: 'functions' } ).path,
   Err: buildPath( { ext: 'js', name: 'Err', type: 'functions' } ).path,
-  initDB: buildPath( { ext: 'js', name: 'initialize', platform: 'mongodb' } ).path,
-  json: path.resolve( root, 'jsonObjects' ),
+  i18n: buildPath( group: 'i18n', type: 'functions' ).path,
+  initDB: buildPath( { ext: 'js', name: 'initialize', type: 'mongodb' } ).path,
+  json: buildPath( type: 'jsonObjects' ).path,
+  languages: buildPath( type: 'i18n' ).path,
   timeFormat: buildPath( { ext: 'json', name: 'time', type: 'jsonObjects' } ).path,
-  webDash: buildPath( { ext: 'js', name: 'server', platform: 'webDashboard' } ).path
+  utilities: buildPath( group: 'Utilities', type: 'functions' ).path,
+  webDash: buildPath( { ext: 'js', name: 'server', type: 'webDashboard' } ).path,
 };
 const { EventEmitter } = require( 'events' );
 const bot = {
@@ -51,11 +54,21 @@ const bot = {
   fs: require( 'fs' ),
   timeFormat: require( zettel.timeFormat ),
   utils: utils,
-  z: zettel
+  z: zettel,
 };
 bot.events.setMaxListeners( 100 );
 module.exports = bot;
 const { chalk, config, env, fs, z } = bot;
+Object.entries( config.dbData.ver ).forEach( ( [ key, value ] ) => {
+  let newDate = new Date( value );
+  if ( Number.isNaN( newDate.getTime() ) ) {
+    newDate = new Date( 0 );
+    console.error( 'config.dbData.ver.%s value of `%o` could not be coerced into a valid Date.\n\tDefaulting to %o', key, value, newDate );
+  }
+  config.dbData.ver[ key ] = newDate;
+} );
+
+/*
 const dClient = require( z.discord );
 const iDiscoBots = [];
 const { personas } = config.discord;
@@ -78,4 +91,4 @@ require( z.initDB )().then( async () => {
 } ).catch( errDB => {
   console.error( 'Failed to initialize database in %s: %o', chalk.hex( '#FFA500' ).bold( modData.path ), errDB );
   throw new Error( 'Start aborted.' );
-} );
+} );//*/

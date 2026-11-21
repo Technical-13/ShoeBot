@@ -1,6 +1,6 @@
 const path = require( 'path' );
 const root = path.resolve( __dirname, '..' );
-const modData = { ext: 'js', file: 'buildPath.js', name: 'buildPath', path: path.resolve( root, 'functions/buildPath.js' ), type: 'functions' };
+const modData = { ext: 'js', file: 'buildPath.js', group: 'Utilities', name: 'buildPath', path: path.resolve( root, 'functions/buildPath.js' ), type: 'functions' };
 
 /**
  * Loaded into bot.buildPath in index.js.

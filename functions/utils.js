@@ -1,4 +1,4 @@
-const buildPath = require( './buildPath.js' );
+const buildPath = require( './Utilities/buildPath.js' );
 const modData = buildPath( { ext: 'js', name: 'utils', type: 'functions' } );
 
 /**
@@ -22,16 +22,17 @@ const modData = buildPath( { ext: 'js', name: 'utils', type: 'functions' } );
  * const { buildPath, duration, i18n, parser } = utils;
  */
 module.exports = () => {
+  const basePath = { ...modData, group: 'Utilities' };
   const modPaths = {
-    buildPath: buildPath( { name: 'buildPath', type: 'functions' } ).path,
-    duration: buildPath( { name: 'duration', type: 'functions' } ).path,
-    i18n: buildPath( { name: 'getInternationalizations', type: 'functions' } ).path,
-    parser: buildPath( { name: 'parser', type: 'functions' } ).path
+    buildPath: buildPath( { ...basePath, name: 'buildPath' } ).path,
+    duration: buildPath( { ...basePath, name: 'duration' } ).path,
+    i18n: buildPath( { ...basePath, name: 'getInternationalizations' } ).path,
+    parser: buildPath( { ...basePath, name: 'parser' } ).path,
   };
   return {
     buildPath: require( modPaths.buildPath ),
     duration: require( modPaths.duration ),
     i18n: require( modPaths.i18n ),
-    parser: require( modPaths.parser )
+    parser: require( modPaths.parser ),
   };
 }

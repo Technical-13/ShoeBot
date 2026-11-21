@@ -3,32 +3,32 @@ const { Schema } = require( 'mongoose' );
 const { Snowflake } = Schema.Types;
 
 const txSchema = new Schema( {
-  UserID: { platform: "TwitterX", type: Snowflake },
-  Username: String,
-  Name: String,
-  Description: String,
-  ProfileImageUrl: String,
-  Url: String,
-  Location: String,
-  Protected: Boolean,
-  Verified: Boolean,
-  VerifiedType: String,
   AccountCreatedAt: Date,
+  Credentials: {
+    AccessToken: String,
+    AuthenticatedAt: Date,
+    ExpiresAt: Date,
+    RefreshToken: String,
+    Scopes: [ String ],
+    TokenSecret: String,
+  },
+  Description: String,
+  LastSyncedAt: Date,
+  Location: String,
   Metrics: {
     Followers: Number,
     Following: Number,
+    Listed: Number,
     Tweets: Number,
-    Listed: Number
   },
-  Credentials: {
-    AccessToken: String,
-    RefreshToken: String,
-    TokenSecret: String,
-    ExpiresAt: Date,
-    Scopes: [ String ],
-    AuthenticatedAt: Date
-  },
-  LastSyncedAt: Date
+  Name: String,
+  ProfileImageURL: String,
+  ProfileURL: String,
+  Protected: Boolean,
+  UserID: { platform: "TwitterX", required: [ true, 'UserID is a required field.' ], type: Snowflake },
+  Username: String,
+  Verified: Boolean,
+  VerifiedType: String,
 }, { _id: false } );
 
 module.exports = txSchema;
