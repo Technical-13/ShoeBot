@@ -1,6 +1,5 @@
 const modData = { ext: 'js', name: 'clientDiscord', type: 'functions' };
-const path = require( 'path' );
-const bot = require( path.resolve( __dirname, '..' ) );
+const bot = require( process.cwd() );
 const { chalk, config, djs, env, fs } = bot;
 const { discord } = config;
 const { Client, Collection, GatewayIntentBits, Partials } = djs;

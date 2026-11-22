@@ -31,6 +31,7 @@ const botPersonaSchema = new Schema( {
     Token: String,
     Username: String,
   },
+  Enabled: { default: false, required: true, type: Boolean },
   Name: { required: [ true, 'Name is a required field.' ], type: String, },
   Platforms: {
     Discord: [ dSchema ],

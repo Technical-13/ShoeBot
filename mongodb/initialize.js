@@ -1,15 +1,15 @@
+const modData = { ext: 'js', name: 'initialize', type: 'mongodb' };
 const mongoose = require( 'mongoose' );
 mongoose.set( 'strictQuery', false );
 const bot = require( process.cwd() );
 const { buildPath, chalk, env, Err } = bot;
-const modData = buildPath( { ext: 'js', name: 'initialize', type: 'mongodb' } );
 const z = {
   models: {
-    BotConfig: buildPath( { ...modData, name: 'BotConfig', platform: 'models' } )
+    BotConfig: buildPath( { ...modData, name: 'BotConfig', platform: 'models' } ),
   },
   types: {
-    Snowflake: buildPath( { ...modData, name: 'Snowflake', platform: 'types' } )
-  }
+    Snowflake: buildPath( { ...modData, name: 'Snowflake', platform: 'types' } ),
+  },
 };
 require( z.types.Snowflake );
 require( z.models.BotConfig );
@@ -23,7 +23,7 @@ module.exports = async () => {
   }
   catch ( errObject ) {
     if ( !errObject.wasCaught ) {
-      console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( modData ), errObject.stack );
+      console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( buildPath( modData ).path ), errObject.stack );
     }
     throw errObject;
   }

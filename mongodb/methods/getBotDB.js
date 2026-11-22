@@ -1,21 +1,27 @@
 const modData = { ext: 'js', name: 'getBotDB', platform: 'methods', type: 'mongodb' };
 const bot = require( process.cwd() );
-const { buildPath, chalk, config, env, Err } = bot;
-const getLangs = require( buildPath( { ext: 'js', group: 'i18n', name: 'getLanguages', type: 'functions' } ).path );
+const { buildPath, chalk, config, env, Err, z } = bot;
+const { i18n } = z;
+const getLangs = require( buildPath( { ...i18n, ext: 'js', name: 'getLanguages' } ).path );
+const botLangs = getLangs();
 const botConfig = require( buildPath( { ...modData, group: 'Bot', name: 'BotConfig', platform: 'models' } ).path );
 const { limit, load, loadForcedCreate, ver } = config.dbData;
 const newBotConfig = {
   _id: load,
-  Languages: getLangs(),
-  Name: ( config.name ),
-  Owner: /* TBD */,
-  Personas: [ /* TBD */ ],
-  Platforms: { /* TBD */ },
-  WebDash: { /* TBD */ },
+  Config: {
+    CachedString: JSON.stringify( config ),
+    LastModifiedAt: botLangs[ 0 ].LastUpdatedOn,
+  },
+  Languages: botLangs,
+  Name: ( config.Name ),
+  Contacts: require( z.contacts.path ),
+  Personas: ( config.Personas ?? [] ),
+  Platforms: ( config.Platforms ?? {} ),
+  WebDash: ( config.WebDash ?? { Enabled: false } ),
   Verbosity: ( config.verbosity ?? -1 ),
   Version: ver.BotConfig,
 };
-const updateBotConfig = async ( loadBot ) => {
+/*const updateBotConfig = async ( loadBot ) => {
   if ( loadForcedCreate ) { console.info( 'Ignoring unnecessary `loadForcedCreate` setting.' ); }
   const currConfig = await botConfig.findById( loadBot );
   if ( currConfig.Version?.getTime() === ver.BotConfig.getTime() ) { return currConfig; }
@@ -23,7 +29,6 @@ const updateBotConfig = async ( loadBot ) => {
     const updatedBotConfig = { ...newBotConfig, _id: loadBot };
     if ( currConfig.Languages !== updatedBotConfig.Languages ) { updatedBotConfig.Languages = currConfig.Languages; }
     if ( currConfig.Name !== updatedBotConfig.Name ) { updatedBotConfig.Name = currConfig.Name; }
-    if ( currConfig.Owner !== updatedBotConfig.Owner ) { updatedBotConfig.Owner = currConfig.Owner; }
     if ( currConfig.Personas !== updatedBotConfig.Personas ) { updatedBotConfig.Personas = currConfig.Personas; }
     if ( currConfig.Platforms !== updatedBotConfig.Platforms ) { updatedBotConfig.Platforms = currConfig.Platforms; }
     if ( currConfig.WebDash !== updatedBotConfig.WebDash ) { updatedBotConfig.WebDash = currConfig.WebDash; }
@@ -34,7 +39,7 @@ const updateBotConfig = async ( loadBot ) => {
   }
 };
 
-module.exports = async () => {
+/*module.exports = async () => {
   try {
     const botIDs = await botConfig.distinct( '_id' );
     if ( botIDs.length > limit ) {
@@ -62,4 +67,4 @@ module.exports = async () => {
     console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( buildPath( modData ) ), errObject.stack );
     throw new Err( 'Unable to initialize bot database.', errObject );
   }
-};
+};//*/

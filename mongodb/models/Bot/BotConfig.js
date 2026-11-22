@@ -1,6 +1,7 @@
 const modData = { ext: 'js', group: 'Bot', name: 'BotConfig', platform: 'models', type: 'mongodb' };
 const { model, Schema } = require( 'mongoose' );
 
+const botContactSchema = require( './Contact.js' );
 const botPersonaSchema = require( './Persona.js' );
 const dSchema = require( './Platforms/Discord.js' );
 const fbSchema = require( './Platforms/Facebook.js' );
@@ -22,18 +23,7 @@ const botSchema = new Schema( {
     NativeName: String,
   } ],
   Name: String,
-  Owner: {
-    Contacts: [ {
-      DisplayName: String,
-      Platform: String,
-      ProfileURL: String,
-      Provider: String,
-      UserID: String,
-      UserName: String,
-    } ],
-    Languages: [ String ],
-    Timezone: String,
-  },
+  Contacts: [ botContactSchema ],
   Personas: [ botPersonaSchema ],
   Platforms: {
     Discord: [ dSchema ],
@@ -43,6 +33,20 @@ const botSchema = new Schema( {
     TwitterX: [ txSchema ],
   },
   WebDash: {
+    Enabled: { default: false, type: Boolean },
+    Endpoints: {
+      Hosting: {
+        Domain: String,
+        Instance: String,
+        Port: Number,
+        Server: String,
+        SubDomain: String,
+      },
+      Public: {
+        Domain: String,
+        SubDomain: String,
+      },
+    },
     Port: { default: 3000, type: Number },
     SessionSecret: String,
   },

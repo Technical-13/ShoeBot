@@ -5,58 +5,55 @@
  * instantiating the Discord client with necessary intents/partials, and booting modular handlers.
  *
  * @project ShoeBot "error-of-demogorgon" (v3)
- * @see {@link  https://github.com/Technical-13/ShoeBot/tree/error-of-demogorgon | GitHub Repository Branch}
+ * @see { @link  https://github.com/Technical-13/ShoeBot/tree/error-of-demogorgon | GitHub Repository Branch }
  *
  * @author Technical-13
- * @see {@link https://github.com/Technical-13 | Technical-13 (GitHub)}
- * @see {@link https://discord.com/users/440752068509040660/ | MagentaRV (Discord)}
- * @see {@link https://ddowiki.com/page/User:Technical_13 | Technical_13 (DDOwiki)}
- * @see {@link https://forums.ddo.com/index.php?members/shoemaker.2824/ | ShoeMaker (DDO Forums)}
+ * @see { @link https://github.com/Technical-13 | Technical-13 (GitHub) }
+ * @see { @link https://discord.com/users/440752068509040660/ | MagentaRV (Discord) }
+ * @see { @link https://ddowiki.com/page/User:Technical_13 | Technical_13 (DDOwiki) }
+ * @see { @link https://forums.ddo.com/index.php?members/shoemaker.2824/ | ShoeMaker (DDO Forums) }
  *
  * @license GNU-3
  *
  * @requires dotenv
- * @requires discord.js
  * @requires chalk
- * @requires fs
  */
 require( 'dotenv' ).config();
-const path = require( 'path' );
-const root = path.resolve( __dirname );
 const utils = require( './functions/utils.js' )();
 const { buildPath } = utils;
 const modData = buildPath( { ext: 'js', name: 'index' } );
 const zettel = {
-  bbeg: buildPath( { ext: 'js', name: 'errorHandler', type: 'functions' } ).path,
-  config: buildPath( { ext: 'json', name: 'config' } ).path,
-  db: buildPath( type: 'mongodb' ).path,
-  discord: buildPath( { ext: 'js', name: 'clientDiscord', type: 'functions' } ).path,
-  Err: buildPath( { ext: 'js', name: 'Err', type: 'functions' } ).path,
-  i18n: buildPath( group: 'i18n', type: 'functions' ).path,
-  initDB: buildPath( { ext: 'js', name: 'initialize', type: 'mongodb' } ).path,
-  json: buildPath( type: 'jsonObjects' ).path,
-  languages: buildPath( type: 'i18n' ).path,
-  timeFormat: buildPath( { ext: 'json', name: 'time', type: 'jsonObjects' } ).path,
-  utilities: buildPath( group: 'Utilities', type: 'functions' ).path,
-  webDash: buildPath( { ext: 'js', name: 'server', type: 'webDashboard' } ).path,
+//  bbeg: buildPath( { ext: 'js', name: 'errorHandler', type: 'functions' } ),
+  config: buildPath( { ext: 'json', name: 'config' } ),
+  contacts: buildPath( { ext: 'json', name: 'contacts', type: 'jsonObjects' } ),
+  db: buildPath( { type: 'mongodb' } ),
+//  discord: buildPath( { ext: 'js', name: 'clientDiscord', type: 'functions' } ),
+  Err: buildPath( { ext: 'js', name: 'Err', type: 'functions' } ),
+  i18n: buildPath( { group: 'i18n', type: 'functions' } ),
+  initDB: buildPath( { ext: 'js', name: 'initialize', type: 'mongodb' } ),
+  json: buildPath( { type: 'jsonObjects' } ),
+  languages: buildPath( { type: 'i18n' } ),
+  timeFormat: buildPath( { ext: 'json', name: 'time', type: 'jsonObjects' } ),
+  utilities: buildPath( { group: 'Utilities', type: 'functions' } ),
+//  webDash: buildPath( { ext: 'js', name: 'server', type: 'webDashboard' } ),
 };
 const { EventEmitter } = require( 'events' );
 const bot = {
   ascii: require( 'ascii-table' ),
-  bbeg: require( zettel.bbeg ),
+//  bbeg: require( zettel.bbeg.path ),
   buildPath: buildPath,
   chalk: require( 'chalk' ),
-  config: require( zettel.config ),
+  config: require( zettel.config.path ),
   djs: require( 'discord.js' ),
   env: process.env,
-  Err: require( zettel.Err ),
+  Err: require( zettel.Err.path ),
   events: new EventEmitter(),
   fs: require( 'fs' ),
-  timeFormat: require( zettel.timeFormat ),
+  timeFormat: require( zettel.timeFormat.path ),
   utils: utils,
   z: zettel,
 };
-bot.events.setMaxListeners( 100 );
+bot.events.setMaxListeners( bot.config.maxEvents ?? 10 );
 module.exports = bot;
 const { chalk, config, env, fs, z } = bot;
 Object.entries( config.dbData.ver ).forEach( ( [ key, value ] ) => {
@@ -69,12 +66,12 @@ Object.entries( config.dbData.ver ).forEach( ( [ key, value ] ) => {
 } );
 
 /*
-const dClient = require( z.discord );
+const dClient = require( z.discord.path );
 const iDiscoBots = [];
 const { personas } = config.discord;
 personas.forEach( ego => { if ( ego.enabled ) { iDiscoBots.push( ego.idn ); } } );
 
-require( z.initDB )().then( async () => {
+require( z.initDB.path )().then( async () => {
   console.log( '%s', chalk.hex( '#00DD00' ).bold( 'Database initialization sequence completed successfully.' ) );
 
   const discord = {};
@@ -87,7 +84,7 @@ require( z.initDB )().then( async () => {
   }
   bot.discord = discord;
 
-//  require( z.webDash )();
+//  require( z.webDash.path )();
 } ).catch( errDB => {
   console.error( 'Failed to initialize database in %s: %o', chalk.hex( '#FFA500' ).bold( modData.path ), errDB );
   throw new Error( 'Start aborted.' );

@@ -1,5 +1,5 @@
 const buildPath = require( './Utilities/buildPath.js' );
-const modData = buildPath( { ext: 'js', name: 'utils', type: 'functions' } );
+const modData = { ext: 'js', name: 'utils', type: 'functions' };
 
 /**
  * Loads ShoeBot's shared utility modules.
