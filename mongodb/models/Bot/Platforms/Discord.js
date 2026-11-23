@@ -4,9 +4,10 @@ const { Snowflake } = Schema.Types;
 
 const list = ( defaultType ) => {
   return {
+    Locked: { default: false, required: true, type: Boolean },
     Type: snowflakeType( defaultType ),
     UserID: { platform: 'Discord', required: [ true, 'UserID is a required field.' ], type: Snowflake },
-    Username: String
+    Username: String,
   };
 };
 
@@ -15,7 +16,7 @@ const rank = () => {
     Role: [ role() ],
     Type: snowflakeType( 'User' ),
     UserID: { platform: 'Discord', required: [ true, 'UserID is a required field.' ], type: Snowflake },
-    Username: String
+    Username: String,
   };
 };
 

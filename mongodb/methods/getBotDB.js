@@ -1,26 +1,9 @@
 const modData = { ext: 'js', name: 'getBotDB', platform: 'methods', type: 'mongodb' };
 const bot = require( process.cwd() );
-const { buildPath, chalk, config, env, Err, z } = bot;
-const { i18n } = z;
-const getLangs = require( buildPath( { ...i18n, ext: 'js', name: 'getLanguages' } ).path );
-const botLangs = getLangs();
+const { buildPath, chalk, config, env, Err } = bot;
 const botConfig = require( buildPath( { ...modData, group: 'Bot', name: 'BotConfig', platform: 'models' } ).path );
-const { limit, load, loadForcedCreate, ver } = config.dbData;
-const newBotConfig = {
-  _id: load,
-  Config: {
-    CachedString: JSON.stringify( config ),
-    LastModifiedAt: botLangs[ 0 ].LastUpdatedOn,
-  },
-  Languages: botLangs,
-  Name: ( config.Name ),
-  Contacts: require( z.contacts.path ),
-  Personas: ( config.Personas ?? [] ),
-  Platforms: ( config.Platforms ?? {} ),
-  WebDash: ( config.WebDash ?? { Enabled: false } ),
-  Verbosity: ( config.verbosity ?? -1 ),
-  Version: ver.BotConfig,
-};
+const { limit, loadForcedCreate } = config.dbData;
+const newBotConfig = require( buildPath( { ...modData, name: 'buildDefaultDB' ).path );
 /*const updateBotConfig = async ( loadBot ) => {
   if ( loadForcedCreate ) { console.info( 'Ignoring unnecessary `loadForcedCreate` setting.' ); }
   const currConfig = await botConfig.findById( loadBot );
