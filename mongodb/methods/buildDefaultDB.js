@@ -11,8 +11,7 @@ const getContactData = () => {
   }
 };
 const { load, ver } = config.dbData;
-const Sanitizer = require( buildPath( { ...modData, name: 'configSanitizer' } ).path );
-const sanitize = new Sanitizer();
+const sanitize = require( buildPath( { ...modData, name: 'configSanitizer' } ).path );
 
 /**
  * Builds the default BotConfig document from the current `config.json` file.
@@ -25,6 +24,7 @@ const sanitize = new Sanitizer();
  */
 module.exports = () => {
   try {
+    const platformDefaults = sanitize.platforms( config.Platforms );
     return {
       _id: load,
       Config: {
@@ -34,8 +34,8 @@ module.exports = () => {
       Contacts: getContactData(),
       Languages: botLangs,
       Name: config.Name,
-      Personas: config.Personas.map( persona => sanitize.persona( persona ) ),
-      Platforms: sanitize.platforms( config.Platforms ),
+      Personas: config.Personas.map( persona => sanitize.persona( persona, platformDefaults ) ),
+      Platforms: platformDefaults,
       WebDash: ( config.WebDash ?? { Enabled: false } ),
       Verbosity: ( config.Verbosity ?? 5 ),
       Version: ver.BotConfig,

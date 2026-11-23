@@ -1,8 +1,15 @@
 {
   "dbData": {
-    "limit": 2,
-    "load": "LiveBot",
-    "ver": { "BotConfig": "2026-11-20T13:57:40.355Z", "DiscordGuild": "TBD", "DiscordUser": "TBD", "ErrorLog": "TBD" }
+    "limit": 4, "//": [ "AlphaBot", "BetaBot", "LiveBot", "DevBot" ],
+    "load": "AlphaBot",
+    "ver": {
+      "BotConfig": "2026-11-20T13:57:40.355Z",
+      "ErrorLog": "TBD",
+      "Platforms": {
+        "Discord" : { "DiscordGuild": "TBD", "DiscordUser": "TBD" },
+        "GitHub" : { "GitHubCore": "TBD" }
+      }
+    }
   },
   "idn": "shoe",
   "language": "en-US",
@@ -10,179 +17,91 @@
   "Name": "ShoeBot",
   "Personas": [
     { "//": "&DDObot       : disabled (ddo)",
-      "APIs": [ "Array List of API CommonName values" ],
       "Enabled": false,
       "idn": "ddo",
       "Name": "DDObot",
       "Platforms": {
         "Discord": [ {
           "Activities": [ { "type": "Custom", "name": "https://discord.gg/officialddo" } ],
-          "ClientID": "445792511525650432",
-          "DevGuildID": "192775085420052489",
-          "Ranks": {
-            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
-          },
-          "Prefix": "&",
-          "StaticCmds": []
-        } ],
-        "Facebook": [],
-        "GitHub": [],
-        "MediaWiki": [],
-        "TwitterX": []
+          "ClientID": "445792511525650432"
+        } ]
       }
     },
     { "//": "&Flag Pole    : disabled (fp)",
-      "APIs": [ "Array List of API CommonName values" ],
       "Enabled": false,
       "idn": "fp",
       "Name": "Flag Pole",
       "Platforms": {
         "Discord": [ {
           "Activities": [],
-          "ClientID": "539878849366720532",
-          "DevGuildID": "192775085420052489",
-          "Ranks": {
-            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
-          },
-          "Prefix": "&",
-          "StaticCmds": []
-        } ],
-        "Facebook": [],
-        "GitHub": [],
-        "MediaWiki": [],
-        "TwitterX": []
+          "ClientID": "539878849366720532"
+        } ]
       }
     },
     { "//": "&greenie      : disabled (grn)",
-      "APIs": [ "Array List of API CommonName values" ],
       "Enabled": false,
       "idn": "grn",
       "Name": "greenie",
       "Platforms": {
         "Discord": [ {
           "Activities": [],
-          "ClientID": "464486990239367171",
-          "DevGuildID": "192775085420052489",
-          "Ranks": {
-            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
-          },
-          "Prefix": "&",
-          "StaticCmds": []
-        } ],
-        "Facebook": [],
-        "GitHub": [],
-        "MediaWiki": [],
-        "TwitterX": []
+          "ClientID": "464486990239367171"
+        } ]
       }
     },
     { "//": "&Gunther      : disabled (sdv)",
-      "APIs": [ "Array List of API CommonName values" ],
       "Enabled": false,
       "idn": "sdv",
       "Name": "Gunther",
       "Platforms": {
         "Discord": [ {
           "Activities": [],
-          "ClientID": "501574141472669696",
-          "DevGuildID": "192775085420052489",
-          "Ranks": {
-            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
-          },
-          "Prefix": "&",
-          "StaticCmds": []
-        } ],
-        "Facebook": [],
-        "GitHub": [],
-        "MediaWiki": [],
-        "TwitterX": []
+          "ClientID": "501574141472669696"
+        } ]
       }
     },
     { "//": "&Lazy Bastard : disabled (lb)",
-      "APIs": [ "Array List of API CommonName values" ],
       "Enabled": false,
       "idn": "lb",
       "Name": "Lazy Bastard",
       "Platforms": {
         "Discord": [ {
           "Activities": [],
-          "ClientID": "445955890437423114",
-          "DevGuildID": "192775085420052489",
-          "Ranks": {
-            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
-          },
-          "Prefix": "&",
-          "StaticCmds": []
-        } ],
-        "Facebook": [],
-        "GitHub": [],
-        "MediaWiki": [],
-        "TwitterX": []
+          "ClientID": "445955890437423114"
+        } ]
       }
     },
     { "//": "&LotRbot      : disabled (lotr)",
-      "APIs": [ "Array List of API CommonName values" ],
       "Enabled": false,
       "idn": "lotr",
       "Name": "LotRbot",
       "Platforms": {
         "Discord": [ {
           "Activities": [ { "type": "Custom", "name": "https://discord.me/LotRdiscord" } ],
-          "ClientID": "445791608609308702",
-          "DevGuildID": "192775085420052489",
-          "Ranks": {
-            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
-          },
-          "Prefix": "&",
-          "StaticCmds": []
-        } ],
-        "Facebook": [],
-        "GitHub": [],
-        "MediaWiki": [],
-        "TwitterX": []
+          "ClientID": "445791608609308702"
+        } ]
       }
     },
     { "//": "&NCC-1701     : disabled (ncc)",
-      "APIs": [ "Array List of API CommonName values" ],
       "Enabled": false,
       "idn": "ncc",
       "Name": "NCC-1701",
       "Platforms": {
         "Discord": [ {
           "Activities": [],
-          "ClientID": "549729449105555476",
-          "DevGuildID": "192775085420052489",
-          "Ranks": {
-            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
-          },
-          "Prefix": "&",
-          "StaticCmds": []
-        } ],
-        "Facebook": [],
-        "GitHub": [],
-        "MediaWiki": [],
-        "TwitterX": []
+          "ClientID": "549729449105555476"
+        } ]
       }
     },
     { "//": "&OSMDb        : disabled (osm)",
-      "APIs": [ "Array List of API CommonName values" ],
       "Enabled": false,
       "idn": "osm",
       "Name": "OSMDb",
       "Platforms": {
         "Discord": [ {
           "Activities": [],
-          "ClientID": "831149002253926433",
-          "DevGuildID": "192775085420052489",
-          "Ranks": {
-            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
-          },
-          "Prefix": "&",
-          "StaticCmds": []
-        } ],
-        "Facebook": [],
-        "GitHub": [],
-        "MediaWiki": [],
-        "TwitterX": []
+          "ClientID": "831149002253926433"
+        } ]
       }
     },
     { "//": "&Signal       : disabled (frog)",
@@ -193,84 +112,41 @@
       "Platforms": {
         "Discord": [ {
           "Activities": [],
-          "ClientID": "445799905177632768",
-          "DevGuildID": "192775085420052489",
-          "Ranks": {
-            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
-          },
-          "Prefix": "&",
-          "StaticCmds": []
-        } ],
-        "Facebook": [],
-        "GitHub": [],
-        "MediaWiki": [],
-        "TwitterX": []
+          "ClientID": "445799905177632768"
+        } ]
       }
     },
     { "//": "&TopWaze      : disabled (waze)",
-      "APIs": [ "Array List of API CommonName values" ],
       "Enabled": false,
       "idn": "waze",
       "Name": "TopWaze",
       "Platforms": {
         "Discord": [ {
           "Activities": [],
-          "ClientID": "501575146210066432",
-          "DevGuildID": "192775085420052489",
-          "Ranks": {
-            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
-          },
-          "Prefix": "&",
-          "StaticCmds": []
-        } ],
-        "Facebook": [],
-        "GitHub": [],
-        "MediaWiki": [],
-        "TwitterX": []
+          "ClientID": "501575146210066432"
+        } ]
       }
     },
     { "//": "&UMS          : disabled (ums)",
-      "APIs": [ "Array List of API CommonName values" ],
       "Enabled": false,
       "idn": "ums",
       "Name": "UMS",
       "Platforms": {
         "Discord": [ {
           "Activities": [],
-          "ClientID": "883458935162564629",
-          "DevGuildID": "192775085420052489",
-          "Ranks": {
-            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
-          },
-          "Prefix": "&",
-          "StaticCmds": []
-        } ],
-        "Facebook": [],
-        "GitHub": [],
-        "MediaWiki": [],
-        "TwitterX": []
+          "ClientID": "883458935162564629"
+        } ]
       }
     },
     { "//": "&Vladdy       : disabled (corn)",
-      "APIs": [ "Array List of API CommonName values" ],
       "Enabled": false,
       "idn": "corn",
       "Name": "Vladdy",
       "Platforms": {
         "Discord": [ {
           "Activities": [],
-          "ClientID": "454432401293312012",
-          "DevGuildID": "192775085420052489",
-          "Ranks": {
-            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
-          },
-          "Prefix": "&",
-          "StaticCmds": []
-        } ],
-        "Facebook": [],
-        "GitHub": [],
-        "MediaWiki": [],
-        "TwitterX": []
+          "ClientID": "454432401293312012"
+        } ]
       }
     }
   ],
