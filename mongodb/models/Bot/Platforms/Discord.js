@@ -1,4 +1,4 @@
-const modData = { ext: 'js', group: [ 'Bot', 'Platform' ], name: 'Discord', platform: 'models', type: 'mongodb' };
+const modData = { ext: 'js', group: [ 'Bot', 'Platforms' ], name: 'Discord', platform: 'models', type: 'mongodb' };
 const { Schema } = require( 'mongoose' );
 const { Snowflake } = Schema.Types;
 

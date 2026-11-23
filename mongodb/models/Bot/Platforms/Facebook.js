@@ -1,4 +1,4 @@
-const modData = { ext: 'js', group: [ 'Bot', 'Platform' ], name: 'Facebook', platform: 'models', type: 'mongodb' };
+const modData = { ext: 'js', group: [ 'Bot', 'Platforms' ], name: 'Facebook', platform: 'models', type: 'mongodb' };
 const { Schema } = require( 'mongoose' );
 
 const fbSchema = new Schema( {

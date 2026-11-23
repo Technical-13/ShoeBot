@@ -2,31 +2,58 @@ const modData = { ext: 'js', name: 'buildDefaultDB', platform: 'methods', type: 
 const bot = require( process.cwd() );
 const { buildPath, config, z } = bot;
 const { contacts, i18n } = z;
-const getLangs = require( buildPath( { ...i18n, ext: 'js', name: 'getLanguages' } ).path );
-const botLangs = getLangs();
+const botLangs = require( buildPath( { ...i18n, ext: 'js', name: 'getLanguages' } ).path )();
+const getContactData = () => {
+  try { return require( contacts.path ); }
+  catch ( fileError ) {
+    console.error( 'Missing or invalid %s file: %o', contacts.path, fileError );
+    return {};
+  }
+};
 const { load, ver } = config.dbData;
+const Sanitizer = require( buildPath( { ...modData, name: 'configSanitizer' } ).path );
+const sanitize = new Sanitizer();
 
-const cleanPersonas = ( config.Personas ?? [] ).map( persona => ( {
-  APIs: persona.APIs.map( CommonName => ( { CommonName } ) ),
-  Enabled: persona.Enabled,
-  Name: persona.Name,
-  Platforms: cleanPlatforms( persona.Platforms ),
-} ) );
-
+/**
+ * Builds the default BotConfig document from the current `config.json` file.
+ *
+ * Loads language and contact data, sanitizes persona and platform configurations, and assembles the complete object used to create or update the BotConfig document.
+ *
+ * Missing or invalid contact data is logged and replaced with an empty object.
+ *
+ * @returns { Object<string, *> } The completed default BotConfig document, or a diagnostic document if building fails.
+ */
 module.exports = () => {
-  return {
-    _id: load,
-    Config: {
-      CachedString: JSON.stringify( config ),
-      LastModifiedAt: botLangs[ 0 ].LastUpdatedOn,
-    },
-    Languages: botLangs,
-    Name: ( config.Name ),
-    Contacts: require( contacts.path ),
-    Personas: cleanPersonas,
-    Platforms: ( config.Platforms ?? {} ),
-    WebDash: ( config.WebDash ?? { Enabled: false } ),
-    Verbosity: ( config.Verbosity ?? -1 ),
-    Version: ver.BotConfig,
-  };
+  try {
+    return {
+      _id: load,
+      Config: {
+        CachedString: JSON.stringify( config ),
+        LastModifiedAt: botLangs[ 0 ].LastUpdatedOn,
+      },
+      Contacts: getContactData(),
+      Languages: botLangs,
+      Name: config.Name,
+      Personas: config.Personas.map( persona => sanitize.persona( persona ) ),
+      Platforms: sanitize.platforms( config.Platforms ),
+      WebDash: ( config.WebDash ?? { Enabled: false } ),
+      Verbosity: ( config.Verbosity ?? 5 ),
+      Version: ver.BotConfig,
+    };
+  } catch ( builderError ) {
+    console.error( 'Failed to %s: %o', buildPath( modData ).path, builderError );
+    return {
+      _id: 'Error',
+      Config: {
+        CachedString: JSON.stringify( {
+          stack: builderError.stack,
+          string: builderError.toString(),
+        } ),
+        LastModifiedAt: new Date(),
+      },
+      Name: 'Failed Default Database Build',
+      Verbosity: 5,
+      Version: new Date(),
+    };
+  }
 }

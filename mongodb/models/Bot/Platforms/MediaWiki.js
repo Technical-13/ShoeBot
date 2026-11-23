@@ -1,4 +1,4 @@
-const modData = { ext: 'js', group: [ 'Bot', 'Platform' ], name: 'MediaWiki', platform: 'models', type: 'mongodb' };
+const modData = { ext: 'js', group: [ 'Bot', 'Platforms' ], name: 'MediaWiki', platform: 'models', type: 'mongodb' };
 const { Schema } = require( 'mongoose' );
 
 const mwSchema = new Schema( {

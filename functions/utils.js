@@ -14,6 +14,7 @@ const modData = { ext: 'js', name: 'utils', type: 'functions' };
  *   buildPath: Function,
  *   duration: Function,
  *   i18n: Function,
+ *   isPlainObject: Function,
  *   parser: Function
  * }} An object containing the loaded utility modules.
  *
@@ -33,6 +34,11 @@ module.exports = () => {
     buildPath: require( modPaths.buildPath ),
     duration: require( modPaths.duration ),
     i18n: require( modPaths.i18n ),
+    isPlainObject: value => {
+      if ( value === null || typeof value !== 'object' ) { return false; }
+      const proto = Object.getPrototypeOf( value );
+      return proto === Object.prototype || proto === null;
+    },
     parser: require( modPaths.parser ),
   };
 }

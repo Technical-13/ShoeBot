@@ -12,8 +12,8 @@ const txSchema = require( './Platforms/TwitterX.js' );
 const botSchema = new Schema( {
   _id: { default: 'LiveBot', type: String },
   Config: {
-    CachedString: String,
-    LastModifiedAt: Date,
+    CachedString: { required: [ true, 'Config.CachedString is a required field.', ], type: String },
+    LastModifiedAt: { required: [ true, 'Config.LastModifiedAt is a required field.', ], type: Date },
   },
   Languages: [ {
     Filename: String,
@@ -50,7 +50,7 @@ const botSchema = new Schema( {
     Port: { default: 3000, type: Number },
     SessionSecret: String,
   },
-  Verbosity: { default: 5, max: 5, min: 0, required: [ true, 'Verbosity is a required field.' ], type: Number, },
+  Verbosity: { default: 5, max: 5, min: 0, required: [ true, 'Verbosity (values: 0-5) is a required field.' ], type: Number, },
   Version: { required: [ true, 'Version is a required field.' ], type: Date, },
 }, { timestamps: true } );
 

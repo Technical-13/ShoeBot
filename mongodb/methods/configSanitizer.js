@@ -1,16 +1,39 @@
-const modData = { ext: 'js', name: 'Sanitize', platform: 'methods', type: 'mongodb' };
+const modData = { ext: 'js', name: 'configSanitizer', platform: 'methods', type: 'mongodb' };
+const bot = require( process.cwd() );
+const { buildPath, utils } = bot;
+const { isPlainObject } = utils;
 
 class Sanitize {
 
   __pick( data, fields ) {
     if ( Array.isArray( data ) ) { return data.map( item => this.__pick( item, fields ) ); }
-    if ( !data || typeof data !== 'object' ) { return data; }
+    if ( !isPlainObject( data ) ) { return data; }
 
     return Object.fromEntries(
       Object.entries( fields )
         .filter( ( [ key ] ) => Object.prototype.hasOwnProperty.call( data, key ) )
         .map( ( [ key, rule ] ) => [ key, rule === true ? data[ key ] : this.__pick( data[ key ], rule ), ] )
     );
+  }
+
+  __logError( reason, name ) {
+    switch ( reason ) {
+      case 'notArrayAPIs' :
+        console.error( 'API data in %s was not an array for Persona: %s', buildPath( modData ).path, name );
+        break;
+      case 'notArrayPlatform' :
+        console.error( 'Platform data in %s was not an array for: %s', buildPath( modData ).path, name );
+        break;
+      case 'notObjectPersona' :
+        console.error( 'Persona data in %s was not an object.', buildPath( modData ).path );
+        break;
+      case 'notObjectPlatforms' :
+        console.error( 'Platforms data in %s was not an object.', buildPath( modData ).path );
+        break;
+      case 'unknown' :
+        console.error( 'Unknown platform detected in %s: %s', buildPath( modData ).path, name );
+        break;
+    }
   }
 
   _Discord( data ) {
@@ -39,8 +62,10 @@ class Sanitize {
       Prefix: true,
       Whitelist: [ list ],
     } );
-    result.Blacklist.forEach( list => { list.Locked = true; } );
-    result.Whitelist.forEach( list => { list.Locked = true; } );
+    result.forEach( Discord => {
+      Discord.Blacklist?.forEach( list => { list.Locked = true; } );
+      Discord.Whitelist?.forEach( list => { list.Locked = true; } );
+    } );
     return result;
   }
 
@@ -201,9 +226,14 @@ class Sanitize {
   constructor() {}
 
   persona( data ) {
-    if ( !data || typeof data !== 'object' || Array.isArray( data ) ) { throw new TypeError( 'Persona data must be an object.' ); }
+    if ( !isPlainObject( data ) ) { this.__logError( 'notObjectPersona' ); return {}; }
+    let APIs = data.APIs;
+    if ( !Array.isArray( data.APIs ) ) {
+      this.__logError( 'notArrayAPIs', data.Name );
+      APIs = [];
+    }
     return {
-      APIs: ( data.APIs ?? [] ).map( api => { return { CommonName: api }; } ),
+      APIs: ( APIs ).map( api => { return { CommonName: api }; } ),
       Enabled: data.Enabled,
       Name: data.Name,
       Platforms: this.platforms( data.Platforms ?? {} ),
@@ -211,14 +241,14 @@ class Sanitize {
   }
 
   platforms( data ) {
-    if ( !data || typeof data !== 'object' || Array.isArray( data ) ) { throw new TypeError( 'Platforms data must be an object.' ); }
+    if ( !isPlainObject( data ) ) { this.__logError( 'notObjectPlatforms' ); return {}; }
     return Object.fromEntries(
       Object.entries( data ).map( ( [ name, entries ] ) => [ name, this.platform( name, entries ), ] )
     );
   }
 
   platform( name, data ) {
-    if ( !Array.isArray( data ) ) { throw new TypeError( name + ' platform data must be an array.' ); }
+    if ( !Array.isArray( data ) ) { this.__logError( 'notArrayPlatform', name ); return []; }
     switch ( name ) {
       case 'Discord': return this._Discord( data );
 //      case 'Facebook': return this._Facebook( data );
@@ -227,7 +257,7 @@ class Sanitize {
 //      case 'MediaWiki': return this._MediaWiki( data );
 //      case 'TwitterX': return this._TwitterX( data );
 //      case 'XenForo': return this._XenForo( data );
-      default: throw new Error( 'Unsupported platform: ' + name );
+      default: this.__logError( 'unknown', name ); return [];
     }
   }
 }

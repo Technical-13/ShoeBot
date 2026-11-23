@@ -2,12 +2,7 @@
   "dbData": {
     "limit": 2,
     "load": "LiveBot",
-    "ver": {
-      "BotConfig": "2026-11-20T13:57:40.355Z",
-      "DiscordGuild": "TBD",
-      "DiscordUser": "TBD",
-      "ErrorLog": "TBD"
-    }
+    "ver": { "BotConfig": "2026-11-20T13:57:40.355Z", "DiscordGuild": "TBD", "DiscordUser": "TBD", "ErrorLog": "TBD" }
   },
   "idn": "shoe",
   "language": "en-US",
@@ -25,11 +20,7 @@
           "ClientID": "445792511525650432",
           "DevGuildID": "192775085420052489",
           "Ranks": {
-            "Owner": {
-              "Type": "Member",
-              "UserID": "440752068509040660",
-              "Username": "MagentaRV"
-            }
+            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
           },
           "Prefix": "&",
           "StaticCmds": []
@@ -51,11 +42,7 @@
           "ClientID": "539878849366720532",
           "DevGuildID": "192775085420052489",
           "Ranks": {
-            "Owner": {
-              "Type": "Member",
-              "UserID": "440752068509040660",
-              "Username": "MagentaRV"
-            }
+            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
           },
           "Prefix": "&",
           "StaticCmds": []
@@ -77,11 +64,7 @@
           "ClientID": "464486990239367171",
           "DevGuildID": "192775085420052489",
           "Ranks": {
-            "Owner": {
-              "Type": "Member",
-              "UserID": "440752068509040660",
-              "Username": "MagentaRV"
-            }
+            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
           },
           "Prefix": "&",
           "StaticCmds": []
@@ -103,11 +86,7 @@
           "ClientID": "501574141472669696",
           "DevGuildID": "192775085420052489",
           "Ranks": {
-            "Owner": {
-              "Type": "Member",
-              "UserID": "440752068509040660",
-              "Username": "MagentaRV"
-            }
+            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
           },
           "Prefix": "&",
           "StaticCmds": []
@@ -129,11 +108,7 @@
           "ClientID": "445955890437423114",
           "DevGuildID": "192775085420052489",
           "Ranks": {
-            "Owner": {
-              "Type": "Member",
-              "UserID": "440752068509040660",
-              "Username": "MagentaRV"
-            }
+            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
           },
           "Prefix": "&",
           "StaticCmds": []
@@ -155,11 +130,7 @@
           "ClientID": "445791608609308702",
           "DevGuildID": "192775085420052489",
           "Ranks": {
-            "Owner": {
-              "Type": "Member",
-              "UserID": "440752068509040660",
-              "Username": "MagentaRV"
-            }
+            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
           },
           "Prefix": "&",
           "StaticCmds": []
@@ -181,11 +152,7 @@
           "ClientID": "549729449105555476",
           "DevGuildID": "192775085420052489",
           "Ranks": {
-            "Owner": {
-              "Type": "Member",
-              "UserID": "440752068509040660",
-              "Username": "MagentaRV"
-            }
+            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
           },
           "Prefix": "&",
           "StaticCmds": []
@@ -207,11 +174,7 @@
           "ClientID": "831149002253926433",
           "DevGuildID": "192775085420052489",
           "Ranks": {
-            "Owner": {
-              "Type": "Member",
-              "UserID": "440752068509040660",
-              "Username": "MagentaRV"
-            }
+            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
           },
           "Prefix": "&",
           "StaticCmds": []
@@ -233,11 +196,7 @@
           "ClientID": "445799905177632768",
           "DevGuildID": "192775085420052489",
           "Ranks": {
-            "Owner": {
-              "Type": "Member",
-              "UserID": "440752068509040660",
-              "Username": "MagentaRV"
-            }
+            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
           },
           "Prefix": "&",
           "StaticCmds": []
@@ -259,11 +218,7 @@
           "ClientID": "501575146210066432",
           "DevGuildID": "192775085420052489",
           "Ranks": {
-            "Owner": {
-              "Type": "Member",
-              "UserID": "440752068509040660",
-              "Username": "MagentaRV"
-            }
+            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
           },
           "Prefix": "&",
           "StaticCmds": []
@@ -285,11 +240,7 @@
           "ClientID": "883458935162564629",
           "DevGuildID": "192775085420052489",
           "Ranks": {
-            "Owner": {
-              "Type": "Member",
-              "UserID": "440752068509040660",
-              "Username": "MagentaRV"
-            }
+            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
           },
           "Prefix": "&",
           "StaticCmds": []
@@ -311,11 +262,7 @@
           "ClientID": "454432401293312012",
           "DevGuildID": "192775085420052489",
           "Ranks": {
-            "Owner": {
-              "Type": "Member",
-              "UserID": "440752068509040660",
-              "Username": "MagentaRV"
-            }
+            "Owner": { "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" }
           },
           "Prefix": "&",
           "StaticCmds": []
@@ -336,12 +283,7 @@
         "Ranks": {
           "CoOwners": [],
           "Moderators": [],
-          "Owner": {
-            "Role": [ "Contributor" ],
-            "Type": "Member",
-            "UserID": "440752068509040660",
-            "Username": "MagentaRV"
-          },
+          "Owner": { "Role": [ "Contributor" ], "Type": "Member", "UserID": "440752068509040660", "Username": "MagentaRV" },
           "VIPs": []
         },
         "Prefix": "&",
@@ -363,10 +305,7 @@
         "Server": null,
         "SubDomain": null
       },
-      "Public": {
-        "Domain": "magentarv.info",
-        "SubDomain": "EoD"
-      }
+      "Public": { "Domain": "magentarv.info", "SubDomain": "EoD" }
     },
     "Port": 3000
   },
