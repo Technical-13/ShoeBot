@@ -1,7 +1,8 @@
 const modData = { ext: 'js', name: 'buildDefaultDB', platform: 'methods', type: 'mongodb' };
 const root = process.cwd();
 const bot = require( root );
-const { buildPath, config, fs, utils, z } = bot;
+const { buildPath, config, fs, mongo, utils, z } = bot;
+const { isDoc } = mongo;
 const { getJSON } = utils;
 const { contacts, i18n } = z;
 const botLangs = require( buildPath( { ...i18n, ext: 'js', name: 'getLanguages' } ).path )();
@@ -20,7 +21,9 @@ const sanitize = require( buildPath( { ...modData, name: 'configSanitizer' } ).p
 module.exports = () => {
   try {
     const platformDefaults = sanitize.platforms( config.Platforms );
-    const contactData = getJSON( contacts.path );
+    const contactData = ( getJSON( contacts.path ).Gurus || [] )
+      .sort( ( a, b ) => a.ID - b.ID )
+      .filter( c => Object.keys( isDoc( c ) ? c.toObject() : ( isPlainObject( c ) ? c : {} ) ).length );
     return {
       _id: load,
       Backup: {

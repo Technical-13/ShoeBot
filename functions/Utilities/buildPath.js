@@ -13,7 +13,7 @@ const modData = { ext: 'js', file: 'buildPath.js', group: 'Utilities', name: 'bu
  * @param { string } [ objPath.file ] - Optional filename override.
  *   If supplied and different from the calculated filename, the calculated filename is retained as bFile.
  * @param { string | Array< string | number | Date > } [ objPath.group ] - Optional subdirectory or array of nested subdirectories.
- * @param { Array<string|number|Date> } [ objPath.groups ] - Optional array of nested subdirectories.
+ * @param { Array< string | number | Date > } [ objPath.groups ] - Optional array of nested subdirectories.
  *   If both group and groups are supplied, they are processed and added to the full path in that order.
  * @param { boolean } [ objPath.isNamelessExtHiddenFilename ] - Optional toggle to suppress warning for ext without name creating a pseudo hidden filename.
  * @param { string } [ objPath.name ] - Optional base filename.
@@ -47,7 +47,6 @@ const modData = { ext: 'js', file: 'buildPath.js', group: 'Utilities', name: 'bu
  *
  * Caller-supplied file and path overrides take precedence over the calculated values.
  * The bFile and bPath properties preserve the corresponding calculated values when overrides are supplied.
- *
  */
 module.exports = ( objPath = {} ) => {
   const { ext, group, groups, isNamelessExtHiddenFilename, name, platform, type } = objPath;
