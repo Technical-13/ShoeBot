@@ -15,11 +15,11 @@ const updateBotConfig = async ( loadBot, botIDs ) => {
   return await botConfig.updateOne( { _id: loadBot }, updatedBotConfig, { upsert: true } )
     .then( updateSuccess => { return updatedBotConfig; } )
     .catch( updateError => { throw new Err( chalk.bold.cyan.inverse( 'Error attempting to update the core bot configuration in my database:' ), updateError ); } );
-};//*/
+};
 
-/*module.exports = async () => {
+module.exports = async () => {
   try {
-    const botIDs = await botConfig.distinct( '_id' );
+/*    const botIDs = await botConfig.distinct( '_id' );
     if ( botIDs.length > limit ) {
       console.warn( 'Warning: The BotConfig DB Table exceeds the expected limit of %s entries: %o\nPlease either remove %s entr%s from the table or increase the `dbData.limit` in `config.json` to `"limit": %d,`.', chalk.bold( limit ), botIDs, ( botIDs.length - limit ), ( botIDs.length - limit === 1 ? 'y' : 'ies' ), botIDs.length );
     }
@@ -37,12 +37,12 @@ const updateBotConfig = async ( loadBot, botIDs ) => {
       console.warn( 'Notice: Creating this %s entry in the BotConfig DB Table exceeds the expected limit of %s entries: %o\nPlease either remove an entry from the table or increase the `dbData.limit` in `config.json` to `"limit": %d,`.', chalk.bold( load ), chalk.bold( limit ), ( limit + 1 ) );
     }
     console.log( 'Initializing bot "load: %s" in database...', load );
-    return await botConfig.create( newBotConfig )
+/*    return await botConfig.create( newBotConfig )
       .then( initSuccess => { console.log( chalk.bold.greenBright( 'Bot configuration initialized in my database.' ) ); return newBotConfig; } )
-      .catch( initError => { throw new Err( chalk.bold.cyan.inverse( 'Error attempting to initialize bot configuration in my database:', initError ) ); } );
+      .catch( initError => { throw new Err( chalk.bold.cyan.inverse( 'Error attempting to initialize bot configuration in my database:', initError ) ); } );//*/
   }
   catch ( errObject ) {
     console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( buildPath( modData ) ), errObject.stack );
     throw new Err( 'Unable to initialize bot database.', errObject );
   }
-};//*/
+};

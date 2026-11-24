@@ -27,9 +27,15 @@ module.exports = () => {
     const platformDefaults = sanitize.platforms( config.Platforms );
     return {
       _id: load,
-      Config: {
-        CachedString: JSON.stringify( config ),
-        LastModifiedAt: botLangs[ 0 ].LastUpdatedOn,
+      Backup: {
+        Config: {
+          CachedString: JSON.stringify( config ),
+          LastModifiedAt: fs.statSync( root + '/config.json' ).mtime,
+        },
+        Contacts: {
+          CachedString: JSON.stringify( require( contacts.path ) ),
+          LastModifiedAt: fs.statSync( contacts.path ).mtime,
+        },
       },
       Contacts: getContactData(),
       Languages: botLangs,
@@ -44,12 +50,14 @@ module.exports = () => {
     console.error( 'Failed to %s: %o', buildPath( modData ).path, builderError );
     return {
       _id: 'Error',
-      Config: {
-        CachedString: JSON.stringify( {
-          stack: builderError.stack,
-          string: builderError.toString(),
-        } ),
-        LastModifiedAt: new Date(),
+      Backup: {
+        Config: {
+          CachedString: JSON.stringify( {
+            stack: builderError.stack,
+            string: builderError.toString(),
+          } ),
+          LastModifiedAt: new Date(),
+        },
       },
       Name: 'Failed Default Database Build',
       Verbosity: 5,

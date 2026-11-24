@@ -31,6 +31,14 @@ module.exports = () => {
     parser: buildPath( { ...basePath, name: 'parser' } ).path,
   };
   return {
+    asBoolean: value => {
+      if ( typeof value === 'boolean' ) { return value; }
+      if ( value === 0 || value === 1 ) { return !!value; }
+      if ( typeof value === 'string' ) { value = value.trim().toLowerCase(); }
+      if ( value === 'true' ) { return true; }
+      if ( value === 'false' ) { return false; }
+      return false;
+    },
     buildPath: require( modPaths.buildPath ),
     duration: require( modPaths.duration ),
     i18n: require( modPaths.i18n ),

@@ -1,7 +1,7 @@
 const modData = { ext: 'js', name: 'configSanitizer', platform: 'methods', type: 'mongodb' };
 const bot = require( process.cwd() );
 const { buildPath, utils } = bot;
-const { isPlainObject } = utils;
+const { asBoolean, isPlainObject } = utils;
 
 /** Recursively filters data using a field whitelist.
  *
@@ -33,9 +33,6 @@ const pick = ( data, fields ) => {
  */
 const logError = ( reason, name ) => {
   switch ( reason ) {
-    case 'notArrayAPIs' :
-      console.error( 'API data in %s was not an array for Persona: %s', buildPath( modData ).path, name );
-      break;
     case 'notArrayPlatform' :
       console.error( 'Platform data in %s was not an array for: %s', buildPath( modData ).path, name );
       break;
@@ -300,17 +297,24 @@ const discord = data => {
  */
 // const xenforo = () => {};
 
-const getCleanDefault = ( objDefault ) => {
-  const defaultData = { ...objDefault };
-  defaultData.Discord.forEach( d => {
-    return { ...d, d.Activities = [ { 'type': 'Custom', 'name': 'It Is My First Time!!!' } ], d.ClientID = '' };
+/** Cleans the default platform configuration for persona inheritance.
+ *
+ * Takes the default platform object supplied from a previous run and cleans out properties that shouldn't be pass on to personas.
+ *
+ * @param { Object } defaultData - The default platform configuration to clean.
+ * @returns { Object } The cleaned default platform configuration.
+ */
+const getCleanDefault = ( defaultData ) => {
+  defaultData.Discord?.forEach( d => {
+    d.Activities = [ { 'type': 'Custom', 'name': 'It Is My First Time!!!' } ];
+    d.ClientID = '';
   } );
   return defaultData;
 };
 
 /** Sanitizes a persona configuration.
  *
- * Validates the persona data, converts API names into CommonName objects, and sanitizes its platform configurations.
+ * Validates the persona data and sanitizes its platform configurations.
  *
  * @param { Object } data - The persona configuration to sanitize.
  * @param { Object } [ defaults ] - The default platform configuration to use as a baseline.
@@ -318,16 +322,11 @@ const getCleanDefault = ( objDefault ) => {
  */
 const persona = ( data, defaults ) => {
   if ( !isPlainObject( data ) ) { logError( 'notObjectPersona' ); return {}; }
-  const APIs = !Array.isArray( data.APIs ) ? [] : data.APIs;
-  if ( !Array.isArray( data.APIs ) ) {
-    logError( 'notArrayAPIs', data.Name );
-  }
   const defaultData = getCleanDefault( isPlainObject( defaults ) ? defaults : {} );
   const definedData = isPlainObject( data.Platforms ) ? data.Platforms : {};
   const platformData = Object.assign( {}, defaultData, definedData );
   return {
-    APIs: ( APIs ).map( api => { return { CommonName: api }; } ),
-    Enabled: data.Enabled,
+    Enabled: asBoolean( data.Enabled ),
     Name: data.Name,
     Platforms: platforms( platformData ),
   };

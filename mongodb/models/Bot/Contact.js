@@ -2,6 +2,7 @@ const modData = { ext: 'js', group: 'Bot', name: 'Contact', platform: 'models', 
 const { Schema } = require( 'mongoose' );
 
 const botContactSchema = new Schema( {
+  ID: Number,
   Languages: [ String ],
   Name: String,
   Platforms: [ {

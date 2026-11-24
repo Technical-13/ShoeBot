@@ -28,12 +28,14 @@ module.exports = ( curr, result, botIDs ) => {
     const errID = 'Error-' + ( botIDs.filter( id => id.startsWith( 'Error' ) ) ).length + 1;
     return {
       _id: errID,
-      Config: {
-        CachedString: JSON.stringify( {
-          stack: updaterError.stack,
-          string: updaterError.toString(),
-        } ),
-        LastModifiedAt: new Date(),
+      Backup: {
+        Config: {
+          CachedString: JSON.stringify( {
+            stack: updaterError.stack,
+            string: updaterError.toString(),
+          } ),
+          LastModifiedAt: new Date(),
+        },
       },
       Name: 'Failed Default Database Build',
       Verbosity: 5,
