@@ -1,15 +1,10 @@
 const modData = { ext: 'js', name: 'buildDefaultDB', platform: 'methods', type: 'mongodb' };
-const bot = require( process.cwd() );
-const { buildPath, config, z } = bot;
+const root = process.cwd();
+const bot = require( root );
+const { buildPath, config, fs, utils, z } = bot;
+const { getJSON } = utils;
 const { contacts, i18n } = z;
 const botLangs = require( buildPath( { ...i18n, ext: 'js', name: 'getLanguages' } ).path )();
-const getContactData = () => {
-  try { return require( contacts.path ); }
-  catch ( fileError ) {
-    console.error( 'Missing or invalid %s file: %o', contacts.path, fileError );
-    return {};
-  }
-};
 const { load, ver } = config.dbData;
 const sanitize = require( buildPath( { ...modData, name: 'configSanitizer' } ).path );
 
@@ -25,6 +20,7 @@ const sanitize = require( buildPath( { ...modData, name: 'configSanitizer' } ).p
 module.exports = () => {
   try {
     const platformDefaults = sanitize.platforms( config.Platforms );
+    const contactData = getJSON( contacts.path );
     return {
       _id: load,
       Backup: {
@@ -33,11 +29,11 @@ module.exports = () => {
           LastModifiedAt: fs.statSync( root + '/config.json' ).mtime,
         },
         Contacts: {
-          CachedString: JSON.stringify( require( contacts.path ) ),
+          CachedString: JSON.stringify( contactData ),
           LastModifiedAt: fs.statSync( contacts.path ).mtime,
         },
       },
-      Contacts: getContactData(),
+      Contacts: contactData,
       Languages: botLangs,
       Name: config.Name,
       Personas: config.Personas.map( persona => sanitize.persona( persona, platformDefaults ) ),
@@ -46,7 +42,8 @@ module.exports = () => {
       Verbosity: ( config.Verbosity ?? 5 ),
       Version: ver.BotConfig,
     };
-  } catch ( builderError ) {
+  }
+  catch ( builderError ) {
     console.error( 'Failed to %s: %o', buildPath( modData ).path, builderError );
     return {
       _id: 'Error',

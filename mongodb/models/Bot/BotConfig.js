@@ -13,12 +13,12 @@ const botSchema = new Schema( {
   _id: { default: 'LiveBot', type: String },
   Backup: {
     Config: {
-      CachedString: { required: [ true, 'Config.CachedString is a required field.', ], type: String },
-      LastModifiedAt: { required: [ true, 'Config.LastModifiedAt is a required field.', ], type: Date },
+      CachedString: { required: [ true, 'Backup.Config.CachedString is a required field.', ], type: String },
+      LastModifiedAt: { required: [ true, 'Backup.Config.LastModifiedAt is a required field.', ], type: Date },
     },
     Contacts: {
-      CachedString: { required: [ true, 'Contacts.CachedString is a required field.', ], type: String },
-      LastModifiedAt: { required: [ true, 'Contacts.LastModifiedAt is a required field.', ], type: Date },
+      CachedString: { required: [ true, 'Backup.Contacts.CachedString is a required field.', ], type: String },
+      LastModifiedAt: { required: [ true, 'Backup.Contacts.LastModifiedAt is a required field.', ], type: Date },
     },
   },
   Contacts: [ botContactSchema ],

@@ -41,6 +41,13 @@ module.exports = () => {
     },
     buildPath: require( modPaths.buildPath ),
     duration: require( modPaths.duration ),
+    getJSON: value => {
+      try { return require( value ); }
+      catch ( fileError ) {
+        console.error( 'Missing or invalid %s file: %o', value, fileError );
+        return {};
+      }
+    },
     i18n: require( modPaths.i18n ),
     isPlainObject: value => {
       if ( value === null || typeof value !== 'object' ) { return false; }

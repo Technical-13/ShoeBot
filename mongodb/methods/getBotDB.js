@@ -10,7 +10,7 @@ const updateBotDB = require( buildPath( { ...modData, name: 'updateBotDB' } ).pa
 const updateBotConfig = async ( loadBot, botIDs ) => {
   if ( loadForcedCreate ) { console.info( 'Ignoring unnecessary `loadForcedCreate` setting.' ); }
   const currConfig = await botConfig.findById( loadBot );
-  if ( currConfig.Config.LastModifiedAt.getTime() === botLangs[ 0 ].LastUpdatedOn.getTime() ) { return currConfig; }
+  if ( currConfig.Backup.Config.LastModifiedAt.getTime() === botLangs[ 0 ].LastUpdatedOn.getTime() ) { return currConfig; }
   const updatedBotConfig = updateBotDB( currConfig, { ...newBotConfig, _id: loadBot }, botIDs );
   return await botConfig.updateOne( { _id: loadBot }, updatedBotConfig, { upsert: true } )
     .then( updateSuccess => { return updatedBotConfig; } )

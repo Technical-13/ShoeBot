@@ -13,8 +13,8 @@ const { buildPath } = bot;
  */
 module.exports = ( curr, result, botIDs ) => {
   try {
-    const oldConfig = JSON.parse( curr.Config.CachedString );
-    const newConfig = JSON.parse( result.Config.CachedString );
+    const oldConfig = JSON.parse( curr.Backup.Config.CachedString );
+    const newConfig = JSON.parse( result.Backup.Config.CachedString );
 //    Languages should always be updated.
     if ( newConfig.Name === oldConfig.Name ) { result.Name = curr.Name; }
     // if ( newConfig.Contacts !== oldConfig.Contacts ) { result.Contacts = curr.Contacts; }
@@ -23,7 +23,8 @@ module.exports = ( curr, result, botIDs ) => {
     // if ( curr.WebDash !== result.WebDash ) { result.WebDash = curr.WebDash; }
     if ( newConfig.Verbosity === oldConfig.Verbosity ) { result.Verbosity = curr.Verbosity; }
 //    Version should always be updated.
-  } catch ( updaterError ) {
+  }
+  catch ( updaterError ) {
     console.error( 'Failed to %s: %o', buildPath( modData ).path, updaterError );
     const errID = 'Error-' + ( botIDs.filter( id => id.startsWith( 'Error' ) ) ).length + 1;
     return {
