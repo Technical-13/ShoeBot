@@ -4,23 +4,19 @@ const modData = { ext: 'js', name: 'utils', type: 'functions' };
 /**
  * Loads ShoeBot's shared utility modules.
  *
- * Resolves each utility's path relative to the project root using buildPath(),
- * then requires and returns the utility modules as a single object.
+ * Returns a collection of utility modules as a single object.
  *
- * The internationalization and parser modules are themselves loaders,
- * allowing their platform-specific utilities to be grouped together.
+ * The internationalization and parser modules are themselves loaders, allowing their platform-specific utilities to be grouped together.
  *
- * @returns {{
+ * @returns { {
+ *   asBoolean: Function,
  *   buildPath: Function,
  *   duration: Function,
+ *   getJSON: Function,
  *   i18n: Function,
  *   isPlainObject: Function,
  *   parser: Function
- * }} An object containing the loaded utility modules.
- *
- * @example
- * const utils = require( './functions/utils.js' )();
- * const { buildPath, duration, i18n, parser } = utils;
+ * } } An object containing the loaded utility modules.
  */
 module.exports = () => {
   const basePath = { ...modData, group: 'Utilities' };

@@ -15,7 +15,7 @@ const sanitize = require( buildPath( { ...modData, name: 'configSanitizer' } ).p
  *
  * Missing or invalid contact data is logged and replaced with an empty object.
  *
- * @returns { Object<string, *> } The completed default BotConfig document, or a diagnostic document if building fails.
+ * @returns { Object< string, * > } The completed default BotConfig document, or a diagnostic document if building fails.
  */
 module.exports = () => {
   try {
