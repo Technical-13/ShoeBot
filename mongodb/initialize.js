@@ -24,6 +24,16 @@ module.exports = async () => {
       console.error( chalk.bold.redBright( 'mongodb authentication credential string missing from .env file.  Please add it and try again.' ) );
       throw new Err( 'MongoDB authentication credentials missing.', { wasCaught: true } );
     }
+    bot.db = { config: {}, connection: {} };
+    await mongoose.connect( env.mongodb ).then( async () => {
+      console.log( chalk.greenBright( 'Connected bot to MongoDB.' ) );
+      bot.db.config = await getBotConfig();
+    } ).catch( errConnect => {
+      console.error( chalk.bold.red( 'Failed to connect bot to MongoDB:\n%o' ), errConnect.message );
+      errConnect.wasCaught = true;
+      throw errConnect;
+    } );
+    bot.db.connection = mongoose.connection;
   }
   catch ( errObject ) {
     if ( !errObject.wasCaught ) {
