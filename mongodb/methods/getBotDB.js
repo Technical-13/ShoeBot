@@ -7,11 +7,20 @@ const botConfig = require( buildPath( { ...modData, group: 'Bot', name: 'BotConf
 const { limit, load, loadForcedCreate, ver } = config.dbData;
 const newBotConfig = require( buildPath( { ...modData, name: 'buildDefaultDB' } ).path )();
 const updateBotDB = require( buildPath( { ...modData, name: 'updateBotDB' } ).path );
+const createBotDB = async ( createBotConfig ) => {
+  return await botConfig.create( createBotConfig )
+    .then( initSuccess => { console.log( chalk.bold.greenBright( 'Bot configuration initialized in my database.' ) ); return createBotConfig; } )
+    .catch( initError => { throw new Err( chalk.bold.cyan.inverse( 'Error attempting to initialize bot configuration in my database:', initError ) ); } );
+};
 const updateBotConfig = async ( loadBot, botIDs ) => {
   if ( loadForcedCreate ) { console.info( 'Ignoring unnecessary `loadForcedCreate` setting.' ); }
   const currConfig = await botConfig.findById( loadBot );
+  if ( !currConfig ) {
+    throw new Err( chalk.bold.cyan.inverse( 'Error attempting to update the core bot configuration in my database, `' + loadBot + '` DB entry not found.' ), { ids: botIDs } );
+  }
   if ( currConfig.Backup.Config.LastModifiedAt.getTime() === botLangs[ 0 ].LastUpdatedOn.getTime() ) { return currConfig; }
   const updatedBotConfig = updateBotDB( currConfig, { ...newBotConfig, _id: loadBot }, botIDs );
+  if ( updatedBotConfig._id !== loadBot ) { return await createBotDB( updatedBotConfig ) }
   return await botConfig.updateOne( { _id: loadBot }, updatedBotConfig, { upsert: true } )
     .then( updateSuccess => { return updatedBotConfig; } )
     .catch( updateError => { throw new Err( chalk.bold.cyan.inverse( 'Error attempting to update the core bot configuration in my database:' ), updateError ); } );
@@ -37,9 +46,7 @@ module.exports = async () => {
       console.warn( 'Notice: Creating this %s entry in the BotConfig DB Table exceeds the expected limit of %s entries: %o\nPlease either remove an entry from the table or increase the `dbData.limit` in `config.json` to `"limit": %d,`.', chalk.bold( load ), chalk.bold( limit ), ( limit + 1 ) );
     }
     console.log( 'Initializing bot "load: %s" in database...', load );
-/*    return await botConfig.create( newBotConfig )
-      .then( initSuccess => { console.log( chalk.bold.greenBright( 'Bot configuration initialized in my database.' ) ); return newBotConfig; } )
-      .catch( initError => { throw new Err( chalk.bold.cyan.inverse( 'Error attempting to initialize bot configuration in my database:', initError ) ); } );//*/
+    await createBotDB( newBotConfig );//*/
   }
   catch ( errObject ) {
     console.error( 'Uncaught error in %s:\n\t%s', chalk.hex( '#FFA500' ).bold( buildPath( modData ) ), errObject.stack );
