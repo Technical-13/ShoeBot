@@ -35,6 +35,7 @@ module.exports = ( curr, result, botIDs ) => {
 //    WebDash should always be updated.
     if ( newConfig.Verbosity === oldConfig.Verbosity ) { result.Verbosity = curr.Verbosity; }
 //    Version should always be updated.
+    return result;
   }
   catch ( updaterError ) {
     console.error( 'Failed to %s: %o', buildPath( modData ).path, updaterError );
