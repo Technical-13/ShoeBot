@@ -29,30 +29,87 @@ const { path: contactPath } = z.contacts;
 const getDiffs = ( prev, curr ) => {
   if ( mongo.reconciled ) { return mongo.reconciled; }
   const getDiff = ( prev, curr ) => {
-    const diff = { modify: {}, remove: {} };
+    const isArray = Array.isArray( prev ) && Array.isArray( curr );
+    const isObject = isPlainObject( prev ) && isPlainObject( curr );
+    if ( !isArray && !isObject ) { return curr; }
     const prevKeys = Object.keys( prev );
     const currKeys = Object.keys( curr );
-    const addKeys = currKeys.filter( k => !prevKeys.includes( k ) );
-    addKeys.forEach( k => { diff.modify[ k ] = curr[ k ]; } );
-    const cmnKeys = currKeys.filter( k => prevKeys.includes( k ) );
-    cmnKeys.forEach( k => {
-      if ( isPlainObject( prev[ k ] ) && isPlainObject( curr[ k ] ) ) {
-        const nested = getDiff( prev[ k ], curr[ k ] );
-        if ( Object.keys( nested.modify ).length ) { diff.modify[ k ] = nested.modify; }
-        if ( Object.keys( nested.remove ).length ) { diff.remove[ k ] = nested.remove; }
+    const diff = { modify: isArray ? [] : {}, remove: isArray ? [] : {} };
+    const addKeys = currKeys.filter( key => !prevKeys.includes( key ) );
+    addKeys.forEach( key => { diff.modify[ key ] = curr[ key ]; } );
+    const cmnKeys = currKeys.filter( key => prevKeys.includes( key ) );
+    cmnKeys.forEach( key => {
+      const nested = getDiff( prev[ key ], curr[ key ] );
+      if ( nested && nested.modify && Object.keys( nested.modify ).length ) { diff.modify[ key ] = nested.modify; }
+      if ( nested && nested.remove && Object.keys( nested.remove ).length ) { diff.remove[ key ] = nested.remove; }
+      if ( !nested || !nested.modify ) {
+        if ( !isDeepStrictEqual( prev[ key ], curr[ key ] ) ) { diff.modify[ key ] = curr[ key ]; }
       }
-      else if ( !isDeepStrictEqual( prev[ k ], curr[ k ] ) ) { diff.modify[ k ] = curr[ k ]; }
     } );
-    const remKeys = prevKeys.filter( k => !currKeys.includes( k ) );
-    remKeys.forEach( k => { diff.remove[ k ] = true; } );
+    const remKeys = prevKeys.filter( kill => !currKeys.includes( kill ) );
+    remKeys.forEach( kill => { diff.remove[ kill ] = true; } );
     return diff;
   };
   mongo.reconciled = getDiff( prev, curr );
   return mongo.reconciled;
 };
 
+/** Recursively removes properties identified by a hierarchical removal diff.
+ *
+ * @description
+ * Converts Mongoose documents to plain objects before processing.
+ *
+ * @param { Object } input - Object to modify.
+ * @param { Object } remove - Hierarchical removal diff.
+ * @returns { Object } Processed object.
+ */
+const remDiffs = ( input, remove ) => {
+  if ( isDoc( input ) ) { input = input.toObject(); }
+  const doRemoval = ( res, rem ) => {
+    if ( isDoc( res ) ) { res = res.toObject(); }
+    const isArray = Array.isArray( res ) && Array.isArray( rem );
+    const isObject = isPlainObject( res ) && isPlainObject( rem );
+    if ( isArray || isObject ) { return remDiffs( res, rem ); }
+    return res;
+  };
+  if ( isPlainObject( remove ) ) {
+    Object.keys( remove ).forEach( key => {
+      if ( remove[keyk ] === true ) { delete input[ key ]; }
+      else { input[ key ] = doRemoval( input[ key ], remove[ key ] ); }
+    } );
+  }
+  else if ( Array.isArray( remove ) ) {
+    remove.forEach( ( kill, index ) => {
+      if ( kill === true ) { input[ index ] = null; }
+      else { input[ index ] = doRemoval( input[ index ], kill ); }
+    } );
+    input = input.filter( k => k !== null );
+  }
+  return input;
+};
+
+const mergeDiffs = ( result, merge ) => {
+  const doMerge = ( res, mod ) => {
+    const isArray = Array.isArray( res ) && Array.isArray( mod );
+    const isObject = isPlainObject( res ) && isPlainObject( mod );
+    if ( isArray || isObject ) { res = mergeDiffs( res, mod ); }
+    else { return mod; }
+  };
+  if ( isPlainObject( merge ) ) { Object.keys( merge ).forEach( key => { result[ key ] = doMerge( result[ key ], merge[ key ] ); } ); }
+  else if ( Array.isArray( merge ) ) { merge.forEach( ( value, index ) => { result[ index ] = doMerge( result[ index ], merge[ index ] ); } ); }
+  return result;
+};
+
+const ps = ( p, prev, curr ) => {
+  const diffs = ( mongo.reconciled || getDiffs( prev, curr ) );
+  const remKeys = diffs.remove;
+  const stripped = remDiffs( p, remKeys );
+  return mergeDiffs( stripped, diffs.modify );
+}
+
 /** Rebuilds the contacts array using the current static contact definitions and the existing command-added contacts.
  *
+ * @description
  * Static contacts are read from the `Gurus` array in contacts.json and sorted numerically by `ID`, regardless of their position in the file.
  * Existing contacts without numeric IDs are selected as command-added contacts and appended after the static contacts.
  *
@@ -67,8 +124,7 @@ const contacts = ( arrContacts ) => {
   return [ ...jsonContacts, ...cmdContacts ].filter( c => Object.keys( isDoc( c ) ? c.toObject() : ( isPlainObject( c ) ? c : {} ) ).length );
 }
 
-const personas = () => {}
-
-const platforms = () => {}
+const personas = ( p, prev, curr ) => { return ps( p, prev, curr ); };
+const platforms = ( p, prev, curr ) => { return ps( p, prev, curr ); };
 
 module.exports = { contacts, personas, platforms };
