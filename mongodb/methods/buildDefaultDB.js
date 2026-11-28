@@ -33,7 +33,7 @@ module.exports = () => {
         },
         Contacts: {
           CachedString: JSON.stringify( contactData ),
-          LastModifiedAt: fs.statSync( contacts.path ).mtime,
+          LastModifiedAt: ( contactData.length ? fs.statSync( contacts.path ).mtime : fs.statSync( root + '/package.json' ).birthtime ),
         },
       },
       Contacts: contactData,
