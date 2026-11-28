@@ -1,7 +1,7 @@
 const modData = { ext: 'js', name: 'buildDefaultDB', platform: 'methods', type: 'mongodb' };
 const root = process.cwd();
 const bot = require( root );
-const { buildPath, config, fs, mongo, utils, z } = bot;
+const { buildPath, config, e, fs, mongo, utils, z } = bot;
 const { isDoc } = mongo;
 const { getJSON, isPlainObject } = utils;
 const { contacts, i18n } = z;
@@ -33,7 +33,7 @@ module.exports = () => {
         },
         Contacts: {
           CachedString: JSON.stringify( contactData ),
-          LastModifiedAt: ( contactData.length ? fs.statSync( contacts.path ).mtime : fs.statSync( root + '/package.json' ).birthtime ),
+          LastModifiedAt: ( contactData.length ? fs.statSync( contacts.path ).mtime : e ),
         },
       },
       Contacts: contactData,

@@ -19,6 +19,7 @@
  * @requires chalk
  */
 require( 'dotenv' ).config();
+const fs = require( 'fs' );
 const utils = require( './functions/utils.js' )();
 const { buildPath } = utils;
 const modData = buildPath( { ext: 'js', name: 'index' } );
@@ -45,10 +46,11 @@ const bot = {
   chalk: require( 'chalk' ),
   config: require( zettel.config.path ),
   djs: require( 'discord.js' ),
+  e: fs.statSync( './package.json' ).birthtime,
   env: process.env,
   Err: require( zettel.Err.path ),
   events: new EventEmitter(),
-  fs: require( 'fs' ),
+  fs: fs,
   timeFormat: require( zettel.timeFormat.path ),
   utils: utils,
   z: zettel,
