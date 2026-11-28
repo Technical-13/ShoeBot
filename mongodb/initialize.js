@@ -17,11 +17,11 @@ const z = {
     Snowflake: buildPath( { ...modData, name: 'Snowflake', platform: 'types' } )
   }
 };
-require( z.types.Snowflake );
+require( z.types.Snowflake.path );
 mongo.types; mongoose.Types;
-require( z.models.BotConfig );
+require( z.models.BotConfig.path );
 bot.mongo = mongo;
-const getBotConfig = z.methods.getBotConfig;
+const getBotConfig = require( z.methods.getBotConfig.path );
 
 module.exports = async () => {
   try {
