@@ -7,8 +7,11 @@ mongo.isSubDoc = value => value instanceof mongoose.Types.Subdocument;
 const bot = require( process.cwd() );
 const { buildPath, chalk, env, Err } = bot;
 const z = {
+  methods: {
+    getBotConfig: buildPath( { ...modData, name: 'getBotDB', platform: 'methods' } )
+  },
   models: {
-    BotConfig: buildPath( { ...modData, name: 'BotConfig', platform: 'models' } )
+    BotConfig: buildPath( { ...modData, group: 'Bot', name: 'BotConfig', platform: 'models' } )
   },
   types: {
     Snowflake: buildPath( { ...modData, name: 'Snowflake', platform: 'types' } )
@@ -17,6 +20,8 @@ const z = {
 require( z.types.Snowflake );
 mongo.types; mongoose.Types;
 require( z.models.BotConfig );
+bot.mongo = mongo;
+const getBotConfig = z.methods.getBotConfig;
 
 module.exports = async () => {
   try {
